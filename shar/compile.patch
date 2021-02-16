@@ -1,0 +1,390 @@
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..6d0fbd0
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,4 @@
++*.o
++*.a
++python
++*~
+diff --git a/src/Makefile b/src/Makefile
+index d47eceb..3811b77 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -86,8 +86,8 @@ DEFPYTHONPATH= .:/usr/local/lib/python:/ufs/guido/lib/python:../lib
+ # is missing in most systems I have encountered, so it is turned on
+ # in the Makefile. Turn it off if your system doesn't have sys_errlist.)
+ 
+-STRERROR_SRC= strerror.c
+-STRERROR_OBJ= strerror.o
++# STRERROR_SRC= strerror.c
++# STRERROR_OBJ= strerror.o
+ 
+ # If your BSD system does not have a fmod() function in the library,
+ # uncomment the following two lines to use one I wrote.
+@@ -317,83 +317,82 @@ STRERROR_OBJ= strerror.o
+ # =================
+ 
+ STANDARD_OBJ= acceler.o bltinmodule.o ceval.o classobject.o \
+- compile.o dictobject.o errors.o fgetsintr.o \
+- fileobject.o floatobject.o $(FMOD_OBJ) frameobject.o \
+- funcobject.o $(GETCWD_OBJ) \
+- graminit.o grammar1.o import.o \
+- intobject.o intrcheck.o listnode.o listobject.o \
+- mathmodule.o methodobject.o modsupport.o \
+- moduleobject.o node.o object.o parser.o \
+- parsetok.o posixmodule.o regexp.o regexpmodule.o \
+- strdup.o $(STRERROR_OBJ) \
+- stringobject.o $(STRTOL_OBJ) structmember.o \
+- sysmodule.o timemodule.o tokenizer.o traceback.o \
+- tupleobject.o typeobject.o
++	compile.o dictobject.o errors.o fgetsintr.o \
++	fileobject.o floatobject.o $(FMOD_OBJ) frameobject.o \
++	funcobject.o $(GETCWD_OBJ) \
++	graminit.o grammar1.o import.o \
++	intobject.o intrcheck.o listnode.o listobject.o \
++	mathmodule.o methodobject.o modsupport.o \
++	moduleobject.o node.o object.o parser.o \
++	parsetok.o posixmodule.o regexp.o regexpmodule.o \
++	strdup.o $(STRERROR_OBJ) \
++	stringobject.o $(STRTOL_OBJ) structmember.o \
++	sysmodule.o timemodule.o tokenizer.o traceback.o \
++	tupleobject.o typeobject.o
+ 
+ STANDARD_SRC= acceler.c bltinmodule.c ceval.c classobject.c \
+- compile.c dictobject.c errors.c fgetsintr.c \
+- fileobject.c floatobject.c $(FMOD_SRC) frameobject.c \
+- funcobject.c $(GETCWD_SRC) \
+- graminit.c grammar1.c import.c \
+- intobject.c intrcheck.c listnode.c listobject.c \
+- mathmodule.c methodobject.c modsupport.c \
+- moduleobject.c node.c object.c parser.c \
+- parsetok.c posixmodule.c regexp.c regexpmodule.c \
+- strdup.c $(STRERROR_SRC) \
+- stringobject.c $(STRTOL_SRC) structmember.c \
+- sysmodule.c timemodule.c tokenizer.c traceback.c \
+- tupleobject.c typeobject.c
++	compile.c dictobject.c errors.c fgetsintr.c \
++	fileobject.c floatobject.c $(FMOD_SRC) frameobject.c \
++	funcobject.c $(GETCWD_SRC) \
++	graminit.c grammar1.c import.c \
++	intobject.c intrcheck.c listnode.c listobject.c \
++	mathmodule.c methodobject.c modsupport.c \
++	moduleobject.c node.c object.c parser.c \
++	parsetok.c posixmodule.c regexp.c regexpmodule.c \
++	strdup.c $(STRERROR_SRC) \
++	stringobject.c $(STRTOL_SRC) structmember.c \
++	sysmodule.c timemodule.c tokenizer.c traceback.c \
++	tupleobject.c typeobject.c
+ 
+ CONFIGDEFS= $(STDW_USE) $(AM_USE) $(AUDIO_USE) $(GL_USE) $(PANEL_USE) \
+- '-DPYTHONPATH="$(DEFPYTHONPATH)"'
++	'-DPYTHONPATH="$(DEFPYTHONPATH)"'
+ 
+ CONFIGINCLS= $(STDW_INCL)
+ 
+ LIBDEPS= libpython.a $(STDW_LIBDEPS) $(AM_LIBDEPS) \
+- $(GL_LIBDEPS) $(PANEL_LIBSDEP) $(RL_LIBDEPS)
++	$(GL_LIBDEPS) $(PANEL_LIBSDEP) $(RL_LIBDEPS)
+ 
+ # NB: the ordering of items in LIBS is significant!
+ LIBS= libpython.a $(STDW_LIBS) $(AM_LIBS) \
+- $(PANEL_LIBS) $(GL_LIBS) $(RL_LIBS) -lm
++	$(PANEL_LIBS) $(GL_LIBS) $(RL_LIBS) -lm
+ 
+ LIBOBJECTS= $(STANDARD_OBJ) $(STDW_OBJ) $(AM_OBJ) $(AUDIO_OBJ) \
+- $(GL_OBJ) $(PANEL_OBJ)
++	$(GL_OBJ) $(PANEL_OBJ)
+ 
+ LIBSOURCES= $(STANDARD_SRC) $(STDW_SRC) $(AM_SRC) $(AUDIO_SRC) \
+- $(GL_SRC) $(PANEL_SRC)
++	$(GL_SRC) $(PANEL_SRC)
+ 
+ OBJECTS= pythonmain.o config.o
+ 
+ SOURCES= $(LIBSOURCES) pythonmain.c config.c
+ 
+ GENOBJECTS= acceler.o fgetsintr.o grammar1.o \
+- intrcheck.o listnode.o node.o parser.o \
+- parsetok.o strdup.o tokenizer.o bitset.o \
+- firstsets.o grammar.o metagrammar.o pgen.o \
+- pgenmain.o printgrammar.o
++	intrcheck.o listnode.o node.o parser.o \
++	parsetok.o strdup.o tokenizer.o bitset.o \
++	firstsets.o grammar.o metagrammar.o pgen.o \
++	pgenmain.o printgrammar.o
+ 
+ GENSOURCES= acceler.c fgetsintr.c grammar1.c \
+- intrcheck.c listnode.c node.c parser.c \
+- parsetok.c strdup.c tokenizer.c bitset.c \
+- firstsets.c grammar.c metagrammar.c pgen.c \
+- pgenmain.c printgrammar.c
++	intrcheck.c listnode.c node.c parser.c \
++	parsetok.c strdup.c tokenizer.c bitset.c \
++	firstsets.c grammar.c metagrammar.c pgen.c \
++	pgenmain.c printgrammar.c
+ 
+ 
+ # Main Targets
+ # ============
+ 
+ python: libpython.a $(OBJECTS) $(LIBDEPS) Makefile
+- $(CC) $(CFLAGS) $(OBJECTS) $(LIBS) -o @python
+- mv @python python
++	$(CC) $(CFLAGS) $(OBJECTS) $(LIBS) -o python
+ 
+ libpython.a: $(LIBOBJECTS)
+- -rm -f @lib
+- ar cr @lib $(LIBOBJECTS)
+- $(RANLIB) @lib
+- mv @lib libpython.a
++	-rm -f @lib
++	ar cr @lib $(LIBOBJECTS)
++	$(RANLIB) @lib
++	mv @lib libpython.a
+ 
+ python_gen: $(GENOBJECTS) $(RL_LIBDEPS)
+- $(CC) $(CFLAGS) $(GENOBJECTS) $(RL_LIBS) -o python_gen
++	$(CC) $(CFLAGS) $(GENOBJECTS) $(RL_LIBS) -o python_gen
+ 
+ 
+ # Utility Targets
+@@ -405,15 +404,15 @@ python_gen: $(GENOBJECTS) $(RL_LIBDEPS)
+ LINTFLAGS= -h
+ 
+ LINTCPPFLAGS= $(CONFIGDEFS) $(CONFIGINCLS) $(SYSVDEF) \
+- $(AM_INCL) $(PANEL_INCL)
++	$(AM_INCL) $(PANEL_INCL)
+ 
+ LINT= lint
+ 
+ lint:: $(SOURCES)
+- $(LINT) $(LINTFLAGS) $(LINTCPPFLAGS) $(SOURCES)
++	$(LINT) $(LINTFLAGS) $(LINTCPPFLAGS) $(SOURCES)
+ 
+ lint:: $(GENSOURCES)
+- $(LINT) $(LINTFLAGS) $(GENSOURCES)
++	$(LINT) $(LINTFLAGS) $(GENSOURCES)
+ 
+ # Generating dependencies is only necessary if you intend to hack Python.
+ # You may change $(MKDEP) to your favorite dependency generator (it should
+@@ -422,7 +421,7 @@ lint:: $(GENSOURCES)
+ MKDEP= mkdep
+ 
+ depend::
+- $(MKDEP) $(LINTCPPFLAGS) $(SOURCES) $(GENSOURCES)
++	$(MKDEP) $(LINTCPPFLAGS) $(SOURCES) $(GENSOURCES)
+ 
+ # You may change $(CTAGS) to suit your taste...
+ 
+@@ -431,13 +430,13 @@ CTAGS= ctags -t -w
+ HEADERS= *.h
+ 
+ tags: $(SOURCES) $(GENSOURCES) $(HEADERS)
+- $(CTAGS) $(SOURCES) $(GENSOURCES) $(HEADERS)
++	$(CTAGS) $(SOURCES) $(GENSOURCES) $(HEADERS)
+ 
+ clean::
+- -rm -f *.o core [,#@]*
++	-rm -f *.o core [,#@]*
+ 
+ clobber:: clean
+- -rm -f python python_gen libpython.a tags
++	-rm -f python python_gen libpython.a tags
+ 
+ 
+ # Build Special Objects
+@@ -448,37 +447,37 @@ clobber:: clean
+ COMPILE= $(CC) -c $(CFLAGS)
+ 
+ amoebamodule.o: amoebamodule.c
+- $(COMPILE) $(AM_INCL) $*.c
++	$(COMPILE) $(AM_INCL) $*.c
+ 
+ config.o: config.c Makefile
+- $(COMPILE) $(CONFIGDEFS) $(CONFIGINCLS) $*.c
++	$(COMPILE) $(CONFIGDEFS) $(CONFIGINCLS) $*.c
+ 
+ fgetsintr.o: fgetsintr.c
+- $(COMPILE) $(SIGTYPEDEF) $*.c
++	$(COMPILE) $(SIGTYPEDEF) $*.c
+ 
+ intrcheck.o: intrcheck.c
+- $(COMPILE) $(SIGTYPEDEF) $*.c
++	$(COMPILE) $(SIGTYPEDEF) $*.c
+ 
+ panelmodule.o: panelmodule.c
+- $(COMPILE) $(PANEL_INCL) $*.c
++	$(COMPILE) $(PANEL_INCL) $*.c
+ 
+ posixmodule.o: posixmodule.c
+- $(COMPILE) $(SYSVDEF) $(NOSYMLINKDEF) $*.c
++	$(COMPILE) $(SYSVDEF) $(NOSYMLINKDEF) $*.c
+ 
+ sc_interpr.o: sc_interpr.c
+- $(COMPILE) $(AM_INCL) $*.c
++	$(COMPILE) $(AM_INCL) $*.c
+ 
+ sc_error.o: sc_error.c
+- $(COMPILE) $(AM_INCL) $*.c
++	$(COMPILE) $(AM_INCL) $*.c
+ 
+ stdwinmodule.o: stdwinmodule.c
+- $(COMPILE) $(STDW_INCL) $*.c
++	$(COMPILE) $(STDW_INCL) $*.c
+ 
+ timemodule.o: timemodule.c
+- $(COMPILE) $(SIGTYPEDEF) $(BSDTIMEDEF) $*.c
++	$(COMPILE) $(SIGTYPEDEF) $(BSDTIMEDEF) $*.c
+ 
+ tokenizer.o: tokenizer.c
+- $(COMPILE) $(RL_USE) $*.c
++	$(COMPILE) $(RL_USE) $*.c
+ 
+ .PRECIOUS: python libpython.a glmodule.c graminit.c graminit.h
+ 
+@@ -497,8 +496,8 @@ tokenizer.o: tokenizer.c
+ # Also ignore the warnings emitted while compiling glmodule.c; it works.
+ 
+ glmodule.c: cstubs cgen
+- python cgen <cstubs >@glmodule.c
+- mv @glmodule.c glmodule.c
++	python cgen <cstubs >@glmodule.c
++	mv @glmodule.c glmodule.c
+ 
+ # The dependencies for graminit.[ch] are not turned on in the
+ # distributed Makefile because the files themselves are distributed.
+diff --git a/src/allobjects.h b/src/allobjects.h
+index b6b487b..fe46f54 100644
+--- a/src/allobjects.h
++++ b/src/allobjects.h
+@@ -26,6 +26,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ 
+ #include <stdio.h>
+ #include <string.h>
++#include <stdlib.h>
+ 
+ #include "PROTO.h"
+ 
+diff --git a/src/import.c b/src/import.c
+index d461007..59ea07e 100644
+--- a/src/import.c
++++ b/src/import.c
+@@ -167,6 +167,8 @@ load_module(name)
+  return m;
+ }
+ 
++static int init_builtin(char *name);
++
+ object *
+ import_module(name)
+  char *name;
+diff --git a/src/listobject.c b/src/listobject.c
+index be1382c..9a32eac 100644
+--- a/src/listobject.c
++++ b/src/listobject.c
+@@ -25,6 +25,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ /* List object implementation */
+ 
+ #include "allobjects.h"
++#include "modsupport.h"
+ 
+ object *
+ newlistobject(size)
+@@ -318,24 +319,6 @@ list_concat(a, bb)
+ #undef b
+ }
+ 
+-static int
+-list_ass_item(a, i, v)
+- listobject *a;
+- int i;
+- object *v;
+-{
+- if (i < 0 || i >= a->ob_size) {
+- err_setstr(IndexError, "list assignment index out of range");
+- return -1;
+- }
+- if (v == NULL)
+- return list_ass_slice(a, i, i+1, v);
+- INCREF(v);
+- DECREF(a->ob_item[i]);
+- a->ob_item[i] = v;
+- return 0;
+-}
+-
+ static int
+ list_ass_slice(a, ilow, ihigh, v)
+  listobject *a;
+@@ -400,6 +383,24 @@ list_ass_slice(a, ilow, ihigh, v)
+ #undef b
+ }
+ 
++static int
++list_ass_item(a, i, v)
++ listobject *a;
++ int i;
++ object *v;
++{
++ if (i < 0 || i >= a->ob_size) {
++ err_setstr(IndexError, "list assignment index out of range");
++ return -1;
++ }
++ if (v == NULL)
++ return list_ass_slice(a, i, i+1, v);
++ INCREF(v);
++ DECREF(a->ob_item[i]);
++ a->ob_item[i] = v;
++ return 0;
++}
++
+ static object *
+ ins(self, where, v)
+  listobject *self;
+diff --git a/src/malloc.h b/src/malloc.h
+index c2d9969..de2cc9f 100644
+--- a/src/malloc.h
++++ b/src/malloc.h
+@@ -36,6 +36,11 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ #define HAVE_STDLIB
+ #endif
+ 
++#ifdef __STDC__
++#define ANY void
++#define HAVE_STDLIB
++#endif
++
+ #ifndef ANY
+ #define ANY char
+ #endif
+diff --git a/src/modsupport.h b/src/modsupport.h
+index 843b209..bc9929a 100644
+--- a/src/modsupport.h
++++ b/src/modsupport.h
+@@ -25,3 +25,5 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ /* Module support interface */
+ 
+ extern object *initmodule PROTO((char *, struct methodlist *));
++extern int getintarg(object *v, int *a);
++extern void fatal(char *msg);
+diff --git a/src/patchlevel.h b/src/patchlevel.h
+index d00491f..110c86f 100644
+--- a/src/patchlevel.h
++++ b/src/patchlevel.h
+@@ -1 +1 @@
+-1
++#define PATCHLEVEL 1
+diff --git a/src/regexpmodule.c b/src/regexpmodule.c
+index 7c87217..62b22f2 100644
+--- a/src/regexpmodule.c
++++ b/src/regexpmodule.c
+@@ -38,7 +38,7 @@ typedef struct {
+  regexp *re_prog; /* The compiled regular expression */
+ } regexpobject;
+ 
+-extern typeobject Regexptype; /* Really static, forward */
++static typeobject Regexptype;
+ 
+ static regexpobject *
+ newregexpobject(string, prog)
