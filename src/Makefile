@@ -317,83 +317,83 @@ STRERROR_OBJ= strerror.o
 # =================
 
 STANDARD_OBJ= acceler.o bltinmodule.o ceval.o classobject.o \
- compile.o dictobject.o errors.o fgetsintr.o \
- fileobject.o floatobject.o $(FMOD_OBJ) frameobject.o \
- funcobject.o $(GETCWD_OBJ) \
- graminit.o grammar1.o import.o \
- intobject.o intrcheck.o listnode.o listobject.o \
- mathmodule.o methodobject.o modsupport.o \
- moduleobject.o node.o object.o parser.o \
- parsetok.o posixmodule.o regexp.o regexpmodule.o \
- strdup.o $(STRERROR_OBJ) \
- stringobject.o $(STRTOL_OBJ) structmember.o \
- sysmodule.o timemodule.o tokenizer.o traceback.o \
- tupleobject.o typeobject.o
+	compile.o dictobject.o errors.o fgetsintr.o \
+	fileobject.o floatobject.o $(FMOD_OBJ) frameobject.o \
+	funcobject.o $(GETCWD_OBJ) \
+	graminit.o grammar1.o import.o \
+	intobject.o intrcheck.o listnode.o listobject.o \
+	mathmodule.o methodobject.o modsupport.o \
+	moduleobject.o node.o object.o parser.o \
+	parsetok.o posixmodule.o regexp.o regexpmodule.o \
+	strdup.o $(STRERROR_OBJ) \
+	stringobject.o $(STRTOL_OBJ) structmember.o \
+	sysmodule.o timemodule.o tokenizer.o traceback.o \
+	tupleobject.o typeobject.o
 
 STANDARD_SRC= acceler.c bltinmodule.c ceval.c classobject.c \
- compile.c dictobject.c errors.c fgetsintr.c \
- fileobject.c floatobject.c $(FMOD_SRC) frameobject.c \
- funcobject.c $(GETCWD_SRC) \
- graminit.c grammar1.c import.c \
- intobject.c intrcheck.c listnode.c listobject.c \
- mathmodule.c methodobject.c modsupport.c \
- moduleobject.c node.c object.c parser.c \
- parsetok.c posixmodule.c regexp.c regexpmodule.c \
- strdup.c $(STRERROR_SRC) \
- stringobject.c $(STRTOL_SRC) structmember.c \
- sysmodule.c timemodule.c tokenizer.c traceback.c \
- tupleobject.c typeobject.c
+	compile.c dictobject.c errors.c fgetsintr.c \
+	fileobject.c floatobject.c $(FMOD_SRC) frameobject.c \
+	funcobject.c $(GETCWD_SRC) \
+	graminit.c grammar1.c import.c \
+	intobject.c intrcheck.c listnode.c listobject.c \
+	mathmodule.c methodobject.c modsupport.c \
+	moduleobject.c node.c object.c parser.c \
+	parsetok.c posixmodule.c regexp.c regexpmodule.c \
+	strdup.c $(STRERROR_SRC) \
+	stringobject.c $(STRTOL_SRC) structmember.c \
+	sysmodule.c timemodule.c tokenizer.c traceback.c \
+	tupleobject.c typeobject.c
 
 CONFIGDEFS= $(STDW_USE) $(AM_USE) $(AUDIO_USE) $(GL_USE) $(PANEL_USE) \
- '-DPYTHONPATH="$(DEFPYTHONPATH)"'
+	'-DPYTHONPATH="$(DEFPYTHONPATH)"'
 
 CONFIGINCLS= $(STDW_INCL)
 
 LIBDEPS= libpython.a $(STDW_LIBDEPS) $(AM_LIBDEPS) \
- $(GL_LIBDEPS) $(PANEL_LIBSDEP) $(RL_LIBDEPS)
+	$(GL_LIBDEPS) $(PANEL_LIBSDEP) $(RL_LIBDEPS)
 
 # NB: the ordering of items in LIBS is significant!
 LIBS= libpython.a $(STDW_LIBS) $(AM_LIBS) \
- $(PANEL_LIBS) $(GL_LIBS) $(RL_LIBS) -lm
+	$(PANEL_LIBS) $(GL_LIBS) $(RL_LIBS) -lm
 
 LIBOBJECTS= $(STANDARD_OBJ) $(STDW_OBJ) $(AM_OBJ) $(AUDIO_OBJ) \
- $(GL_OBJ) $(PANEL_OBJ)
+	$(GL_OBJ) $(PANEL_OBJ)
 
 LIBSOURCES= $(STANDARD_SRC) $(STDW_SRC) $(AM_SRC) $(AUDIO_SRC) \
- $(GL_SRC) $(PANEL_SRC)
+	$(GL_SRC) $(PANEL_SRC)
 
 OBJECTS= pythonmain.o config.o
 
 SOURCES= $(LIBSOURCES) pythonmain.c config.c
 
 GENOBJECTS= acceler.o fgetsintr.o grammar1.o \
- intrcheck.o listnode.o node.o parser.o \
- parsetok.o strdup.o tokenizer.o bitset.o \
- firstsets.o grammar.o metagrammar.o pgen.o \
- pgenmain.o printgrammar.o
+	intrcheck.o listnode.o node.o parser.o \
+	parsetok.o strdup.o tokenizer.o bitset.o \
+	firstsets.o grammar.o metagrammar.o pgen.o \
+	pgenmain.o printgrammar.o
 
 GENSOURCES= acceler.c fgetsintr.c grammar1.c \
- intrcheck.c listnode.c node.c parser.c \
- parsetok.c strdup.c tokenizer.c bitset.c \
- firstsets.c grammar.c metagrammar.c pgen.c \
- pgenmain.c printgrammar.c
+	intrcheck.c listnode.c node.c parser.c \
+	parsetok.c strdup.c tokenizer.c bitset.c \
+	firstsets.c grammar.c metagrammar.c pgen.c \
+	pgenmain.c printgrammar.c
 
 
 # Main Targets
 # ============
 
 python: libpython.a $(OBJECTS) $(LIBDEPS) Makefile
- $(CC) $(CFLAGS) $(OBJECTS) $(LIBS) -o @python
- mv @python python
+	$(CC) $(CFLAGS) $(OBJECTS) $(LIBS) -o @python
+	mv @python python
 
 libpython.a: $(LIBOBJECTS)
- -rm -f @lib
- ar cr @lib $(LIBOBJECTS)
- $(RANLIB) @lib
- mv @lib libpython.a
+	-rm -f @lib
+	ar cr @lib $(LIBOBJECTS)
+	$(RANLIB) @lib
+	mv @lib libpython.a
 
 python_gen: $(GENOBJECTS) $(RL_LIBDEPS)
- $(CC) $(CFLAGS) $(GENOBJECTS) $(RL_LIBS) -o python_gen
+	$(CC) $(CFLAGS) $(GENOBJECTS) $(RL_LIBS) -o python_gen
 
 
 # Utility Targets
@@ -405,15 +405,15 @@ python_gen: $(GENOBJECTS) $(RL_LIBDEPS)
 LINTFLAGS= -h
 
 LINTCPPFLAGS= $(CONFIGDEFS) $(CONFIGINCLS) $(SYSVDEF) \
- $(AM_INCL) $(PANEL_INCL)
+	$(AM_INCL) $(PANEL_INCL)
 
 LINT= lint
 
 lint:: $(SOURCES)
- $(LINT) $(LINTFLAGS) $(LINTCPPFLAGS) $(SOURCES)
+	$(LINT) $(LINTFLAGS) $(LINTCPPFLAGS) $(SOURCES)
 
 lint:: $(GENSOURCES)
- $(LINT) $(LINTFLAGS) $(GENSOURCES)
+	$(LINT) $(LINTFLAGS) $(GENSOURCES)
 
 # Generating dependencies is only necessary if you intend to hack Python.
 # You may change $(MKDEP) to your favorite dependency generator (it should
@@ -422,7 +422,7 @@ lint:: $(GENSOURCES)
 MKDEP= mkdep
 
 depend::
- $(MKDEP) $(LINTCPPFLAGS) $(SOURCES) $(GENSOURCES)
+	$(MKDEP) $(LINTCPPFLAGS) $(SOURCES) $(GENSOURCES)
 
 # You may change $(CTAGS) to suit your taste...
 
@@ -431,13 +431,13 @@ CTAGS= ctags -t -w
 HEADERS= *.h
 
 tags: $(SOURCES) $(GENSOURCES) $(HEADERS)
- $(CTAGS) $(SOURCES) $(GENSOURCES) $(HEADERS)
+	$(CTAGS) $(SOURCES) $(GENSOURCES) $(HEADERS)
 
 clean::
- -rm -f *.o core [,#@]*
+	-rm -f *.o core [,#@]*
 
 clobber:: clean
- -rm -f python python_gen libpython.a tags
+	-rm -f python python_gen libpython.a tags
 
 
 # Build Special Objects
@@ -448,37 +448,37 @@ clobber:: clean
 COMPILE= $(CC) -c $(CFLAGS)
 
 amoebamodule.o: amoebamodule.c
- $(COMPILE) $(AM_INCL) $*.c
+	$(COMPILE) $(AM_INCL) $*.c
 
 config.o: config.c Makefile
- $(COMPILE) $(CONFIGDEFS) $(CONFIGINCLS) $*.c
+	$(COMPILE) $(CONFIGDEFS) $(CONFIGINCLS) $*.c
 
 fgetsintr.o: fgetsintr.c
- $(COMPILE) $(SIGTYPEDEF) $*.c
+	$(COMPILE) $(SIGTYPEDEF) $*.c
 
 intrcheck.o: intrcheck.c
- $(COMPILE) $(SIGTYPEDEF) $*.c
+	$(COMPILE) $(SIGTYPEDEF) $*.c
 
 panelmodule.o: panelmodule.c
- $(COMPILE) $(PANEL_INCL) $*.c
+	$(COMPILE) $(PANEL_INCL) $*.c
 
 posixmodule.o: posixmodule.c
- $(COMPILE) $(SYSVDEF) $(NOSYMLINKDEF) $*.c
+	$(COMPILE) $(SYSVDEF) $(NOSYMLINKDEF) $*.c
 
 sc_interpr.o: sc_interpr.c
- $(COMPILE) $(AM_INCL) $*.c
+	$(COMPILE) $(AM_INCL) $*.c
 
 sc_error.o: sc_error.c
- $(COMPILE) $(AM_INCL) $*.c
+	$(COMPILE) $(AM_INCL) $*.c
 
 stdwinmodule.o: stdwinmodule.c
- $(COMPILE) $(STDW_INCL) $*.c
+	$(COMPILE) $(STDW_INCL) $*.c
 
 timemodule.o: timemodule.c
- $(COMPILE) $(SIGTYPEDEF) $(BSDTIMEDEF) $*.c
+	$(COMPILE) $(SIGTYPEDEF) $(BSDTIMEDEF) $*.c
 
 tokenizer.o: tokenizer.c
- $(COMPILE) $(RL_USE) $*.c
+	$(COMPILE) $(RL_USE) $*.c
 
 .PRECIOUS: python libpython.a glmodule.c graminit.c graminit.h
 
@@ -497,8 +497,8 @@ tokenizer.o: tokenizer.c
 # Also ignore the warnings emitted while compiling glmodule.c; it works.
 
 glmodule.c: cstubs cgen
- python cgen <cstubs >@glmodule.c
- mv @glmodule.c glmodule.c
+	python cgen <cstubs >@glmodule.c
+	mv @glmodule.c glmodule.c
 
 # The dependencies for graminit.[ch] are not turned on in the
 # distributed Makefile because the files themselves are distributed.
