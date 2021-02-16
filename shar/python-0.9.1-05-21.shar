@@ -1,0 +1,2528 @@
+: This is a shell archive.
+: Extract with 'sh this_file'.
+:
+: Extract part 01 first since it makes all directories
+echo 'Start of pack.out, part 05 out of 21:'
+if test -s 'demo/sgi/audio_stdwin/README'
+then echo '*** I will not over-write existing file demo/sgi/audio_stdwin/README'
+else
+echo 'x - demo/sgi/audio_stdwin/README'
+sed 's/^X//' > 'demo/sgi/audio_stdwin/README' << 'EOF'
+XThree programs that provide a user interface based upon STDWIN to the
+Xaudio device of the SGI 4D/25. These scripts also demonstrate the power
+Xof a set of window interface classes implemented in Python that simplify
+Xthe construction of all sorts of buttons, etc.
+X
+Xjukebox Browses a directory full of sound samples and lets you
+X play selected ones. (Probably not fully functional, it
+X requires a conversion program.)
+X
+Xrec A tape recorder that lets you record a sound sample,
+X play it back, and save it to a file. Various options to
+X set sampling rate, volume etc. When idle it doubles
+X as a VU meter.
+X
+Xvumeter A VU meter that displays a history of the volume of
+X sound recently sampled from the microphone.
+EOF
+fi
+if test -s 'src/panelmodule.c'
+then echo '*** I will not over-write existing file src/panelmodule.c'
+else
+echo 'x - src/panelmodule.c'
+sed 's/^X//' > 'src/panelmodule.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Panel module.
+X Interface to the NASA Ames "panel library" for the SGI Graphics Library
+X by David Tristram.
+X
+X NOTE: the panel library dumps core if you don't create a window before
+X calling pnl.mkpanel(). A call to gl.winopen() suffices.
+X If you don't want a window to be created, call gl.noport() before
+X gl.winopen().
+X*/
+X
+X#include <gl.h>
+X#include <device.h>
+X#include <panel.h>
+X
+X#include "allobjects.h"
+X#include "import.h"
+X#include "modsupport.h"
+X#include "cgensupport.h"
+X
+X
+X/* The offsetof() macro calculates the offset of a structure member
+X in its structure. Unfortunately this cannot be written down portably,
+X hence it is standardized by ANSI C. For pre-ANSI C compilers,
+X we give a version here that works usually (but watch out!): */
+X
+X#ifndef offsetof
+X#define offsetof(type, member) ( (int) & ((type*)0) -> member )
+X#endif
+X
+X
+X/* Panel objects */
+X
+Xtypedef struct {
+X OB_HEAD
+X Panel *ob_panel;
+X object *ob_paneldict;
+X} panelobject;
+X
+Xextern typeobject Paneltype; /* Really static, forward */
+X
+X#define is_panelobject(v) ((v)->ob_type == &Paneltype)
+X
+X
+X/* Actuator objects */
+X
+Xtypedef struct {
+X OB_HEAD
+X Actuator *ob_actuator;
+X} actuatorobject;
+X
+Xextern typeobject Actuatortype; /* Really static, forward */
+X
+X#define is_actuatorobject(v) ((v)->ob_type == &Actuatortype)
+X
+Xstatic object *newactuatorobject(); /* Forward */
+X
+X
+X/* Since we allow different types of members than the functions from
+X structmember.c, the memberlist stuff is replicated here.
+X (Historically, it originated in this file and later became a generic
+X feature.) */
+X
+X/* An array of memberlist structures defines the name, type and offset
+X of selected members of a C structure. These can be read by
+X panel_getmember() and set by panel_setmember() (except if their
+X READONLY flag is set). The array must be terminated with an entry
+X whose name pointer is NULL. */
+X
+Xstruct memberlist {
+X char *name;
+X int type;
+X int offset;
+X int readonly;
+X};
+X
+X/* Types */
+X#define T_SHORT 0
+X#define T_DEVICE T_SHORT
+X#define T_LONG 1
+X#define T_INT T_LONG
+X#define T_BOOL T_LONG
+X#define T_FLOAT 2
+X#define T_COORD T_FLOAT
+X#define T_STRING 3
+X#define T_FUNC 4
+X#define T_ACTUATOR 5
+X
+X/* Readonly flag */
+X#define READONLY 1
+X#define RO READONLY /* Shorthand */
+X
+Xstatic object *
+Xpanel_getmember(addr, mlist, name)
+X char *addr;
+X struct memberlist *mlist;
+X char *name;
+X{
+X object *v;
+X register struct memberlist *l;
+X
+X for (l = mlist; l->name != NULL; l++) {
+X if (strcmp(l->name, name) == 0) {
+X addr += l->offset;
+X switch (l->type) {
+X case T_SHORT:
+X v = newintobject((long) *(short*)addr);
+X break;
+X case T_LONG:
+X v = newintobject(*(long*)addr);
+X break;
+X case T_FLOAT:
+X v = newfloatobject(*(float*)addr);
+X break;
+X case T_STRING:
+X if (*(char**)addr == NULL) {
+X INCREF(None);
+X v = None;
+X }
+X else
+X v = newstringobject(*(char**)addr);
+X break;
+X case T_ACTUATOR:
+X v = newactuatorobject(*(Actuator**)addr);
+X break;
+X default:
+X err_badarg();
+X v = NULL;
+X }
+X return v;
+X }
+X }
+X err_setstr(NameError, name);
+X return NULL;
+X}
+X
+X/* Attempt to set a member. Return: 0 if OK; 1 if not found; -1 if error */
+X
+Xstatic int
+Xpanel_setmember(addr, mlist, name, v)
+X char *addr;
+X struct memberlist *mlist;
+X char *name;
+X object *v;
+X{
+X register struct memberlist *l;
+X
+X for (l = mlist; l->name != NULL; l++) {
+X if (strcmp(l->name, name) == 0) {
+X if (l->readonly) {
+X err_setstr(TypeError, "read-only member");
+X return -1;
+X }
+X addr += l->offset;
+X switch (l->type) {
+X case T_SHORT:
+X if (!is_intobject(v)) {
+X err_setstr(TypeError, "int expected");
+X return -1;
+X }
+X *(short*)addr = getintvalue(v);
+X break;
+X case T_LONG:
+X if (!is_intobject(v)) {
+X err_setstr(TypeError, "int expected");
+X return -1;
+X }
+X *(long*)addr = getintvalue(v);
+X break;
+X case T_FLOAT:
+X if (is_intobject(v))
+X *(float*)addr = getintvalue(v);
+X else if (is_floatobject(v))
+X *(float*)addr = getfloatvalue(v);
+X else {
+X err_setstr(TypeError,"float expected");
+X return -1;
+X }
+X break;
+X case T_STRING:
+X /* XXX Should free(*(char**)addr) here
+X but it's dangerous since we don't know
+X if we set the label ourselves */
+X if (v == None)
+X *(char**)addr = NULL;
+X else if (!is_stringobject(v)) {
+X err_setstr(TypeError,
+X "string expected");
+X return -1;
+X }
+X else
+X *(char**)addr =
+X strdup(getstringvalue(v));
+X break;
+X case T_ACTUATOR:
+X if (v == None)
+X *(Actuator**)addr = NULL;
+X else if (!is_actuatorobject(v)) {
+X err_setstr(TypeError,
+X "actuator expected");
+X return -1;
+X }
+X else
+X *(Actuator**)addr =
+X ((actuatorobject *)v)->ob_actuator;
+X break;
+X default:
+X err_setstr(SystemError, "unknown member type");
+X return -1;
+X }
+X return 0; /* Found it */
+X }
+X }
+X
+X return 1; /* Not found */
+X}
+X
+X
+X/* Panel object methods */
+X
+Xstatic object *
+Xpanel_addpanel(self, args)
+X panelobject *self;
+X object *args;
+X{
+X if (!getnoarg(args))
+X return NULL;
+X pnl_addpanel(self->ob_panel);
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xpanel_endgroup(self, args)
+X panelobject *self;
+X object *args;
+X{
+X if (!getnoarg(args))
+X return NULL;
+X pnl_endgroup(self->ob_panel);
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xpanel_fixpanel(self, args)
+X panelobject *self;
+X object *args;
+X{
+X if (!getnoarg(args))
+X return NULL;
+X pnl_fixpanel(self->ob_panel);
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xpanel_strwidth(self, args)
+X panelobject *self;
+X object *args;
+X{
+X object *v;
+X double width;
+X if (!getstrarg(args, &v))
+X return NULL;
+X width = pnl_strwidth(self->ob_panel, getstringvalue(v));
+X return newfloatobject(width);
+X}
+X
+Xstatic struct methodlist panel_methods[] = {
+X {"addpanel", panel_addpanel},
+X {"endgroup", panel_endgroup},
+X {"fixpanel", panel_fixpanel},
+X {"strwidth", panel_strwidth},
+X {NULL, NULL} /* sentinel */
+X};
+X
+Xstatic object *
+Xnewpanelobject()
+X{
+X panelobject *p;
+X p = NEWOBJ(panelobject, &Paneltype);
+X if (p == NULL)
+X return NULL;
+X p->ob_panel = pnl_mkpanel();
+X if ((p->ob_paneldict = newdictobject()) == NULL) {
+X DECREF(p);
+X return NULL;
+X }
+X return (object *)p;
+X}
+X
+Xstatic void
+Xpanel_dealloc(p)
+X panelobject *p;
+X{
+X pnl_delpanel(p->ob_panel);
+X if (p->ob_paneldict != NULL)
+X DECREF(p->ob_paneldict);
+X DEL(p);
+X}
+X
+X
+X/* Table of panel members */
+X
+X#define PANOFF(member) offsetof(Panel, member)
+X
+Xstatic struct memberlist panel_memberlist[] = {
+X {"id", T_SHORT, PANOFF(id), READONLY},
+X {"a", T_ACTUATOR, PANOFF(a), READONLY},
+X {"al", T_ACTUATOR, PANOFF(al), READONLY},
+X {"lastgroup", T_ACTUATOR, PANOFF(lastgroup), READONLY},
+X
+X {"active", T_BOOL, PANOFF(active)},
+X {"selectable", T_BOOL, PANOFF(selectable)},
+X
+X {"x", T_LONG, PANOFF(x)},
+X {"y", T_LONG, PANOFF(y)},
+X {"w", T_LONG, PANOFF(w)},
+X {"h", T_LONG, PANOFF(h)},
+X
+X {"minx", T_COORD, PANOFF(minx)},
+X {"maxx", T_COORD, PANOFF(maxx)},
+X {"miny", T_COORD, PANOFF(miny)},
+X {"maxy", T_COORD, PANOFF(maxy)},
+X
+X {"cw", T_COORD, PANOFF(cw)},
+X {"ch", T_COORD, PANOFF(ch)},
+X
+X {"gid", T_LONG, PANOFF(gid), READONLY},
+X {"usergid", T_LONG, PANOFF(usergid), READONLY},
+X
+X {"vobj", T_LONG, PANOFF(vobj), READONLY},
+X {"ppu", T_FLOAT, PANOFF(ppu)},
+X
+X {"label", T_STRING, PANOFF(label)},
+X
+X /* Panel callbacks are not supported */
+X
+X {"visible", T_BOOL, PANOFF(visible)},
+X {"somedirty", T_INT, PANOFF(somedirty)},
+X {"dirtycnt", T_INT, PANOFF(dirtycnt)},
+X
+X /* T_PANEL is not supported */
+X /*
+X {"next", T_PANEL, PANOFF(next), READONLY},
+X */
+X
+X {NULL, 0, 0} /* Sentinel */
+X};
+X
+Xstatic object *
+Xpanel_getattr(p, name)
+X panelobject *p;
+X char *name;
+X{
+X object *v;
+X
+X v = dictlookup(p->ob_paneldict, name);
+X if (v != NULL) {
+X INCREF(v);
+X return v;
+X }
+X
+X v = findmethod(panel_methods, (object *)p, name);
+X if (v != NULL)
+X return v;
+X err_clear();
+X return panel_getmember((char *)p->ob_panel, panel_memberlist, name);
+X}
+X
+Xstatic int
+Xpanel_setattr(p, name, v)
+X panelobject *p;
+X char *name;
+X object *v;
+X{
+X int err;
+X
+X /* We don't allow deletion of attributes */
+X if (v == NULL) {
+X err_setstr(TypeError, "read-only panel attribute");
+X return -1;
+X }
+X err = panel_setmember((char *)p->ob_panel, panel_memberlist, name, v);
+X if (err != 1)
+X return err;
+X return dictinsert(p->ob_paneldict, name, v);
+X}
+X
+Xstatic typeobject Paneltype = {
+X OB_HEAD_INIT(&Typetype)
+X 0, /*ob_size*/
+X "panel", /*tp_name*/
+X sizeof(panelobject), /*tp_size*/
+X 0, /*tp_itemsize*/
+X /* methods */
+X panel_dealloc, /*tp_dealloc*/
+X 0, /*tp_print*/
+X panel_getattr, /*tp_getattr*/
+X panel_setattr, /*tp_setattr*/
+X 0, /*tp_compare*/
+X 0, /*tp_repr*/
+X};
+X
+X
+X/* Descriptions of actuator-specific data members */
+X
+Xstruct memberlist slider_spec[] = {
+X {"mode", T_INT, offsetof(Slider, mode)},
+X {"finefactor", T_FLOAT, offsetof(Slider, finefactor)},
+X {"differentialfactor",
+X T_FLOAT, offsetof(Slider, differentialfactor)},
+X {"valsave", T_FLOAT, offsetof(Slider, valsave), RO},
+X {"wsave", T_COORD, offsetof(Slider, wsave)},
+X {"bh", T_COORD, offsetof(Slider, bh)},
+X {NULL}
+X};
+X
+X#define palette_spec slider_spec
+X
+Xstruct memberlist puck_spec[] = {
+X /* Actuators already have members x and y, so the Puck's x and y
+X have different names */
+X {"puck_x", T_FLOAT, offsetof(Puck, x)},
+X {"puck_y", T_FLOAT, offsetof(Puck, y)},
+X {NULL}
+X};
+X
+Xstruct memberlist dial_spec[] = {
+X {"mode", T_INT, offsetof(Dial, mode)},
+X {"finefactor", T_FLOAT, offsetof(Dial, finefactor)},
+X {"valsave", T_FLOAT, offsetof(Dial, valsave), RO},
+X {"wsave", T_COORD, offsetof(Dial, wsave)},
+X {"winds", T_FLOAT, offsetof(Dial, winds)},
+X {NULL}
+X};
+X
+Xstruct memberlist slideroid_spec[] = {
+X {"mode", T_INT, offsetof(Slideroid, mode)},
+X {"finemode", T_BOOL, offsetof(Slideroid, finemode)},
+X {"resetmode", T_BOOL, offsetof(Slideroid, resetmode)},
+X /* XXX Can't do resettarget (pointer to float) */
+X /* XXX This makes resetval pretty useless... */
+X /*
+X {"resetval", T_FLOAT, offsetof(Slideroid, resetval)},
+X */
+X {"valsave", T_FLOAT, offsetof(Slideroid, valsave), RO},
+X {"wsave", T_COORD, offsetof(Slideroid, wsave)},
+X {NULL}
+X};
+X
+Xstruct memberlist stripchart_spec[] = {
+X {"firstpt", T_INT, offsetof(Stripchart, firstpt), RO},
+X {"lastpt", T_INT, offsetof(Stripchart, lastpt), RO},
+X {"Bind_Low", T_BOOL, offsetof(Stripchart, Bind_Low)},
+X {"Bind_High", T_BOOL, offsetof(Stripchart, Bind_High)},
+X /* XXX Can't do y (array of floats) */
+X {"lowlabel", T_ACTUATOR, offsetof(Stripchart, lowlabel), RO},
+X {"highlabel", T_ACTUATOR, offsetof(Stripchart, highlabel), RO},
+X {NULL}
+X};
+X
+Xstruct memberlist typein_spec[] = {
+X /* Note: these should be readonly after the actuator is added
+X to a panel */
+X {"str", T_STRING, offsetof(Typein, str)},
+X {"len", T_INT, offsetof(Typein, len)},
+X {NULL}
+X};
+X
+Xstruct memberlist typeout_spec[] = {
+X {"mode", T_INT, offsetof(Typeout, mode)},
+X /* XXX The buffer is managed by the actuator; but how do we
+X add text? */
+X {"buf", T_STRING, offsetof(Typeout, buf), READONLY},
+X {"delimstr", T_STRING, offsetof(Typeout, delimstr)},
+X {"start", T_INT, offsetof(Typeout, start)},
+X {"dot", T_INT, offsetof(Typeout, dot)},
+X {"mark", T_INT, offsetof(Typeout, mark)},
+X {"col", T_INT, offsetof(Typeout, col)},
+X {"lin", T_INT, offsetof(Typeout, lin)},
+X {"len", T_INT, offsetof(Typeout, len)},
+X {"size", T_INT, offsetof(Typeout, size)},
+X {NULL}
+X};
+X
+Xstruct memberlist mouse_spec[] = {
+X /* Actuators already have members x and y, so the Mouse's x and y
+X have different names */
+X {"mouse_x", T_FLOAT, offsetof(Mouse, x)},
+X {"mouse_y", T_FLOAT, offsetof(Mouse, y)},
+X {NULL}
+X};
+X
+X#define MULOFF(member) offsetof(Multislider, member)
+X
+Xstruct memberlist multislider_spec[] = {
+X {"mode", T_INT, MULOFF(mode)},
+X {"n", T_INT, MULOFF(n)},
+X {"finefactor", T_FLOAT, MULOFF(finefactor)},
+X {"wsave", T_COORD, MULOFF(wsave)},
+X {"sa", T_ACTUATOR, MULOFF(sa)},
+X {"bh", T_COORD, MULOFF(bh)},
+X {"clrx", T_COORD, MULOFF(clrx)},
+X {"clry", T_COORD, MULOFF(clry)},
+X {"clrw", T_COORD, MULOFF(clrw)},
+X {"clrh", T_COORD, MULOFF(clrh)},
+X /* XXX acttype? */
+X {NULL}
+X};
+X
+X/* XXX Still to do:
+X Frame
+X Icon
+X Cycle
+X Scroll
+X Menu
+X*/
+X
+X/* List of known actuator initializer functions */
+X
+Xstruct {
+X char *name;
+X void (*func)();
+X struct memberlist *spec;
+X} initializerlist[] = {
+X {"analog_bar", pnl_analog_bar},
+X {"analog_meter", pnl_analog_meter},
+X {"button", pnl_button},
+X {"cycle", pnl_cycle},
+X /* Doesn't exist: */
+X/* {"dhslider", pnl_dhslider, slider_spec}, */
+X {"dial", pnl_dial, dial_spec},
+X {"down_arrow_button", pnl_down_arrow_button},
+X {"down_double_arrow_button", pnl_down_double_arrow_button},
+X {"dvslider", pnl_dvslider, slider_spec},
+X {"filled_hslider", pnl_filled_hslider, slider_spec},
+X {"filled_slider", pnl_filled_slider, slider_spec},
+X {"filled_vslider", pnl_filled_vslider, slider_spec},
+X {"floating_puck", pnl_floating_puck, puck_spec},
+X {"frame", pnl_frame},
+X {"graphframe", pnl_graphframe},
+X {"hmultislider", pnl_hmultislider, multislider_spec},
+X {"hmultislider_bar", pnl_hmultislider_bar},
+X {"hmultislider_open_bar", pnl_hmultislider_open_bar},
+X {"hpalette", pnl_hpalette, palette_spec},
+X {"hslider", pnl_hslider, slider_spec},
+X {"icon", pnl_icon},
+X {"icon_menu", pnl_icon_menu},
+X {"label", pnl_label},
+X {"left_arrow_button", pnl_left_arrow_button},
+X {"left_double_arrow_button", pnl_left_double_arrow_button},
+X {"menu", pnl_menu},
+X {"menu_item", pnl_menu_item},
+X {"meter", pnl_meter},
+X {"mouse", pnl_mouse, mouse_spec},
+X {"multislider", pnl_multislider, multislider_spec},
+X {"multislider_bar", pnl_multislider_bar},
+X {"multislider_open_bar", pnl_multislider_open_bar},
+X {"palette", pnl_palette, palette_spec},
+X {"puck", pnl_puck, puck_spec},
+X {"radio_button", pnl_radio_button},
+X {"radio_check_button", pnl_radio_check_button},
+X {"right_arrow_button", pnl_right_arrow_button},
+X {"right_double_arrow_button", pnl_right_double_arrow_button},
+X {"rubber_puck", pnl_rubber_puck, puck_spec},
+X {"scale_chart", pnl_scale_chart, stripchart_spec},
+X {"scroll", pnl_scroll},
+X {"signal", pnl_signal},
+X {"slider", pnl_slider, slider_spec},
+X {"slideroid", pnl_slideroid, slideroid_spec},
+X {"strip_chart", pnl_strip_chart, stripchart_spec},
+X {"sub_menu", pnl_sub_menu},
+X {"toggle_button", pnl_toggle_button},
+X {"typein", pnl_typein, typein_spec},
+X {"typeout", pnl_typeout, typeout_spec},
+X {"up_arrow_button", pnl_up_arrow_button},
+X {"up_double_arrow_button", pnl_up_double_arrow_button},
+X {"viewframe", pnl_viewframe},
+X {"vmultislider", pnl_vmultislider, multislider_spec},
+X {"vmultislider_bar", pnl_vmultislider_bar},
+X {"vmultislider_open_bar", pnl_vmultislider_open_bar},
+X {"vpalette", pnl_vpalette, palette_spec},
+X {"vslider", pnl_vslider, slider_spec},
+X {"wide_button", pnl_wide_button},
+X {NULL, NULL} /* Sentinel */
+X};
+X
+X
+X/* Pseudo downfunc etc. */
+X
+Xstatic Actuator *down_pend, *active_pend, *up_pend;
+X
+Xstatic void
+Xdownfunc(a)
+X Actuator *a;
+X{
+X if (down_pend == NULL)
+X down_pend = a;
+X}
+X
+Xstatic void
+Xactivefunc(a)
+X Actuator *a;
+X{
+X if (active_pend == NULL)
+X active_pend = a;
+X}
+X
+Xstatic void
+Xupfunc(a)
+X Actuator *a;
+X{
+X if (up_pend == NULL)
+X up_pend = a;
+X}
+X
+X
+X/* Lay-out for the user data */
+X
+Xstruct userdata {
+X object *dict; /* Dictionary object for additional attributes */
+X struct memberlist *spec; /* Actuator-specific members */
+X};
+X
+X
+X/* Create a new actuator; the actuator type is given as a string */
+X
+Xstatic Actuator *
+Xmakeactuator(name)
+X char *name;
+X{
+X Actuator *act;
+X void (*initializer)() = NULL;
+X int i;
+X struct userdata *u;
+X for (i = 0; initializerlist[i].name != NULL; i++) {
+X if (strcmp(initializerlist[i].name, name) == 0) {
+X initializer = initializerlist[i].func;
+X break;
+X }
+X }
+X if (initializerlist[i].name == NULL) {
+X err_badarg();
+X return NULL;
+X }
+X u = NEW(struct userdata, 1);
+X if (u == NULL) {
+X err_nomem();
+X return NULL;
+X }
+X u->dict = NULL;
+X u->spec = initializerlist[i].spec;
+X act = pnl_mkact(initializer);
+X act->u = (char *)u;
+X act->downfunc = downfunc;
+X act->activefunc = activefunc;
+X act->upfunc = upfunc;
+X return act;
+X}
+X
+X
+X/* Actuator objects methods */
+X
+Xstatic object *
+Xactuator_addact(self, args)
+X actuatorobject *self;
+X object *args;
+X{
+X Panel *p;
+X if (!is_panelobject(args)) {
+X err_badarg();
+X return NULL;
+X }
+X p = ((panelobject *)args) -> ob_panel;
+X pnl_addact(self->ob_actuator, p);
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xactuator_addsubact(self, args)
+X actuatorobject *self;
+X object *args;
+X{
+X Actuator *a;
+X if (!is_actuatorobject(args)) {
+X err_badarg();
+X return NULL;
+X }
+X a = ((actuatorobject *)args) -> ob_actuator;
+X pnl_addsubact(self->ob_actuator, a);
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xactuator_delact(self, args)
+X actuatorobject *self;
+X object *args;
+X{
+X Panel *p;
+X if (!getnoarg(args))
+X return NULL;
+X pnl_delact(self->ob_actuator);
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xactuator_fixact(self, args)
+X actuatorobject *self;
+X object *args;
+X{
+X Panel *p;
+X if (!getnoarg(args))
+X return NULL;
+X pnl_fixact(self->ob_actuator);
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xactuator_tprint(self, args)
+X actuatorobject *self;
+X object *args;
+X{
+X object *str;
+X if (self->ob_actuator->type != PNL_TYPEOUT) {
+X err_setstr(TypeError, "tprint for non-typeout panel");
+X return NULL;
+X }
+X if (!getstrarg(args, &str))
+X return NULL;
+X tprint(self->ob_actuator, getstringvalue(str));
+X /* XXX Can't turn tprint's errors into exceptions, sorry */
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic struct methodlist actuator_methods[] = {
+X {"addact", actuator_addact},
+X {"addsubact", actuator_addsubact},
+X {"delact", actuator_delact},
+X {"fixact", actuator_fixact},
+X {"tprint", actuator_tprint},
+X {NULL, NULL} /* sentinel */
+X};
+X
+Xstatic object *
+Xnewactuatorobject(act)
+X Actuator *act;
+X{
+X actuatorobject *a;
+X if (act == NULL) {
+X INCREF(None);
+X return None;
+X }
+X a = NEWOBJ(actuatorobject, &Actuatortype);
+X if (a == NULL)
+X return NULL;
+X a->ob_actuator = act;
+X return (object *)a;
+X}
+X
+Xstatic void
+Xactuator_dealloc(a)
+X actuatorobject *a;
+X{
+X /* Do NOT delete the actuator; most actuator objects are created
+X to hold a temporary reference to an actuator, like one gotten
+X from pnl_dopanel(). */
+X
+X DEL(a);
+X}
+X
+X
+X/* Table of actuator members */
+X
+X#define ACTOFF(member) offsetof(Actuator, member)
+X
+Xstruct memberlist act_memberlist[] = {
+X {"id", T_SHORT, ACTOFF(id), READONLY},
+X
+X /* T_PANEL is not defined */
+X /*
+X {"p", T_PANEL, ACTOFF(p), READONLY},
+X */
+X
+X {"pa", T_ACTUATOR, ACTOFF(pa), READONLY},
+X {"ca", T_ACTUATOR, ACTOFF(ca), READONLY},
+X {"al", T_ACTUATOR, ACTOFF(al), READONLY},
+X {"na", T_INT, ACTOFF(na), READONLY},
+X {"type", T_INT, ACTOFF(type), READONLY},
+X {"active", T_BOOL, ACTOFF(active)},
+X
+X {"x", T_COORD, ACTOFF(x)},
+X {"y", T_COORD, ACTOFF(y)},
+X {"w", T_COORD, ACTOFF(w)},
+X {"h", T_COORD, ACTOFF(h)},
+X
+X {"lx", T_COORD, ACTOFF(lx)},
+X {"ly", T_COORD, ACTOFF(ly)},
+X {"lw", T_COORD, ACTOFF(lw)},
+X {"lh", T_COORD, ACTOFF(lh)},
+X {"ld", T_COORD, ACTOFF(ld)},
+X
+X {"val", T_FLOAT, ACTOFF(val)},
+X {"extval", T_FLOAT, ACTOFF(extval)},
+X {"initval", T_FLOAT, ACTOFF(initval)},
+X {"maxval", T_FLOAT, ACTOFF(maxval)},
+X {"minval", T_FLOAT, ACTOFF(minval)},
+X {"scalefactor", T_FLOAT, ACTOFF(scalefactor)},
+X
+X {"label", T_STRING, ACTOFF(label)},
+X {"key", T_DEVICE, ACTOFF(key)},
+X {"labeltype", T_INT, ACTOFF(labeltype)},
+X
+X /* Internal callbacks are not supported;
+X user callbacks are treated special! */
+X
+X {"dirtycnt", T_INT, ACTOFF(dirtycnt)},
+X
+X /* members u and data are accessed differently */
+X
+X {"automatic", T_BOOL, ACTOFF(automatic)},
+X {"selectable", T_BOOL, ACTOFF(selectable)},
+X {"visible", T_BOOL, ACTOFF(visible)},
+X {"beveled", T_BOOL, ACTOFF(beveled)},
+X
+X {"group", T_ACTUATOR, ACTOFF(group), READONLY},
+X {"next", T_ACTUATOR, ACTOFF(next), READONLY},
+X
+X {NULL, 0, 0} /* Sentinel */
+X};
+X
+X
+X/* Potential name conflicts between attributes are solved as follows.
+X - Actuator-specific attributes always override generic attributes.
+X - When reading, the dictionary has overrides everything else;
+X when writing, everything else overrides the dictionary.
+X - When reading, methods are tried last.
+X*/
+X
+Xstatic object *
+Xactuator_getattr(a, name)
+X actuatorobject *a;
+X char *name;
+X{
+X Actuator *act = a->ob_actuator;
+X struct userdata *u = (struct userdata *) act->u;
+X object *v;
+X
+X if (u != NULL) {
+X /* 1. Try the dictionary */
+X if (u->dict != NULL) {
+X v = dictlookup(u->dict, name);
+X if (v != NULL) {
+X INCREF(v);
+X return v;
+X }
+X }
+X
+X /* 2. Try actuator-specific attributes */
+X if (u->spec != NULL) {
+X v = panel_getmember(act->data, u->spec, name);
+X if (v != NULL)
+X return v;
+X err_clear();
+X }
+X }
+X
+X /* 3. Try generic actuator attributes */
+X v = panel_getmember((char *)act, act_memberlist, name);
+X if (v != NULL)
+X return v;
+X
+X /* 4. Try methods */
+X err_clear();
+X return findmethod(actuator_methods, (object *)a, name);
+X}
+X
+Xstatic int
+Xactuator_setattr(a, name, v)
+X actuatorobject *a;
+X char *name;
+X object *v;
+X{
+X Actuator *act = a->ob_actuator;
+X struct userdata *u = (struct userdata *) act->u;
+X int err;
+X
+X /* 0. We don't allow deletion of attributes */
+X if (v == NULL) {
+X err_setstr(TypeError, "read-only actuator attribute");
+X return -1;
+X }
+X
+X /* 1. Try actuator-specific attributes */
+X if (u != NULL && u->spec != NULL) {
+X err = panel_setmember(act->data, u->spec, name, v);
+X if (err != 1)
+X return err;
+X }
+X
+X /* 2. Try generic actuator attributes */
+X err = panel_setmember((char *)act, act_memberlist, name, v);
+X if (err != 1)
+X return err;
+X
+X /* 3. Try the dictionary */
+X if (u != NULL) {
+X if (u->dict == NULL && (u->dict = newdictobject()) == NULL)
+X return NULL;
+X return dictinsert(u->dict, name, v);
+X }
+X
+X err_setstr(NameError, name);
+X return -1;
+X}
+X
+Xstatic int
+Xactuator_compare(v, w)
+X actuatorobject *v, *w;
+X{
+X long i = (long)v->ob_actuator;
+X long j = (long)w->ob_actuator;
+X return (i < j) ? -1 : (i > j) ? 1 : 0;
+X}
+X
+Xstatic typeobject Actuatortype = {
+X OB_HEAD_INIT(&Typetype)
+X 0, /*ob_size*/
+X "actuator", /*tp_name*/
+X sizeof(actuatorobject), /*tp_size*/
+X 0, /*tp_itemsize*/
+X /* methods */
+X actuator_dealloc, /*tp_dealloc*/
+X 0, /*tp_print*/
+X actuator_getattr, /*tp_getattr*/
+X actuator_setattr, /*tp_setattr*/
+X actuator_compare, /*tp_compare*/
+X 0, /*tp_repr*/
+X};
+X
+X
+X/* The panel module itself */
+X
+Xstatic object *
+Xmodule_mkpanel(self, args)
+X object *self;
+X object *args;
+X{
+X if (!getnoarg(args))
+X return NULL;
+X return newpanelobject();
+X}
+X
+Xstatic object *
+Xmodule_mkact(self, args)
+X object *self;
+X object *args;
+X{
+X object *v;
+X Actuator *a;
+X if (!getstrarg(args, &v))
+X return NULL;
+X a = makeactuator(getstringvalue(v));
+X if (a == NULL)
+X return NULL;
+X return newactuatorobject(a);
+X}
+X
+Xstatic object *
+Xmodule_dopanel(self, args)
+X object *self;
+X object *args;
+X{
+X Actuator *a;
+X object *v, *w;
+X if (!getnoarg(args))
+X return NULL;
+X a = pnl_dopanel();
+X v = newtupleobject(4);
+X if (v == NULL)
+X return NULL;
+X settupleitem(v, 0, newactuatorobject(a));
+X settupleitem(v, 1, newactuatorobject(down_pend));
+X settupleitem(v, 2, newactuatorobject(active_pend));
+X settupleitem(v, 3, newactuatorobject(up_pend));
+X down_pend = active_pend = up_pend = NULL;
+X return v;
+X}
+X
+Xstatic object *
+Xmodule_drawpanel(self, args)
+X object *self;
+X object *args;
+X{
+X if (!getnoarg(args))
+X return NULL;
+X pnl_drawpanel();
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xmodule_needredraw(self, args)
+X object *self;
+X object *args;
+X{
+X if (!getnoarg(args))
+X return NULL;
+X pnl_needredraw();
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xmodule_userredraw(self, args)
+X object *self;
+X object *args;
+X{
+X short wid;
+X if (!getnoarg(args))
+X return NULL;
+X wid = pnl_userredraw();
+X return newintobject((long)wid);
+X}
+X
+Xstatic object *
+Xmodule_block(self, args)
+X object *self;
+X object *args;
+X{
+X int flag;
+X if (!getintarg(args, &flag))
+X return NULL;
+X pnl_block = flag;
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic struct methodlist module_methods[] = {
+X {"block", module_block},
+X {"dopanel", module_dopanel},
+X {"drawpanel", module_drawpanel},
+X {"mkpanel", module_mkpanel},
+X {"mkact", module_mkact},
+X {"needredraw", module_needredraw},
+X {"userredraw", module_userredraw},
+X {NULL, NULL} /* sentinel */
+X};
+X
+Xvoid
+Xinitpanel()
+X{
+X /* Setting pnl_block to 1 would greatly reduce the CPU usage
+X of an idle application. Unfortunately it also breaks our
+X little hacks to get callback functions in Python called.
+X So we clear pnl_block here. You can set/clear pnl_block
+X from Python using pnl.block(flag). It works if you have
+X no upfuncs. */
+X pnl_block = 0;
+X initmodule("pnl", module_methods);
+X}
+EOF
+fi
+if test -s 'src/regexp.c'
+then echo '*** I will not over-write existing file src/regexp.c'
+else
+echo 'x - src/regexp.c'
+sed 's/^X//' > 'src/regexp.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/*
+X * regcomp and regexec -- regsub and regerror are elsewhere
+X *
+X * Copyright (c) 1986 by University of Toronto.
+X * Written by Henry Spencer. Not derived from licensed software.
+X#ifdef MULTILINE
+X * Changed by Guido van Rossum, CWI, Amsterdam
+X * for multi-line support.
+X#endif
+X *
+X * Permission is granted to anyone to use this software for any
+X * purpose on any computer system, and to redistribute it freely,
+X * subject to the following restrictions:
+X *
+X * 1. The author is not responsible for the consequences of use of
+X * this software, no matter how awful, even if they arise
+X * from defects in it.
+X *
+X * 2. The origin of this software must not be misrepresented, either
+X * by explicit claim or by omission.
+X *
+X * 3. Altered versions must be plainly marked as such, and must not
+X * be misrepresented as being the original software.
+X *
+X * Beware that some of this code is subtly aware of the way operator
+X * precedence is structured in regular expressions. Serious changes in
+X * regular-expression syntax might require a total rethink.
+X */
+X#include <stdio.h>
+X#include "PROTO.h"
+X#include "malloc.h"
+X#undef ANY /* Conflicting identifier defined in malloc.h */
+X#include <string.h> /* XXX Remove if not found */
+X#include "regexp.h"
+X#include "regmagic.h"
+X
+X#ifdef MULTILINE
+X/*
+X * Defining MULTILINE turns on the following changes in the semantics:
+X * 1. The '.' operator matches all characters except a newline.
+X * 2. The '^' operator matches at the beginning of the string or after
+X * a newline. (Anchored matches are retried after each newline.)
+X * 3. The '$' operator matches at the end of the string or before
+X * a newline.
+X * 4. A '\' followed by an 'n' matches a newline. (This is an
+X * unfortunate exception to the rule that '\' followed by a
+X * character matches that character...)
+X *
+X * Also, there is a new function reglexec(prog, string, offset)
+X * which searches for a match starting at 'string+offset';
+X * it differs from regexec(prog, string+offset) in assuming
+X * that the line begins at 'string'.
+X */
+X#endif
+X
+X/*
+X * The "internal use only" fields in regexp.h are present to pass info from
+X * compile to execute that permits the execute phase to run lots faster on
+X * simple cases. They are:
+X *
+X * regstart char that must begin a match; '\0' if none obvious
+X * reganch is the match anchored (at beginning-of-line only)?
+X * regmust string (pointer into program) that match must include, or NULL
+X * regmlen length of regmust string
+X *
+X * Regstart and reganch permit very fast decisions on suitable starting points
+X * for a match, cutting down the work a lot. Regmust permits fast rejection
+X * of lines that cannot possibly match. The regmust tests are costly enough
+X * that regcomp() supplies a regmust only if the r.e. contains something
+X * potentially expensive (at present, the only such thing detected is * or +
+X * at the start of the r.e., which can involve a lot of backup). Regmlen is
+X * supplied because the test in regexec() needs it and regcomp() is computing
+X * it anyway.
+X */
+X
+X/*
+X * Structure for regexp "program". This is essentially a linear encoding
+X * of a nondeterministic finite-state machine (aka syntax charts or
+X * "railroad normal form" in parsing technology). Each node is an opcode
+X * plus a "next" pointer, possibly plus an operand. "Next" pointers of
+X * all nodes except BRANCH implement concatenation; a "next" pointer with
+X * a BRANCH on both ends of it is connecting two alternatives. (Here we
+X * have one of the subtle syntax dependencies: an individual BRANCH (as
+X * opposed to a collection of them) is never concatenated with anything
+X * because of operator precedence.) The operand of some types of node is
+X * a literal string; for others, it is a node leading into a sub-FSM. In
+X * particular, the operand of a BRANCH node is the first node of the branch.
+X * (NB this is *not* a tree structure: the tail of the branch connects
+X * to the thing following the set of BRANCHes.) The opcodes are:
+X */
+X
+X/* definition number opnd? meaning */
+X#define END 0 /* no End of program. */
+X#define BOL 1 /* no Match "" at beginning of line. */
+X#define EOL 2 /* no Match "" at end of line. */
+X#define ANY 3 /* no Match any one character. */
+X#define ANYOF 4 /* str Match any character in this string. */
+X#define ANYBUT 5 /* str Match any character not in this string. */
+X#define BRANCH 6 /* node Match this alternative, or the next... */
+X#define BACK 7 /* no Match "", "next" ptr points backward. */
+X#define EXACTLY 8 /* str Match this string. */
+X#define NOTHING 9 /* no Match empty string. */
+X#define STAR 10 /* node Match this (simple) thing 0 or more times. */
+X#define PLUS 11 /* node Match this (simple) thing 1 or more times. */
+X#define OPEN 20 /* no Mark this point in input as start of #n. */
+X /* OPEN+1 is number 1, etc. */
+X#define CLOSE 30 /* no Analogous to OPEN. */
+X
+X/*
+X * Opcode notes:
+X *
+X * BRANCH The set of branches constituting a single choice are hooked
+X * together with their "next" pointers, since precedence prevents
+X * anything being concatenated to any individual branch. The
+X * "next" pointer of the last BRANCH in a choice points to the
+X * thing following the whole choice. This is also where the
+X * final "next" pointer of each individual branch points; each
+X * branch starts with the operand node of a BRANCH node.
+X *
+X * BACK Normal "next" pointers all implicitly point forward; BACK
+X * exists to make loop structures possible.
+X *
+X * STAR,PLUS '?', and complex '*' and '+', are implemented as circular
+X * BRANCH structures using BACK. Simple cases (one character
+X * per match) are implemented with STAR and PLUS for speed
+X * and to minimize recursive plunges.
+X *
+X * OPEN,CLOSE ...are numbered at compile time.
+X */
+X
+X/*
+X * A node is one char of opcode followed by two chars of "next" pointer.
+X * "Next" pointers are stored as two 8-bit pieces, high order first. The
+X * value is a positive offset from the opcode of the node containing it.
+X * An operand, if any, simply follows the node. (Note that much of the
+X * code generation knows about this implicit relationship.)
+X *
+X * Using two bytes for the "next" pointer is vast overkill for most things,
+X * but allows patterns to get big without disasters.
+X */
+X#define OP(p) (*(p))
+X#define NEXT(p) (((*((p)+1)&0377)<<8) + (*((p)+2)&0377))
+X#define OPERAND(p) ((p) + 3)
+X
+X/*
+X * See regmagic.h for one further detail of program structure.
+X */
+X
+X
+X/*
+X * Utility definitions.
+X */
+X#ifndef CHARBITS
+X#define UCHARAT(p) ((int)*(unsigned char *)(p))
+X#else
+X#define UCHARAT(p) ((int)*(p)&CHARBITS)
+X#endif
+X
+X#define FAIL(m) { regerror(m); return(NULL); }
+X#define ISMULT(c) ((c) == '*' || (c) == '+' || (c) == '?')
+X#define META "^$.[()|?+*\\"
+X
+X/*
+X * Flags to be passed up and down.
+X */
+X#define HASWIDTH 01 /* Known never to match null string. */
+X#define SIMPLE 02 /* Simple enough to be STAR/PLUS operand. */
+X#define SPSTART 04 /* Starts with * or +. */
+X#define WORST 0 /* Worst case. */
+X
+X/*
+X * Global work variables for regcomp().
+X */
+Xstatic char *regparse; /* Input-scan pointer. */
+Xstatic int regnpar; /* () count. */
+Xstatic char regdummy;
+Xstatic char *regcode; /* Code-emit pointer; &regdummy = don't. */
+Xstatic long regsize; /* Code size. */
+X#ifdef MULTILINE
+Xstatic int regnl; /* '\n' detected. */
+X#endif
+X
+X/*
+X * Forward declarations for regcomp()'s friends.
+X */
+X#ifndef STATIC
+X#define STATIC static
+X#endif
+XSTATIC char *reg();
+XSTATIC char *regbranch();
+XSTATIC char *regpiece();
+XSTATIC char *regatom();
+XSTATIC char *regnode();
+XSTATIC char *regnext();
+XSTATIC void regc();
+XSTATIC void reginsert();
+XSTATIC void regtail();
+XSTATIC void regoptail();
+X#ifdef STRCSPN
+XSTATIC int strcspn();
+X#endif
+X
+X/*
+X - regcomp - compile a regular expression into internal code
+X *
+X * We can't allocate space until we know how big the compiled form will be,
+X * but we can't compile it (and thus know how big it is) until we've got a
+X * place to put the code. So we cheat: we compile it twice, once with code
+X * generation turned off and size counting turned on, and once "for real".
+X * This also means that we don't allocate space until we are sure that the
+X * thing really will compile successfully, and we never have to move the
+X * code and thus invalidate pointers into it. (Note that it has to be in
+X * one piece because free() must be able to free it all.)
+X *
+X * Beware that the optimization-preparation code in here knows about some
+X * of the structure of the compiled regexp.
+X */
+Xregexp *
+Xregcomp(exp)
+Xchar *exp;
+X{
+X register regexp *r;
+X register char *scan;
+X register char *longest;
+X register int len;
+X int flags;
+X
+X if (exp == NULL)
+X FAIL("NULL argument");
+X
+X /* First pass: determine size, legality. */
+X regparse = exp;
+X regnpar = 1;
+X regsize = 0L;
+X regcode = &regdummy;
+X#ifdef MULTILINE
+X regnl = 0;
+X#endif
+X regc(MAGIC);
+X if (reg(0, &flags) == NULL)
+X return(NULL);
+X
+X /* Small enough for pointer-storage convention? */
+X if (regsize >= 32767L) /* Probably could be 65535L. */
+X FAIL("regexp too big");
+X
+X /* Allocate space. */
+X r = (regexp *)malloc(sizeof(regexp) + (unsigned)regsize);
+X if (r == NULL)
+X FAIL("out of space");
+X
+X /* Second pass: emit code. */
+X regparse = exp;
+X regnpar = 1;
+X regcode = r->program;
+X regc(MAGIC);
+X if (reg(0, &flags) == NULL)
+X return(NULL);
+X
+X /* Dig out information for optimizations. */
+X r->regstart = '\0'; /* Worst-case defaults. */
+X r->reganch = 0;
+X r->regmust = NULL;
+X r->regmlen = 0;
+X scan = r->program+1; /* First BRANCH. */
+X if (OP(regnext(scan)) == END) { /* Only one top-level choice. */
+X scan = OPERAND(scan);
+X
+X /* Starting-point info. */
+X if (OP(scan) == EXACTLY)
+X r->regstart = *OPERAND(scan);
+X else if (OP(scan) == BOL)
+X r->reganch++;
+X
+X /*
+X * If there's something expensive in the r.e., find the
+X * longest literal string that must appear and make it the
+X * regmust. Resolve ties in favor of later strings, since
+X * the regstart check works with the beginning of the r.e.
+X * and avoiding duplication strengthens checking. Not a
+X * strong reason, but sufficient in the absence of others.
+X */
+X#ifdef MULTILINE
+X if ((flags&SPSTART) && !regnl) {
+X#else
+X if (flags&SPSTART) {
+X#endif
+X longest = NULL;
+X len = 0;
+X for (; scan != NULL; scan = regnext(scan))
+X if (OP(scan) == EXACTLY && strlen(OPERAND(scan)) >= len) {
+X longest = OPERAND(scan);
+X len = strlen(OPERAND(scan));
+X }
+X r->regmust = longest;
+X r->regmlen = len;
+X }
+X }
+X
+X return(r);
+X}
+X
+X/*
+X - reg - regular expression, i.e. main body or parenthesized thing
+X *
+X * Caller must absorb opening parenthesis.
+X *
+X * Combining parenthesis handling with the base level of regular expression
+X * is a trifle forced, but the need to tie the tails of the branches to what
+X * follows makes it hard to avoid.
+X */
+Xstatic char *
+Xreg(paren, flagp)
+Xint paren; /* Parenthesized? */
+Xint *flagp;
+X{
+X register char *ret;
+X register char *br;
+X register char *ender;
+X register int parno;
+X int flags;
+X
+X *flagp = HASWIDTH; /* Tentatively. */
+X
+X /* Make an OPEN node, if parenthesized. */
+X if (paren) {
+X if (regnpar >= NSUBEXP)
+X FAIL("too many ()");
+X parno = regnpar;
+X regnpar++;
+X ret = regnode(OPEN+parno);
+X } else
+X ret = NULL;
+X
+X /* Pick up the branches, linking them together. */
+X br = regbranch(&flags);
+X if (br == NULL)
+X return(NULL);
+X if (ret != NULL)
+X regtail(ret, br); /* OPEN -> first. */
+X else
+X ret = br;
+X if (!(flags&HASWIDTH))
+X *flagp &= ~HASWIDTH;
+X *flagp |= flags&SPSTART;
+X while (*regparse == '|') {
+X regparse++;
+X br = regbranch(&flags);
+X if (br == NULL)
+X return(NULL);
+X regtail(ret, br); /* BRANCH -> BRANCH. */
+X if (!(flags&HASWIDTH))
+X *flagp &= ~HASWIDTH;
+X *flagp |= flags&SPSTART;
+X }
+X
+X /* Make a closing node, and hook it on the end. */
+X ender = regnode((paren) ? CLOSE+parno : END);
+X regtail(ret, ender);
+X
+X /* Hook the tails of the branches to the closing node. */
+X for (br = ret; br != NULL; br = regnext(br))
+X regoptail(br, ender);
+X
+X /* Check for proper termination. */
+X if (paren && *regparse++ != ')') {
+X FAIL("unmatched ()");
+X } else if (!paren && *regparse != '\0') {
+X if (*regparse == ')') {
+X FAIL("unmatched ()");
+X } else
+X FAIL("junk on end"); /* "Can't happen". */
+X /* NOTREACHED */
+X }
+X
+X return(ret);
+X}
+X
+X/*
+X - regbranch - one alternative of an | operator
+X *
+X * Implements the concatenation operator.
+X */
+Xstatic char *
+Xregbranch(flagp)
+Xint *flagp;
+X{
+X register char *ret;
+X register char *chain;
+X register char *latest;
+X int flags;
+X
+X *flagp = WORST; /* Tentatively. */
+X
+X ret = regnode(BRANCH);
+X chain = NULL;
+X while (*regparse != '\0' && *regparse != '|' && *regparse != ')') {
+X latest = regpiece(&flags);
+X if (latest == NULL)
+X return(NULL);
+X *flagp |= flags&HASWIDTH;
+X if (chain == NULL) /* First piece. */
+X *flagp |= flags&SPSTART;
+X else
+X regtail(chain, latest);
+X chain = latest;
+X }
+X if (chain == NULL) /* Loop ran zero times. */
+X (void) regnode(NOTHING);
+X
+X return(ret);
+X}
+X
+X/*
+X - regpiece - something followed by possible [*+?]
+X *
+X * Note that the branching code sequences used for ? and the general cases
+X * of * and + are somewhat optimized: they use the same NOTHING node as
+X * both the endmarker for their branch list and the body of the last branch.
+X * It might seem that this node could be dispensed with entirely, but the
+X * endmarker role is not redundant.
+X */
+Xstatic char *
+Xregpiece(flagp)
+Xint *flagp;
+X{
+X register char *ret;
+X register char op;
+X register char *next;
+X int flags;
+X
+X ret = regatom(&flags);
+X if (ret == NULL)
+X return(NULL);
+X
+X op = *regparse;
+X if (!ISMULT(op)) {
+X *flagp = flags;
+X return(ret);
+X }
+X
+X if (!(flags&HASWIDTH) && op != '?')
+X FAIL("*+ operand could be empty");
+X *flagp = (op != '+') ? (WORST|SPSTART) : (WORST|HASWIDTH);
+X
+X if (op == '*' && (flags&SIMPLE))
+X reginsert(STAR, ret);
+X else if (op == '*') {
+X /* Emit x* as (x&|), where & means "self". */
+X reginsert(BRANCH, ret); /* Either x */
+X regoptail(ret, regnode(BACK)); /* and loop */
+X regoptail(ret, ret); /* back */
+X regtail(ret, regnode(BRANCH)); /* or */
+X regtail(ret, regnode(NOTHING)); /* null. */
+X } else if (op == '+' && (flags&SIMPLE))
+X reginsert(PLUS, ret);
+X else if (op == '+') {
+X /* Emit x+ as x(&|), where & means "self". */
+X next = regnode(BRANCH); /* Either */
+X regtail(ret, next);
+X regtail(regnode(BACK), ret); /* loop back */
+X regtail(next, regnode(BRANCH)); /* or */
+X regtail(ret, regnode(NOTHING)); /* null. */
+X } else if (op == '?') {
+X /* Emit x? as (x|) */
+X reginsert(BRANCH, ret); /* Either x */
+X regtail(ret, regnode(BRANCH)); /* or */
+X next = regnode(NOTHING); /* null. */
+X regtail(ret, next);
+X regoptail(ret, next);
+X }
+X regparse++;
+X if (ISMULT(*regparse))
+X FAIL("nested *?+");
+X
+X return(ret);
+X}
+X
+X/*
+X - regatom - the lowest level
+X *
+X * Optimization: gobbles an entire sequence of ordinary characters so that
+X * it can turn them into a single node, which is smaller to store and
+X * faster to run. Backslashed characters are exceptions, each becoming a
+X * separate node; the code is simpler that way and it's not worth fixing.
+X */
+Xstatic char *
+Xregatom(flagp)
+Xint *flagp;
+X{
+X register char *ret;
+X int flags;
+X
+X *flagp = WORST; /* Tentatively. */
+X
+X switch (*regparse++) {
+X case '^':
+X ret = regnode(BOL);
+X break;
+X case '$':
+X ret = regnode(EOL);
+X break;
+X case '.':
+X ret = regnode(ANY);
+X *flagp |= HASWIDTH|SIMPLE;
+X break;
+X case '[': {
+X register int class;
+X register int classend;
+X
+X if (*regparse == '^') { /* Complement of range. */
+X ret = regnode(ANYBUT);
+X regparse++;
+X } else
+X ret = regnode(ANYOF);
+X if (*regparse == ']' || *regparse == '-')
+X regc(*regparse++);
+X while (*regparse != '\0' && *regparse != ']') {
+X if (*regparse == '-') {
+X regparse++;
+X if (*regparse == ']' || *regparse == '\0')
+X regc('-');
+X else {
+X class = UCHARAT(regparse-2)+1;
+X classend = UCHARAT(regparse);
+X if (class > classend+1)
+X FAIL("invalid [] range");
+X for (; class <= classend; class++)
+X regc(class);
+X regparse++;
+X }
+X } else
+X regc(*regparse++);
+X }
+X regc('\0');
+X if (*regparse != ']')
+X FAIL("unmatched []");
+X regparse++;
+X *flagp |= HASWIDTH|SIMPLE;
+X }
+X break;
+X case '(':
+X ret = reg(1, &flags);
+X if (ret == NULL)
+X return(NULL);
+X *flagp |= flags&(HASWIDTH|SPSTART);
+X break;
+X case '\0':
+X case '|':
+X case ')':
+X FAIL("internal urp"); /* Supposed to be caught earlier. */
+X break;
+X case '?':
+X case '+':
+X case '*':
+X FAIL("?+* follows nothing");
+X break;
+X case '\\':
+X if (*regparse == '\0')
+X FAIL("trailing \\");
+X ret = regnode(EXACTLY);
+X#ifdef MULTILINE
+X if (*regparse == 'n') {
+X regc('\n');
+X regparse++;
+X regnl++;
+X }
+X else
+X#endif
+X regc(*regparse++);
+X regc('\0');
+X *flagp |= HASWIDTH|SIMPLE;
+X break;
+X default: {
+X register int len;
+X register char ender;
+X
+X regparse--;
+X len = strcspn(regparse, META);
+X if (len <= 0)
+X FAIL("internal disaster");
+X ender = *(regparse+len);
+X if (len > 1 && ISMULT(ender))
+X len--; /* Back off clear of ?+* operand. */
+X *flagp |= HASWIDTH;
+X if (len == 1)
+X *flagp |= SIMPLE;
+X ret = regnode(EXACTLY);
+X while (len > 0) {
+X#ifdef MULTILINE
+X if (*regparse == '\n')
+X regnl++;
+X#endif
+X regc(*regparse++);
+X len--;
+X }
+X regc('\0');
+X }
+X break;
+X }
+X
+X return(ret);
+X}
+X
+X/*
+X - regnode - emit a node
+X */
+Xstatic char * /* Location. */
+Xregnode(op)
+Xchar op;
+X{
+X register char *ret;
+X register char *ptr;
+X
+X ret = regcode;
+X if (ret == &regdummy) {
+X regsize += 3;
+X return(ret);
+X }
+X
+X ptr = ret;
+X *ptr++ = op;
+X *ptr++ = '\0'; /* Null "next" pointer. */
+X *ptr++ = '\0';
+X regcode = ptr;
+X
+X return(ret);
+X}
+X
+X/*
+X - regc - emit (if appropriate) a byte of code
+X */
+Xstatic void
+Xregc(b)
+Xchar b;
+X{
+X if (regcode != &regdummy)
+X *regcode++ = b;
+X else
+X regsize++;
+X}
+X
+X/*
+X - reginsert - insert an operator in front of already-emitted operand
+X *
+X * Means relocating the operand.
+X */
+Xstatic void
+Xreginsert(op, opnd)
+Xchar op;
+Xchar *opnd;
+X{
+X register char *src;
+X register char *dst;
+X register char *place;
+X
+X if (regcode == &regdummy) {
+X regsize += 3;
+X return;
+X }
+X
+X src = regcode;
+X regcode += 3;
+X dst = regcode;
+X while (src > opnd)
+X *--dst = *--src;
+X
+X place = opnd; /* Op node, where operand used to be. */
+X *place++ = op;
+X *place++ = '\0';
+X *place++ = '\0';
+X}
+X
+X/*
+X - regtail - set the next-pointer at the end of a node chain
+X */
+Xstatic void
+Xregtail(p, val)
+Xchar *p;
+Xchar *val;
+X{
+X register char *scan;
+X register char *temp;
+X register int offset;
+X
+X if (p == &regdummy)
+X return;
+X
+X /* Find last node. */
+X scan = p;
+X for (;;) {
+X temp = regnext(scan);
+X if (temp == NULL)
+X break;
+X scan = temp;
+X }
+X
+X if (OP(scan) == BACK)
+X offset = scan - val;
+X else
+X offset = val - scan;
+X *(scan+1) = (offset>>8)&0377;
+X *(scan+2) = offset&0377;
+X}
+X
+X/*
+X - regoptail - regtail on operand of first argument; nop if operandless
+X */
+Xstatic void
+Xregoptail(p, val)
+Xchar *p;
+Xchar *val;
+X{
+X /* "Operandless" and "op != BRANCH" are synonymous in practice. */
+X if (p == NULL || p == &regdummy || OP(p) != BRANCH)
+X return;
+X regtail(OPERAND(p), val);
+X}
+X
+X/*
+X * regexec and friends
+X */
+X
+X/*
+X * Global work variables for regexec().
+X */
+Xstatic char *reginput; /* String-input pointer. */
+Xstatic char *regbol; /* Beginning of input, for ^ check. */
+Xstatic char **regstartp; /* Pointer to startp array. */
+Xstatic char **regendp; /* Ditto for endp. */
+X
+X/*
+X * Forwards.
+X */
+XSTATIC int regtry();
+XSTATIC int regmatch();
+XSTATIC int regrepeat();
+X
+X#ifdef DEBUG
+Xint regnarrate = 0;
+Xvoid regdump();
+XSTATIC char *regprop();
+X#endif
+X
+X/*
+X - regexec - match a regexp against a string
+X */
+Xint
+Xregexec(prog, string)
+Xregister regexp *prog;
+Xregister char *string;
+X{
+X register char *s;
+X extern char *strchr();
+X
+X /* Be paranoid... */
+X if (prog == NULL || string == NULL) {
+X regerror("NULL parameter");
+X return(0);
+X }
+X
+X#ifdef MULTILINE
+X /* Check for \n in string, and if so, call the more general routine. */
+X if (strchr(string, '\n') != NULL)
+X return reglexec(prog, string, 0);
+X#endif
+X
+X /* Check validity of program. */
+X if (UCHARAT(prog->program) != MAGIC) {
+X regerror("corrupted program");
+X return(0);
+X }
+X
+X /* If there is a "must appear" string, look for it. */
+X if (prog->regmust != NULL) {
+X s = string;
+X while ((s = strchr(s, prog->regmust[0])) != NULL) {
+X if (strncmp(s, prog->regmust, prog->regmlen) == 0)
+X break; /* Found it. */
+X s++;
+X }
+X if (s == NULL) /* Not present. */
+X return(0);
+X }
+X
+X /* Mark beginning of line for ^ . */
+X regbol = string;
+X
+X /* Simplest case: anchored match need be tried only once. */
+X if (prog->reganch)
+X return(regtry(prog, string));
+X
+X /* Messy cases: unanchored match. */
+X s = string;
+X if (prog->regstart != '\0')
+X /* We know what char it must start with. */
+X while ((s = strchr(s, prog->regstart)) != NULL) {
+X if (regtry(prog, s))
+X return(1);
+X s++;
+X }
+X else
+X /* We don't -- general case. */
+X do {
+X if (regtry(prog, s))
+X return(1);
+X } while (*s++ != '\0');
+X
+X /* Failure. */
+X return(0);
+X}
+X
+X#ifdef MULTILINE
+X/*
+X - reglexec - match a regexp against a long string buffer, starting at offset
+X */
+Xint
+Xreglexec(prog, string, offset)
+Xregister regexp *prog;
+Xregister char *string;
+X{
+X register char *s;
+X extern char *strchr();
+X
+X /* Be paranoid... */
+X if (prog == NULL || string == NULL) {
+X regerror("NULL parameter");
+X return(0);
+X }
+X
+X /* Check validity of program. */
+X if (UCHARAT(prog->program) != MAGIC) {
+X regerror("corrupted program");
+X return(0);
+X }
+X
+X /* (Don't look for "must appear" string -- string can be long.) */
+X
+X /* Mark beginning of line for ^ . */
+X regbol = string;
+X
+X /* Apply offset.
+X Assume 0 <= offset <= strlen(string), but don't check,
+X as string can be long. */
+X s= string + offset;
+X
+X /* Anchored match need be tried only at line starts. */
+X if (prog->reganch) {
+X while (!regtry(prog, s)) {
+X s = strchr(s, '\n');
+X if (s == NULL)
+X return(0);
+X s++;
+X }
+X return(1);
+X }
+X
+X /* Messy cases: unanchored match. */
+X if (prog->regstart != '\0')
+X /* We know what char it must start with. */
+X while ((s = strchr(s, prog->regstart)) != NULL) {
+X if (regtry(prog, s))
+X return(1);
+X s++;
+X }
+X else
+X /* We don't -- general case. */
+X do {
+X if (regtry(prog, s))
+X return(1);
+X } while (*s++ != '\0');
+X
+X /* Failure. */
+X return(0);
+X}
+X#endif
+X
+X/*
+X - regtry - try match at specific point
+X */
+Xstatic int /* 0 failure, 1 success */
+Xregtry(prog, string)
+Xregexp *prog;
+Xchar *string;
+X{
+X register int i;
+X register char **sp;
+X register char **ep;
+X
+X reginput = string;
+X regstartp = prog->startp;
+X regendp = prog->endp;
+X
+X sp = prog->startp;
+X ep = prog->endp;
+X for (i = NSUBEXP; i > 0; i--) {
+X *sp++ = NULL;
+X *ep++ = NULL;
+X }
+X if (regmatch(prog->program + 1)) {
+X prog->startp[0] = string;
+X prog->endp[0] = reginput;
+X return(1);
+X } else
+X return(0);
+X}
+X
+X/*
+X - regmatch - main matching routine
+X *
+X * Conceptually the strategy is simple: check to see whether the current
+X * node matches, call self recursively to see whether the rest matches,
+X * and then act accordingly. In practice we make some effort to avoid
+X * recursion, in particular by going through "ordinary" nodes (that don't
+X * need to know whether the rest of the match failed) by a loop instead of
+X * by recursion.
+X */
+Xstatic int /* 0 failure, 1 success */
+Xregmatch(prog)
+Xchar *prog;
+X{
+X register char *scan; /* Current node. */
+X char *next; /* Next node. */
+X extern char *strchr();
+X
+X scan = prog;
+X#ifdef DEBUG
+X if (scan != NULL && regnarrate)
+X fprintf(stderr, "%s(\n", regprop(scan));
+X#endif
+X while (scan != NULL) {
+X#ifdef DEBUG
+X if (regnarrate)
+X fprintf(stderr, "%s...\n", regprop(scan));
+X#endif
+X next = regnext(scan);
+X
+X switch (OP(scan)) {
+X case BOL:
+X#ifdef MULTILINE
+X if (!(reginput == regbol ||
+X reginput > regbol && *(reginput-1) == '\n'))
+X#else
+X if (reginput != regbol)
+X#endif
+X return(0);
+X break;
+X case EOL:
+X#ifdef MULTILINE
+X if (*reginput != '\0' && *reginput != '\n')
+X#else
+X if (*reginput != '\0')
+X#endif
+X return(0);
+X break;
+X case ANY:
+X#ifdef MULTILINE
+X if (*reginput == '\0' || *reginput == '\n')
+X#else
+X if (*reginput == '\0')
+X#endif
+X return(0);
+X reginput++;
+X break;
+X case EXACTLY: {
+X register int len;
+X register char *opnd;
+X
+X opnd = OPERAND(scan);
+X /* Inline the first character, for speed. */
+X if (*opnd != *reginput)
+X return(0);
+X len = strlen(opnd);
+X if (len > 1 && strncmp(opnd, reginput, len) != 0)
+X return(0);
+X reginput += len;
+X }
+X break;
+X case ANYOF:
+X if (*reginput == '\0' || strchr(OPERAND(scan), *reginput) == NULL)
+X return(0);
+X reginput++;
+X break;
+X case ANYBUT:
+X#ifdef MULTILINE
+X if (*reginput == '\0' || *reginput == '\n' ||
+X strchr(OPERAND(scan), *reginput) != NULL)
+X#else
+X if (*reginput == '\0' || strchr(OPERAND(scan), *reginput) != NULL)
+X#endif
+X return(0);
+X reginput++;
+X break;
+X case NOTHING:
+X break;
+X case BACK:
+X break;
+X case OPEN+1:
+X case OPEN+2:
+X case OPEN+3:
+X case OPEN+4:
+X case OPEN+5:
+X case OPEN+6:
+X case OPEN+7:
+X case OPEN+8:
+X case OPEN+9: {
+X register int no;
+X register char *save;
+X
+X no = OP(scan) - OPEN;
+X save = reginput;
+X
+X if (regmatch(next)) {
+X /*
+X * Don't set startp if some later
+X * invocation of the same parentheses
+X * already has.
+X */
+X if (regstartp[no] == NULL)
+X regstartp[no] = save;
+X return(1);
+X } else
+X return(0);
+X }
+X break;
+X case CLOSE+1:
+X case CLOSE+2:
+X case CLOSE+3:
+X case CLOSE+4:
+X case CLOSE+5:
+X case CLOSE+6:
+X case CLOSE+7:
+X case CLOSE+8:
+X case CLOSE+9: {
+X register int no;
+X register char *save;
+X
+X no = OP(scan) - CLOSE;
+X save = reginput;
+X
+X if (regmatch(next)) {
+X /*
+X * Don't set endp if some later
+X * invocation of the same parentheses
+X * already has.
+X */
+X if (regendp[no] == NULL)
+X regendp[no] = save;
+X return(1);
+X } else
+X return(0);
+X }
+X break;
+X case BRANCH: {
+X register char *save;
+X
+X if (OP(next) != BRANCH) /* No choice. */
+X next = OPERAND(scan); /* Avoid recursion. */
+X else {
+X do {
+X save = reginput;
+X if (regmatch(OPERAND(scan)))
+X return(1);
+X reginput = save;
+X scan = regnext(scan);
+X } while (scan != NULL && OP(scan) == BRANCH);
+X return(0);
+X /* NOTREACHED */
+X }
+X }
+X break;
+X case STAR:
+X case PLUS: {
+X register char nextch;
+X register int no;
+X register char *save;
+X register int min;
+X
+X /*
+X * Lookahead to avoid useless match attempts
+X * when we know what character comes next.
+X */
+X nextch = '\0';
+X if (OP(next) == EXACTLY)
+X nextch = *OPERAND(next);
+X min = (OP(scan) == STAR) ? 0 : 1;
+X save = reginput;
+X no = regrepeat(OPERAND(scan));
+X while (no >= min) {
+X /* If it could work, try it. */
+X if (nextch == '\0' || *reginput == nextch)
+X if (regmatch(next))
+X return(1);
+X /* Couldn't or didn't -- back up. */
+X no--;
+X reginput = save + no;
+X }
+X return(0);
+X }
+X break;
+X case END:
+X return(1); /* Success! */
+X break;
+X default:
+X regerror("memory corruption");
+X return(0);
+X break;
+X }
+X
+X scan = next;
+X }
+X
+X /*
+X * We get here only if there's trouble -- normally "case END" is
+X * the terminating point.
+X */
+X regerror("corrupted pointers");
+X return(0);
+X}
+X
+X/*
+X - regrepeat - repeatedly match something simple, report how many
+X */
+Xstatic int
+Xregrepeat(p)
+Xchar *p;
+X{
+X register int count = 0;
+X register char *scan;
+X register char *opnd;
+X#ifdef MULTILINE
+X register char *eol;
+X#endif
+X
+X scan = reginput;
+X opnd = OPERAND(p);
+X switch (OP(p)) {
+X case ANY:
+X#ifdef MULTILINE
+X if ((eol = strchr(scan, '\n')) != NULL) {
+X count += eol - scan;
+X scan = eol;
+X break;
+X }
+X#endif
+X count = strlen(scan);
+X scan += count;
+X break;
+X case EXACTLY:
+X while (*opnd == *scan) {
+X count++;
+X scan++;
+X }
+X break;
+X case ANYOF:
+X while (*scan != '\0' && strchr(opnd, *scan) != NULL) {
+X count++;
+X scan++;
+X }
+X break;
+X case ANYBUT:
+X#ifdef MULTILINE
+X while (*scan != '\0' && *scan != '\n' &&
+X strchr(opnd, *scan) == NULL) {
+X#else
+X while (*scan != '\0' && strchr(opnd, *scan) == NULL) {
+X#endif
+X count++;
+X scan++;
+X }
+X break;
+X default: /* Oh dear. Called inappropriately. */
+X regerror("internal foulup");
+X count = 0; /* Best compromise. */
+X break;
+X }
+X reginput = scan;
+X
+X return(count);
+X}
+X
+X/*
+X - regnext - dig the "next" pointer out of a node
+X */
+Xstatic char *
+Xregnext(p)
+Xregister char *p;
+X{
+X register int offset;
+X
+X if (p == &regdummy)
+X return(NULL);
+X
+X offset = NEXT(p);
+X if (offset == 0)
+X return(NULL);
+X
+X if (OP(p) == BACK)
+X return(p-offset);
+X else
+X return(p+offset);
+X}
+X
+X#ifdef DEBUG
+X
+XSTATIC char *regprop();
+X
+X/*
+X - regdump - dump a regexp onto stdout in vaguely comprehensible form
+X */
+Xvoid
+Xregdump(r)
+Xregexp *r;
+X{
+X register char *s;
+X register char op = EXACTLY; /* Arbitrary non-END op. */
+X register char *next;
+X extern char *strchr();
+X
+X
+X s = r->program + 1;
+X while (op != END) { /* While that wasn't END last time... */
+X op = OP(s);
+X printf("%2d%s", (int)(s-r->program), regprop(s)); /* Where, what. */
+X next = regnext(s);
+X if (next == NULL) /* Next ptr. */
+X printf("(0)");
+X else
+X printf("(%d)", (int)((s-r->program)+(next-s)));
+X s += 3;
+X if (op == ANYOF || op == ANYBUT || op == EXACTLY) {
+X /* Literal string, where present. */
+X while (*s != '\0') {
+X#ifdef MULTILINE
+X if (*s == '\n')
+X printf("\\n");
+X else
+X#endif
+X putchar(*s);
+X s++;
+X }
+X s++;
+X }
+X putchar('\n');
+X }
+X
+X /* Header fields of interest. */
+X if (r->regstart != '\0')
+X printf("start `%c' ", r->regstart);
+X if (r->reganch)
+X printf("anchored ");
+X if (r->regmust != NULL)
+X printf("must have \"%s\"", r->regmust);
+X printf("\n");
+X}
+X
+X/*
+X - regprop - printable representation of opcode
+X */
+Xstatic char *
+Xregprop(op)
+Xchar *op;
+X{
+X register char *p;
+X static char buf[50];
+X
+X (void) strcpy(buf, ":");
+X
+X switch (OP(op)) {
+X case BOL:
+X p = "BOL";
+X break;
+X case EOL:
+X p = "EOL";
+X break;
+X case ANY:
+X p = "ANY";
+X break;
+X case ANYOF:
+X p = "ANYOF";
+X break;
+X case ANYBUT:
+X p = "ANYBUT";
+X break;
+X case BRANCH:
+X p = "BRANCH";
+X break;
+X case EXACTLY:
+X p = "EXACTLY";
+X break;
+X case NOTHING:
+X p = "NOTHING";
+X break;
+X case BACK:
+X p = "BACK";
+X break;
+X case END:
+X p = "END";
+X break;
+X case OPEN+1:
+X case OPEN+2:
+X case OPEN+3:
+X case OPEN+4:
+X case OPEN+5:
+X case OPEN+6:
+X case OPEN+7:
+X case OPEN+8:
+X case OPEN+9:
+X sprintf(buf+strlen(buf), "OPEN%d", (int)(OP(op)-OPEN));
+X p = NULL;
+X break;
+X case CLOSE+1:
+X case CLOSE+2:
+X case CLOSE+3:
+X case CLOSE+4:
+X case CLOSE+5:
+X case CLOSE+6:
+X case CLOSE+7:
+X case CLOSE+8:
+X case CLOSE+9:
+X sprintf(buf+strlen(buf), "CLOSE%d", (int)(OP(op)-CLOSE));
+X p = NULL;
+X break;
+X case STAR:
+X p = "STAR";
+X break;
+X case PLUS:
+X p = "PLUS";
+X break;
+X default:
+X regerror("corrupted opcode");
+X break;
+X }
+X if (p != NULL)
+X (void) strcat(buf, p);
+X return(buf);
+X}
+X#endif
+X
+X/*
+X * The following is provided for those people who do not have strcspn() in
+X * their C libraries. They should get off their butts and do something
+X * about it; at least one public-domain implementation of those (highly
+X * useful) string routines has been published on Usenet.
+X */
+X#ifdef STRCSPN
+X/*
+X * strcspn - find length of initial segment of s1 consisting entirely
+X * of characters not from s2
+X */
+X
+Xstatic int
+Xstrcspn(s1, s2)
+Xchar *s1;
+Xchar *s2;
+X{
+X register char *scan1;
+X register char *scan2;
+X register int count;
+X
+X count = 0;
+X for (scan1 = s1; *scan1 != '\0'; scan1++) {
+X for (scan2 = s2; *scan2 != '\0';) /* ++ moved down. */
+X if (*scan1 == *scan2++)
+X return(count);
+X count++;
+X }
+X return(count);
+X}
+X#endif
+EOF
+fi
+echo 'Part 05 out of 21 of pack.out complete.'
+exit 0

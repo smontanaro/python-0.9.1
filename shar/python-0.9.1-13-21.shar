@@ -1,0 +1,2811 @@
+: This is a shell archive.
+: Extract with 'sh this_file'.
+:
+: Extract part 01 first since it makes all directories
+echo 'Start of pack.out, part 13 out of 21:'
+if test -s 'demo/sgi/audio_stdwin/jukebox.py'
+then echo '*** I will not over-write existing file demo/sgi/audio_stdwin/jukebox.py'
+else
+echo 'x - demo/sgi/audio_stdwin/jukebox.py'
+sed 's/^X//' > 'demo/sgi/audio_stdwin/jukebox.py' << 'EOF'
+X#! /ufs/guido/bin/sgi/python
+X
+X# JUKEBOX: browse directories full of sampled sound files.
+X#
+X# One or more "list windows" display the files and subdirectories of
+X# the arguments. Double-clicking on a subdirectory opens a new window
+X# displaying its contents (and so on recursively). Double clicking
+X# on a file plays it as a sound file (assuming it is one).
+X#
+X# Playing is asynchronous: the application keeps listening to events
+X# while the sample is playing, so you can change the volume (gain)
+X# during playing, cancel playing or start a new sample right away.
+X#
+X# The control window displays the current output gain and a primitive
+X# "stop button" to cancel the current play request.
+X#
+X# Sound files must currently be in Dik Winter's compressed Mac format.
+X# Since decompression is costly, decompressed samples are saved in
+X# /usr/tmp/@j* until the application is left. The files are read
+X# afresh each time, though.
+X
+Ximport audio
+Ximport sunaudio
+Ximport commands
+Ximport getopt
+Ximport path
+Ximport posix
+Ximport rand
+Ximport stdwin
+Xfrom stdwinevents import *
+Ximport string
+Ximport sys
+X
+Xfrom WindowParent import WindowParent
+Xfrom HVSplit import VSplit
+Xfrom Buttons import PushButton
+Xfrom Sliders import ComplexSlider
+X
+X# Pathnames
+X
+XHOME_BIN_SGI = '/ufs/guido/bin/sgi/' # Directory where macsound2sgi lives
+XDEF_DB = '/ufs/dik/sounds/Mac/HCOM' # Default directory of sounds
+X
+X
+X# Global variables
+X
+Xclass struct(): pass # Class to define featureless structures
+X
+XG = struct() # Holds writable global variables
+X
+X
+X# Main program
+X
+Xdef main():
+X G.synchronous = 0 # If set, use synchronous audio.write()
+X G.debug = 0 # If set, print debug messages
+X G.gain = 75 # Output gain
+X G.rate = 3 # Sampling rate
+X G.busy = 0 # Set while asynchronous playing is active
+X G.windows = [] # List of open windows (except control)
+X G.mode = 'mac' # Macintosh mode
+X G.tempprefix = '/usr/tmp/@j' + `rand.rand()` + '-'
+X #
+X optlist, args = getopt.getopt(sys.argv[1:], 'dg:r:sSa')
+X for optname, optarg in optlist:
+X if optname = '-d':
+X G.debug = 1
+X elif optname = '-g':
+X G.gain = string.atoi(optarg)
+X if not (0 < G.gain < 256):
+X raise optarg.error, '-g gain out of range'
+X elif optname = '-r':
+X G.rate = string.atoi(optarg)
+X if not (1 <= G.rate <= 3):
+X raise optarg.error, '-r rate out of range'
+X elif optname = '-s':
+X G.synchronous = 1
+X elif optname = '-S':
+X G.mode = 'sgi'
+X elif optname = '-a':
+X G.mode = 'sun'
+X #
+X if not args:
+X args = [DEF_DB]
+X #
+X G.cw = opencontrolwindow()
+X for dirname in args:
+X G.windows.append(openlistwindow(dirname))
+X #
+X #
+X savegain = audio.getoutgain()
+X try:
+X # Initialize stdaudio
+X audio.setoutgain(0)
+X audio.start_playing('')
+X dummy = audio.wait_playing()
+X audio.setoutgain(0)
+X maineventloop()
+X finally:
+X audio.setoutgain(savegain)
+X audio.done()
+X clearcache()
+X
+Xdef maineventloop():
+X mouse_events = WE_MOUSE_DOWN, WE_MOUSE_MOVE, WE_MOUSE_UP
+X while G.windows:
+X type, w, detail = event = stdwin.getevent()
+X if w = G.cw.win:
+X if type = WE_CLOSE:
+X return
+X G.cw.dispatch(event)
+X else:
+X if type = WE_DRAW:
+X w.drawproc(w, detail)
+X elif type in mouse_events:
+X w.mouse(w, type, detail)
+X elif type = WE_CLOSE:
+X w.close(w)
+X del w, event
+X else:
+X if G.debug: print type, w, detail
+X
+X# Control window -- to set gain and cancel play operations in progress
+X
+Xdef opencontrolwindow():
+X cw = WindowParent().create('Jukebox', (0, 0))
+X v = VSplit().create(cw)
+X #
+X gain = ComplexSlider().define(v)
+X gain.setminvalmax(0, G.gain, 255)
+X gain.settexts(' ', ' ')
+X gain.sethook(gain_setval_hook)
+X #
+X stop = PushButton().definetext(v, 'Stop')
+X stop.hook = stop_hook
+X #
+X cw.realize()
+X return cw
+X
+Xdef gain_setval_hook(self):
+X G.gain = self.val
+X if G.busy: audio.setoutgain(G.gain)
+X
+Xdef stop_hook(self):
+X if G.busy:
+X audio.setoutgain(0)
+X dummy = audio.stop_playing()
+X G.busy = 0
+X
+X
+X# List windows -- to display list of files and subdirectories
+X
+Xdef openlistwindow(dirname):
+X list = posix.listdir(dirname)
+X list.sort()
+X i = 0
+X while i < len(list):
+X if list[i] = '.' or list[i] = '..':
+X del list[i]
+X else:
+X i = i+1
+X for i in range(len(list)):
+X name = list[i]
+X if path.isdir(path.cat(dirname, name)):
+X list[i] = list[i] + '/'
+X width = maxwidth(list)
+X width = width + stdwin.textwidth(' ') # XXX X11 stdwin bug workaround
+X height = len(list) * stdwin.lineheight()
+X stdwin.setdefwinsize(width, min(height, 500))
+X w = stdwin.open(dirname)
+X stdwin.setdefwinsize(0, 0)
+X w.setdocsize(width, height)
+X w.drawproc = drawlistwindow
+X w.mouse = mouselistwindow
+X w.close = closelistwindow
+X w.dirname = dirname
+X w.list = list
+X w.selected = -1
+X return w
+X
+Xdef maxwidth(list):
+X width = 1
+X for name in list:
+X w = stdwin.textwidth(name)
+X if w > width: width = w
+X return width
+X
+Xdef drawlistwindow(w, area):
+X d = w.begindrawing()
+X d.erase((0, 0), (1000, 10000))
+X lh = d.lineheight()
+X h, v = 0, 0
+X for name in w.list:
+X d.text((h, v), name)
+X v = v + lh
+X showselection(w, d)
+X
+Xdef hideselection(w, d):
+X if w.selected >= 0:
+X invertselection(w, d)
+X
+Xdef showselection(w, d):
+X if w.selected >= 0:
+X invertselection(w, d)
+X
+Xdef invertselection(w, d):
+X lh = d.lineheight()
+X h1, v1 = p1 = 0, w.selected*lh
+X h2, v2 = p2 = 1000, v1 + lh
+X d.invert(p1, p2)
+X
+Xdef mouselistwindow(w, type, detail):
+X (h, v), clicks, button = detail[:3]
+X d = w.begindrawing()
+X lh = d.lineheight()
+X if 0 <= v < lh*len(w.list):
+X i = v / lh
+X else:
+X i = -1
+X if w.selected <> i:
+X hideselection(w, d)
+X w.selected = i
+X showselection(w, d)
+X if type = WE_MOUSE_DOWN and clicks >= 2 and i >= 0:
+X name = path.cat(w.dirname, w.list[i])
+X if name[-1:] = '/':
+X if clicks = 2:
+X G.windows.append(openlistwindow(name[:-1]))
+X else:
+X playfile(name)
+X
+Xdef closelistwindow(w):
+X remove(G.windows, w)
+X
+Xdef remove(list, item):
+X for i in range(len(list)):
+X if list[i] = item:
+X del list[i]
+X break
+X
+X
+X# Playing tools
+X
+Xcache = {}
+X
+Xdef clearcache():
+X for x in cache.keys():
+X try:
+X sts = posix.system('rm -f ' + cache[x])
+X if sts:
+X print cmd
+X print 'Exit status', sts
+X except:
+X print cmd
+X print 'Exception?!'
+X del cache[x]
+X
+Xdef playfile(name):
+X if G.mode <> 'mac':
+X tempname = name
+X elif cache.has_key(name):
+X tempname = cache[name]
+X else:
+X tempname = G.tempprefix + `rand.rand()`
+X cmd = HOME_BIN_SGI + 'macsound2sgi'
+X cmd = cmd + ' ' + commands.mkarg(name)
+X cmd = cmd + ' >' + tempname
+X if G.debug: print cmd
+X sts = posix.system(cmd)
+X if sts:
+X print cmd
+X print 'Exit status', sts
+X stdwin.fleep()
+X return
+X cache[name] = tempname
+X fp = open(tempname, 'r')
+X try:
+X hdr = sunaudio.gethdr(fp)
+X except sunaudio.error, msg:
+X hdr = ()
+X if hdr:
+X data_size = hdr[0]
+X data = fp.read(data_size)
+X # XXX this doesn't work yet, need to convert from uLAW!!!
+X del fp
+X else:
+X del fp
+X data = readfile(tempname)
+X if G.debug: print len(data), 'bytes read from', tempname
+X if G.busy:
+X G.busy = 0
+X dummy = audio.stop_playing()
+X #
+X # Completely reset the audio device
+X audio.setrate(G.rate)
+X audio.setduration(0)
+X audio.setoutgain(G.gain)
+X #
+X if G.synchronous:
+X audio.write(data)
+X audio.setoutgain(0)
+X else:
+X try:
+X audio.start_playing(data)
+X G.busy = 1
+X except:
+X stdwin.fleep()
+X del data
+X
+Xdef readfile(filename):
+X return readfp(open(filename, 'r'))
+X
+Xdef readfp(fp):
+X data = ''
+X while 1:
+X buf = fp.read(102400) # Reads most samples in one fell swoop
+X if not buf:
+X return data
+X data = data + buf
+X
+Xmain()
+EOF
+chmod +x 'demo/sgi/audio_stdwin/jukebox.py'
+fi
+if test -s 'demo/sgi/gl_panel/twoview/twoview.py'
+then echo '*** I will not over-write existing file demo/sgi/gl_panel/twoview/twoview.py'
+else
+echo 'x - demo/sgi/gl_panel/twoview/twoview.py'
+sed 's/^X//' > 'demo/sgi/gl_panel/twoview/twoview.py' << 'EOF'
+X#! /ufs/guido/bin/sgi/python
+X
+X# A demo of GL's viewing transformations, showing two views on one scene.
+X# Requires the NASA AMES Panel Library. Requires Z buffer.
+X
+Xfrom gl import *
+Xfrom GL import *
+Ximport panel
+Xfrom math import sin, cos, pi
+X
+Xinf = 1000000.0
+Xfar = 1000.0
+Xnear = 100.0
+X
+Xdef main():
+X foreground()
+X #
+X keepaspect(1, 1)
+X prefposition(10, 610, 10, 610)
+X obswid = winopen('Observer View')
+X doublebuffer()
+X RGBmode()
+X gconfig()
+X #
+X keepaspect(1, 1)
+X prefposition(10, 310, 650, 950)
+X topwid = winopen('Top View')
+X doublebuffer()
+X RGBmode()
+X gconfig()
+X #
+X panels = panel.defpanellist('observer.s')
+X panels = panels + panel.defpanellist('camera.s')
+X panels = panels + panel.defpanellist('topview.s')
+X #
+X p = panels[0]
+X q = panels[1]
+X r = panels[2]
+X #
+X p.farclip = q.farclip
+X p.nearclip = q.nearclip
+X p.zoom = q.zoom
+X p.quitbutton = q.quitbutton
+X #
+X p.xpos = r.xpos
+X p.zpos = r.zpos
+X p.direction = r.direction
+X #
+X p.direction.winds = 1.0 # allow full rotation
+X #
+X def quit(act):
+X import sys
+X sys.exit(0)
+X p.quitbutton.downfunc = quit
+X #
+X p.left.back = p
+X p.fast_left.back = p
+X p.right.back = p
+X p.fast_right.back = p
+X p.forward.back = p
+X p.fast_forward.back = p
+X p.reverse.back = p
+X p.fast_reverse.back = p
+X p.up.back = p
+X p.down.back = p
+X #
+X p.left.activefunc = left
+X p.fast_left.activefunc = fast_left
+X p.right.activefunc = right
+X p.fast_right.activefunc = fast_right
+X p.forward.activefunc = forward
+X p.fast_forward.activefunc = fast_forward
+X p.reverse.activefunc = reverse
+X p.fast_reverse.activefunc = fast_reverse
+X p.up.activefunc = up
+X p.down.activefunc = down
+X #
+X makeobjects()
+X #
+X drawall(p, obswid, topwid)
+X panel.needredraw()
+X while 1:
+X act = panel.dopanel()
+X if panel.userredraw() or act:
+X drawall(p, obswid, topwid)
+X
+Xdef left(a):
+X doturn(a.back, 0.01)
+X
+Xdef fast_left(a):
+X doturn(a.back, 0.1)
+X
+Xdef right(a):
+X doturn(a.back, -0.01)
+X
+Xdef fast_right(a):
+X doturn(a.back, -0.1)
+X
+Xdef doturn(p, angle):
+X alpha = lookangle(p) + angle
+X # Reverse the following assignment:
+X # alpha = pi*1.5 - p.direction.val*2.0*pi
+X val = (pi*1.5 - alpha) / 2.0 / pi
+X while val < 0.0: val = val + 1.0
+X while val > 1.0: val = val - 1.0
+X p.direction.val = val
+X p.direction.fixact()
+X
+Xdef forward(a):
+X dostep(a.back, 1.0)
+X
+Xdef fast_forward(a):
+X dostep(a.back, 10.0)
+X
+Xdef reverse(a):
+X dostep(a.back, -1.0)
+X
+Xdef fast_reverse(a):
+X dostep(a.back, -10.0)
+X
+Xdef dostep(p, step):
+X x, y, z = observerpos(p)
+X alpha = lookangle(p)
+X x = x + step*cos(alpha)
+X z = z - step*sin(alpha)
+X # Reverse the following assignments:
+X # x = 2.0 * p.xpos.val * near - near
+X # z = near - 2.0 * p.zpos.val * near
+X p.xpos.val = (x + near) / 2.0 / near
+X p.zpos.val = - (z - near) / 2.0 / near
+X p.xpos.fixact()
+X p.zpos.fixact()
+X
+Xdef up(a):
+X doup(a.back, 0.2)
+X
+Xdef down(a):
+X doup(a.back, -0.2)
+X
+Xdef doup(p, step):
+X x, y, z = observerpos(p)
+X y = y + step
+X # Reverse:
+X # y = p.ypos.val * near
+X p.ypos.val = y/near
+X p.ypos.fixact()
+X
+Xdef drawall(p, obswid, topwid):
+X #
+X winset(obswid)
+X obsview(p)
+X drawscene()
+X swapbuffers()
+X #
+X winset(topwid)
+X topview(p)
+X drawscene()
+X drawobserver(p)
+X swapbuffers()
+X
+Xdef drawobserver(p):
+X x, y, z = observerpos(p)
+X alpha = lookangle(p)
+X fov = 2.0 + 1798.0 * p.zoom.val
+X beta = fov*pi/3600.0 # Half fov, expressed in radians
+X #
+X c3i(0, 255, 0)
+X #
+X move(x, y, z)
+X x1 = x + inf*cos(alpha+beta)
+X y1 = y
+X z1 = z - inf*sin(alpha+beta)
+X draw(x1, y1, z1)
+X #
+X move(x, y, z)
+X x1 = x + inf*cos(alpha-beta)
+X y1 = y
+X z1 = z - inf*sin(alpha-beta)
+X draw(x1, y1, z1)
+X
+Xdef observerlookat(p):
+X x, y, z = observerpos(p)
+X alpha = lookangle(p)
+X return x, y, z, x+near*cos(alpha), y, z-near*sin(alpha), 0
+X
+Xdef observerpos(p):
+X x = 2.0 * p.xpos.val * near - near
+X y = p.ypos.val * near
+X z = near - 2.0 * p.zpos.val * near
+X return x, y, z
+X
+Xdef lookangle(p):
+X return pi*1.5 - p.direction.val*2.0*pi
+X
+Xidmat = 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1
+X
+Xdef topview(p):
+X mmode(MVIEWING)
+X ortho(-far, far, -far, far, far, -far)
+X loadmatrix(idmat)
+X rotate(900, 'x')
+X
+Xdef obsview(p):
+X fov = 2.0 + 1798.0 * p.zoom.val
+X nearclip = p.nearclip.val * 10.0
+X farclip = p.farclip.val * 10.0*far
+X aspectratio = 1.0
+X mmode(MVIEWING)
+X perspective(int(fov), aspectratio, nearclip, farclip)
+X loadmatrix(idmat)
+X lookat(observerlookat(p))
+X
+Xdef drawscene():
+X #
+X # clear window
+X #
+X c3i(0, 0, 0)
+X clear()
+X #
+X # turn on z buffering and clear it
+X #
+X zbuffer(TRUE)
+X zclear()
+X #
+X # dark blue sky (depending on your gamma value!)
+X #
+X c3i(0, 0, 150)
+X callobj(41)
+X #
+X # bright red near and far units circle
+X # (use rotate since circ() always draws in x-y plane)
+X #
+X c3i(255, 0, 0)
+X pushmatrix()
+X rotate(900, 'x')
+X circ(0.0, 0.0, near)
+X circ(0.0, 0.0, far)
+X popmatrix()
+X #
+X # bright white striping
+X #
+X c3i(255, 255, 200)
+X callobj(42)
+X #
+X # building (does its own colors)
+X #
+X building()
+X #
+X # some other objects
+X #
+X dice()
+X
+Xdef makeobjects():
+X #
+X # sky object
+X #
+X makeobj(41)
+X pmv(-inf, 0.0, -far)
+X pdr(inf, 0.0, -far)
+X pdr(inf, inf, -far)
+X pdr(-inf, inf, -far)
+X pclos()
+X closeobj()
+X #
+X # road stripes object
+X #
+X makeobj(42)
+X stripes()
+X closeobj()
+X #
+X # lighting model definitions
+X #
+X deflight()
+X
+Xdef stripes():
+X #
+X # left line
+X #
+X botrect(-11, -10, far, -far)
+X #
+X # right line
+X #
+X botrect(10, 11, far, -far)
+X #
+X # center lines
+X #
+X z = far
+X while z > -far:
+X botrect(-0.5, 0.5, z, z - 4.0)
+X z = z - 10.0
+X
+Xdef dice():
+X from block import block
+X uselight()
+X pushmatrix()
+X translate(0.0, 1.0, -20.0)
+X rotate(200, 'y')
+X block(1, 0, 0, 0, 0, 0)
+X translate(1.0, 0.0, 3.0)
+X rotate(500, 'y')
+X block(2, 0, 0, 0, 0, 0)
+X popmatrix()
+X
+Xdef deflight():
+X # Material for first die (red)
+X lmdef(DEFMATERIAL, 1, (DIFFUSE, 1.0, 0.0, 0.0))
+X # Material for second die (green)
+X lmdef(DEFMATERIAL, 2, (DIFFUSE, 0.0, 1.0, 0.0))
+X # First light source (default: white, from front)
+X lmdef(DEFLIGHT, 1, ())
+X # Second light source (red, from back)
+X lmdef(DEFLIGHT, 2, (POSITION, 0.0, 1.0, -1.0, 0.0))
+X lmdef(DEFLIGHT, 2, (LCOLOR, 1.0, 0.0, 0.0))
+X # Lighting model
+X lmdef(DEFLMODEL, 1, (AMBIENT, 0.0, 0.0, 1.0))
+X
+Xdef uselight():
+X lmbind(LIGHT0, 1)
+X lmbind(LIGHT1, 2)
+X lmbind(LMODEL, 1)
+X # (materials are bound later)
+X
+Xdef building():
+X #
+X c3i(0, 255, 255)
+X #
+X # house bounding coordinates
+X #
+X x1 = 20.0
+X x1a = 25.0
+X x2 = 30.0
+X y1 = 0.0
+X y2 = 15.0
+X y2a = 20.0
+X z1 = -40.0
+X z2 = -55.0
+X #
+X # door y and z coordinates
+X #
+X dy1 = 0.0
+X dy2 = 4.0
+X dz1 = -45.0
+X dz2 = -47.0
+X #
+X # front side (seen from origin)
+X #
+X A1 = (x1, y1, z1)
+X B1 = (x2, y1, z1)
+X C1 = (x2, y2, z1)
+X D1 = (x1a, y2a, z1)
+X E1 = (x1, y2, z1)
+X #
+X # back size
+X #
+X A2 = (x1, y1, z2)
+X B2 = (x2, y1, z2)
+X C2 = (x2, y2, z2)
+X D2 = (x1a, y2a, z2)
+X E2 = (x1, y2, z2)
+X #
+X # door in the left side
+X #
+X P = x1, dy1, dz2
+X Q = x1, dy2, dz2
+X R = x1, dy2, dz1
+X S = x1, dy1, dz1
+X #
+X # draw it
+X #
+X concave(TRUE)
+X c3i(255, 0, 0)
+X face(A1, B1, C1, D1, E1)
+X c3i(127, 127, 0)
+X face(A1, E1, E2, A2, P, Q, R, S)
+X c3i(0, 255, 0)
+X face(E1, D1, D2, E2)
+X c3i(0, 127, 127)
+X face(D1, C1, C2, D2)
+X c3i(0, 0, 255)
+X face(C1, B1, B2, C2)
+X c3i(127, 0, 127)
+X face(E2, D2, C2, B2, A2)
+X concave(FALSE)
+X
+Xdef face(points):
+X bgnpolygon()
+X varray(points)
+X endpolygon()
+X
+X# draw a rectangle at y=0.0
+X#
+Xdef botrect(x1, x2, z1, z2):
+X polf(x1, 0.0, z1, x2, 0.0, z1, x2, 0.0, z2, x1, 0.0, z2)
+X
+Xmain()
+EOF
+chmod +x 'demo/sgi/gl_panel/twoview/twoview.py'
+fi
+if test -s 'lib/DEVICE.py'
+then echo '*** I will not over-write existing file lib/DEVICE.py'
+else
+echo 'x - lib/DEVICE.py'
+sed 's/^X//' > 'lib/DEVICE.py' << 'EOF'
+X#/**************************************************************************
+X# * *
+X# * Copyright (C) 1984, Silicon Graphics, Inc. *
+X# * *
+X# * These coded instructions, statements, and computer programs contain *
+X# * unpublished proprietary information of Silicon Graphics, Inc., and *
+X# * are protected by Federal copyright law. They may not be disclosed *
+X# * to third parties or copied or duplicated in any form, in whole or *
+X# * in part, without the prior written consent of Silicon Graphics, Inc. *
+X# * *
+X# **************************************************************************/
+X#/* file with device definitions (see /usr/include/device.h) */
+X
+XNULLDEV = 0
+XBUTOFFSET = 1
+XVALOFFSET = 256
+XTIMOFFSET = 515
+XXKBDOFFSET = 143
+XINOFFSET = 1024
+XOUTOFFSET = 1033
+XBUTCOUNT = 190
+XVALCOUNT = 27
+XTIMCOUNT = 4
+XXKBDCOUNT = 28
+XINCOUNT = 8
+XOUTCOUNT = 8
+X#
+X#
+X#
+X#
+XBUT0 = 1
+XBUT1 = 2
+XBUT2 = 3
+XBUT3 = 4
+XBUT4 = 5
+XBUT5 = 6
+XBUT6 = 7
+XBUT7 = 8
+XBUT8 = 9
+XBUT9 = 10
+XBUT10 = 11
+XBUT11 = 12
+XBUT12 = 13
+XBUT13 = 14
+XBUT14 = 15
+XBUT15 = 16
+XBUT16 = 17
+XBUT17 = 18
+XBUT18 = 19
+XBUT19 = 20
+XBUT20 = 21
+XBUT21 = 22
+XBUT22 = 23
+XBUT23 = 24
+XBUT24 = 25
+XBUT25 = 26
+XBUT26 = 27
+XBUT27 = 28
+XBUT28 = 29
+XBUT29 = 30
+XBUT30 = 31
+XBUT31 = 32
+XBUT32 = 33
+XBUT33 = 34
+XBUT34 = 35
+XBUT35 = 36
+XBUT36 = 37
+XBUT37 = 38
+XBUT38 = 39
+XBUT39 = 40
+XBUT40 = 41
+XBUT41 = 42
+XBUT42 = 43
+XBUT43 = 44
+XBUT44 = 45
+XBUT45 = 46
+XBUT46 = 47
+XBUT47 = 48
+XBUT48 = 49
+XBUT49 = 50
+XBUT50 = 51
+XBUT51 = 52
+XBUT52 = 53
+XBUT53 = 54
+XBUT54 = 55
+XBUT55 = 56
+XBUT56 = 57
+XBUT57 = 58
+XBUT58 = 59
+XBUT59 = 60
+XBUT60 = 61
+XBUT61 = 62
+XBUT62 = 63
+XBUT63 = 64
+XBUT64 = 65
+XBUT65 = 66
+XBUT66 = 67
+XBUT67 = 68
+XBUT68 = 69
+XBUT69 = 70
+XBUT70 = 71
+XBUT71 = 72
+XBUT72 = 73
+XBUT73 = 74
+XBUT74 = 75
+XBUT75 = 76
+XBUT76 = 77
+XBUT77 = 78
+XBUT78 = 79
+XBUT79 = 80
+XBUT80 = 81
+XBUT81 = 82
+XBUT82 = 83
+XMAXKBDBUT = 83
+XBUT100 = 101
+XBUT101 = 102
+XBUT102 = 103
+XBUT110 = 111
+XBUT111 = 112
+XBUT112 = 113
+XBUT113 = 114
+XBUT114 = 115
+XBUT115 = 116
+XBUT116 = 117
+XBUT117 = 118
+XBUT118 = 119
+XBUT119 = 120
+XBUT120 = 121
+XBUT121 = 122
+XBUT122 = 123
+XBUT123 = 124
+XBUT124 = 125
+XBUT125 = 126
+XBUT126 = 127
+XBUT127 = 128
+XBUT128 = 129
+XBUT129 = 130
+XBUT130 = 131
+XBUT131 = 132
+XBUT132 = 133
+XBUT133 = 134
+XBUT134 = 135
+XBUT135 = 136
+XBUT136 = 137
+XBUT137 = 138
+XBUT138 = 139
+XBUT139 = 140
+XBUT140 = 141
+XBUT141 = 142
+XBUT142 = 143
+XBUT143 = 144
+XBUT144 = 145
+XBUT145 = 146
+XBUT146 = 147
+XBUT147 = 148
+XBUT148 = 149
+XBUT149 = 150
+XBUT150 = 151
+XBUT151 = 152
+XBUT152 = 153
+XBUT153 = 154
+XBUT154 = 155
+XBUT155 = 156
+XBUT156 = 157
+XBUT157 = 158
+XBUT158 = 159
+XBUT159 = 160
+XBUT160 = 161
+XBUT161 = 162
+XBUT162 = 163
+XBUT163 = 164
+XBUT164 = 165
+XBUT165 = 166
+XBUT166 = 167
+XBUT167 = 168
+XBUT168 = 169
+XBUT181 = 182
+XBUT182 = 183
+XBUT183 = 184
+XBUT184 = 185
+XBUT185 = 186
+XBUT186 = 187
+XBUT187 = 188
+XBUT188 = 189
+XBUT189 = 190
+XMOUSE1 = 101
+XMOUSE2 = 102
+XMOUSE3 = 103
+XLEFTMOUSE = 103
+XMIDDLEMOUSE = 102
+XRIGHTMOUSE = 101
+XLPENBUT = 104
+XBPAD0 = 105
+XBPAD1 = 106
+XBPAD2 = 107
+XBPAD3 = 108
+XLPENVALID = 109
+XSWBASE = 111
+XSW0 = 111
+XSW1 = 112
+XSW2 = 113
+XSW3 = 114
+XSW4 = 115
+XSW5 = 116
+XSW6 = 117
+XSW7 = 118
+XSW8 = 119
+XSW9 = 120
+XSW10 = 121
+XSW11 = 122
+XSW12 = 123
+XSW13 = 124
+XSW14 = 125
+XSW15 = 126
+XSW16 = 127
+XSW17 = 128
+XSW18 = 129
+XSW19 = 130
+XSW20 = 131
+XSW21 = 132
+XSW22 = 133
+XSW23 = 134
+XSW24 = 135
+XSW25 = 136
+XSW26 = 137
+XSW27 = 138
+XSW28 = 139
+XSW29 = 140
+XSW30 = 141
+XSW31 = 142
+XSBBASE = 182
+XSBPICK = 182
+XSBBUT1 = 183
+XSBBUT2 = 184
+XSBBUT3 = 185
+XSBBUT4 = 186
+XSBBUT5 = 187
+XSBBUT6 = 188
+XSBBUT7 = 189
+XSBBUT8 = 190
+XAKEY = 11
+XBKEY = 36
+XCKEY = 28
+XDKEY = 18
+XEKEY = 17
+XFKEY = 19
+XGKEY = 26
+XHKEY = 27
+XIKEY = 40
+XJKEY = 34
+XKKEY = 35
+XLKEY = 42
+XMKEY = 44
+XNKEY = 37
+XOKEY = 41
+XPKEY = 48
+XQKEY = 10
+XRKEY = 24
+XSKEY = 12
+XTKEY = 25
+XUKEY = 33
+XVKEY = 29
+XWKEY = 16
+XXKEY = 21
+XYKEY = 32
+XZKEY = 20
+XZEROKEY = 46
+XONEKEY = 8
+XTWOKEY = 14
+XTHREEKEY = 15
+XFOURKEY = 22
+XFIVEKEY = 23
+XSIXKEY = 30
+XSEVENKEY = 31
+XEIGHTKEY = 38
+XNINEKEY = 39
+XBREAKKEY = 1
+XSETUPKEY = 2
+XCTRLKEY = 3
+XLEFTCTRLKEY = CTRLKEY
+XCAPSLOCKKEY = 4
+XRIGHTSHIFTKEY = 5
+XLEFTSHIFTKEY = 6
+XNOSCRLKEY = 13
+XESCKEY = 7
+XTABKEY = 9
+XRETKEY = 51
+XSPACEKEY = 83
+XLINEFEEDKEY = 60
+XBACKSPACEKEY = 61
+XDELKEY = 62
+XSEMICOLONKEY = 43
+XPERIODKEY = 52
+XCOMMAKEY = 45
+XQUOTEKEY = 50
+XACCENTGRAVEKEY = 55
+XMINUSKEY = 47
+XVIRGULEKEY = 53
+XBACKSLASHKEY = 57
+XEQUALKEY = 54
+XLEFTBRACKETKEY = 49
+XRIGHTBRACKETKEY = 56
+XLEFTARROWKEY = 73
+XDOWNARROWKEY = 74
+XRIGHTARROWKEY = 80
+XUPARROWKEY = 81
+XPAD0 = 59
+XPAD1 = 58
+XPAD2 = 64
+XPAD3 = 65
+XPAD4 = 63
+XPAD5 = 69
+XPAD6 = 70
+XPAD7 = 67
+XPAD8 = 68
+XPAD9 = 75
+XPADPF1 = 72
+XPADPF2 = 71
+XPADPF3 = 79
+XPADPF4 = 78
+XPADPERIOD = 66
+XPADMINUS = 76
+XPADCOMMA = 77
+XPADENTER = 82
+XLEFTALTKEY = 143
+XRIGHTALTKEY = 144
+XRIGHTCTRLKEY = 145
+XF1KEY = 146
+XF2KEY = 147
+XF3KEY = 148
+XF4KEY = 149
+XF5KEY = 150
+XF6KEY = 151
+XF7KEY = 152
+XF8KEY = 153
+XF9KEY = 154
+XF10KEY = 155
+XF11KEY = 156
+XF12KEY = 157
+XPRINTSCREENKEY = 158
+XSCROLLLOCKKEY = 159
+XPAUSEKEY = 160
+XINSERTKEY = 161
+XHOMEKEY = 162
+XPAGEUPKEY = 163
+XENDKEY = 164
+XPAGEDOWNKEY = 165
+XNUMLOCKKEY = 166
+XPADVIRGULEKEY = 167
+XPADASTERKEY = 168
+XPADPLUSKEY = 169
+XSGIRESERVED = 256
+XDIAL0 = 257
+XDIAL1 = 258
+XDIAL2 = 259
+XDIAL3 = 260
+XDIAL4 = 261
+XDIAL5 = 262
+XDIAL6 = 263
+XDIAL7 = 264
+XDIAL8 = 265
+XMOUSEX = 266
+XMOUSEY = 267
+XLPENX = 268
+XLPENY = 269
+XBPADX = 270
+XBPADY = 271
+XCURSORX = 272
+XCURSORY = 273
+XGHOSTX = 274
+XGHOSTY = 275
+XSBTX = 276
+XSBTY = 277
+XSBTZ = 278
+XSBRX = 279
+XSBRY = 280
+XSBRZ = 281
+XSBPERIOD = 282
+XTIMER0 = 515
+XTIMER1 = 516
+XTIMER2 = 517
+XTIMER3 = 518
+XKEYBD = 513
+XRAWKEYBD = 514
+XVALMARK = 523
+XGERROR = 524
+XREDRAW = 528
+XWMSEND = 529
+XWMREPLY = 530
+XWMGFCLOSE = 531
+XWMTXCLOSE = 532
+XMODECHANGE = 533
+XINPUTCHANGE = 534
+XQFULL = 535
+XPIECECHANGE = 536
+XWINCLOSE = 537
+XQREADERROR = 538
+XWINFREEZE = 539
+XWINTHAW = 540
+XREDRAWICONIC = 541
+XWINQUIT = 542
+XDEPTHCHANGE = 543
+XKEYBDFNAMES = 544
+XKEYBDFSTRINGS = 545
+XWINSHUT = 546
+XINPUT0 = 1024
+XINPUT1 = 1025
+XINPUT2 = 1026
+XINPUT3 = 1027
+XINPUT4 = 1028
+XINPUT5 = 1029
+XINPUT6 = 1030
+XINPUT7 = 1032
+XOUTPUT0 = 1033
+XOUTPUT1 = 1034
+XOUTPUT2 = 1035
+XOUTPUT3 = 1036
+XOUTPUT4 = 1037
+XOUTPUT5 = 1038
+XOUTPUT6 = 1039
+XOUTPUT7 = 1040
+XMAXSGIDEVICE = 20000
+XMENUBUTTON = RIGHTMOUSE
+EOF
+fi
+if test -s 'lib/GL.py'
+then echo '*** I will not over-write existing file lib/GL.py'
+else
+echo 'x - lib/GL.py'
+sed 's/^X//' > 'lib/GL.py' << 'EOF'
+X# Constants defined in <gl.h>
+X
+X#**************************************************************************
+X#* *
+X#* Copyright (C) 1984, Silicon Graphics, Inc. *
+X#* *
+X#* These coded instructions, statements, and computer programs contain *
+X#* unpublished proprietary information of Silicon Graphics, Inc., and *
+X#* are protected by Federal copyright law. They may not be disclosed *
+X#* to third parties or copied or duplicated in any form, in whole or *
+X#* in part, without the prior written consent of Silicon Graphics, Inc. *
+X#* *
+X#**************************************************************************
+X
+X# Graphics Libary constants
+X
+X# Booleans
+XTRUE = 1
+XFALSE = 0
+X
+X# maximum X and Y screen coordinates
+XXMAXSCREEN = 1279
+XYMAXSCREEN = 1023
+XXMAXMEDIUM = 1023 # max for medium res monitor
+XYMAXMEDIUM = 767
+XXMAX170 = 645 # max for RS-170
+XYMAX170 = 484
+XXMAXPAL = 779 # max for PAL
+XYMAXPAL = 574
+X
+X# various hardware/software limits
+XATTRIBSTACKDEPTH = 10
+XVPSTACKDEPTH = 8
+XMATRIXSTACKDEPTH = 32
+XNAMESTACKDEPTH = 1025
+XSTARTTAG = -2
+XENDTAG = -3
+XCPOSX_INVALID = -(2*XMAXSCREEN)
+X
+X# names for colors in color map loaded by greset
+XBLACK = 0
+XRED = 1
+XGREEN = 2
+XYELLOW = 3
+XBLUE = 4
+XMAGENTA = 5
+XCYAN = 6
+XWHITE = 7
+X
+X# popup colors
+XPUP_CLEAR = 0
+XPUP_COLOR = 1
+XPUP_BLACK = 2
+XPUP_WHITE = 3
+X
+X# defines for drawmode
+XNORMALDRAW = 0
+XPUPDRAW = 1
+XOVERDRAW = 2
+XUNDERDRAW = 3
+XCURSORDRAW = 4
+X
+X# defines for defpattern
+XPATTERN_16 = 16
+XPATTERN_32 = 32
+XPATTERN_64 = 64
+X
+XPATTERN_16_SIZE = 16
+XPATTERN_32_SIZE = 64
+XPATTERN_64_SIZE = 256
+X
+X# defines for readsource
+XSRC_AUTO = 0
+XSRC_FRONT = 1
+XSRC_BACK = 2
+XSRC_ZBUFFER = 3
+XSRC_PUP = 4
+XSRC_OVER = 5
+XSRC_UNDER = 6
+XSRC_FRAMEGRABBER = 7
+X
+X# defines for blendfunction
+XBF_ZERO = 0
+XBF_ONE = 1
+XBF_DC = 2
+XBF_SC = 2
+XBF_MDC = 3
+XBF_MSC = 3
+XBF_SA = 4
+XBF_MSA = 5
+XBF_DA = 6
+XBF_MDA = 7
+X
+X# defines for zfunction
+XZF_NEVER = 0
+XZF_LESS = 1
+XZF_EQUAL = 2
+XZF_LEQUAL = 3
+XZF_GREATER = 4
+XZF_NOTEQUAL = 5
+XZF_GEQUAL = 6
+XZF_ALWAYS = 7
+X
+X# defines for zsource
+XZSRC_DEPTH = 0
+XZSRC_COLOR = 1
+X
+X# defines for pntsmooth
+XSMP_OFF = 0
+XSMP_ON = 1
+X
+X# defines for linesmooth
+XSML_OFF = 0
+XSML_ON = 1
+X
+X# defines for setpup
+XPUP_NONE = 0
+XPUP_GREY = 1
+X
+X# defines for glcompat
+XGLC_OLDPOLYGON = 0
+XGLC_ZRANGEMAP = 1
+X
+X# defines for curstype
+XC16X1 = 0
+XC16X2 = 1
+XC32X1 = 2
+XC32X2 = 3
+XCCROSS = 4
+X
+X# defines for shademodel
+XFLAT = 0
+XGOURAUD = 1
+X
+X# defines for logicop
+X### LO_ZERO = 0x0
+X### LO_AND = 0x1
+X### LO_ANDR = 0x2
+X### LO_SRC = 0x3
+X### LO_ANDI = 0x4
+X### LO_DST = 0x5
+X### LO_XOR = 0x6
+X### LO_OR = 0x7
+X### LO_NOR = 0x8
+X### LO_XNOR = 0x9
+X### LO_NDST = 0xa
+X### LO_ORR = 0xb
+X### LO_NSRC = 0xc
+X### LO_ORI = 0xd
+X### LO_NAND = 0xe
+X### LO_ONE = 0xf
+X
+X
+X#
+X# START defines for getgdesc
+X#
+X
+XGD_XPMAX = 0
+XGD_YPMAX = 1
+XGD_XMMAX = 2
+XGD_YMMAX = 3
+XGD_ZMIN = 4
+XGD_ZMAX = 5
+XGD_BITS_NORM_SNG_RED = 6
+XGD_BITS_NORM_SNG_GREEN = 7
+XGD_BITS_NORM_SNG_BLUE = 8
+XGD_BITS_NORM_DBL_RED = 9
+XGD_BITS_NORM_DBL_GREEN = 10
+XGD_BITS_NORM_DBL_BLUE = 11
+XGD_BITS_NORM_SNG_CMODE = 12
+XGD_BITS_NORM_DBL_CMODE = 13
+XGD_BITS_NORM_SNG_MMAP = 14
+XGD_BITS_NORM_DBL_MMAP = 15
+XGD_BITS_NORM_ZBUFFER = 16
+XGD_BITS_OVER_SNG_CMODE = 17
+XGD_BITS_UNDR_SNG_CMODE = 18
+XGD_BITS_PUP_SNG_CMODE = 19
+XGD_BITS_NORM_SNG_ALPHA = 21
+XGD_BITS_NORM_DBL_ALPHA = 22
+XGD_BITS_CURSOR = 23
+XGD_OVERUNDER_SHARED = 24
+XGD_BLEND = 25
+XGD_CIFRACT = 26
+XGD_CROSSHAIR_CINDEX = 27
+XGD_DITHER = 28
+XGD_LINESMOOTH_CMODE = 30
+XGD_LINESMOOTH_RGB = 31
+XGD_LOGICOP = 33
+XGD_NSCRNS = 35
+XGD_NURBS_ORDER = 36
+XGD_NBLINKS = 37
+XGD_NVERTEX_POLY = 39
+XGD_PATSIZE_64 = 40
+XGD_PNTSMOOTH_CMODE = 41
+XGD_PNTSMOOTH_RGB = 42
+XGD_PUP_TO_OVERUNDER = 43
+XGD_READSOURCE = 44
+XGD_READSOURCE_ZBUFFER = 48
+XGD_STEREO = 50
+XGD_SUBPIXEL_LINE = 51
+XGD_SUBPIXEL_PNT = 52
+XGD_SUBPIXEL_POLY = 53
+XGD_TRIMCURVE_ORDER = 54
+XGD_WSYS = 55
+XGD_ZDRAW_GEOM = 57
+XGD_ZDRAW_PIXELS = 58
+XGD_SCRNTYPE = 61
+XGD_TEXTPORT = 62
+XGD_NMMAPS = 63
+XGD_FRAMEGRABBER = 64
+XGD_TIMERHZ = 66
+XGD_DBBOX = 67
+XGD_AFUNCTION = 68
+XGD_ALPHA_OVERUNDER = 69
+XGD_BITS_ACBUF = 70
+XGD_BITS_ACBUF_HW = 71
+XGD_BITS_STENCIL = 72
+XGD_CLIPPLANES = 73
+XGD_FOGVERTEX = 74
+XGD_LIGHTING_TWOSIDE = 76
+XGD_POLYMODE = 77
+XGD_POLYSMOOTH = 78
+XGD_SCRBOX = 79
+XGD_TEXTURE = 80
+X
+X# return value for inquiries when there is no limit
+XGD_NOLIMIT = 2
+X
+X# return values for GD_WSYS
+XGD_WSYS_NONE = 0
+XGD_WSYS_4S = 1
+X
+X# return values for GD_SCRNTYPE
+XGD_SCRNTYPE_WM = 0
+XGD_SCRNTYPE_NOWM = 1
+X
+X#
+X# END defines for getgdesc
+X#
+X
+X
+X#
+X# START NURBS interface definitions
+X#
+X
+X# NURBS Rendering Properties
+XN_PIXEL_TOLERANCE = 1
+XN_CULLING = 2
+XN_DISPLAY = 3
+XN_ERRORCHECKING = 4
+XN_SUBDIVISIONS = 5
+XN_S_STEPS = 6
+XN_T_STEPS = 7
+XN_TILES = 8
+X
+XN_SHADED = 1.0
+X
+X# ---------------------------------------------------------------------------
+X# FLAGS FOR NURBS SURFACES AND CURVES
+X#
+X# Bit: 9876 5432 1 0
+X# |tttt|nnnn|f|r| : r - 1 bit = 1 if rational coordinate exists
+X# : f - 1 bit = 1 if rational coordinate is before rest
+X# : = 0 if rational coordinate is after rest
+X# : nnnn - 4 bits for number of coordinates
+X# : tttt - 4 bits for type of data (color, position, etc.)
+X#
+X# NURBS data type
+X# N_T_ST 0 parametric space data
+X# N_T_XYZ 1 model space data
+X#
+X# rational or non-rational data and position in memory
+X# N_NONRATIONAL 0 non-rational data
+X# N_RATAFTER 1 rational data with rat coord after rest
+X# N_RATBEFORE 3 rational data with rat coord before rest
+X#
+X# N_MKFLAG(a,b,c) ((a<<6) | (b<<2) | c)
+X#
+X# ---------------------------------------------------------------------------
+X#
+XN_ST = 0x8 # N_MKFLAG( N_T_ST, 2, N_NONRATIONAL )
+XN_STW = 0xd # N_MKFLAG( N_T_ST, 3, N_RATAFTER )
+XN_WST = 0xf # N_MKFLAG( N_T_ST, 3, N_RATBEFORE )
+XN_XYZ = 0x4c # N_MKFLAG( N_T_XYZ, 3, N_NONRATIONAL )
+XN_XYZW = 0x51 # N_MKFLAG( N_T_XYZ, 4, N_RATAFTER )
+XN_WXYZ = 0x53 # N_MKFLAG( N_T_XYZ, 4, N_RATBEFORE )
+X
+X#
+X# END NURBS interface definitions
+X#
+X
+X
+X#
+X# START lighting model defines
+X#
+X
+XLMNULL = 0.0
+X
+X# MATRIX modes
+XMSINGLE = 0
+XMPROJECTION = 1
+XMVIEWING = 2
+X
+X# LIGHT constants
+XMAXLIGHTS = 8
+XMAXRESTRICTIONS = 4
+X
+X# MATERIAL properties
+XDEFMATERIAL = 0
+XEMISSION = 1
+XAMBIENT = 2
+XDIFFUSE = 3
+XSPECULAR = 4
+XSHININESS = 5
+XCOLORINDEXES = 6
+XALPHA = 7
+X
+X# LIGHT properties
+XDEFLIGHT = 100
+XLCOLOR = 101
+XPOSITION = 102
+X
+X# LIGHTINGMODEL properties
+XDEFLMODEL = 200
+XLOCALVIEWER = 201
+XATTENUATION = 202
+X
+X# TARGET constants
+XMATERIAL = 1000
+XLIGHT0 = 1100
+XLIGHT1 = 1101
+XLIGHT2 = 1102
+XLIGHT3 = 1103
+XLIGHT4 = 1104
+XLIGHT5 = 1105
+XLIGHT6 = 1106
+XLIGHT7 = 1107
+XLMODEL = 1200
+X
+X# lmcolor modes
+XLMC_COLOR = 0
+XLMC_EMISSION = 1
+XLMC_AMBIENT = 2
+XLMC_DIFFUSE = 3
+XLMC_SPECULAR = 4
+XLMC_AD = 5
+XLMC_NULL = 6
+X
+X#
+X# END lighting model defines
+X#
+X
+X
+X#
+X# START distributed graphics library defines
+X#
+X
+XDGLSINK = 0 # sink connection
+XDGLLOCAL = 1 # local connection
+XDGLTSOCKET = 2 # tcp socket connection
+XDGL4DDN = 3 # 4DDN (DECnet)
+X
+X#
+X# END distributed graphics library defines
+X#
+EOF
+fi
+if test -s 'lib/calendar.py'
+then echo '*** I will not over-write existing file lib/calendar.py'
+else
+echo 'x - lib/calendar.py'
+sed 's/^X//' > 'lib/calendar.py' << 'EOF'
+X# module calendar
+X
+X##############################
+X# Calendar support functions #
+X##############################
+X
+X# This is based on UNIX ctime() et al. (also Standard C and POSIX)
+X# Subtle but crucial differences:
+X# - the order of the elements of a 'struct tm' differs, to ease sorting
+X# - months numbers are 1-12, not 0-11; month arrays have a dummy element 0
+X# - Monday is the first day of the week (numbered 0)
+X
+X# These are really parameters of the 'time' module:
+Xepoch = 1970 # Time began on January 1 of this year (00:00:00 UCT)
+Xday_0 = 3 # The epoch begins on a Thursday (Monday = 0)
+X
+X# Return 1 for leap years, 0 for non-leap years
+Xdef isleap(year):
+X return year % 4 = 0 and (year % 100 <> 0 or year % 400 = 0)
+X
+X# Constants for months referenced later
+XJanuary = 1
+XFebruary = 2
+X
+X# Number of days per month (except for February in leap years)
+Xmdays = (0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+X
+X# Exception raised for bad input (with string parameter for details)
+Xerror = 'calendar error'
+X
+X# Turn seconds since epoch into calendar time
+Xdef gmtime(secs):
+X if secs < 0: raise error, 'negative input to gmtime()'
+X mins, secs = divmod(secs, 60)
+X hours, mins = divmod(mins, 60)
+X days, hours = divmod(hours, 24)
+X wday = (days + day_0) % 7
+X year = epoch
+X # XXX Most of the following loop can be replaced by one division
+X while 1:
+X yd = 365 + isleap(year)
+X if days < yd: break
+X days = days - yd
+X year = year + 1
+X yday = days
+X month = January
+X while 1:
+X md = mdays[month] + (month = February and isleap(year))
+X if days < md: break
+X days = days - md
+X month = month + 1
+X return year, month, days + 1, hours, mins, secs, yday, wday
+X # XXX Week number also?
+X
+X# Return number of leap years in range [y1, y2)
+X# Assume y1 <= y2 and no funny (non-leap century) years
+Xdef leapdays(y1, y2):
+X return (y2+3)/4 - (y1+3)/4
+X
+X# Inverse of gmtime():
+X# Turn UCT calendar time (less yday, wday) into seconds since epoch
+Xdef mktime(year, month, day, hours, mins, secs):
+X days = day - 1
+X for m in range(January, month): days = days + mdays[m]
+X if isleap(year) and month > February: days = days+1
+X days = days + (year-epoch)*365 + leapdays(epoch, year)
+X return ((days*24 + hours)*60 + mins)*60 + secs
+X
+X# Full and abbreviated names of weekdays
+Xday_name = ('Monday', 'Tuesday', 'Wednesday', 'Thursday')
+Xday_name = day_name + ('Friday', 'Saturday', 'Sunday')
+Xday_abbr = ('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')
+X
+X# Full and abbreviated of months (1-based arrays!!!)
+Xmonth_name = ('', 'January', 'February', 'March', 'April')
+Xmonth_name = month_name + ('May', 'June', 'July', 'August')
+Xmonth_name = month_name + ('September', 'October', 'November', 'December')
+Xmonth_abbr = (' ', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun')
+Xmonth_abbr = month_abbr + ('Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
+X
+X# Zero-fill string to two positions (helper for asctime())
+Xdef dd(s):
+X while len(s) < 2: s = '0' + s
+X return s
+X
+X# Blank-fill string to two positions (helper for asctime())
+Xdef zd(s):
+X while len(s) < 2: s = ' ' + s
+X return s
+X
+X# Turn calendar time as returned by gmtime() into a string
+X# (the yday parameter is for compatibility with gmtime())
+Xdef asctime(year, month, day, hours, mins, secs, yday, wday):
+X s = day_abbr[wday] + ' ' + month_abbr[month] + ' ' + zd(`day`)
+X s = s + ' ' + dd(`hours`) + ':' + dd(`mins`) + ':' + dd(`secs`)
+X return s + ' ' + `year`
+X
+X# Localization: Minutes West from Greenwich
+X# timezone = -2*60 # Middle-European time with DST on
+Xtimezone = 5*60 # EST (sigh -- THINK time() doesn't return UCT)
+X
+X# Local time ignores DST issues for now -- adjust 'timezone' to fake it
+Xdef localtime(secs):
+X return gmtime(secs - timezone*60)
+X
+X# UNIX-style ctime (except it doesn't append '\n'!)
+Xdef ctime(secs):
+X return asctime(localtime(secs))
+X
+X######################
+X# Non-UNIX additions #
+X######################
+X
+X# Calendar printing etc.
+X
+X# Return weekday (0-6 ~ Mon-Sun) for year (1970-...), month (1-12), day (1-31)
+Xdef weekday(year, month, day):
+X secs = mktime(year, month, day, 0, 0, 0)
+X days = secs / (24*60*60)
+X return (days + day_0) % 7
+X
+X# Return weekday (0-6 ~ Mon-Sun) and number of days (28-31) for year, month
+Xdef monthrange(year, month):
+X day1 = weekday(year, month, 1)
+X ndays = mdays[month] + (month = February and isleap(year))
+X return day1, ndays
+X
+X# Return a matrix representing a month's calendar
+X# Each row represents a week; days outside this month are zero
+Xdef _monthcalendar(year, month):
+X day1, ndays = monthrange(year, month)
+X rows = []
+X r7 = range(7)
+X day = 1 - day1
+X while day <= ndays:
+X row = [0, 0, 0, 0, 0, 0, 0]
+X for i in r7:
+X if 1 <= day <= ndays: row[i] = day
+X day = day + 1
+X rows.append(row)
+X return rows
+X
+X# Caching interface to _monthcalendar
+Xmc_cache = {}
+Xdef monthcalendar(year, month):
+X key = `year` + month_abbr[month]
+X try:
+X return mc_cache[key]
+X except RuntimeError:
+X mc_cache[key] = ret = _monthcalendar(year, month)
+X return ret
+X
+X# Center a string in a field
+Xdef center(str, width):
+X n = width - len(str)
+X if n < 0: return str
+X return ' '*(n/2) + str + ' '*(n-n/2)
+X
+X# XXX The following code knows that print separates items with space!
+X
+X# Print a single week (no newline)
+Xdef prweek(week, width):
+X for day in week:
+X if day = 0: print ' '*width,
+X else:
+X if width > 2: print ' '*(width-3),
+X if day < 10: print '',
+X print day,
+X
+X# Return a header for a week
+Xdef weekheader(width):
+X str = ''
+X for i in range(7):
+X if str: str = str + ' '
+X str = str + day_abbr[i%7][:width]
+X return str
+X
+X# Print a month's calendar
+Xdef prmonth(year, month):
+X print weekheader(3)
+X for week in monthcalendar(year, month):
+X prweek(week, 3)
+X print
+X
+X# Spacing between month columns
+Xspacing = ' '
+X
+X# 3-column formatting for year calendars
+Xdef format3c(a, b, c):
+X print center(a, 20), spacing, center(b, 20), spacing, center(c, 20)
+X
+X# Print a year's calendar
+Xdef prcal(year):
+X header = weekheader(2)
+X format3c('', `year`, '')
+X for q in range(January, January+12, 3):
+X print
+X format3c(month_name[q], month_name[q+1], month_name[q+2])
+X format3c(header, header, header)
+X data = []
+X height = 0
+X for month in range(q, q+3):
+X cal = monthcalendar(year, month)
+X if len(cal) > height: height = len(cal)
+X data.append(cal)
+X for i in range(height):
+X for cal in data:
+X if i >= len(cal):
+X print ' '*20,
+X else:
+X prweek(cal[i], 2)
+X print spacing,
+X print
+EOF
+fi
+if test -s 'lib/panel.py'
+then echo '*** I will not over-write existing file lib/panel.py'
+else
+echo 'x - lib/panel.py'
+sed 's/^X//' > 'lib/panel.py' << 'EOF'
+X# Module 'panel'
+X#
+X# Support for the Panel library.
+X# Uses built-in module 'pnl'.
+X# Applciations should use 'panel.function' instead of 'pnl.function';
+X# most 'pnl' functions are transparently exported by 'panel',
+X# but dopanel() is overridden and you have to use this version
+X# if you want to use callbacks.
+X
+X
+Ximport pnl
+X
+X
+Xdebug = 0
+X
+X
+X# Test if an object is a list.
+X#
+Xdef is_list(x):
+X return type(x) = type([])
+X
+X
+X# Reverse a list.
+X#
+Xdef reverse(list):
+X res = []
+X for item in list:
+X res.insert(0, item)
+X return res
+X
+X
+X# Get an attribute of a list, which may itself be another list.
+X# Don't use 'prop' for name.
+X#
+Xdef getattrlist(list, name):
+X for item in list:
+X if item and is_list(item) and item[0] = name:
+X return item[1:]
+X return []
+X
+X
+X# Get a property of a list, which may itself be another list.
+X#
+Xdef getproplist(list, name):
+X for item in list:
+X if item and is_list(item) and item[0] = 'prop':
+X if len(item) > 1 and item[1] = name:
+X return item[2:]
+X return []
+X
+X
+X# Test if an actuator description contains the property 'end-of-group'
+X#
+Xdef is_endgroup(list):
+X x = getproplist(list, 'end-of-group')
+X return (x and x[0] = '#t')
+X
+X
+X# Neatly display an actuator definition given as S-expression
+X# the prefix string is printed before each line.
+X#
+Xdef show_actuator(prefix, a):
+X for item in a:
+X if not is_list(item):
+X print prefix, item
+X elif item and item[0] = 'al':
+X print prefix, 'Subactuator list:'
+X for a in item[1:]:
+X show_actuator(prefix + ' ', a)
+X elif len(item) = 2:
+X print prefix, item[0], '=>', item[1]
+X elif len(item) = 3 and item[0] = 'prop':
+X print prefix, 'Prop', item[1], '=>',
+X print item[2]
+X else:
+X print prefix, '?', item
+X
+X
+X# Neatly display a panel.
+X#
+Xdef show_panel(prefix, p):
+X for item in p:
+X if not is_list(item):
+X print prefix, item
+X elif item and item[0] = 'al':
+X print prefix, 'Actuator list:'
+X for a in item[1:]:
+X show_actuator(prefix + ' ', a)
+X elif len(item) = 2:
+X print prefix, item[0], '=>', item[1]
+X elif len(item) = 3 and item[0] = 'prop':
+X print prefix, 'Prop', item[1], '=>',
+X print item[2]
+X else:
+X print prefix, '?', item
+X
+X
+X# Exception raised by build_actuator or build_panel.
+X#
+Xpanel_error = 'panel error'
+X
+X
+X# Dummy callback used to initialize the callbacks.
+X#
+Xdef dummy_callback(arg):
+X pass
+X
+X
+X# Assign attributes to members of the target.
+X# Attribute names in exclist are ignored.
+X# The member name is the attribute name prefixed with the prefix.
+X#
+Xdef assign_members(target, attrlist, exclist, prefix):
+X for item in attrlist:
+X if is_list(item) and len(item) = 2 and item[0] not in exclist:
+X name, value = item[0], item[1]
+X ok = 1
+X if value[0] in '-0123456789':
+X value = eval(value)
+X elif value[0] = '"':
+X value = value[1:-1]
+X elif value = 'move-then-resize':
+X # Strange default set by Panel Editor...
+X ok = 0
+X else:
+X print 'unknown value', value, 'for', name
+X ok = 0
+X if ok:
+X lhs = 'target.' + prefix + name
+X stmt = lhs + '=' + `value`
+X if debug: print 'exec', stmt
+X try:
+X exec(stmt + '\n')
+X except KeyboardInterrupt: # Don't catch this!
+X raise KeyboardInterrupt
+X except:
+X print 'assign failed:', stmt
+X
+X
+X# Build a real actuator from an actuator descriptior.
+X# Return a pair (actuator, name).
+X#
+Xdef build_actuator(descr):
+X namelist = getattrlist(descr, 'name')
+X if namelist:
+X # Assume it is a string
+X actuatorname = namelist[0][1:-1]
+X else:
+X actuatorname = ''
+X type = descr[0]
+X if type[:4] = 'pnl_': type = type[4:]
+X act = pnl.mkact(type)
+X act.downfunc = act.activefunc = act.upfunc = dummy_callback
+X #
+X assign_members(act, descr[1:], ['al', 'data', 'name'], '')
+X #
+X # Treat actuator-specific data
+X #
+X datalist = getattrlist(descr, 'data')
+X prefix = ''
+X if type[-4:] = 'puck':
+X prefix = 'puck_'
+X elif type = 'mouse':
+X prefix = 'mouse_'
+X assign_members(act, datalist, [], prefix)
+X #
+X return act, actuatorname
+X
+X
+X# Build all sub-actuators and add them to the super-actuator.
+X# The super-actuator must already have been added to the panel.
+X# Sub-actuators with defined names are added as members to the panel
+X# so they can be referenced as p.name.
+X#
+X# Note: I have no idea how panel.endgroup() works when applied
+X# to a sub-actuator.
+X#
+Xdef build_subactuators(panel, super_act, al):
+X #
+X # This is nearly the same loop as below in build_panel(),
+X # except a call is made to addsubact() instead of addact().
+X #
+X for a in al:
+X act, name = build_actuator(a)
+X act.addsubact(super_act)
+X if name:
+X stmt = 'panel.' + name + ' = act'
+X if debug: print 'exec', stmt
+X exec(stmt + '\n')
+X if is_endgroup(a):
+X panel.endgroup()
+X sub_al = getattrlist(a, 'al')
+X if sub_al:
+X build_subactuators(panel, act, sub_al)
+X #
+X # Fix the actuator to which whe just added subactuators.
+X # This can't hurt (I hope) and is needed for the scroll actuator.
+X #
+X super_act.fixact()
+X
+X
+X# Build a real panel from a panel definition.
+X# Return a panel object p, where for each named actuator a, p.name is a
+X# reference to a.
+X#
+Xdef build_panel(descr):
+X #
+X # Sanity check
+X #
+X if (not descr) or descr[0] <> 'panel':
+X raise panel_error, 'panel description must start with "panel"'
+X #
+X if debug: show_panel('', descr)
+X #
+X # Create an empty panel
+X #
+X panel = pnl.mkpanel()
+X #
+X # Assign panel attributes
+X #
+X assign_members(panel, descr[1:], ['al'], '')
+X #
+X # Look for actuator list
+X #
+X al = getattrlist(descr, 'al')
+X #
+X # The order in which actuators are created is important
+X # because of the endgroup() operator.
+X # Unfortunately the Panel Editor outputs the actuator list
+X # in reverse order, so we reverse it here.
+X #
+X al = reverse(al)
+X #
+X for a in al:
+X act, name = build_actuator(a)
+X act.addact(panel)
+X if name:
+X stmt = 'panel.' + name + ' = act'
+X exec(stmt + '\n')
+X if is_endgroup(a):
+X panel.endgroup()
+X sub_al = getattrlist(a, 'al')
+X if sub_al:
+X build_subactuators(panel, act, sub_al)
+X #
+X return panel
+X
+X
+X# Wrapper around pnl.dopanel() which calls call-back functions.
+X#
+Xdef my_dopanel():
+X # Extract only the first 4 elements to allow for future expansion
+X a, down, active, up = pnl.dopanel()[:4]
+X if down:
+X down.downfunc(down)
+X if active:
+X active.activefunc(active)
+X if up:
+X up.upfunc(up)
+X return a
+X
+X
+X# Create one or more panels from a description file (S-expressions)
+X# generated by the Panel Editor.
+X#
+Xdef defpanellist(file):
+X import panelparser
+X descrlist = panelparser.parse_file(open(file, 'r'))
+X panellist = []
+X for descr in descrlist:
+X panellist.append(build_panel(descr))
+X return panellist
+X
+X
+X# Import everything from built-in method pnl, so the user can always
+X# use panel.foo() instead of pnl.foo().
+X# This gives *no* performance penalty once this module is imported.
+X#
+Xfrom pnl import * # for export
+X
+Xdopanel = my_dopanel # override pnl.dopanel
+EOF
+fi
+if test -s 'src/acceler.c'
+then echo '*** I will not over-write existing file src/acceler.c'
+else
+echo 'x - src/acceler.c'
+sed 's/^X//' > 'src/acceler.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Parser accelerator module */
+X
+X/* The parser as originally conceived had disappointing performance.
+X This module does some precomputation that speeds up the selection
+X of a DFA based upon a token, turning a search through an array
+X into a simple indexing operation. The parser now cannot work
+X without the accelerators installed. Note that the accelerators
+X are installed dynamically when the parser is initialized, they
+X are not part of the static data structure written on graminit.[ch]
+X by the parser generator. */
+X
+X#include "pgenheaders.h"
+X#include "grammar.h"
+X#include "token.h"
+X#include "parser.h"
+X
+X/* Forward references */
+Xstatic void fixdfa PROTO((grammar *, dfa *));
+Xstatic void fixstate PROTO((grammar *, dfa *, state *));
+X
+Xvoid
+Xaddaccelerators(g)
+X grammar *g;
+X{
+X dfa *d;
+X int i;
+X#ifdef DEBUG
+X printf("Adding parser accellerators ...\n");
+X#endif
+X d = g->g_dfa;
+X for (i = g->g_ndfas; --i >= 0; d++)
+X fixdfa(g, d);
+X g->g_accel = 1;
+X#ifdef DEBUG
+X printf("Done.\n");
+X#endif
+X}
+X
+Xstatic void
+Xfixdfa(g, d)
+X grammar *g;
+X dfa *d;
+X{
+X state *s;
+X int j;
+X s = d->d_state;
+X for (j = 0; j < d->d_nstates; j++, s++)
+X fixstate(g, d, s);
+X}
+X
+Xstatic void
+Xfixstate(g, d, s)
+X grammar *g;
+X dfa *d;
+X state *s;
+X{
+X arc *a;
+X int k;
+X int *accel;
+X int nl = g->g_ll.ll_nlabels;
+X s->s_accept = 0;
+X accel = NEW(int, nl);
+X for (k = 0; k < nl; k++)
+X accel[k] = -1;
+X a = s->s_arc;
+X for (k = s->s_narcs; --k >= 0; a++) {
+X int lbl = a->a_lbl;
+X label *l = &g->g_ll.ll_label[lbl];
+X int type = l->lb_type;
+X if (a->a_arrow >= (1 << 7)) {
+X printf("XXX too many states!\n");
+X continue;
+X }
+X if (ISNONTERMINAL(type)) {
+X dfa *d1 = finddfa(g, type);
+X int ibit;
+X if (type - NT_OFFSET >= (1 << 7)) {
+X printf("XXX too high nonterminal number!\n");
+X continue;
+X }
+X for (ibit = 0; ibit < g->g_ll.ll_nlabels; ibit++) {
+X if (testbit(d1->d_first, ibit)) {
+X if (accel[ibit] != -1)
+X printf("XXX ambiguity!\n");
+X accel[ibit] = a->a_arrow | (1 << 7) |
+X ((type - NT_OFFSET) << 8);
+X }
+X }
+X }
+X else if (lbl == EMPTY)
+X s->s_accept = 1;
+X else if (lbl >= 0 && lbl < nl)
+X accel[lbl] = a->a_arrow;
+X }
+X while (nl > 0 && accel[nl-1] == -1)
+X nl--;
+X for (k = 0; k < nl && accel[k] == -1;)
+X k++;
+X if (k < nl) {
+X int i;
+X s->s_accel = NEW(int, nl-k);
+X if (s->s_accel == NULL) {
+X fprintf(stderr, "no mem to add parser accelerators\n");
+X exit(1);
+X }
+X s->s_lower = k;
+X s->s_upper = nl;
+X for (i = 0; k < nl; i++, k++)
+X s->s_accel[i] = accel[k];
+X }
+X DEL(accel);
+X}
+EOF
+fi
+if test -s 'src/classobject.c'
+then echo '*** I will not over-write existing file src/classobject.c'
+else
+echo 'x - src/classobject.c'
+sed 's/^X//' > 'src/classobject.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Class object implementation */
+X
+X#include "allobjects.h"
+X
+X#include "structmember.h"
+X
+Xtypedef struct {
+X OB_HEAD
+X object *cl_bases; /* A tuple */
+X object *cl_methods; /* A dictionary */
+X} classobject;
+X
+Xobject *
+Xnewclassobject(bases, methods)
+X object *bases; /* NULL or tuple of classobjects! */
+X object *methods;
+X{
+X classobject *op;
+X op = NEWOBJ(classobject, &Classtype);
+X if (op == NULL)
+X return NULL;
+X if (bases != NULL)
+X INCREF(bases);
+X op->cl_bases = bases;
+X INCREF(methods);
+X op->cl_methods = methods;
+X return (object *) op;
+X}
+X
+X/* Class methods */
+X
+Xstatic void
+Xclass_dealloc(op)
+X classobject *op;
+X{
+X int i;
+X if (op->cl_bases != NULL)
+X DECREF(op->cl_bases);
+X DECREF(op->cl_methods);
+X free((ANY *)op);
+X}
+X
+Xstatic object *
+Xclass_getattr(op, name)
+X register classobject *op;
+X register char *name;
+X{
+X register object *v;
+X v = dictlookup(op->cl_methods, name);
+X if (v != NULL) {
+X INCREF(v);
+X return v;
+X }
+X if (op->cl_bases != NULL) {
+X int n = gettuplesize(op->cl_bases);
+X int i;
+X for (i = 0; i < n; i++) {
+X v = class_getattr(gettupleitem(op->cl_bases, i), name);
+X if (v != NULL)
+X return v;
+X err_clear();
+X }
+X }
+X err_setstr(NameError, name);
+X return NULL;
+X}
+X
+Xtypeobject Classtype = {
+X OB_HEAD_INIT(&Typetype)
+X 0,
+X "class",
+X sizeof(classobject),
+X 0,
+X class_dealloc, /*tp_dealloc*/
+X 0, /*tp_print*/
+X class_getattr, /*tp_getattr*/
+X 0, /*tp_setattr*/
+X 0, /*tp_compare*/
+X 0, /*tp_repr*/
+X 0, /*tp_as_number*/
+X 0, /*tp_as_sequence*/
+X 0, /*tp_as_mapping*/
+X};
+X
+X
+X/* We're not done yet: next, we define class member objects... */
+X
+Xtypedef struct {
+X OB_HEAD
+X classobject *cm_class; /* The class object */
+X object *cm_attr; /* A dictionary */
+X} classmemberobject;
+X
+Xobject *
+Xnewclassmemberobject(class)
+X register object *class;
+X{
+X register classmemberobject *cm;
+X if (!is_classobject(class)) {
+X err_badcall();
+X return NULL;
+X }
+X cm = NEWOBJ(classmemberobject, &Classmembertype);
+X if (cm == NULL)
+X return NULL;
+X INCREF(class);
+X cm->cm_class = (classobject *)class;
+X cm->cm_attr = newdictobject();
+X if (cm->cm_attr == NULL) {
+X DECREF(cm);
+X return NULL;
+X }
+X return (object *)cm;
+X}
+X
+X/* Class member methods */
+X
+Xstatic void
+Xclassmember_dealloc(cm)
+X register classmemberobject *cm;
+X{
+X DECREF(cm->cm_class);
+X if (cm->cm_attr != NULL)
+X DECREF(cm->cm_attr);
+X free((ANY *)cm);
+X}
+X
+Xstatic object *
+Xclassmember_getattr(cm, name)
+X register classmemberobject *cm;
+X register char *name;
+X{
+X register object *v = dictlookup(cm->cm_attr, name);
+X if (v != NULL) {
+X INCREF(v);
+X return v;
+X }
+X v = class_getattr(cm->cm_class, name);
+X if (v == NULL)
+X return v; /* class_getattr() has set the error */
+X if (is_funcobject(v)) {
+X object *w = newclassmethodobject(v, (object *)cm);
+X DECREF(v);
+X return w;
+X }
+X DECREF(v);
+X err_setstr(NameError, name);
+X return NULL;
+X}
+X
+Xstatic int
+Xclassmember_setattr(cm, name, v)
+X classmemberobject *cm;
+X char *name;
+X object *v;
+X{
+X if (v == NULL)
+X return dictremove(cm->cm_attr, name);
+X else
+X return dictinsert(cm->cm_attr, name, v);
+X}
+X
+Xtypeobject Classmembertype = {
+X OB_HEAD_INIT(&Typetype)
+X 0,
+X "class member",
+X sizeof(classmemberobject),
+X 0,
+X classmember_dealloc, /*tp_dealloc*/
+X 0, /*tp_print*/
+X classmember_getattr, /*tp_getattr*/
+X classmember_setattr, /*tp_setattr*/
+X 0, /*tp_compare*/
+X 0, /*tp_repr*/
+X 0, /*tp_as_number*/
+X 0, /*tp_as_sequence*/
+X 0, /*tp_as_mapping*/
+X};
+X
+X
+X/* And finally, here are class method objects */
+X/* (Really methods of class members) */
+X
+Xtypedef struct {
+X OB_HEAD
+X object *cm_func; /* The method function */
+X object *cm_self; /* The object to which this applies */
+X} classmethodobject;
+X
+Xobject *
+Xnewclassmethodobject(func, self)
+X object *func;
+X object *self;
+X{
+X register classmethodobject *cm;
+X if (!is_funcobject(func)) {
+X err_badcall();
+X return NULL;
+X }
+X cm = NEWOBJ(classmethodobject, &Classmethodtype);
+X if (cm == NULL)
+X return NULL;
+X INCREF(func);
+X cm->cm_func = func;
+X INCREF(self);
+X cm->cm_self = self;
+X return (object *)cm;
+X}
+X
+Xobject *
+Xclassmethodgetfunc(cm)
+X register object *cm;
+X{
+X if (!is_classmethodobject(cm)) {
+X err_badcall();
+X return NULL;
+X }
+X return ((classmethodobject *)cm)->cm_func;
+X}
+X
+Xobject *
+Xclassmethodgetself(cm)
+X register object *cm;
+X{
+X if (!is_classmethodobject(cm)) {
+X err_badcall();
+X return NULL;
+X }
+X return ((classmethodobject *)cm)->cm_self;
+X}
+X
+X/* Class method methods */
+X
+X#define OFF(x) offsetof(classmethodobject, x)
+X
+Xstatic struct memberlist classmethod_memberlist[] = {
+X {"cm_func", T_OBJECT, OFF(cm_func)},
+X {"cm_self", T_OBJECT, OFF(cm_self)},
+X {NULL} /* Sentinel */
+X};
+X
+Xstatic object *
+Xclassmethod_getattr(cm, name)
+X register classmethodobject *cm;
+X char *name;
+X{
+X return getmember((char *)cm, classmethod_memberlist, name);
+X}
+X
+Xstatic void
+Xclassmethod_dealloc(cm)
+X register classmethodobject *cm;
+X{
+X DECREF(cm->cm_func);
+X DECREF(cm->cm_self);
+X free((ANY *)cm);
+X}
+X
+Xtypeobject Classmethodtype = {
+X OB_HEAD_INIT(&Typetype)
+X 0,
+X "class method",
+X sizeof(classmethodobject),
+X 0,
+X classmethod_dealloc, /*tp_dealloc*/
+X 0, /*tp_print*/
+X classmethod_getattr, /*tp_getattr*/
+X 0, /*tp_setattr*/
+X 0, /*tp_compare*/
+X 0, /*tp_repr*/
+X 0, /*tp_as_number*/
+X 0, /*tp_as_sequence*/
+X 0, /*tp_as_mapping*/
+X};
+EOF
+fi
+if test -s 'src/intobject.c'
+then echo '*** I will not over-write existing file src/intobject.c'
+else
+echo 'x - src/intobject.c'
+sed 's/^X//' > 'src/intobject.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Integer object implementation */
+X
+X#include "allobjects.h"
+X
+X/* Standard Booleans */
+X
+Xintobject FalseObject = {
+X OB_HEAD_INIT(&Inttype)
+X 0
+X};
+X
+Xintobject TrueObject = {
+X OB_HEAD_INIT(&Inttype)
+X 1
+X};
+X
+Xstatic object *
+Xerr_ovf()
+X{
+X err_setstr(OverflowError, "integer overflow");
+X return NULL;
+X}
+X
+Xstatic object *
+Xerr_zdiv()
+X{
+X err_setstr(ZeroDivisionError, "integer division by zero");
+X return NULL;
+X}
+X
+X/* Integers are quite normal objects, to make object handling uniform.
+X (Using odd pointers to represent integers would save much space
+X but require extra checks for this special case throughout the code.)
+X Since, a typical Python program spends much of its time allocating
+X and deallocating integers, these operations should be very fast.
+X Therefore we use a dedicated allocation scheme with a much lower
+X overhead (in space and time) than straight malloc(): a simple
+X dedicated free list, filled when necessary with memory from malloc().
+X*/
+X
+X#define BLOCK_SIZE 1000 /* 1K less typical malloc overhead */
+X#define N_INTOBJECTS (BLOCK_SIZE / sizeof(intobject))
+X
+Xstatic intobject *
+Xfill_free_list()
+X{
+X intobject *p, *q;
+X p = NEW(intobject, N_INTOBJECTS);
+X if (p == NULL)
+X return (intobject *)err_nomem();
+X q = p + N_INTOBJECTS;
+X while (--q > p)
+X *(intobject **)q = q-1;
+X *(intobject **)q = NULL;
+X return p + N_INTOBJECTS - 1;
+X}
+X
+Xstatic intobject *free_list = NULL;
+X
+Xobject *
+Xnewintobject(ival)
+X long ival;
+X{
+X register intobject *v;
+X if (free_list == NULL) {
+X if ((free_list = fill_free_list()) == NULL)
+X return NULL;
+X }
+X v = free_list;
+X free_list = *(intobject **)free_list;
+X NEWREF(v);
+X v->ob_type = &Inttype;
+X v->ob_ival = ival;
+X return (object *) v;
+X}
+X
+Xstatic void
+Xint_dealloc(v)
+X intobject *v;
+X{
+X *(intobject **)v = free_list;
+X free_list = v;
+X}
+X
+Xlong
+Xgetintvalue(op)
+X register object *op;
+X{
+X if (!is_intobject(op)) {
+X err_badcall();
+X return -1;
+X }
+X else
+X return ((intobject *)op) -> ob_ival;
+X}
+X
+X/* Methods */
+X
+Xstatic void
+Xint_print(v, fp, flags)
+X intobject *v;
+X FILE *fp;
+X int flags;
+X{
+X fprintf(fp, "%ld", v->ob_ival);
+X}
+X
+Xstatic object *
+Xint_repr(v)
+X intobject *v;
+X{
+X char buf[20];
+X sprintf(buf, "%ld", v->ob_ival);
+X return newstringobject(buf);
+X}
+X
+Xstatic int
+Xint_compare(v, w)
+X intobject *v, *w;
+X{
+X register long i = v->ob_ival;
+X register long j = w->ob_ival;
+X return (i < j) ? -1 : (i > j) ? 1 : 0;
+X}
+X
+Xstatic object *
+Xint_add(v, w)
+X intobject *v;
+X register object *w;
+X{
+X register long a, b, x;
+X if (!is_intobject(w)) {
+X err_badarg();
+X return NULL;
+X }
+X a = v->ob_ival;
+X b = ((intobject *)w) -> ob_ival;
+X x = a + b;
+X if ((x^a) < 0 && (x^b) < 0)
+X return err_ovf();
+X return newintobject(x);
+X}
+X
+Xstatic object *
+Xint_sub(v, w)
+X intobject *v;
+X register object *w;
+X{
+X register long a, b, x;
+X if (!is_intobject(w)) {
+X err_badarg();
+X return NULL;
+X }
+X a = v->ob_ival;
+X b = ((intobject *)w) -> ob_ival;
+X x = a - b;
+X if ((x^a) < 0 && (x^~b) < 0)
+X return err_ovf();
+X return newintobject(x);
+X}
+X
+Xstatic object *
+Xint_mul(v, w)
+X intobject *v;
+X register object *w;
+X{
+X register long a, b;
+X double x;
+X if (!is_intobject(w)) {
+X err_badarg();
+X return NULL;
+X }
+X a = v->ob_ival;
+X b = ((intobject *)w) -> ob_ival;
+X x = (double)a * (double)b;
+X if (x > 0x7fffffff || x < (double) (long) 0x80000000)
+X return err_ovf();
+X return newintobject(a * b);
+X}
+X
+Xstatic object *
+Xint_div(v, w)
+X intobject *v;
+X register object *w;
+X{
+X if (!is_intobject(w)) {
+X err_badarg();
+X return NULL;
+X }
+X if (((intobject *)w) -> ob_ival == 0)
+X return err_zdiv();
+X return newintobject(v->ob_ival / ((intobject *)w) -> ob_ival);
+X}
+X
+Xstatic object *
+Xint_rem(v, w)
+X intobject *v;
+X register object *w;
+X{
+X if (!is_intobject(w)) {
+X err_badarg();
+X return NULL;
+X }
+X if (((intobject *)w) -> ob_ival == 0)
+X return err_zdiv();
+X return newintobject(v->ob_ival % ((intobject *)w) -> ob_ival);
+X}
+X
+Xstatic object *
+Xint_pow(v, w)
+X intobject *v;
+X register object *w;
+X{
+X register long iv, iw, ix;
+X register int neg;
+X if (!is_intobject(w)) {
+X err_badarg();
+X return NULL;
+X }
+X iv = v->ob_ival;
+X iw = ((intobject *)w)->ob_ival;
+X neg = 0;
+X if (iw < 0)
+X neg = 1, iw = -iw;
+X ix = 1;
+X for (; iw > 0; iw--)
+X ix = ix * iv;
+X if (neg) {
+X if (ix == 0)
+X return err_zdiv();
+X ix = 1/ix;
+X }
+X /* XXX How to check for overflow? */
+X return newintobject(ix);
+X}
+X
+Xstatic object *
+Xint_neg(v)
+X intobject *v;
+X{
+X register long a, x;
+X a = v->ob_ival;
+X x = -a;
+X if (a < 0 && x < 0)
+X return err_ovf();
+X return newintobject(x);
+X}
+X
+Xstatic object *
+Xint_pos(v)
+X intobject *v;
+X{
+X INCREF(v);
+X return (object *)v;
+X}
+X
+Xstatic number_methods int_as_number = {
+X int_add, /*tp_add*/
+X int_sub, /*tp_subtract*/
+X int_mul, /*tp_multiply*/
+X int_div, /*tp_divide*/
+X int_rem, /*tp_remainder*/
+X int_pow, /*tp_power*/
+X int_neg, /*tp_negate*/
+X int_pos, /*tp_plus*/
+X};
+X
+Xtypeobject Inttype = {
+X OB_HEAD_INIT(&Typetype)
+X 0,
+X "int",
+X sizeof(intobject),
+X 0,
+X int_dealloc, /*tp_dealloc*/
+X int_print, /*tp_print*/
+X 0, /*tp_getattr*/
+X 0, /*tp_setattr*/
+X int_compare, /*tp_compare*/
+X int_repr, /*tp_repr*/
+X &int_as_number, /*tp_as_number*/
+X 0, /*tp_as_sequence*/
+X 0, /*tp_as_mapping*/
+X};
+EOF
+fi
+echo 'Part 13 out of 21 of pack.out complete.'
+exit 0

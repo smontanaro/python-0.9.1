@@ -1,0 +1,2720 @@
+: This is a shell archive.
+: Extract with 'sh this_file'.
+:
+: Extract part 01 first since it makes all directories
+echo 'Start of pack.out, part 14 out of 21:'
+if test -s 'demo/sgi/audio_stdwin/rec.py'
+then echo '*** I will not over-write existing file demo/sgi/audio_stdwin/rec.py'
+else
+echo 'x - demo/sgi/audio_stdwin/rec.py'
+sed 's/^X//' > 'demo/sgi/audio_stdwin/rec.py' << 'EOF'
+X#! /ufs/guido/bin/sgi/python
+X
+Ximport sys
+Ximport audio
+Ximport stdwin
+X
+Ximport string
+Ximport getopt
+X
+Xfrom stdwinevents import *
+Xfrom Buttons import *
+Xfrom Sliders import *
+X#from Soundogram import Soundogram
+Xfrom VUMeter import VUMeter
+Xfrom WindowParent import WindowParent
+Xfrom HVSplit import HSplit, VSplit
+X
+Xclass TimeOutToggleButton() = ToggleButton():
+X def define(self, parent):
+X self = ToggleButton.define(self, parent)
+X self.parent.need_timer(self)
+X self.timer_hook = 0
+X return self
+X def timer(self):
+X if self.timer_hook:
+X self.timer_hook(self)
+X
+XK = 1024
+XBUFSIZE = 30*8*K
+XRates = [0, 32*K, 16*K, 8*K]
+XMagics = ['', '0032', '0016', '0008']
+X
+Xclass Struct(): pass
+XG = Struct()
+X
+Xdef main():
+X #
+X # Set default state
+X #
+X G.gain = 60
+X G.rate = 3
+X G.nomuting = 0
+X G.savefile = '@rec'
+X #
+X # Set default values
+X #
+X G.data = ''
+X G.playing = 0
+X G.recording = 0
+X G.sogram = 0
+X #
+X # Parse options
+X #
+X optlist, args = getopt.getopt(sys.argv[1:], 'mdg:r:')
+X #
+X for optname, optarg in optlist:
+X if 0: # (So all cases start with elif)
+X pass
+X elif optname = '-d':
+X G.debug = 1
+X elif optname = '-g':
+X G.gain = string.atoi(optarg)
+X if not (0 < G.gain < 256):
+X raise optarg.error, '-g gain out of range'
+X elif optname = '-m':
+X G.nomuting = (not G.nomuting)
+X elif optname = '-r':
+X G.rate = string.atoi(optarg)
+X if not (1 <= G.rate <= 3):
+X raise optarg.error, '-r rate out of range'
+X #
+X if args:
+X G.savefile = args[0]
+X #
+X # Initialize the sound package
+X #
+X audio.setoutgain(G.nomuting * G.gain) # Silence the speaker
+X audio.setrate(G.rate)
+X #
+X # Create the WindowParent and VSplit
+X #
+X G.window = WindowParent().create('Recorder', (0, 0))
+X w = G.vsplit = VSplit().create(G.window)
+X #
+X # VU-meter
+X #
+X G.vubtn = VUMeter().define(w)
+X #
+X # Radiobuttons for rates
+X #
+X r1btn = RadioButton().definetext(w, '32 K/sec')
+X r1btn.on_hook = rate_hook
+X r1btn.rate = 1
+X #
+X r2btn = RadioButton().definetext(w, '16 K/sec')
+X r2btn.on_hook = rate_hook
+X r2btn.rate = 2
+X #
+X r3btn = RadioButton().definetext(w, '8 K/sec')
+X r3btn.on_hook = rate_hook
+X r3btn.rate = 3
+X #
+X radios = [r1btn, r2btn, r3btn]
+X r1btn.group = r2btn.group = r3btn.group = radios
+X for r in radios:
+X if r.rate = G.rate: r.select(1)
+X #
+X # Other controls
+X #
+X G.recbtn = TimeOutToggleButton().definetext(w, 'Record')
+X G.recbtn.on_hook = record_on_hook
+X G.recbtn.timer_hook = record_timer_hook
+X G.recbtn.off_hook = record_off_hook
+X #
+X G.mutebtn = CheckButton().definetext(w, 'Mute')
+X G.mutebtn.select(not G.nomuting)
+X G.mutebtn.hook = mute_hook
+X #
+X G.playbtn = TimeOutToggleButton().definetext(w, 'Playback')
+X G.playbtn.on_hook = play_on_hook
+X G.playbtn.timer_hook = play_timer_hook
+X G.playbtn.off_hook = play_off_hook
+X #
+X G.gainbtn = ComplexSlider().define(w)
+X G.gainbtn.settexts(' Volume: ', ' ')
+X G.gainbtn.setminvalmax(0, G.gain, 255)
+X G.gainbtn.sethook(gain_hook)
+X #
+X G.sizebtn = Label().definetext(w, `len(G.data)` + ' bytes')
+X #
+X #G.showbtn = PushButton().definetext(w, 'Sound-o-gram...')
+X #G.showbtn.hook = show_hook
+X #
+X G.savebtn = PushButton().definetext(w, 'Save...')
+X G.savebtn.hook = save_hook
+X #
+X G.quitbtn = PushButton().definetext(w, 'Quit')
+X G.quitbtn.hook = quit_hook
+X G.playbtn.enable(0)
+X G.savebtn.enable(0)
+X #G.showbtn.enable(0)
+X start_vu()
+X G.window.realize()
+X #
+X # Event loop
+X #
+X while 1:
+X e = stdwin.getevent()
+X G.window.dispatch(e)
+X
+X# XXX Disabled...
+Xdef show_hook(self):
+X savetext = self.text
+X self.settext('Be patient...')
+X close_sogram()
+X stdwin.setdefwinsize(400, 300)
+X win = stdwin.open('Sound-o-gram')
+X G.sogram = Soundogram().define(win, G.data)
+X win.buttons = [G.sogram]
+X self.settext(savetext)
+X
+Xdef close_sogram():
+X if G.sogram:
+X # Break circular references
+X G.sogram.win.buttons[:] = []
+X del G.sogram.win
+X G.sogram = 0
+X
+Xdef mute_hook(self):
+X G.nomuting = (not self.selected)
+X audio.setoutgain(G.nomuting * G.gain)
+X
+Xdef rate_hook(self):
+X G.rate = self.rate
+X audio.setrate(G.rate)
+X
+Xdef record_on_hook(self):
+X stop_vu()
+X close_sogram()
+X audio.setrate(G.rate)
+X audio.setoutgain(G.nomuting * G.gain)
+X audio.start_recording(BUFSIZE)
+X G.recording = 1
+X G.playbtn.enable(0)
+X G.window.settimer(10 * BUFSIZE / Rates[G.rate])
+X
+Xdef record_timer_hook(self):
+X if G.recording:
+X if audio.poll_recording():
+X self.hilite(0)
+X record_off_hook(self)
+X else:
+X self.parent.settimer(5)
+X
+Xdef record_off_hook(self):
+X if not G.recording:
+X return
+X G.data = audio.stop_recording()
+X G.recording = 0
+X G.sizebtn.settext(`len(G.data)` + ' bytes')
+X audio.setoutgain(G.nomuting * G.gain)
+X G.playbtn.enable((len(G.data) > 0))
+X G.savebtn.enable((len(G.data) > 0))
+X #G.showbtn.enable((len(G.data) > 0))
+X G.window.settimer(0)
+X start_vu()
+X
+Xdef play_on_hook(self):
+X stop_vu()
+X audio.setrate(G.rate)
+X audio.setoutgain(G.gain)
+X audio.start_playing(G.data)
+X G.playing = 1
+X G.recbtn.enable(0)
+X G.window.settimer(max(10 * len(G.data) / Rates[G.rate], 1))
+X
+Xdef play_timer_hook(self):
+X if G.playing:
+X if audio.poll_playing():
+X self.hilite(0)
+X play_off_hook(self)
+X else:
+X self.parent.settimer(5)
+X
+Xdef play_off_hook(self):
+X if not G.playing:
+X return
+X x = audio.stop_playing()
+X G.playing = 0
+X audio.setoutgain(G.nomuting * G.gain)
+X G.recbtn.enable(1)
+X G.window.settimer(0)
+X start_vu()
+X
+Xdef gain_hook(self):
+X G.gain = self.val
+X if G.playing or G.nomuting: audio.setoutgain(G.gain)
+X
+Xdef save_hook(self):
+X if not G.data:
+X stdwin.fleep()
+X else:
+X prompt = 'Store sampled data on file: '
+X try:
+X G.savefile = stdwin.askfile(prompt, G.savefile, 1)
+X except KeyboardInterrupt:
+X return
+X try:
+X fp = open(G.savefile, 'w')
+X fp.write(Magics[G.rate] + G.data)
+X except:
+X stdwin.message('Cannot create ' + file)
+X
+Xdef stop_vu():
+X G.vubtn.stop()
+X
+Xdef start_vu():
+X G.vubtn.start()
+X
+XExit = 'exit' # exception
+X
+Xdef quit_hook(self):
+X raise Exit, 0
+X
+Xtry:
+X try:
+X main()
+X finally:
+X audio.setoutgain(0)
+Xexcept Exit, sts:
+X sys.exit(sts)
+EOF
+chmod +x 'demo/sgi/audio_stdwin/rec.py'
+fi
+if test -s 'lib/TclShell.py'
+then echo '*** I will not over-write existing file lib/TclShell.py'
+else
+echo 'x - lib/TclShell.py'
+sed 's/^X//' > 'lib/TclShell.py' << 'EOF'
+X# Tcl-based shell (for the Macintosh)
+X
+Ximport TclUtil
+Ximport Tcl
+Xfrom Tcl import Interpreter, TclRuntimeError
+Ximport mac
+Ximport macpath
+Xfrom macpath import isfile, isdir, exists
+X
+XUsageError = TclRuntimeError
+X
+Xclass ShellInterpreter() = Interpreter():
+X #
+X def ResetVariables(interp):
+X interp.globals['ps1'] = '$ '
+X interp.globals['ps2'] = '> '
+X interp.globals['home'] = mac.getcwd()
+X #
+X def DefineCommands(interp):
+X interp.commands['cd'] = interp.CdCmd
+X interp.commands['grep'] = interp.GrepCmd
+X interp.commands['ls'] = interp.LsCmd
+X interp.commands['mkdir'] = interp.MkdirCmd
+X interp.commands['mv'] = interp.MvCmd
+X interp.commands['pg'] = interp.PgCmd
+X interp.commands['pwd'] = interp.PwdCmd
+X interp.commands['rm'] = interp.RmCmd
+X interp.commands['rmdir'] = interp.RmdirCmd
+X interp.commands['sync'] = interp.SyncCmd
+X #
+X def Reset(interp):
+X interp.ResetVariables()
+X interp.DefineCommands()
+X #
+X def Create(interp):
+X interp = Interpreter.Create(interp) # initialize base class
+X interp.Reset()
+X return interp
+X #
+X # Command-implementing functions
+X #
+X def CdCmd(interp, argv):
+X if len(argv) > 2:
+X raise UsageError, 'usage: cd [dirname]'
+X if len(argv) = 2:
+X chdirto(argv[1])
+X else:
+X chdirto(interp.globals['home'])
+X return ''
+X #
+X def GrepCmd(interp, argv):
+X if len(argv) < 3:
+X raise UsageError, 'usage: grep regexp file ...'
+X import regexp
+X try:
+X prog = regexp.compile(argv[1])
+X except regexp.error, msg:
+X raise TclRuntimeError, \
+X ('grep', argv[1], ': bad regexp :', msg)
+X for file in argv[2:]:
+X grepfile(prog, file)
+X return ''
+X #
+X def LsCmd(interp, argv):
+X if len(argv) < 2:
+X lsdir(':')
+X else:
+X for dirname in argv[1:]:
+X lsdir(dirname)
+X return ''
+X #
+X def MkdirCmd(interp, argv):
+X if len(argv) < 2:
+X raise UsageError, 'usage: mkdir name ...'
+X for name in argv[1:]:
+X makedir(name)
+X return ''
+X #
+X def MvCmd(interp, argv):
+X if len(argv) <> 3:
+X raise UsageError, 'usage: mv src dst'
+X src, dst = argv[1], argv[2]
+X if not exists(src):
+X raise TclRuntimeError, \
+X ('mv', src, dst, ': source does not exist')
+X if exists(dst):
+X raise TclRuntimeError, \
+X ('mv', src, dst, ': destination already exists')
+X try:
+X mac.rename(src, dst)
+X except mac.error, msg:
+X raise TclRuntimeError, \
+X (src, dst, ': rename failed :', msg)
+X return ''
+X #
+X def PgCmd(interp, argv):
+X if len(argv) < 2:
+X raise UsageError, 'usage: page file ...'
+X for name in argv[1:]:
+X pagefile(name)
+X return ''
+X #
+X def PwdCmd(interp, argv):
+X if len(argv) > 1:
+X raise UsageError, 'usage: pwd'
+X else:
+X return mac.getcwd()
+X #
+X def RmCmd(interp, argv):
+X if len(argv) < 2:
+X raise UsageError, 'usage: rm file ...'
+X for name in argv[1:]:
+X remove(name)
+X return ''
+X #
+X def RmdirCmd(interp, argv):
+X if len(argv) < 2:
+X raise UsageError, 'usage: rmdir dir ...'
+X for name in argv[1:]:
+X rmdir(name)
+X return ''
+X #
+X def SyncCmd(interp, argv):
+X if len(argv) > 1:
+X raise UsageError, 'usage: sync'
+X try:
+X mac.sync()
+X except mac.error, msg:
+X raise TclRuntimeError, ('sync failed :', msg)
+X #
+X
+Xdef chdirto(dirname):
+X try:
+X mac.chdir(dirname)
+X except mac.error, msg:
+X raise TclRuntimeError, (dirname, ': chdir failed :', msg)
+X
+Xdef grepfile(prog, file):
+X try:
+X fp = open(file, 'r')
+X except RuntimeError, msg:
+X raise TclRuntimeError, (file, ': open failed :', msg)
+X lineno = 0
+X while 1:
+X line = fp.readline()
+X if not line: break
+X lineno = lineno+1
+X if prog.exec(line):
+X print file+'('+`lineno`+'):', line,
+X
+Xdef lsdir(dirname):
+X if not isdir(dirname):
+X print dirname, ': no such directory'
+X return
+X names = mac.listdir(dirname)
+X lsfiles(names, dirname)
+X
+Xdef lsfiles(names, dirname):
+X names = names[:] # Make a copy so we can modify it
+X for i in range(len(names)):
+X name = names[i]
+X if isdir(macpath.cat(dirname, name)):
+X names[i] = ':' + name + ':'
+X columnize(names)
+X
+Xdef makedir(name):
+X if exists(name):
+X print name, ': already exists'
+X return
+X try:
+X mac.mkdir(name, 0777)
+X except mac.error, msg:
+X raise TclRuntimeError, (name, ': mkdir failed :', msg)
+X
+Xdef pagefile(name):
+X import string
+X if not isfile(name):
+X print name, ': no such file'
+X return
+X LINES = 24 - 1
+X # For THINK C 3.0, make the path absolute:
+X # if not macpath.isabs(name):
+X # name = macpath.cat(mac.getcwd(), name)
+X try:
+X fp = open(name, 'r')
+X except RuntimeError, msg:
+X raise TclRuntimeError, (name, ': open failed :', msg)
+X line = fp.readline()
+X while line:
+X for i in range(LINES):
+X print line,
+X line = fp.readline()
+X if not line: break
+X if line:
+X try:
+X more = raw_input('[more]')
+X except (EOFError, KeyboardInterrupt):
+X print
+X break
+X if string.strip(more)[:1] in ('q', 'Q'):
+X break
+X
+Xdef remove(name):
+X if not isfile(name):
+X print name, ': no such file'
+X return
+X try:
+X mac.unlink(name)
+X except mac.error, msg:
+X raise TclRuntimeError, (name, ': unlink failed :', msg)
+X
+Xdef rmdir(name):
+X if not isdir(name):
+X raise TclRuntimeError, (name, ': no such directory')
+X try:
+X mac.rmdir(name)
+X except mac.error, msg:
+X raise TclRuntimeError, (name, ': rmdir failed :', msg)
+X
+Xdef printlist(list):
+X for word in list:
+X print word,
+X
+Xdef columnize(list):
+X import string
+X COLUMNS = 80-1
+X n = len(list)
+X colwidth = maxwidth(list)
+X ncols = (COLUMNS + 1) / (colwidth + 1)
+X if ncols < 1: ncols = 1
+X nrows = (n + ncols - 1) / ncols
+X for irow in range(nrows):
+X line = ''
+X for icol in range(ncols):
+X i = irow + nrows*icol
+X if 0 <= i < n:
+X word = list[i]
+X if i+nrows < n:
+X word = string.ljust(word, colwidth)
+X if icol > 0:
+X word = ' ' + word
+X line = line + word
+X print line
+X
+Xdef maxwidth(list):
+X width = 0
+X for word in list:
+X if len(word) > width:
+X width = len(word)
+X return width
+X
+Xthe_interpreter = ShellInterpreter().Create()
+X
+Xdef main():
+X Tcl.MainLoop(the_interpreter)
+EOF
+fi
+if test -s 'lib/tablewin.py'
+then echo '*** I will not over-write existing file lib/tablewin.py'
+else
+echo 'x - lib/tablewin.py'
+sed 's/^X//' > 'lib/tablewin.py' << 'EOF'
+X# Module 'tablewin'
+X
+X# Display a table, with per-item actions:
+X
+X# A1 | A2 | A3 | .... | AN
+X# B1 | B2 | B3 | .... | BN
+X# C1 | C2 | C3 | .... | CN
+X# .. | .. | .. | .... | ..
+X# Z1 | Z2 | Z3 | .... | ZN
+X
+X# Not all columns need to have the same length.
+X# The data structure is a list of columns;
+X# each column is a list of items.
+X# Each item is a pair of a string and an action procedure.
+X# The first item may be a column title.
+X
+Ximport stdwin
+Ximport gwin
+X
+Xdef open(title, data): # Public function to open a table window
+X #
+X # Set geometry parameters (one day, these may be changeable)
+X #
+X margin = stdwin.textwidth(' ')
+X lineheight = stdwin.lineheight()
+X #
+X # Geometry calculations
+X #
+X colstarts = [0]
+X totwidth = 0
+X maxrows = 0
+X for coldata in data:
+X # Height calculations
+X rows = len(coldata)
+X if rows > maxrows: maxrows = rows
+X # Width calculations
+X width = colwidth(coldata) + margin
+X totwidth = totwidth + width
+X colstarts.append(totwidth)
+X #
+X # Calculate document and window height
+X #
+X docwidth, docheight = totwidth, maxrows*lineheight
+X winwidth, winheight = docwidth, docheight
+X if winwidth > stdwin.textwidth('n')*100: winwidth = 0
+X if winheight > stdwin.lineheight()*30: winheight = 0
+X #
+X # Create the window
+X #
+X stdwin.setdefwinsize(winwidth, winheight)
+X w = gwin.open(title)
+X #
+X # Set properties and override methods
+X #
+X w.data = data
+X w.margin = margin
+X w.lineheight = lineheight
+X w.colstarts = colstarts
+X w.totwidth = totwidth
+X w.maxrows = maxrows
+X w.selection = (-1, -1)
+X w.lastselection = (-1, -1)
+X w.selshown = 0
+X w.setdocsize(docwidth, docheight)
+X w.draw = draw
+X w.mup = mup
+X w.arrow = arrow
+X #
+X # Return
+X #
+X return w
+X
+Xdef update(w, data): # Change the data
+X #
+X # Hide selection
+X #
+X hidesel(w, w.begindrawing())
+X #
+X # Get old geometry parameters
+X #
+X margin = w.margin
+X lineheight = w.lineheight
+X #
+X # Geometry calculations
+X #
+X colstarts = [0]
+X totwidth = 0
+X maxrows = 0
+X for coldata in data:
+X # Height calculations
+X rows = len(coldata)
+X if rows > maxrows: maxrows = rows
+X # Width calculations
+X width = colwidth(coldata) + margin
+X totwidth = totwidth + width
+X colstarts.append(totwidth)
+X #
+X # Calculate document and window height
+X #
+X docwidth, docheight = totwidth, maxrows*lineheight
+X #
+X # Set changed properties and change window size
+X #
+X w.data = data
+X w.colstarts = colstarts
+X w.totwidth = totwidth
+X w.maxrows = maxrows
+X w.change((0, 0), (10000, 10000))
+X w.setdocsize(docwidth, docheight)
+X w.change((0, 0), (docwidth, docheight))
+X #
+X # Show selection, or forget it if out of range
+X #
+X showsel(w, w.begindrawing())
+X if not w.selshown: w.selection = (-1, -1)
+X
+Xdef colwidth(coldata): # Subroutine to calculate column width
+X maxwidth = 0
+X for string, action in coldata:
+X width = stdwin.textwidth(string)
+X if width > maxwidth: maxwidth = width
+X return maxwidth
+X
+Xdef draw(w, ((left, top), (right, bottom))): # Draw method
+X ileft = whichcol(w, left)
+X iright = whichcol(w, right-1) + 1
+X if iright > len(w.data): iright = len(w.data)
+X itop = divmod(top, w.lineheight)[0]
+X if itop < 0: itop = 0
+X ibottom, remainder = divmod(bottom, w.lineheight)
+X if remainder: ibottom = ibottom + 1
+X d = w.begindrawing()
+X if ileft <= w.selection[0] < iright:
+X if itop <= w.selection[1] < ibottom:
+X hidesel(w, d)
+X d.erase((left, top), (right, bottom))
+X for i in range(ileft, iright):
+X col = w.data[i]
+X jbottom = len(col)
+X if ibottom < jbottom: jbottom = ibottom
+X h = w.colstarts[i]
+X v = itop * w.lineheight
+X for j in range(itop, jbottom):
+X string, action = col[j]
+X d.text((h, v), string)
+X v = v + w.lineheight
+X showsel(w, d)
+X
+Xdef mup(w, detail): # Mouse up method
+X (h, v), nclicks, button, mask = detail
+X icol = whichcol(w, h)
+X if 0 <= icol < len(w.data):
+X irow = divmod(v, w.lineheight)[0]
+X col = w.data[icol]
+X if 0 <= irow < len(col):
+X string, action = col[irow]
+X action(w, string, (icol, irow), detail)
+X
+Xdef whichcol(w, h): # Return column number (may be >= len(w.data))
+X for icol in range(0, len(w.data)):
+X if h < w.colstarts[icol+1]:
+X return icol
+X return len(w.data)
+X
+Xdef arrow(w, type):
+X import stdwinsupport
+X S = stdwinsupport
+X if type = S.wc_left:
+X incr = -1, 0
+X elif type = S.wc_up:
+X incr = 0, -1
+X elif type = S.wc_right:
+X incr = 1, 0
+X elif type = S.wc_down:
+X incr = 0, 1
+X else:
+X return
+X icol, irow = w.lastselection
+X icol = icol + incr[0]
+X if icol < 0: icol = len(w.data)-1
+X if icol >= len(w.data): icol = 0
+X if 0 <= icol < len(w.data):
+X irow = irow + incr[1]
+X if irow < 0: irow = len(w.data[icol]) - 1
+X if irow >= len(w.data[icol]): irow = 0
+X else:
+X irow = 0
+X if 0 <= icol < len(w.data) and 0 <= irow < len(w.data[icol]):
+X w.lastselection = icol, irow
+X string, action = w.data[icol][irow]
+X detail = (0, 0), 1, 1, 1
+X action(w, string, (icol, irow), detail)
+X
+X
+X# Selection management
+X# TO DO: allow multiple selected entries
+X
+Xdef select(w, selection): # Public function to set the item selection
+X d = w.begindrawing()
+X hidesel(w, d)
+X w.selection = selection
+X showsel(w, d)
+X if w.selshown: lastselection = selection
+X
+Xdef hidesel(w, d): # Hide the selection, if shown
+X if w.selshown: invertsel(w, d)
+X
+Xdef showsel(w, d): # Show the selection, if hidden
+X if not w.selshown: invertsel(w, d)
+X
+Xdef invertsel(w, d): # Invert the selection, if valid
+X icol, irow = w.selection
+X if 0 <= icol < len(w.data) and 0 <= irow < len(w.data[icol]):
+X left = w.colstarts[icol]
+X right = w.colstarts[icol+1]
+X top = irow * w.lineheight
+X bottom = (irow+1) * w.lineheight
+X d.invert((left, top), (right, bottom))
+X w.selshown = (not w.selshown)
+X
+X
+X# Demonstration
+X
+Xdef demo_action(w, string, (icol, irow), detail): # Action function for demo
+X select(w, (irow, icol))
+X
+Xdef demo(): # Demonstration
+X da = demo_action # shorthand
+X col0 = [('a1', da), ('bbb1', da), ('c1', da)]
+X col1 = [('a2', da), ('bbb2', da)]
+X col2 = [('a3', da), ('b3', da), ('c3', da), ('d4', da), ('d5', da)]
+X col3 = []
+X for i in range(1, 31): col3.append('xxx' + `i`, da)
+X data = [col0, col1, col2, col3]
+X w = open('tablewin.demo', data)
+X gwin.mainloop()
+X return w
+EOF
+fi
+if test -s 'src/fileobject.c'
+then echo '*** I will not over-write existing file src/fileobject.c'
+else
+echo 'x - src/fileobject.c'
+sed 's/^X//' > 'src/fileobject.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* File object implementation */
+X
+X/* XXX This should become a built-in module 'io'. It should support more
+X functionality, better exception handling for invalid calls, etc.
+X (Especially reading on a write-only file or vice versa!)
+X It should also cooperate with posix to support popen(), which should
+X share most code but have a special close function. */
+X
+X#include "allobjects.h"
+X
+X#include "errno.h"
+X#ifndef errno
+Xextern int errno;
+X#endif
+X
+Xtypedef struct {
+X OB_HEAD
+X FILE *f_fp;
+X object *f_name;
+X object *f_mode;
+X /* XXX Should move the 'need space' on printing flag here */
+X} fileobject;
+X
+XFILE *
+Xgetfilefile(f)
+X object *f;
+X{
+X if (!is_fileobject(f)) {
+X err_badcall();
+X return NULL;
+X }
+X return ((fileobject *)f)->f_fp;
+X}
+X
+Xobject *
+Xnewopenfileobject(fp, name, mode)
+X FILE *fp;
+X char *name;
+X char *mode;
+X{
+X fileobject *f = NEWOBJ(fileobject, &Filetype);
+X if (f == NULL)
+X return NULL;
+X f->f_fp = NULL;
+X f->f_name = newstringobject(name);
+X f->f_mode = newstringobject(mode);
+X if (f->f_name == NULL || f->f_mode == NULL) {
+X DECREF(f);
+X return NULL;
+X }
+X f->f_fp = fp;
+X return (object *) f;
+X}
+X
+Xobject *
+Xnewfileobject(name, mode)
+X char *name, *mode;
+X{
+X fileobject *f;
+X FILE *fp;
+X f = (fileobject *) newopenfileobject((FILE *)NULL, name, mode);
+X if (f == NULL)
+X return NULL;
+X#ifdef THINK_C
+X if (*mode == '*') {
+X FILE *fopenRF();
+X f->f_fp = fopenRF(name, mode+1);
+X }
+X else
+X#endif
+X f->f_fp = fopen(name, mode);
+X if (f->f_fp == NULL) {
+X err_errno(RuntimeError);
+X DECREF(f);
+X return NULL;
+X }
+X return (object *)f;
+X}
+X
+X/* Methods */
+X
+Xstatic void
+Xfile_dealloc(f)
+X fileobject *f;
+X{
+X if (f->f_fp != NULL)
+X fclose(f->f_fp);
+X if (f->f_name != NULL)
+X DECREF(f->f_name);
+X if (f->f_mode != NULL)
+X DECREF(f->f_mode);
+X free((char *)f);
+X}
+X
+Xstatic void
+Xfile_print(f, fp, flags)
+X fileobject *f;
+X FILE *fp;
+X int flags;
+X{
+X fprintf(fp, "<%s file ", f->f_fp == NULL ? "closed" : "open");
+X printobject(f->f_name, fp, flags);
+X fprintf(fp, ", mode ");
+X printobject(f->f_mode, fp, flags);
+X fprintf(fp, ">");
+X}
+X
+Xstatic object *
+Xfile_repr(f)
+X fileobject *f;
+X{
+X char buf[300];
+X /* XXX This differs from file_print if the filename contains
+X quotes or other funny characters. */
+X sprintf(buf, "<%s file '%.256s', mode '%.10s'>",
+X f->f_fp == NULL ? "closed" : "open",
+X getstringvalue(f->f_name),
+X getstringvalue(f->f_mode));
+X return newstringobject(buf);
+X}
+X
+Xstatic object *
+Xfile_close(f, args)
+X fileobject *f;
+X object *args;
+X{
+X if (args != NULL) {
+X err_badarg();
+X return NULL;
+X }
+X if (f->f_fp != NULL) {
+X fclose(f->f_fp);
+X f->f_fp = NULL;
+X }
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xfile_read(f, args)
+X fileobject *f;
+X object *args;
+X{
+X int n;
+X object *v;
+X if (f->f_fp == NULL) {
+X err_badarg();
+X return NULL;
+X }
+X if (args == NULL || !is_intobject(args)) {
+X err_badarg();
+X return NULL;
+X }
+X n = getintvalue(args);
+X if (n < 0) {
+X err_badarg();
+X return NULL;
+X }
+X v = newsizedstringobject((char *)NULL, n);
+X if (v == NULL)
+X return NULL;
+X n = fread(getstringvalue(v), 1, n, f->f_fp);
+X /* EOF is reported as an empty string */
+X /* XXX should detect real I/O errors? */
+X resizestring(&v, n);
+X return v;
+X}
+X
+X/* XXX Should this be unified with raw_input()? */
+X
+Xstatic object *
+Xfile_readline(f, args)
+X fileobject *f;
+X object *args;
+X{
+X int n;
+X object *v;
+X if (f->f_fp == NULL) {
+X err_badarg();
+X return NULL;
+X }
+X if (args == NULL) {
+X n = 10000; /* XXX should really be unlimited */
+X }
+X else if (is_intobject(args)) {
+X n = getintvalue(args);
+X if (n < 0) {
+X err_badarg();
+X return NULL;
+X }
+X }
+X else {
+X err_badarg();
+X return NULL;
+X }
+X v = newsizedstringobject((char *)NULL, n);
+X if (v == NULL)
+X return NULL;
+X#ifndef THINK_C_3_0
+X /* XXX Think C 3.0 wrongly reads up to n characters... */
+X n = n+1;
+X#endif
+X if (fgets(getstringvalue(v), n, f->f_fp) == NULL) {
+X /* EOF is reported as an empty string */
+X /* XXX should detect real I/O errors? */
+X n = 0;
+X }
+X else {
+X n = strlen(getstringvalue(v));
+X }
+X resizestring(&v, n);
+X return v;
+X}
+X
+Xstatic object *
+Xfile_write(f, args)
+X fileobject *f;
+X object *args;
+X{
+X int n, n2;
+X if (f->f_fp == NULL) {
+X err_badarg();
+X return NULL;
+X }
+X if (args == NULL || !is_stringobject(args)) {
+X err_badarg();
+X return NULL;
+X }
+X errno = 0;
+X n2 = fwrite(getstringvalue(args), 1, n = getstringsize(args), f->f_fp);
+X if (n2 != n) {
+X if (errno == 0)
+X errno = EIO;
+X err_errno(RuntimeError);
+X return NULL;
+X }
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic struct methodlist file_methods[] = {
+X {"write", file_write},
+X {"read", file_read},
+X {"readline", file_readline},
+X {"close", file_close},
+X {NULL, NULL} /* sentinel */
+X};
+X
+Xstatic object *
+Xfile_getattr(f, name)
+X fileobject *f;
+X char *name;
+X{
+X return findmethod(file_methods, (object *)f, name);
+X}
+X
+Xtypeobject Filetype = {
+X OB_HEAD_INIT(&Typetype)
+X 0,
+X "file",
+X sizeof(fileobject),
+X 0,
+X file_dealloc, /*tp_dealloc*/
+X file_print, /*tp_print*/
+X file_getattr, /*tp_getattr*/
+X 0, /*tp_setattr*/
+X 0, /*tp_compare*/
+X file_repr, /*tp_repr*/
+X};
+EOF
+fi
+if test -s 'src/floatobject.c'
+then echo '*** I will not over-write existing file src/floatobject.c'
+else
+echo 'x - src/floatobject.c'
+sed 's/^X//' > 'src/floatobject.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Float object implementation */
+X
+X/* XXX There should be overflow checks here, but it's hard to check
+X for any kind of float exception without losing portability. */
+X
+X#include "allobjects.h"
+X
+X#include <errno.h>
+X#ifndef errno
+Xextern int errno;
+X#endif
+X
+X#include <ctype.h>
+X#include <math.h>
+X
+X#ifndef THINK_C
+Xextern double fmod PROTO((double, double));
+Xextern double pow PROTO((double, double));
+X#endif
+X
+Xobject *
+Xnewfloatobject(fval)
+X double fval;
+X{
+X /* For efficiency, this code is copied from newobject() */
+X register floatobject *op = (floatobject *) malloc(sizeof(floatobject));
+X if (op == NULL)
+X return err_nomem();
+X NEWREF(op);
+X op->ob_type = &Floattype;
+X op->ob_fval = fval;
+X return (object *) op;
+X}
+X
+Xdouble
+Xgetfloatvalue(op)
+X object *op;
+X{
+X if (!is_floatobject(op)) {
+X err_badarg();
+X return -1;
+X }
+X else
+X return ((floatobject *)op) -> ob_fval;
+X}
+X
+X/* Methods */
+X
+Xstatic void
+Xfloat_buf_repr(buf, v)
+X char *buf;
+X floatobject *v;
+X{
+X register char *cp;
+X /* Subroutine for float_repr and float_print.
+X We want float numbers to be recognizable as such,
+X i.e., they should contain a decimal point or an exponent.
+X However, %g may print the number as an integer;
+X in such cases, we append ".0" to the string. */
+X sprintf(buf, "%.12g", v->ob_fval);
+X cp = buf;
+X if (*cp == '-')
+X cp++;
+X for (; *cp != '\0'; cp++) {
+X /* Any non-digit means it's not an integer;
+X this takes care of NAN and INF as well. */
+X if (!isdigit(*cp))
+X break;
+X }
+X if (*cp == '\0') {
+X *cp++ = '.';
+X *cp++ = '0';
+X *cp++ = '\0';
+X }
+X}
+X
+Xstatic void
+Xfloat_print(v, fp, flags)
+X floatobject *v;
+X FILE *fp;
+X int flags;
+X{
+X char buf[100];
+X float_buf_repr(buf, v);
+X fputs(buf, fp);
+X}
+X
+Xstatic object *
+Xfloat_repr(v)
+X floatobject *v;
+X{
+X char buf[100];
+X float_buf_repr(buf, v);
+X return newstringobject(buf);
+X}
+X
+Xstatic int
+Xfloat_compare(v, w)
+X floatobject *v, *w;
+X{
+X double i = v->ob_fval;
+X double j = w->ob_fval;
+X return (i < j) ? -1 : (i > j) ? 1 : 0;
+X}
+X
+Xstatic object *
+Xfloat_add(v, w)
+X floatobject *v;
+X object *w;
+X{
+X if (!is_floatobject(w)) {
+X err_badarg();
+X return NULL;
+X }
+X return newfloatobject(v->ob_fval + ((floatobject *)w) -> ob_fval);
+X}
+X
+Xstatic object *
+Xfloat_sub(v, w)
+X floatobject *v;
+X object *w;
+X{
+X if (!is_floatobject(w)) {
+X err_badarg();
+X return NULL;
+X }
+X return newfloatobject(v->ob_fval - ((floatobject *)w) -> ob_fval);
+X}
+X
+Xstatic object *
+Xfloat_mul(v, w)
+X floatobject *v;
+X object *w;
+X{
+X if (!is_floatobject(w)) {
+X err_badarg();
+X return NULL;
+X }
+X return newfloatobject(v->ob_fval * ((floatobject *)w) -> ob_fval);
+X}
+X
+Xstatic object *
+Xfloat_div(v, w)
+X floatobject *v;
+X object *w;
+X{
+X if (!is_floatobject(w)) {
+X err_badarg();
+X return NULL;
+X }
+X if (((floatobject *)w) -> ob_fval == 0) {
+X err_setstr(ZeroDivisionError, "float division by zero");
+X return NULL;
+X }
+X return newfloatobject(v->ob_fval / ((floatobject *)w) -> ob_fval);
+X}
+X
+Xstatic object *
+Xfloat_rem(v, w)
+X floatobject *v;
+X object *w;
+X{
+X double wx;
+X if (!is_floatobject(w)) {
+X err_badarg();
+X return NULL;
+X }
+X wx = ((floatobject *)w) -> ob_fval;
+X if (wx == 0.0) {
+X err_setstr(ZeroDivisionError, "float division by zero");
+X return NULL;
+X }
+X return newfloatobject(fmod(v->ob_fval, wx));
+X}
+X
+Xstatic object *
+Xfloat_pow(v, w)
+X floatobject *v;
+X object *w;
+X{
+X double iv, iw, ix;
+X if (!is_floatobject(w)) {
+X err_badarg();
+X return NULL;
+X }
+X iv = v->ob_fval;
+X iw = ((floatobject *)w)->ob_fval;
+X if (iw == 0.0)
+X return newfloatobject(1.0); /* x**0 is always 1, even 0**0 */
+X errno = 0;
+X ix = pow(iv, iw);
+X if (errno != 0) {
+X /* XXX could it be another type of error? */
+X err_errno(OverflowError);
+X return NULL;
+X }
+X return newfloatobject(ix);
+X}
+X
+Xstatic object *
+Xfloat_neg(v)
+X floatobject *v;
+X{
+X return newfloatobject(-v->ob_fval);
+X}
+X
+Xstatic object *
+Xfloat_pos(v)
+X floatobject *v;
+X{
+X return newfloatobject(v->ob_fval);
+X}
+X
+Xstatic number_methods float_as_number = {
+X float_add, /*tp_add*/
+X float_sub, /*tp_subtract*/
+X float_mul, /*tp_multiply*/
+X float_div, /*tp_divide*/
+X float_rem, /*tp_remainder*/
+X float_pow, /*tp_power*/
+X float_neg, /*tp_negate*/
+X float_pos, /*tp_plus*/
+X};
+X
+Xtypeobject Floattype = {
+X OB_HEAD_INIT(&Typetype)
+X 0,
+X "float",
+X sizeof(floatobject),
+X 0,
+X free, /*tp_dealloc*/
+X float_print, /*tp_print*/
+X 0, /*tp_getattr*/
+X 0, /*tp_setattr*/
+X float_compare, /*tp_compare*/
+X float_repr, /*tp_repr*/
+X &float_as_number, /*tp_as_number*/
+X 0, /*tp_as_sequence*/
+X 0, /*tp_as_mapping*/
+X};
+X
+X/*
+XXXX This is not enough. Need:
+X- automatic casts for mixed arithmetic (3.1 * 4)
+X- mixed comparisons (!)
+X- look at other uses of ints that could be extended to floats
+X*/
+EOF
+fi
+if test -s 'src/grammar.c'
+then echo '*** I will not over-write existing file src/grammar.c'
+else
+echo 'x - src/grammar.c'
+sed 's/^X//' > 'src/grammar.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Grammar implementation */
+X
+X#include "pgenheaders.h"
+X
+X#include <ctype.h>
+X
+X#include "assert.h"
+X#include "token.h"
+X#include "grammar.h"
+X
+Xextern int debugging;
+X
+Xgrammar *
+Xnewgrammar(start)
+X int start;
+X{
+X grammar *g;
+X
+X g = NEW(grammar, 1);
+X if (g == NULL)
+X fatal("no mem for new grammar");
+X g->g_ndfas = 0;
+X g->g_dfa = NULL;
+X g->g_start = start;
+X g->g_ll.ll_nlabels = 0;
+X g->g_ll.ll_label = NULL;
+X return g;
+X}
+X
+Xdfa *
+Xadddfa(g, type, name)
+X grammar *g;
+X int type;
+X char *name;
+X{
+X dfa *d;
+X
+X RESIZE(g->g_dfa, dfa, g->g_ndfas + 1);
+X if (g->g_dfa == NULL)
+X fatal("no mem to resize dfa in adddfa");
+X d = &g->g_dfa[g->g_ndfas++];
+X d->d_type = type;
+X d->d_name = name;
+X d->d_nstates = 0;
+X d->d_state = NULL;
+X d->d_initial = -1;
+X d->d_first = NULL;
+X return d; /* Only use while fresh! */
+X}
+X
+Xint
+Xaddstate(d)
+X dfa *d;
+X{
+X state *s;
+X
+X RESIZE(d->d_state, state, d->d_nstates + 1);
+X if (d->d_state == NULL)
+X fatal("no mem to resize state in addstate");
+X s = &d->d_state[d->d_nstates++];
+X s->s_narcs = 0;
+X s->s_arc = NULL;
+X return s - d->d_state;
+X}
+X
+Xvoid
+Xaddarc(d, from, to, lbl)
+X dfa *d;
+X int lbl;
+X{
+X state *s;
+X arc *a;
+X
+X assert(0 <= from && from < d->d_nstates);
+X assert(0 <= to && to < d->d_nstates);
+X
+X s = &d->d_state[from];
+X RESIZE(s->s_arc, arc, s->s_narcs + 1);
+X if (s->s_arc == NULL)
+X fatal("no mem to resize arc list in addarc");
+X a = &s->s_arc[s->s_narcs++];
+X a->a_lbl = lbl;
+X a->a_arrow = to;
+X}
+X
+Xint
+Xaddlabel(ll, type, str)
+X labellist *ll;
+X int type;
+X char *str;
+X{
+X int i;
+X label *lb;
+X
+X for (i = 0; i < ll->ll_nlabels; i++) {
+X if (ll->ll_label[i].lb_type == type &&
+X strcmp(ll->ll_label[i].lb_str, str) == 0)
+X return i;
+X }
+X RESIZE(ll->ll_label, label, ll->ll_nlabels + 1);
+X if (ll->ll_label == NULL)
+X fatal("no mem to resize labellist in addlabel");
+X lb = &ll->ll_label[ll->ll_nlabels++];
+X lb->lb_type = type;
+X lb->lb_str = str; /* XXX strdup(str) ??? */
+X return lb - ll->ll_label;
+X}
+X
+X/* Same, but rather dies than adds */
+X
+Xint
+Xfindlabel(ll, type, str)
+X labellist *ll;
+X int type;
+X char *str;
+X{
+X int i;
+X label *lb;
+X
+X for (i = 0; i < ll->ll_nlabels; i++) {
+X if (ll->ll_label[i].lb_type == type /*&&
+X strcmp(ll->ll_label[i].lb_str, str) == 0*/)
+X return i;
+X }
+X fprintf(stderr, "Label %d/'%s' not found\n", type, str);
+X abort();
+X}
+X
+X/* Forward */
+Xstatic void translabel PROTO((grammar *, label *));
+X
+Xvoid
+Xtranslatelabels(g)
+X grammar *g;
+X{
+X int i;
+X
+X printf("Translating labels ...\n");
+X /* Don't translate EMPTY */
+X for (i = EMPTY+1; i < g->g_ll.ll_nlabels; i++)
+X translabel(g, &g->g_ll.ll_label[i]);
+X}
+X
+Xstatic void
+Xtranslabel(g, lb)
+X grammar *g;
+X label *lb;
+X{
+X int i;
+X
+X if (debugging)
+X printf("Translating label %s ...\n", labelrepr(lb));
+X
+X if (lb->lb_type == NAME) {
+X for (i = 0; i < g->g_ndfas; i++) {
+X if (strcmp(lb->lb_str, g->g_dfa[i].d_name) == 0) {
+X if (debugging)
+X printf("Label %s is non-terminal %d.\n",
+X lb->lb_str,
+X g->g_dfa[i].d_type);
+X lb->lb_type = g->g_dfa[i].d_type;
+X lb->lb_str = NULL;
+X return;
+X }
+X }
+X for (i = 0; i < (int)N_TOKENS; i++) {
+X if (strcmp(lb->lb_str, tok_name[i]) == 0) {
+X if (debugging)
+X printf("Label %s is terminal %d.\n",
+X lb->lb_str, i);
+X lb->lb_type = i;
+X lb->lb_str = NULL;
+X return;
+X }
+X }
+X printf("Can't translate NAME label '%s'\n", lb->lb_str);
+X return;
+X }
+X
+X if (lb->lb_type == STRING) {
+X if (isalpha(lb->lb_str[1])) {
+X char *p, *strchr();
+X if (debugging)
+X printf("Label %s is a keyword\n", lb->lb_str);
+X lb->lb_type = NAME;
+X lb->lb_str++;
+X p = strchr(lb->lb_str, '\'');
+X if (p)
+X *p = '\0';
+X }
+X else {
+X if (lb->lb_str[2] == lb->lb_str[0]) {
+X int type = (int) tok_1char(lb->lb_str[1]);
+X if (type != OP) {
+X lb->lb_type = type;
+X lb->lb_str = NULL;
+X }
+X else
+X printf("Unknown OP label %s\n",
+X lb->lb_str);
+X }
+X else
+X printf("Can't translate STRING label %s\n",
+X lb->lb_str);
+X }
+X }
+X else
+X printf("Can't translate label '%s'\n", labelrepr(lb));
+X}
+EOF
+fi
+if test -s 'src/import.c'
+then echo '*** I will not over-write existing file src/import.c'
+else
+echo 'x - src/import.c'
+sed 's/^X//' > 'src/import.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Module definition and import implementation */
+X
+X#include "allobjects.h"
+X
+X#include "node.h"
+X#include "token.h"
+X#include "graminit.h"
+X#include "import.h"
+X#include "errcode.h"
+X#include "sysmodule.h"
+X#include "pythonrun.h"
+X
+X/* Define pathname separator used in file names */
+X
+X#ifdef THINK_C
+X#define SEP ':'
+X#endif
+X
+X#ifndef SEP
+X#define SEP '/'
+X#endif
+X
+Xstatic object *modules;
+X
+X/* Initialization */
+X
+Xvoid
+Xinitimport()
+X{
+X if ((modules = newdictobject()) == NULL)
+X fatal("no mem for dictionary of modules");
+X}
+X
+Xobject *
+Xget_modules()
+X{
+X return modules;
+X}
+X
+Xobject *
+Xadd_module(name)
+X char *name;
+X{
+X object *m;
+X if ((m = dictlookup(modules, name)) != NULL && is_moduleobject(m))
+X return m;
+X m = newmoduleobject(name);
+X if (m == NULL)
+X return NULL;
+X if (dictinsert(modules, name, m) != 0) {
+X DECREF(m);
+X return NULL;
+X }
+X DECREF(m); /* Yes, it still exists, in modules! */
+X return m;
+X}
+X
+Xstatic FILE *
+Xopen_module(name, suffix, namebuf)
+X char *name;
+X char *suffix;
+X char *namebuf; /* XXX No buffer overflow checks! */
+X{
+X object *path;
+X FILE *fp;
+X
+X path = sysget("path");
+X if (path == NULL || !is_listobject(path)) {
+X strcpy(namebuf, name);
+X strcat(namebuf, suffix);
+X fp = fopen(namebuf, "r");
+X }
+X else {
+X int npath = getlistsize(path);
+X int i;
+X fp = NULL;
+X for (i = 0; i < npath; i++) {
+X object *v = getlistitem(path, i);
+X int len;
+X if (!is_stringobject(v))
+X continue;
+X strcpy(namebuf, getstringvalue(v));
+X len = getstringsize(v);
+X if (len > 0 && namebuf[len-1] != SEP)
+X namebuf[len++] = SEP;
+X strcpy(namebuf+len, name);
+X strcat(namebuf, suffix);
+X fp = fopen(namebuf, "r");
+X if (fp != NULL)
+X break;
+X }
+X }
+X return fp;
+X}
+X
+Xstatic object *
+Xget_module(m, name, m_ret)
+X /*module*/object *m;
+X char *name;
+X object **m_ret;
+X{
+X object *d;
+X FILE *fp;
+X node *n;
+X int err;
+X char namebuf[256];
+X
+X fp = open_module(name, ".py", namebuf);
+X if (fp == NULL) {
+X if (m == NULL)
+X err_setstr(NameError, name);
+X else
+X err_setstr(RuntimeError, "no module source file");
+X return NULL;
+X }
+X err = parse_file(fp, namebuf, file_input, &n);
+X fclose(fp);
+X if (err != E_DONE) {
+X err_input(err);
+X return NULL;
+X }
+X if (m == NULL) {
+X m = add_module(name);
+X if (m == NULL) {
+X freetree(n);
+X return NULL;
+X }
+X *m_ret = m;
+X }
+X d = getmoduledict(m);
+X return run_node(n, namebuf, d, d);
+X}
+X
+Xstatic object *
+Xload_module(name)
+X char *name;
+X{
+X object *m, *v;
+X v = get_module((object *)NULL, name, &m);
+X if (v == NULL)
+X return NULL;
+X DECREF(v);
+X return m;
+X}
+X
+Xobject *
+Ximport_module(name)
+X char *name;
+X{
+X object *m;
+X if ((m = dictlookup(modules, name)) == NULL) {
+X if (init_builtin(name)) {
+X if ((m = dictlookup(modules, name)) == NULL)
+X err_setstr(SystemError, "builtin module missing");
+X }
+X else {
+X m = load_module(name);
+X }
+X }
+X return m;
+X}
+X
+Xobject *
+Xreload_module(m)
+X object *m;
+X{
+X if (m == NULL || !is_moduleobject(m)) {
+X err_setstr(TypeError, "reload() argument must be module");
+X return NULL;
+X }
+X /* XXX Ought to check for builtin modules -- can't reload these... */
+X return get_module(m, getmodulename(m), (object **)NULL);
+X}
+X
+Xstatic void
+Xcleardict(d)
+X object *d;
+X{
+X int i;
+X for (i = getdictsize(d); --i >= 0; ) {
+X char *k;
+X k = getdictkey(d, i);
+X if (k != NULL)
+X (void) dictremove(d, k);
+X }
+X}
+X
+Xvoid
+Xdoneimport()
+X{
+X if (modules != NULL) {
+X int i;
+X /* Explicitly erase all modules; this is the safest way
+X to get rid of at least *some* circular dependencies */
+X for (i = getdictsize(modules); --i >= 0; ) {
+X char *k;
+X k = getdictkey(modules, i);
+X if (k != NULL) {
+X object *m;
+X m = dictlookup(modules, k);
+X if (m != NULL && is_moduleobject(m)) {
+X object *d;
+X d = getmoduledict(m);
+X if (d != NULL && is_dictobject(d)) {
+X cleardict(d);
+X }
+X }
+X }
+X }
+X cleardict(modules);
+X }
+X DECREF(modules);
+X}
+X
+X
+X/* Initialize built-in modules when first imported */
+X
+Xextern struct {
+X char *name;
+X void (*initfunc)();
+X} inittab[];
+X
+Xstatic int
+Xinit_builtin(name)
+X char *name;
+X{
+X int i;
+X for (i = 0; inittab[i].name != NULL; i++) {
+X if (strcmp(name, inittab[i].name) == 0) {
+X (*inittab[i].initfunc)();
+X return 1;
+X }
+X }
+X return 0;
+X}
+EOF
+fi
+if test -s 'src/macmodule.c'
+then echo '*** I will not over-write existing file src/macmodule.c'
+else
+echo 'x - src/macmodule.c'
+sed 's/^X//' > 'src/macmodule.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Macintosh OS module implementation */
+X
+X#include "allobjects.h"
+X
+X#include "import.h"
+X#include "modsupport.h"
+X
+X#include "sigtype.h"
+X
+X#include "::unixemu:dir.h"
+X#include "::unixemu:stat.h"
+X
+Xstatic object *MacError; /* Exception */
+X
+X
+Xstatic object *
+Xmac_chdir(self, args)
+X object *self;
+X object *args;
+X{
+X object *path;
+X if (!getstrarg(args, &path))
+X return NULL;
+X if (chdir(getstringvalue(path)) != 0)
+X return err_errno(MacError);
+X INCREF(None);
+X return None;
+X}
+X
+X
+Xstatic object *
+Xmac_getcwd(self, args)
+X object *self;
+X object *args;
+X{
+X extern char *getwd();
+X char buf[1025];
+X if (!getnoarg(args))
+X return NULL;
+X strcpy(buf, "mac.getcwd() failed"); /* In case getwd() doesn't set a msg */
+X if (getwd(buf) == NULL) {
+X err_setstr(MacError, buf);
+X return NULL;
+X }
+X return newstringobject(buf);
+X}
+X
+X
+Xstatic object *
+Xmac_listdir(self, args)
+X object *self;
+X object *args;
+X{
+X object *name, *d, *v;
+X DIR *dirp;
+X struct direct *ep;
+X if (!getstrarg(args, &name))
+X return NULL;
+X if ((dirp = opendir(getstringvalue(name))) == NULL)
+X return err_errno(MacError);
+X if ((d = newlistobject(0)) == NULL) {
+X closedir(dirp);
+X return NULL;
+X }
+X while ((ep = readdir(dirp)) != NULL) {
+X v = newstringobject(ep->d_name);
+X if (v == NULL) {
+X DECREF(d);
+X d = NULL;
+X break;
+X }
+X if (addlistitem(d, v) != 0) {
+X DECREF(v);
+X DECREF(d);
+X d = NULL;
+X break;
+X }
+X DECREF(v);
+X }
+X closedir(dirp);
+X return d;
+X}
+X
+X
+Xstatic object *
+Xmac_mkdir(self, args)
+X object *self;
+X object *args;
+X{
+X object *path;
+X int mode;
+X if (!getstrintarg(args, &path, &mode))
+X return NULL;
+X if (mkdir(getstringvalue(path), mode) != 0)
+X return err_errno(MacError);
+X INCREF(None);
+X return None;
+X}
+X
+X
+Xstatic object *
+Xmac_rename(self, args)
+X object *self;
+X object *args;
+X{
+X object *src, *dst;
+X if (!getstrstrarg(args, &src, &dst))
+X return NULL;
+X if (rename(getstringvalue(src), getstringvalue(dst)) != 0)
+X return err_errno(MacError);
+X INCREF(None);
+X return None;
+X}
+X
+X
+Xstatic object *
+Xmac_rmdir(self, args)
+X object *self;
+X object *args;
+X{
+X object *path;
+X if (!getstrarg(args, &path))
+X return NULL;
+X if (rmdir(getstringvalue(path)) != 0)
+X return err_errno(MacError);
+X INCREF(None);
+X return None;
+X}
+X
+X
+Xstatic object *
+Xmac_stat(self, args)
+X object *self;
+X object *args;
+X{
+X struct stat st;
+X object *path;
+X object *v;
+X if (!getstrarg(args, &path))
+X return NULL;
+X if (stat(getstringvalue(path), &st) != 0)
+X return err_errno(MacError);
+X v = newtupleobject(11);
+X if (v == NULL)
+X return NULL;
+X#define SET(i, val) settupleitem(v, i, newintobject((long)(val)))
+X#define XXX(i, val) SET(i, 0) /* For values my Mac stat doesn't support */
+X SET(0, st.st_mode);
+X XXX(1, st.st_ino);
+X XXX(2, st.st_dev);
+X XXX(3, st.st_nlink);
+X XXX(4, st.st_uid);
+X XXX(5, st.st_gid);
+X SET(6, st.st_size);
+X XXX(7, st.st_atime);
+X SET(8, st.st_mtime);
+X XXX(9, st.st_ctime);
+X SET(10, st.st_rsize); /* Mac-specific: resource size */
+X#undef SET
+X if (err_occurred()) {
+X DECREF(v);
+X return NULL;
+X }
+X return v;
+X}
+X
+X
+Xstatic object *
+Xmac_sync(self, args)
+X object *self;
+X object *args;
+X{
+X if (!getnoarg(args))
+X return NULL;
+X sync();
+X INCREF(None);
+X return None;
+X}
+X
+X
+Xstatic object *
+Xmac_unlink(self, args)
+X object *self;
+X object *args;
+X{
+X object *path;
+X if (!getstrarg(args, &path))
+X return NULL;
+X if (unlink(getstringvalue(path)) != 0)
+X return err_errno(MacError);
+X INCREF(None);
+X return None;
+X}
+X
+X
+Xstatic struct methodlist mac_methods[] = {
+X {"chdir", mac_chdir},
+X {"getcwd", mac_getcwd},
+X {"listdir", mac_listdir},
+X {"mkdir", mac_mkdir},
+X {"rename", mac_rename},
+X {"rmdir", mac_rmdir},
+X {"stat", mac_stat},
+X {"sync", mac_sync},
+X {"unlink", mac_unlink},
+X {NULL, NULL} /* Sentinel */
+X};
+X
+X
+Xvoid
+Xinitmac()
+X{
+X object *m, *d;
+X
+X m = initmodule("mac", mac_methods);
+X d = getmoduledict(m);
+X
+X /* Initialize mac.error exception */
+X MacError = newstringobject("mac.error");
+X if (MacError == NULL || dictinsert(d, "error", MacError) != 0)
+X fatal("can't define mac.error");
+X}
+EOF
+fi
+if test -s 'src/object.c'
+then echo '*** I will not over-write existing file src/object.c'
+else
+echo 'x - src/object.c'
+sed 's/^X//' > 'src/object.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Generic object operations; and implementation of None (NoObject) */
+X
+X#include "allobjects.h"
+X
+X#ifdef REF_DEBUG
+Xlong ref_total;
+X#endif
+X
+X/* Object allocation routines used by NEWOBJ and NEWVAROBJ macros.
+X These are used by the individual routines for object creation.
+X Do not call them otherwise, they do not initialize the object! */
+X
+Xobject *
+Xnewobject(tp)
+X typeobject *tp;
+X{
+X object *op = (object *) malloc(tp->tp_basicsize);
+X if (op == NULL)
+X return err_nomem();
+X NEWREF(op);
+X op->ob_type = tp;
+X return op;
+X}
+X
+X#if 0 /* unused */
+X
+Xvarobject *
+Xnewvarobject(tp, size)
+X typeobject *tp;
+X unsigned int size;
+X{
+X varobject *op = (varobject *)
+X malloc(tp->tp_basicsize + size * tp->tp_itemsize);
+X if (op == NULL)
+X return err_nomem();
+X NEWREF(op);
+X op->ob_type = tp;
+X op->ob_size = size;
+X return op;
+X}
+X
+X#endif
+X
+Xint StopPrint; /* Flag to indicate printing must be stopped */
+X
+Xstatic int prlevel;
+X
+Xvoid
+Xprintobject(op, fp, flags)
+X object *op;
+X FILE *fp;
+X int flags;
+X{
+X /* Hacks to make printing a long or recursive object interruptible */
+X /* XXX Interrupts should leave a more permanent error */
+X prlevel++;
+X if (!StopPrint && intrcheck()) {
+X fprintf(fp, "\n[print interrupted]\n");
+X StopPrint = 1;
+X }
+X if (!StopPrint) {
+X if (op == NULL) {
+X fprintf(fp, "<nil>");
+X }
+X else {
+X if (op->ob_refcnt <= 0)
+X fprintf(fp, "(refcnt %d):", op->ob_refcnt);
+X if (op->ob_type->tp_print == NULL) {
+X fprintf(fp, "<%s object at %lx>",
+X op->ob_type->tp_name, (long)op);
+X }
+X else {
+X (*op->ob_type->tp_print)(op, fp, flags);
+X }
+X }
+X }
+X prlevel--;
+X if (prlevel == 0)
+X StopPrint = 0;
+X}
+X
+Xobject *
+Xreprobject(v)
+X object *v;
+X{
+X object *w = NULL;
+X /* Hacks to make converting a long or recursive object interruptible */
+X prlevel++;
+X if (!StopPrint && intrcheck()) {
+X StopPrint = 1;
+X err_set(KeyboardInterrupt);
+X }
+X if (!StopPrint) {
+X if (v == NULL) {
+X w = newstringobject("<NULL>");
+X }
+X else if (v->ob_type->tp_repr == NULL) {
+X char buf[100];
+X sprintf(buf, "<%.80s object at %lx>",
+X v->ob_type->tp_name, (long)v);
+X w = newstringobject(buf);
+X }
+X else {
+X w = (*v->ob_type->tp_repr)(v);
+X }
+X if (StopPrint) {
+X XDECREF(w);
+X w = NULL;
+X }
+X }
+X prlevel--;
+X if (prlevel == 0)
+X StopPrint = 0;
+X return w;
+X}
+X
+Xint
+Xcmpobject(v, w)
+X object *v, *w;
+X{
+X typeobject *tp;
+X if (v == w)
+X return 0;
+X if (v == NULL)
+X return -1;
+X if (w == NULL)
+X return 1;
+X if ((tp = v->ob_type) != w->ob_type)
+X return strcmp(tp->tp_name, w->ob_type->tp_name);
+X if (tp->tp_compare == NULL)
+X return (v < w) ? -1 : 1;
+X return ((*tp->tp_compare)(v, w));
+X}
+X
+Xobject *
+Xgetattr(v, name)
+X object *v;
+X char *name;
+X{
+X if (v->ob_type->tp_getattr == NULL) {
+X err_setstr(TypeError, "attribute-less object");
+X return NULL;
+X }
+X else {
+X return (*v->ob_type->tp_getattr)(v, name);
+X }
+X}
+X
+Xint
+Xsetattr(v, name, w)
+X object *v;
+X char *name;
+X object *w;
+X{
+X if (v->ob_type->tp_setattr == NULL) {
+X if (v->ob_type->tp_getattr == NULL)
+X err_setstr(TypeError, "attribute-less object");
+X else
+X err_setstr(TypeError, "object has read-only attributes");
+X return -1;
+X }
+X else {
+X return (*v->ob_type->tp_setattr)(v, name, w);
+X }
+X}
+X
+X
+X/*
+XNoObject is usable as a non-NULL undefined value, used by the macro None.
+XThere is (and should be!) no way to create other objects of this type,
+Xso there is exactly one (which is indestructible, by the way).
+X*/
+X
+Xstatic void
+Xnone_print(op, fp, flags)
+X object *op;
+X FILE *fp;
+X int flags;
+X{
+X fprintf(fp, "None");
+X}
+X
+Xstatic object *
+Xnone_repr(op)
+X object *op;
+X{
+X return newstringobject("None");
+X}
+X
+Xstatic typeobject Notype = {
+X OB_HEAD_INIT(&Typetype)
+X 0,
+X "None",
+X 0,
+X 0,
+X 0, /*tp_dealloc*/ /*never called*/
+X none_print, /*tp_print*/
+X 0, /*tp_getattr*/
+X 0, /*tp_setattr*/
+X 0, /*tp_compare*/
+X none_repr, /*tp_repr*/
+X 0, /*tp_as_number*/
+X 0, /*tp_as_sequence*/
+X 0, /*tp_as_mapping*/
+X};
+X
+Xobject NoObject = {
+X OB_HEAD_INIT(&Notype)
+X};
+X
+X
+X#ifdef TRACE_REFS
+X
+Xstatic object refchain = {&refchain, &refchain};
+X
+XNEWREF(op)
+X object *op;
+X{
+X ref_total++;
+X op->ob_refcnt = 1;
+X op->_ob_next = refchain._ob_next;
+X op->_ob_prev = &refchain;
+X refchain._ob_next->_ob_prev = op;
+X refchain._ob_next = op;
+X}
+X
+XUNREF(op)
+X register object *op;
+X{
+X register object *p;
+X if (op->ob_refcnt < 0) {
+X fprintf(stderr, "UNREF negative refcnt\n");
+X abort();
+X }
+X for (p = refchain._ob_next; p != &refchain; p = p->_ob_next) {
+X if (p == op)
+X break;
+X }
+X if (p == &refchain) { /* Not found */
+X fprintf(stderr, "UNREF unknown object\n");
+X abort();
+X }
+X op->_ob_next->_ob_prev = op->_ob_prev;
+X op->_ob_prev->_ob_next = op->_ob_next;
+X}
+X
+XDELREF(op)
+X object *op;
+X{
+X UNREF(op);
+X (*(op)->ob_type->tp_dealloc)(op);
+X}
+X
+Xprintrefs(fp)
+X FILE *fp;
+X{
+X object *op;
+X fprintf(fp, "Remaining objects:\n");
+X for (op = refchain._ob_next; op != &refchain; op = op->_ob_next) {
+X fprintf(fp, "[%d] ", op->ob_refcnt);
+X printobject(op, fp, 0);
+X putc('\n', fp);
+X }
+X}
+X
+X#endif
+EOF
+fi
+if test -s 'src/tupleobject.c'
+then echo '*** I will not over-write existing file src/tupleobject.c'
+else
+echo 'x - src/tupleobject.c'
+sed 's/^X//' > 'src/tupleobject.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Tuple object implementation */
+X
+X#include "allobjects.h"
+X
+Xobject *
+Xnewtupleobject(size)
+X register int size;
+X{
+X register int i;
+X register tupleobject *op;
+X if (size < 0) {
+X err_badcall();
+X return NULL;
+X }
+X op = (tupleobject *)
+X malloc(sizeof(tupleobject) + size * sizeof(object *));
+X if (op == NULL)
+X return err_nomem();
+X NEWREF(op);
+X op->ob_type = &Tupletype;
+X op->ob_size = size;
+X for (i = 0; i < size; i++)
+X op->ob_item[i] = NULL;
+X return (object *) op;
+X}
+X
+Xint
+Xgettuplesize(op)
+X register object *op;
+X{
+X if (!is_tupleobject(op)) {
+X err_badcall();
+X return -1;
+X }
+X else
+X return ((tupleobject *)op)->ob_size;
+X}
+X
+Xobject *
+Xgettupleitem(op, i)
+X register object *op;
+X register int i;
+X{
+X if (!is_tupleobject(op)) {
+X err_badcall();
+X return NULL;
+X }
+X if (i < 0 || i >= ((tupleobject *)op) -> ob_size) {
+X err_setstr(IndexError, "tuple index out of range");
+X return NULL;
+X }
+X return ((tupleobject *)op) -> ob_item[i];
+X}
+X
+Xint
+Xsettupleitem(op, i, newitem)
+X register object *op;
+X register int i;
+X register object *newitem;
+X{
+X register object *olditem;
+X if (!is_tupleobject(op)) {
+X if (newitem != NULL)
+X DECREF(newitem);
+X err_badcall();
+X return -1;
+X }
+X if (i < 0 || i >= ((tupleobject *)op) -> ob_size) {
+X if (newitem != NULL)
+X DECREF(newitem);
+X err_setstr(IndexError, "tuple assignment index out of range");
+X return -1;
+X }
+X olditem = ((tupleobject *)op) -> ob_item[i];
+X ((tupleobject *)op) -> ob_item[i] = newitem;
+X if (olditem != NULL)
+X DECREF(olditem);
+X return 0;
+X}
+X
+X/* Methods */
+X
+Xstatic void
+Xtupledealloc(op)
+X register tupleobject *op;
+X{
+X register int i;
+X for (i = 0; i < op->ob_size; i++) {
+X if (op->ob_item[i] != NULL)
+X DECREF(op->ob_item[i]);
+X }
+X free((ANY *)op);
+X}
+X
+Xstatic void
+Xtupleprint(op, fp, flags)
+X tupleobject *op;
+X FILE *fp;
+X int flags;
+X{
+X int i;
+X fprintf(fp, "(");
+X for (i = 0; i < op->ob_size && !StopPrint; i++) {
+X if (i > 0) {
+X fprintf(fp, ", ");
+X }
+X printobject(op->ob_item[i], fp, flags);
+X }
+X if (op->ob_size == 1)
+X fprintf(fp, ",");
+X fprintf(fp, ")");
+X}
+X
+Xobject *
+Xtuplerepr(v)
+X tupleobject *v;
+X{
+X object *s, *t, *comma;
+X int i;
+X s = newstringobject("(");
+X comma = newstringobject(", ");
+X for (i = 0; i < v->ob_size && s != NULL; i++) {
+X if (i > 0)
+X joinstring(&s, comma);
+X t = reprobject(v->ob_item[i]);
+X joinstring(&s, t);
+X if (t != NULL)
+X DECREF(t);
+X }
+X DECREF(comma);
+X if (v->ob_size == 1) {
+X t = newstringobject(",");
+X joinstring(&s, t);
+X DECREF(t);
+X }
+X t = newstringobject(")");
+X joinstring(&s, t);
+X DECREF(t);
+X return s;
+X}
+X
+Xstatic int
+Xtuplecompare(v, w)
+X register tupleobject *v, *w;
+X{
+X register int len =
+X (v->ob_size < w->ob_size) ? v->ob_size : w->ob_size;
+X register int i;
+X for (i = 0; i < len; i++) {
+X int cmp = cmpobject(v->ob_item[i], w->ob_item[i]);
+X if (cmp != 0)
+X return cmp;
+X }
+X return v->ob_size - w->ob_size;
+X}
+X
+Xstatic int
+Xtuplelength(a)
+X tupleobject *a;
+X{
+X return a->ob_size;
+X}
+X
+Xstatic object *
+Xtupleitem(a, i)
+X register tupleobject *a;
+X register int i;
+X{
+X if (i < 0 || i >= a->ob_size) {
+X err_setstr(IndexError, "tuple index out of range");
+X return NULL;
+X }
+X INCREF(a->ob_item[i]);
+X return a->ob_item[i];
+X}
+X
+Xstatic object *
+Xtupleslice(a, ilow, ihigh)
+X register tupleobject *a;
+X register int ilow, ihigh;
+X{
+X register tupleobject *np;
+X register int i;
+X if (ilow < 0)
+X ilow = 0;
+X if (ihigh > a->ob_size)
+X ihigh = a->ob_size;
+X if (ihigh < ilow)
+X ihigh = ilow;
+X if (ilow == 0 && ihigh == a->ob_size) {
+X /* XXX can only do this if tuples are immutable! */
+X INCREF(a);
+X return (object *)a;
+X }
+X np = (tupleobject *)newtupleobject(ihigh - ilow);
+X if (np == NULL)
+X return NULL;
+X for (i = ilow; i < ihigh; i++) {
+X object *v = a->ob_item[i];
+X INCREF(v);
+X np->ob_item[i - ilow] = v;
+X }
+X return (object *)np;
+X}
+X
+Xstatic object *
+Xtupleconcat(a, bb)
+X register tupleobject *a;
+X register object *bb;
+X{
+X register int size;
+X register int i;
+X tupleobject *np;
+X if (!is_tupleobject(bb)) {
+X err_badarg();
+X return NULL;
+X }
+X#define b ((tupleobject *)bb)
+X size = a->ob_size + b->ob_size;
+X np = (tupleobject *) newtupleobject(size);
+X if (np == NULL) {
+X return err_nomem();
+X }
+X for (i = 0; i < a->ob_size; i++) {
+X object *v = a->ob_item[i];
+X INCREF(v);
+X np->ob_item[i] = v;
+X }
+X for (i = 0; i < b->ob_size; i++) {
+X object *v = b->ob_item[i];
+X INCREF(v);
+X np->ob_item[i + a->ob_size] = v;
+X }
+X return (object *)np;
+X#undef b
+X}
+X
+Xstatic sequence_methods tuple_as_sequence = {
+X tuplelength, /*sq_length*/
+X tupleconcat, /*sq_concat*/
+X 0, /*sq_repeat*/
+X tupleitem, /*sq_item*/
+X tupleslice, /*sq_slice*/
+X 0, /*sq_ass_item*/
+X 0, /*sq_ass_slice*/
+X};
+X
+Xtypeobject Tupletype = {
+X OB_HEAD_INIT(&Typetype)
+X 0,
+X "tuple",
+X sizeof(tupleobject) - sizeof(object *),
+X sizeof(object *),
+X tupledealloc, /*tp_dealloc*/
+X tupleprint, /*tp_print*/
+X 0, /*tp_getattr*/
+X 0, /*tp_setattr*/
+X tuplecompare, /*tp_compare*/
+X tuplerepr, /*tp_repr*/
+X 0, /*tp_as_number*/
+X &tuple_as_sequence, /*tp_as_sequence*/
+X 0, /*tp_as_mapping*/
+X};
+EOF
+fi
+echo 'Part 14 out of 21 of pack.out complete.'
+exit 0

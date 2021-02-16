@@ -1,0 +1,2510 @@
+: This is a shell archive.
+: Extract with 'sh this_file'.
+:
+: Extract part 01 first since it makes all directories
+echo 'Start of pack.out, part 06 out of 21:'
+if test -s 'doc/Makefile'
+then echo '*** I will not over-write existing file doc/Makefile'
+else
+echo 'x - doc/Makefile'
+sed 's/^X//' > 'doc/Makefile' << 'EOF'
+X# Makefile for Python documentation.
+X
+XLATEX= latex
+XDVIPS= dvips
+XTEXPREVIEW= xdvi
+X
+XPRINT= lpr
+X
+Xtut: tut.dvi
+X $(TEXPREVIEW) tut
+X
+Xtut.dvi tut.ps: tut.toc tut.tex myformat.sty
+X
+Xmod: mod.dvi
+X $(TEXPREVIEW) mod
+X
+Xmod.dvi mod.ps: mod.toc mod.tex mod1.tex mod2.tex mod3.tex myformat.sty
+X
+XALL= tut.ps mod.ps
+X
+Xall: $(ALL)
+X
+Xprint: $(ALL)
+X $(PRINT) $(ALL)
+X
+Xclean:
+X rm -f *.dvi *.aux *.toc *.log *.ps core [#@,]* *~
+X
+X.SUFFIXES: # Remove default suffixes
+X
+X.SUFFIXES: .tex .aux .toc .dvi .ps
+X
+X.tex.aux:
+X $(LATEX) $*
+X
+X.tex.toc:
+X $(LATEX) $*
+X
+X.tex.dvi:
+X $(LATEX) $*
+X
+X.dvi.ps:
+X $(DVIPS) $* >$*.ps
+X
+X.tex.ps:
+X $(LATEX) $*
+X $(DVIPS) $* >$*.ps
+EOF
+fi
+if test -s 'doc/mod2.tex'
+then echo '*** I will not over-write existing file doc/mod2.tex'
+else
+echo 'x - doc/mod2.tex'
+sed 's/^X//' > 'doc/mod2.tex' << 'EOF'
+X\section{Built-in Modules}
+X
+XThe modules described in this section are built into the interpreter.
+XThey must be imported using
+X{\tt import}.
+XSome modules are not always available; it is a configuration option to
+Xprovide them.
+XDetails are listed with the descriptions, but the best way to see if
+Xa module exists in a particular implementation is to attempt to import
+Xit.
+X
+X\subsection{Built-in Module {\tt sys}}
+X
+XThis module provides access to some variables used or maintained by the
+Xinterpreter and to functions that interact strongly with the interpreter.
+XIt is always available.
+X\begin{description}
+X\funcitem{argv}
+XThe list of command line arguments passed to a {\Python} script.
+X{\tt sys.argv[0]}
+Xis the script name.
+XIf no script name was passed to the {\Python} interpreter,
+X{\tt sys.argv}
+Xis empty.
+X\funcitem{exit}{n}
+XExits from {\Python} with numeric exit status
+X{\tt n}.
+XThis closes all open files and performs other cleanup-actions required by
+Xthe interpreter (but
+X{\em finally clauses}
+Xof
+X{\tt try}
+Xstatements are not executed!).
+X\funcitem{modules}
+XGives the list of modules that have already been loaded.
+XThis can be manipulated to force reloading of modules and other tricks.
+X\funcitem{path}
+XA list of strings that specifies the search path for modules.
+XInitialized from the environment variable {\tt PYTHONPATH}, or an
+Xinstallation-dependent default.
+X\funcitem{ps1,~ps2}
+XStrings specifying the primary and secondary prompt of the interpreter.
+XThese are only defined if the interpreter is in interactive mode.
+XTheir initial values in this case are
+X{\tt '>>> '}
+Xand
+X{\tt '... '}.
+X\funcitem{stdin, stdout, stderr}
+X%.br
+XFile objects corresponding to the interpreter's standard input, output
+Xand error streams.
+X{\tt sys.stdin}
+Xis used for all interpreter input except for scripts but including calls
+Xto
+X{\tt input()}
+Xand
+X{\tt raw\_input()}.
+X{\tt sys.stdout}
+Xis used for the output of
+X{\tt print} and expression statements
+Xand for the prompts of
+X{\tt input()}
+Xand
+X{\tt raw\_input()}.
+XThe interpreter's own prompts and its error messages are written to
+Xstderr.
+XAssigning to
+X{\tt sys.stderr}
+Xhas no effect on the interpreter; it can be used to write error messages
+Xto stderr using
+X{\tt print}.
+X\end{description}
+X
+X\subsection{Built-in Module {\tt math}}
+X
+XThis module is always available.
+XIt provides access to the mathematical functions defined by the C
+Xstandard.
+XThey are:
+X{\tt acos(x)},
+X{\tt asin(x)},
+X{\tt atan(x)},
+X{\tt atan2(x,y)},
+X{\tt ceil(x)},
+X{\tt cos(x)},
+X{\tt cosh(x)},
+X{\tt exp(x)},
+X{\tt fabs(x)},
+X{\tt floor(x)},
+X%{\tt fmod(...)} XXX not yet
+X%{\tt frexp(...)} XXX not yet
+X%{\tt ldexp(...)} XXX not yet
+X{\tt log(x)},
+X{\tt log10(x)},
+X%{\tt modf(...)} XXX not yet
+X{\tt pow(x,y)},
+X{\tt sin(x)},
+X{\tt sinh(x)},
+X{\tt sqrt(x)},
+X{\tt tan(x)},
+X{\tt tanh(x)}.
+X
+XIt also defines two mathematical constants:
+X{\tt pi}
+Xand
+X{\tt e}.
+X
+X\subsection{Built-in Module {\tt time}}
+X
+XThis module provides various time-related functions.
+XIt is always available.
+XFunctions are:
+X\begin{description}
+X\funcitem{sleep}{secs}
+XSuspends execution for the given number of seconds.
+X\funcitem{time}{}
+XReturns the time in seconds since the Epoch (Thursday January 1,
+X00:00:00, 1970 UCT on \UNIX\ machines).
+X\end{description}
+X
+X\noindent
+XIn some versions (Amoeba, Mac) the following functions also exist:
+X\begin{description}
+X\funcitem{millisleep}{msecs}
+XSuspends execution for the given number of milliseconds.
+X\funcitem{millitimer}{}
+XReturns the number of milliseconds of real time elapsed since some point
+Xin the past that is fixed per execution of the python interpreter (but
+Xmay change in each following run).
+X\end{description}
+X
+X\noindent
+XThe granularity of the milliseconds functions may be more than a
+Xmillisecond (100 msecs on Amoeba, 1/60 sec on the Mac).
+X
+X\subsection{Built-in Module {\tt regexp}}
+X
+XThis module provides a regular expression matching operation.
+XIt is always available.
+X
+XThe module defines a function and an exception:
+X
+X\begin{description}
+X
+X\funcitem{compile}{pattern}
+X
+XCompile a regular expression given as a string into a regular
+Xexpression object.
+XThe string must be an egrep-style regular expression;
+Xthis means that the characters
+X{\tt '(' ')' '*' '+' '?'\ '|' }\verb='^' '$'=
+Xare special.
+X(It is implemented using Henry Spencer's regular expression matching
+Xfunctions.)
+X
+Xexcitem{error}{regexp.error}
+X
+XException raised when a string passed to {\tt compile()} is not a
+Xvalid regular expression (e.g., unmatched parentheses) or when some other
+Xerror occurs during compilation or matching
+X(``no match found'' is not an error).
+X
+X\end{description}
+X
+XCompiled regular expression objects support a single method:
+X
+X\begin{description}
+X
+X\funcitem{exec}{str}
+X
+XFind the first occurrence of the compiled regular expression in the
+Xstring {\tt str}.
+XThe return value is a tuple of pairs specifying where a match was
+Xfound and where matches were found for subpatterns specified with
+X{\tt '('} and {\tt ')'} in the pattern.
+XIf no match is found, an empty tuple is returned; otherwise the first
+Xitem of the tuple is a pair of slice indices into the search string
+Xgiving the match found.
+XIf there were any subpatterns in the pattern, the returned tuple has an
+Xadditional item for each subpattern, giving the slice indices into the
+Xsearch string where that subpattern was found.
+X
+X\end{description}
+X
+XFor example:
+X\bcode\begin{verbatim}
+X>>> import regexp
+X>>> r = regexp.compile('--(.*)--')
+X>>> s = 'a--b--c'
+X>>> r.exec(s)
+X((1, 6), (3, 4))
+X>>> s[1:6] # The entire match
+X'--b--'
+X>>> s[3:4] # The subpattern
+X'b'
+X>>>
+X\end{verbatim}\ecode
+X
+X\subsection{Built-in Module {\tt posix}}
+X
+XThis module provides access to operating system functionality that is
+Xstandardized by the C Standard and the POSIX standard (a thinly diguised
+X{\UNIX} interface).
+XIt is available in all {\Python} versions except on the Macintosh.
+XErrors are reported exceptions.
+XIt defines the following items:
+X\begin{description}
+X\funcitem{chdir}{path}
+XChanges the current directory to
+X{\tt path}.
+X\funcitem{chmod}{path, mode}
+XChange the mode of
+X{\tt path}
+Xto the numeric
+X{\tt mode}.
+X\funcitem{environ}
+XA dictionary representing the string environment at the time
+Xthe interpreter was started.
+X(Modifying this dictionary does not affect the string environment of the
+Xinterpreter.)
+XFor example,
+X{\tt posix.environ['HOME']}
+Xis the pathname of your home directory, equivalent to
+X{\tt getenv("HOME")}
+Xin C.
+X\excitem{error}{posix.error}
+X%.br
+XThe exception raised when an POSIX function returns an error.
+XThe value accompanying this exception is a pair containing the numeric
+Xerror code from
+X{\tt errno}
+Xand the corresponding string, as would be printed by the C function
+X{\tt perror()}.
+X\funcitem{getcwd}{}
+XReturns a string representing the current working directory.
+X\funcitem{link}{src, dst}
+XCreates a hard link pointing to
+X{\tt src}
+Xnamed
+X{\tt dst}.
+X\funcitem{listdir}{path}
+XReturns a list containing the names of the entries in the
+Xdirectory.
+XThe list is in arbitrary order.
+XIt includes the special entries
+X{\tt '.'}
+Xand
+X{\tt '..'}
+Xif they are present in the directory.
+X\funcitem{mkdir}{path, mode}
+XCreates a directory named
+X{\tt path}
+Xwith numeric mode
+X{\tt mode}.
+X\funcitem{rename}{src, dst}
+XRenames the file or directory
+X{\tt src}
+Xto
+X{\tt dst}.
+X\funcitem{rmdir}{path}
+XRemoves the directory
+X{\tt path}.
+X\funcitem{stat}{path}
+XPerforms a
+X{\em stat}
+Xsystem call on the given path.
+XThe return value is a tuple of at least 10 integers giving the most
+Ximportant (and portable) members of the
+X{\em stat}
+Xstructure, in the order
+X{\tt st\_mode},
+X{\tt st\_ino},
+X{\tt st\_dev},
+X{\tt st\_nlink},
+X{\tt st\_uid},
+X{\tt st\_gid},
+X{\tt st\_size},
+X{\tt st\_atime},
+X{\tt st\_mtime},
+X{\tt st\_ctime}.
+XMore items may be added at the end by some implementations.
+X\funcitem{system}{command}
+XExecutes the command (a string) in a subshell.
+XThis is implemented by calling the Standard C function
+X{\tt system()},
+Xand has the same limitations.
+XChanges to
+X{\tt posix.environ},
+X{\tt sys.stdin}
+Xetc. are not reflected in the environment of the executed command.
+XThe return value is the exit status of the process as returned by
+XStandard C
+X{\tt system()}.
+X\funcitem{umask}{mask}
+XSets the current numeric umask and returns the previous umask.
+X\funcitem{unlink}{path}
+XUnlinks the file
+X{\tt path}.
+X\funcitem{utimes(path, }{atime, mtime)}
+X%.br
+XSets the access and modified time of the file to the given values.
+X(The second argument is a tuple of two items.)
+X\end{description}
+X
+XThe following functions are only available on systems that support
+Xsymbolic links:
+X\begin{description}
+X\funcitem{lstat}{path}
+XLike
+X{\tt stat()},
+Xbut does not follow symbolic links.
+X\funcitem{readlink}{path}
+XReturns a string representing the path to which the symbolic link
+Xpoints.
+X\funcitem{symlink}{src, dst}
+XCreates a symbolic link pointing to
+X{\tt src}
+Xnamed
+X{\tt dst}.
+X\end{description}
+X
+X\subsection{Built-in Module {\tt stdwin}}
+X
+XThis module defines several new object types and functions that
+Xprovide access to the functionality of the Standard Window System
+XInterface, STDWIN [CWI report CR-R8817].
+XIt is available on systems to which STDWIN has been ported (which is
+Xmost systems).
+XIt is only available if the {\tt DISPLAY} environment variable is set
+Xor an explicit `{\tt -display \it displayname}' argument is passed to
+Xthe interpreter.
+X
+XFunctions have names that usually resemble their C STDWIN counterparts
+Xwith the initial `w' dropped.
+XPoints are represented by pairs of integers; rectangles
+Xby pairs of points.
+XFor a complete description of STDWIN please refer to the documentation
+Xof STDWIN for C programmers (aforementioned CWI report).
+X\subsubsection{Functions Defined in Module {\tt stdwin}}
+X
+XThe following functions are defined in the {\tt stdwin} module:
+X\begin{description}
+X\funcitem{open}{title}
+X%.br
+XOpens a new window whose initial title is given by the string argument.
+XReturns a window object; window object methods are described below.%
+X\footnote{
+XThe {\Python} version of STDWIN does not support draw procedures; all
+Xdrawing requests are reported as draw events.
+X}
+X\funcitem{getevent}{}
+X%.br
+XWaits for and returns the next event.
+XAn event is returned as a triple: the first element is the event
+Xtype, a small integer; the second element is the window object to which
+Xthe event applies, or
+X{\tt None}
+Xif it applies to no window in particular;
+Xthe third element is type-dependent.
+XNames for event types and command codes are defined in the standard
+Xmodule
+X{\tt stdwinevent}.
+X\funcitem{setdefwinpos}{h, v}
+X%.br
+XSets the default window position.
+X\funcitem{setdefwinsize}{width, height}
+X%.br
+XSets the default window size.
+X\funcitem{menucreate}{title}
+X%.br
+XCreates a menu object referring to a global menu (a menu that appears in
+Xall windows).
+XMethods of menu objects are described below.
+X\funcitem{fleep}{}
+X%.br
+XCauses a beep or bell (or perhaps a `visual bell' or flash, hence the
+Xname).
+X\funcitem{message}{string}
+X%.br
+XDisplays a dialog box containing the string.
+XThe user must click OK before the function returns.
+X\funcitem{askync}{prompt, default}
+X%.br
+XDisplays a dialog that prompts the user to answer a question with yes or
+Xno.
+XThe function returns 0 for no, 1 for yes.
+XIf the user hits the Return key, the default (which must be 0 or 1) is
+Xreturned.
+XIf the user cancels the dialog, the
+X{\tt KeyboardInterrupt}
+Xexception is raised.
+X\funcitem{askstr}{prompt, default}
+X%.br
+XDisplays a dialog that prompts the user for a string.
+XIf the user hits the Return key, the default string is returned.
+XIf the user cancels the dialog, the
+X{\tt KeyboardInterrupt}
+Xexception is raised.
+X\funcitem{askfile}{prompt, default, new}
+X%.br
+XAsks the user to specify a filename.
+XIf
+X{\tt new}
+Xis zero it must be an existing file; otherwise, it must be a new file.
+XIf the user cancels the dialog, the
+X{\tt KeyboardInterrupt}
+Xexception is raised.
+X\funcitem{setcutbuffer}{i, string}
+X%.br
+XStores the string in the system's cut buffer number
+X{\tt i},
+Xwhere it can be found (for pasting) by other applications.
+XOn X11, there are 8 cut buffers (numbered 0..7).
+XCut buffer number 0 is the `clipboard' on the Macintosh.
+X\funcitem{getcutbuffer}{i}
+X%.br
+XReturns the contents of the system's cut buffer number
+X{\tt i}.
+X\funcitem{rotatebutbuffers}{n}
+X%.br
+XOn X11, this rotates the 8 cut buffers by
+X{\tt n}.
+XIgnored on the Macintosh.
+X\funcitem{getselection}{i}
+X%.br
+XReturns X11 selection number
+X{\tt i.}
+XSelections are not cut buffers.
+XSelection numbers are defined in module
+X{\tt stdwinevents}.
+XSelection {\tt WS\_PRIMARY} is the
+X{\em primary}
+Xselection (used by
+Xxterm,
+Xfor instance);
+Xselection {\tt WS\_SECONDARY} is the
+X{\em secondary}
+Xselection; selection {\tt WS\_CLIPBOARD} is the
+X{\em clipboard}
+Xselection (used by
+Xxclipboard).
+XOn the Macintosh, this always returns an empty string.
+X\funcitem{resetselection}{i}
+X%.br
+XResets selection number
+X{\tt i},
+Xif this process owns it.
+X(See window method
+X{\tt setselection()}).
+X\funcitem{baseline}{}
+X%.br
+XReturn the baseline of the current font (defined by STDWIN as the
+Xvertical distance between the baseline and the top of the
+Xcharacters).%
+X\footnote{
+XThere is no way yet to set the current font.
+XThis will change in a future version.
+X}
+X\funcitem{lineheight}{}
+X%.br
+XReturn the total line height of the current font.
+X\funcitem{textbreak}{str, width}
+X%.br
+XReturn the number of characters of the string that fit into a space of
+X{\tt width}
+Xbits wide when drawn in the curent font.
+X\funcitem{textwidth}{str}
+X%.br
+XReturn the width in bits of the string when drawn in the current font.
+X\end{description}
+X
+X\subsubsection{Window Object Methods}
+X
+XWindow objects are created by
+X{\tt stdwin.open()}.
+XThere is no explicit function to close a window; windows are closed when
+Xthey are garbage-collected.
+XWindow objects have the following methods:
+X\begin{description}
+X\funcitem{begindrawing}{}
+XReturns a drawing object, whose methods (described below) allow drawing
+Xin the window.
+X\funcitem{change}{rect}
+XInvalidates the given rectangle; this may cause a draw event.
+X\funcitem{gettitle}{}
+XReturns the window's title string.
+X\funcitem{getdocsize}{}
+X\begin{sloppypar}
+XReturns a pair of integers giving the size of the document as set by
+X{\tt setdocsize()}.
+X\end{sloppypar}
+X\funcitem{getorigin}{}
+XReturns a pair of integers giving the origin of the window with respect
+Xto the document.
+X\funcitem{getwinsize}{}
+XReturns a pair of integers giving the size of the window.
+X\funcitem{menucreate}{title}
+XCreates a menu object referring to a local menu (a menu that appears
+Xonly in this window).
+XMethods menu objects are described below.
+X\funcitem{scroll}{rect,~point}
+XScrolls the given rectangle by the vector given by the point.
+X\funcitem{setwincursor}{name}
+X\begin{sloppypar}
+XSets the window cursor to a cursor of the given name.
+XIt raises the
+X{\tt Runtime\-Error}
+Xexception if no cursor of the given name exists.
+XSuitable names are
+X{\tt 'ibeam'},
+X{\tt 'arrow'},
+X{\tt 'cross'},
+X{\tt 'watch'}
+Xand
+X{\tt 'plus'}.
+XOn X11, there are many more (see
+X{\tt <X11/cursorfont.h>}).
+X\end{sloppypar}
+X\funcitem{setdocsize}{point}
+XSets the size of the drawing document.
+X\funcitem{setorigin}{point}
+XMoves the origin of the window to the given point in the document.
+X\funcitem{setselection}{i, str}
+XAttempts to set X11 selection number
+X{\tt i}
+Xto the string
+X{\tt str}.
+X(See stdwin method
+X{\tt getselection()}
+Xfor the meaning of
+X{\tt i}.)
+XReturns true if it succeeds.
+XIf it succeeds, the window ``owns'' the selection until
+X(a) another applications takes ownership of the selection; or
+X(b) the window is deleted; or
+X(c) the application clears ownership by calling
+X{\tt stdwin.resetselection(i)}.
+XWhen another application takes ownership of the selection, a
+X{\tt WE\_LOST\_SEL}
+Xevent is received for no particular window and with the selection number
+Xas detail.
+XIgnored on the Macintosh.
+X\funcitem{settitle}{title}
+XSets the window's title string.
+X\funcitem{settimer}{dsecs}
+XSchedules a timer event for the window in
+X{\tt dsecs/10}
+Xseconds.
+X\funcitem{show}{rect}
+XTries to ensure that the given rectangle of the document is visible in
+Xthe window.
+X\funcitem{textcreate}{rect}
+XCreates a text-edit object in the document at the given rectangle.
+XMethods of text-edit objects are described below.
+X\end{description}
+X
+X\subsubsection{Drawing Object Methods}
+X
+XDrawing objects are created exclusively by the window method
+X{\tt begindrawing()}.
+XOnly one drawing object can exist at any given time; the drawing object
+Xmust be deleted to finish drawing.
+XNo drawing object may exist when
+X{\tt stdwin.getevent()}
+Xis called.
+XDrawing objects have the following methods:
+X\begin{description}
+X\funcitem{box}{rect}
+XDraws a box around a rectangle.
+X\funcitem{circle}{center, radius}
+X%.br
+XDraws a circle with given center point and radius.
+X\funcitem{elarc(center, (rh, rv), }{a1, a2)}
+X%.br
+XDraws an elliptical arc with given center point.
+X{\tt (rh, rv)}
+Xgives the half sizes of the horizontal and vertical radii.
+X{\tt (a1, a2)}
+Xgives the angles (in degrees) of the begin and end points.
+X0 degrees is at 3 o'clock, 90 degrees is at 12 o'clock.
+X\funcitem{erase}{rect}
+XErases a rectangle.
+X\funcitem{invert}{rect}
+XInverts a rectangle.
+X\funcitem{line}{p1, p2}
+XDraws a line from point
+X{\tt p1}
+Xto
+X{\tt p2}.
+X\funcitem{paint}{rect}
+XFills a rectangle.
+X\funcitem{text}{p, str}
+XDraws a string starting at point p (the point specifies the
+Xtop left coordinate of the string).
+X\funcitem{shade}{rect, percent}
+X%.br
+XFills a rectangle with a shading pattern that is about
+X{\tt percent}
+Xpercent filled.
+X\funcitem{xorline}{p1, p2}
+XDraws a line in XOR mode.
+X\funcitem{baseline(), lineheight(), textbreak(), textwidth}{}
+X%.br
+XThese functions are similar to the corresponding functions described
+Xabove for the
+X{\tt stdwin}
+Xmodule, but use the current font of the window instead of the (global)
+Xdefault font.
+X\end{description}
+X
+X\subsubsection{Menu Object Methods}
+X
+XA menu object represents a menu.
+XThe menu is destroyed when the menu object is deleted.
+XThe following methods are defined:
+X\begin{description}
+X\funcitem{additem}{text, shortcut}
+X%.br
+XAdds a menu item with given text.
+XThe shortcut must be a string of length 1, or omitted (to specify no
+Xshortcut).
+X\funcitem{setitem}{i, text}
+XSets the text of item number
+X{\tt i}.
+X\funcitem{enable}{i, flag}
+XEnables or disables item
+X{\tt i}.
+X\funcitem{check}{i, flag}
+XSets or clears the
+X{\em check mark}
+Xfor item
+X{\tt i}.
+X\end{description}
+X
+X\subsubsection{Text-edit Object Methods}
+X
+XA text-edit object represents a text-edit block.
+XFor semantics, see the STDWIN documentation for C programmers.
+XThe following methods exist:
+X\begin{description}
+X\funcitem{arrow}{code}
+XPasses an arrow event to the text-edit block.
+XThe
+X{\tt code}
+Xmust be one of
+X{\tt WC\_LEFT},
+X{\tt WC\_RIGHT},
+X{\tt WC\_UP}
+Xor
+X{\tt WC\_DOWN}
+X(see module
+X{\tt stdwinevents}).
+X\funcitem{draw}{rect}
+XPasses a draw event to the text-edit block.
+XThe rectangle specifies the redraw area.
+X\funcitem{event}{type, window, detail}
+X%.br
+XPasses an event gotten from
+X{\tt stdwin.getevent()}
+Xto the text-edit block.
+XReturns true if the event was handled.
+X\funcitem{getfocus}{}
+XReturns 2 integers representing the start and end positions of the
+Xfocus, usable as slice indices on the string returned by
+X{\tt getfocustext()}.
+X\funcitem{getfocustext}{}
+XReturns the text in the focus.
+X\funcitem{getrect}{}
+XReturns a rectangle giving the actual position of the text-edit block.
+X(The bottom coordinate may differ from the initial position because
+Xthe block automatically shrinks or grows to fit.)
+X\funcitem{gettext}{}
+XReturns the entire text buffer.
+X\funcitem{move}{rect}
+XSpecifies a new position for the text-edit block in the document.
+X\funcitem{replace}{str}
+XReplaces the focus by the given string.
+XThe new focus is an insert point at the end of the string.
+X\funcitem{setfocus}{i,~j}
+XSpecifies the new focus.
+XOut-of-bounds values are silently clipped.
+X\end{description}
+X
+X\subsubsection{Example}
+X
+XHere is a simple example of using STDWIN in Python.
+XIt creates a window and draws the string ``Hello world'' in the top
+Xleft corner of the window.
+XThe window will be correctly redrawn when covered and re-exposed.
+XThe program quits when the close icon or menu item is requested.
+X\bcode\begin{verbatim}
+Ximport stdwin
+Xfrom stdwinevents import *
+X
+Xdef main():
+X mywin = stdwin.open('Hello')
+X #
+X while 1:
+X (type, win, detail) = stdwin.getevent()
+X if type = WE_DRAW:
+X draw = win.begindrawing()
+X draw.text((0, 0), 'Hello, world')
+X del draw
+X elif type = WE_CLOSE:
+X break
+X
+Xmain()
+X\end{verbatim}\ecode
+X
+X\subsection{Built-in Module {\tt amoeba}}
+X
+XThis module provides some object types and operations useful for
+XAmoeba applications.
+XIt is only available on systems that support Amoeba operations.
+XRPC errors and other Amoeba errors are reported as the exception
+X{\tt amoeba.error = 'amoeba.error'}.
+XThe module
+X{\tt amoeba}
+Xdefines the following items:
+X\begin{description}
+X\funcitem{name\_append}{path,~cap}
+X%.br
+XStores a capability in the Amoeba directory tree.
+XArguments are the pathname (a string) and the capability (a capability
+Xobject as returned by
+X{\tt name\_lookup()}).
+X\funcitem{name\_delete}{path}
+X%.br
+XDeletes a capability from the Amoeba directory tree.
+XArgument is the pathname.
+X\funcitem{name\_lookup}{path}
+X%.br
+XLooks up a capability.
+XArgument is the pathname.
+XReturns a
+X{\em capability}
+Xobject, to which various interesting operations apply, described below.
+X\funcitem{name\_replace}{path,~cap}
+X%.br
+XReplaces a capability in the Amoeba directory tree.
+XArguments are the pathname and the new capability.
+X(This differs from
+X{\tt name\_append()}
+Xin the behavior when the pathname already exists:
+X{\tt name\_append()}
+Xfinds this an error while
+X{\tt name\_replace()}
+Xallows it, as its name suggests.)
+X\funcitem{capv}
+XA table representing the capability environment at the time the
+Xinterpreter was started.
+X(Alas, modifying this table does not affect the capability environment
+Xof the interpreter.)
+XFor example,
+X{\tt amoeba.capv['ROOT']}
+Xis the capability of your root directory, similar to
+X{\tt getcap("ROOT")}
+Xin C.
+X\excitem{error}{amoeba.error}
+X%.br
+XThe exception raised when an Amoeba function returns an error.
+XThe value accompanying this exception is a pair containing the numeric
+Xerror code and the corresponding string, as returned by the C function
+X{\tt err\_why()}.
+X\funcitem{timeout}{msecs}
+X%.br
+XSets the transaction timeout, in milliseconds.
+XReturns the previous timeout.
+XInitially, the timeout is set to 2 seconds by the {\Python} interpreter.
+X\end{description}
+X
+X\subsubsection{Capability Operations}
+X
+XCapabilities are written in a convenient ASCII format, also used by the
+XAmoeba utilities
+X{\em c2a}(U)
+Xand
+X{\em a2c}(U).
+XFor example:
+X\bcode\begin{verbatim}
+X>>> amoeba.name_lookup('/profile/cap')
+Xaa:1c:95:52:6a:fa/14(ff)/8e:ba:5b:8:11:1a
+X>>>
+X\end{verbatim}\ecode
+XThe following methods are defined for capability objects.
+X\begin{description}
+X\funcitem{dir\_list}{}
+XReturns a list of the names of the entries in an Amoeba directory.
+X\funcitem{b\_read}{offset, maxsize}
+X%.br
+XReads (at most)
+X{\tt maxsize}
+Xbytes from a bullet file at offset
+X{\tt offset.}
+XThe data is returned as a string.
+XEOF is reported as an empty string.
+X\funcitem{b\_size}{}
+XReturns the size of a bullet file.
+X\funcitem{dir\_append(), dir\_delete(), dir\_lookup(), dir\_replace}{}
+X%.br
+X\itembreak
+XLike the corresponding
+X{\tt name\_*}
+Xfunctions, but with a path relative to the capability.
+X(For paths beginning with a slash the capability is ignored, since this
+Xis the defined semantics for Amoeba.)
+X\funcitem{std\_info}{}
+XReturns the standard info string of the object.
+X\funcitem{tod\_gettime}{}
+XReturns the time (in seconds since the Epoch, in UCT, as for POSIX) from
+Xa time server.
+X\funcitem{tod\_settime}{t}
+XSets the time kept by a time server.
+X\end{description}
+X
+X\subsection{Built-in Module {\tt audio}}
+X
+XThis module provides rudimentary access to the audio I/O device
+X{\tt /dev/audio}
+Xon the Silicon Graphics Personal IRIS; see audio(7).
+XIt supports the following operations:
+X\begin{description}
+X\funcitem{setoutgain}{n}
+XSets the output gain (0-255).
+X\funcitem{getoutgain}{}
+XReturns the output gain.
+X\funcitem{setrate}{n}
+XSets the sampling rate: 1=32K/sec, 2=16K/sec, 3=8K/sec.
+X\funcitem{setduration}{n}
+XSets the `sound duration' in units of 1/100 seconds.
+X\funcitem{read}{n}
+XReads a chunk of
+X{\tt n}
+Xsampled bytes from the audio input (line in or microphone).
+XThe chunk is returned as a string of length n.
+XEach byte encodes one sample as a signed 8-bit quantity using linear
+Xencoding.
+XThis string can be converted to numbers using {\tt chr2num()} described
+Xbelow.
+X\funcitem{write}{buf}
+XWrites a chunk of samples to the audio output (speaker).
+X\end{description}
+X
+XThese operations support asynchronous audio I/O:
+X\begin{description}
+X\funcitem{start\_recording}{n}
+X%.br
+XStarts a second thread (a process with shared memory) that begins reading
+X{\tt n}
+Xbytes from the audio device.
+XThe main thread immediately continues.
+X\funcitem{wait\_recording}{}
+X%.br
+XWaits for the second thread to finish and returns the data read.
+X\funcitem{stop\_recording}{}
+X%.br
+XMakes the second thread stop reading as soon as possible.
+XReturns the data read so far.
+X\funcitem{poll\_recording}{}
+X%.br
+XReturns true if the second thread has finished reading (so
+X{\tt wait\_recording()} would return the data without delay).
+X\item[{\tt start\_playing(chunk)}, {\tt wait\_playing()},
+X{\tt stop\_playing()}, {\tt poll\_playing()}]
+X%.br
+X\begin{sloppypar}
+XSimilar but for output.
+X{\tt stop\_playing()}
+Xreturns a lower bound for the number of bytes actually played (not very
+Xaccurate).
+X\end{sloppypar}
+X\end{description}
+X
+XThe following operations do not affect the audio device but are
+Ximplemented in C for efficiency:
+X\begin{description}
+X\funcitem{amplify}{buf, f1, f2}
+X%.br
+XAmplifies a chunk of samples by a variable factor changing from
+X{\tt f1}/256 to {\tt f2}/256.
+XNegative factors are allowed.
+XResulting values that are to large to fit in a byte are clipped.
+X\funcitem{reverse}{buf}
+X%.br
+XReturns a chunk of samples backwards.
+X\funcitem{add}{buf1, buf2}
+X%.br
+XBytewise adds two chunks of samples.
+XBytes that exceed the range are clipped.
+XIf one buffer shorter, it is assumed to be padded with zeros.
+X\funcitem{chr2num}{buf}
+X%.br
+XConverts a string of sampled bytes as returned by {\tt read()} into
+Xa list containing the numeric values of the samples.
+X\funcitem{num2chr}{list}
+X%.br
+X\begin{sloppypar}
+XConverts a list as returned by
+X{\tt chr2num()}
+Xback to a buffer acceptable by
+X{\tt write()}.
+X\end{sloppypar}
+X\end{description}
+X
+X\subsection{Built-in Module {\tt gl}}
+X
+XThis module provides access to the Silicon Graphics
+X{\em Graphics Library}.
+XIt is available only on Silicon Graphics machines.
+X
+X{\bf Warning:}
+XSome illegal calls to the GL library cause the {\Python} interpreter to dump
+Xcore.
+XIn particular, the use of most GL calls is unsafe before the first
+Xwindow is opened.
+X
+XThe module is too large to document here in its entirety, but the
+Xfollowing should help you to get started.
+XThe parameter conventions for the C functions are translated to {\Python} as
+Xfollows:
+X
+X\begin{itemize}
+X\item
+XAll (short, long, unsigned) int values are represented by {\Python}
+Xintegers.
+X\item
+XAll float and double values are represented by {\Python} floating point
+Xnumbers.
+XIn most cases, {\Python} integers are also allowed.
+X\item
+XAll arrays are represented by one-dimensional {\Python} lists.
+XIn most cases, tuples are also allowed.
+X\item
+X\begin{sloppypar}
+XAll string and character arguments are represented by {\Python} strings,
+Xfor instance,
+X{\tt winopen('Hi~There!')}
+Xand
+X{\tt rotate(900,~'z')}.
+X\end{sloppypar}
+X\item
+XAll (short, long, unsigned) integer arguments or return values that are
+Xonly used to specify the length of an array argument are omitted.
+XFor example, the C call
+X\bcode\begin{verbatim}
+Xlmdef(deftype, index, np, props)
+X\end{verbatim}\ecode
+Xis translated to {\Python} as
+X\bcode\begin{verbatim}
+Xlmdef(deftype, index, props)
+X\end{verbatim}\ecode
+X\item
+XOutput arguments are omitted from the argument list; they are
+Xtransmitted as function return values instead.
+XIf more than one value must be returned, the return value is a tuple.
+XIf the C function has both a regular return value (that is not omitted
+Xbecause of the previous rule) and an output argument, the return value
+Xcomes first in the tuple.
+XExamples: the C call
+X\bcode\begin{verbatim}
+Xgetmcolor(i, &red, &green, &blue)
+X\end{verbatim}\ecode
+Xis translated to {\Python} as
+X\bcode\begin{verbatim}
+Xred, green, blue = getmcolor(i)
+X\end{verbatim}\ecode
+X\end{itemize}
+X
+XThe following functions are non-standard or have special argument
+Xconventions:
+X\begin{description}
+X\funcitem{varray}{}
+XEquivalent to but faster than a number of
+X{\tt v3d()}
+Xcalls.
+XThe argument is a list (or tuple) of points.
+XEach point must be a tuple of coordinates (x, y, z) or (x, y).
+XThe points may be 2- or 3-dimensional but must all have the
+Xsame dimension.
+XFloat and int values may be mixed however.
+XThe points are always converted to 3D double precision points
+Xby assuming z=0.0 if necessary (as indicated in the man page),
+Xand for each point
+X{\tt v3d()}
+Xis called.
+X\funcitem{nvarray}{}
+XEquivalent to but faster than a number of
+X{\tt n3f}
+Xand
+X{\tt v3f}
+Xcalls.
+XThe argument is an array (list or tuple) of pairs of normals and points.
+XEach pair is a tuple of a point and a normal for that point.
+XEach point or normal must be a tuple of coordinates (x, y, z).
+XThree coordinates must be given.
+XFloat and int values may be mixed.
+XFor each pair,
+X{\tt n3f()}
+Xis called for the normal, and then
+X{\tt v3f()}
+Xis called for the point.
+X\funcitem{vnarray}{}
+XSimilar to
+X{\tt nvarray()}
+Xbut the pairs have the point first and the normal second.
+X\funcitem{nurbssurface}{s\_k[], t\_k[], ctl[][], s\_ord, t\_ord, type}
+X%.br
+X\itembreak
+XDefines a nurbs surface.
+XThe dimensions of
+X{\tt ctl[][]}
+Xare computed as follows:
+X{\tt [len(s\_k)~-~s\_ord]},
+X{\tt [len(t\_k)~-~t\_ord]}.
+X\funcitem{nurbscurve}{knots, ctlpoints, order, type}
+X%.br
+XDefines a nurbs curve.
+XThe length of ctlpoints is
+X{\tt len(knots)~-~order}.
+X\funcitem{pwlcurve}{points, type}
+X%.br
+XDefines a piecewise-linear curve.
+X{\tt points}
+Xis a list of points.
+X{\tt type}
+Xmust be
+X{\tt N\_ST}.
+X\funcitem{pick(n), select}{n}
+X%.br
+XThe only argument to these functions specifies the desired size of the
+Xpick or select buffer.
+X\funcitem{endpick(), endselect}{}
+X%.br
+XThese functions have no arguments.
+XThey return a list of integers representing the used part of the
+Xpick/select buffer.
+XNo method is provided to detect buffer overrun.
+X\end{description}
+X
+XHere is a tiny but complete example GL program in {\Python}:
+X\bcode\begin{verbatim}
+Ximport gl, GL, time
+X
+Xdef main():
+X gl.foreground()
+X gl.prefposition(500, 900, 500, 900)
+X w = gl.winopen('CrissCross')
+X gl.ortho2(0.0, 400.0, 0.0, 400.0)
+X gl.color(GL.WHITE)
+X gl.clear()
+X gl.color(GL.RED)
+X gl.bgnline()
+X gl.v2f(0.0, 0.0)
+X gl.v2f(400.0, 400.0)
+X gl.endline()
+X gl.bgnline()
+X gl.v2f(400.0, 0.0)
+X gl.v2f(0.0, 400.0)
+X gl.endline()
+X time.sleep(5)
+X
+Xmain()
+X\end{verbatim}\ecode
+X
+X\subsection{Built-in Module {\tt pnl}}
+X
+XThis module provides access to the
+X{\em Panel Library}
+Xbuilt by NASA Ames (to get it, send e-mail to
+X{\tt panel-...@nas.nasa.gov}).
+XAll access to it should be done through the standard module
+X{\tt panel},
+Xwhich transparantly exports most functions from
+X{\tt pnl}
+Xbut redefines
+X{\tt pnl.dopanel()}.
+X
+X{\bf Warning:}
+Xthe {\Python} interpreter will dump core if you don't create a GL window
+Xbefore calling
+X{\tt pnl.mkpanel()}.
+X
+XThe module is too large to document here in its entirety.
+EOF
+fi
+if test -s 'src/sc_interpr.c'
+then echo '*** I will not over-write existing file src/sc_interpr.c'
+else
+echo 'x - src/sc_interpr.c'
+sed 's/^X//' > 'src/sc_interpr.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X#if 0
+X#define STACK_TRACE
+X#define SCDEBUG
+X#endif
+X#include <stdio.h>
+X
+X#include <ailamoeba.h>
+X
+X#include "PROTO.h"
+X#include "sc_global.h"
+X#include "object.h"
+X#include "objimpl.h"
+X#include "stringobject.h"
+X#include "errors.h"
+X#include "sc_errors.h"
+X#include "stubcode.h"
+X#include "tupleobject.h"
+X#include "intobject.h"
+X#include "listobject.h"
+X
+Xtypedef struct s_loopstruct {
+X struct s_loopstruct *l_next; /* Make a list of it */
+X TscOperand l_label; /* Indentify the loop */
+X int l_index; /* The index of the list */
+X int l_size; /* The size of the list */
+X int l_retaddr; /* Addres to jump back */
+X int l_endaddr; /* Addres to jump to end */
+X object *l_list; /* The list to append to */
+X} TsLoop, *TpsLoop;
+X
+X
+X/*
+X** This file contains the Stubcode interpreter.
+X** All the instructions have there own function. The interpreter
+X** reads an instruction from the data and if needed also an operand.
+X** After this it calls the function that executes the instruction.
+X*/
+X
+Xstruct sc_ProcessBlock {
+X object **stack;
+X unsigned char *buffer, *data;
+X int sp, bp, pc, maxbufsize, datsize;
+X header hdr;
+X TpsLoop loops;
+X};
+X
+Xextern getcapability();
+X
+X/*
+X * Clean up the mess the loops make.
+X */
+X
+Xstatic void
+XxCleanUpLoops(sc_pb)
+X struct sc_ProcessBlock *sc_pb;
+X{
+X TpsLoop prev, this;
+X
+X if (sc_pb->loops == NULL)
+X return;
+X prev = sc_pb->loops;
+X this = sc_pb->loops->l_next;
+X while(this) {
+X free((char *)prev);
+X prev = this;
+X this = this->l_next;
+X }
+X free((char *)prev);
+X}
+X
+Xstatic int
+Xfindendloop(label, sc_pb)
+X TscOperand label;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X TscOperand operand;
+X TscOpcode opcode;
+X int walk = sc_pb->pc, found = 0;
+X
+X while (!found && (walk < sc_pb->datsize)) {
+X memcpy(&opcode, &sc_pb->data[walk], sizeof(TscOpcode));
+X walk += sizeof(TscOpcode);
+X if (opcode & (FLAGS | OPERAND)) {
+X memcpy(&operand, &sc_pb->data[walk], sizeof(TscOperand));
+X walk += sizeof(TscOperand);
+X }
+X if (opcode == EndLoop)
+X if (operand == label) found = 1;
+X }
+X if (found)
+X return walk;
+X return -1;
+X}
+X
+Xstatic int
+Xfindloop(ret, label, sc_pb)
+X TpsLoop *ret;
+X TscOperand label;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X TpsLoop walk;
+X
+X for (walk = sc_pb->loops; walk != NULL; walk = walk->l_next) {
+X if (walk->l_label == label) break;
+X }
+X if (walk == NULL) {
+X TpsLoop newloop;
+X
+X newloop = (TpsLoop)malloc(sizeof(TsLoop));
+X if (newloop == NULL) {
+X err_nomem();
+X return -1;
+X }
+X newloop->l_label = label;
+X newloop->l_index = 0;
+X newloop->l_retaddr = sc_pb->pc - (sizeof(TscOpcode) + sizeof(TscOperand));
+X /*
+X ** We need a correction because the pc points to
+X ** the instruction after the XXXLoop.
+X */
+X if ((newloop->l_endaddr = findendloop(label, sc_pb)) < 0) {
+X free((char *)newloop);
+X err_scerr(NoEndLoop);
+X return -1;
+X }
+X newloop->l_list = NULL;
+X newloop->l_next = sc_pb->loops;
+X sc_pb->loops = newloop;
+X *ret = newloop;
+X return 1;
+X }
+X *ret = walk;
+X return 0;
+X}
+X
+X#ifdef 0
+X
+Xstatic void
+Xremoveloop(this, sc_pb)
+X TpsLoop this;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X TpsLoop walk, prev = NULL;
+X
+X for (walk = sc_pb->loops; walk != NULL; walk = walk->l_next) {
+X if (walk->l_label == this->l_label) {
+X if (prev != NULL) {
+X prev->l_next = walk->l_next;
+X } else {
+X loop = walk->l_next;
+X }
+X free((char *)this);
+X break;
+X }
+X prev = walk;
+X }
+X}
+X
+X#endif
+X
+Xstatic int
+Xinit(self, sc_pb)
+X object *self;
+X struct sc_ProcessBlock *sc_pb;
+X{
+Xobject *string;
+Xint datasize;
+X
+X string = gettupleitem(self, STUBC);
+X if (string == NULL)
+X return -1;
+X sc_pb->data = getstringvalue(string);
+X if (sc_pb->data == NULL)
+X return -1;
+X datasize = (int)getstringsize(string);
+X if (datasize == -1)
+X return -1;
+X sc_pb->stack = (object **)malloc(STKSIZE * sizeof(object *));
+X if (sc_pb->stack == NULL) {
+X err_nomem();
+X return -1;
+X }
+X sc_pb->bp = sc_pb->sp = sc_pb->pc = 0;
+X sc_pb->loops = NULL;
+X return datasize;
+X}
+X
+Xstatic void reinit(sc_pb)
+X struct sc_ProcessBlock *sc_pb;
+X{
+X int i;
+X
+X sc_pb->bp = 0;
+X for (i = 0; i < sc_pb->sp; i++) {
+X DECREF(sc_pb->stack[i]);
+X }
+X sc_pb->sp = 0;
+X}
+X
+Xstatic void UnInit(self, sc_pb)
+X object *self;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X int i;
+X
+X free(sc_pb->buffer);
+X reinit(sc_pb);
+X free((char *)sc_pb->stack);
+X xCleanUpLoops(sc_pb);
+X}
+X
+Xstatic object *
+Xstacktop(sc_pb)
+X struct sc_ProcessBlock *sc_pb;
+X{
+X
+X if (sc_pb->sp == 0)
+X return err_scerr(StackUnderflow);
+X if (sc_pb->sp == (STKSIZE + 1))
+X return err_scerr(StackOverflow);
+X return sc_pb->stack[sc_pb->sp - 1];
+X}
+X
+X/*
+X * Push an object on the stack.
+X */
+Xstatic int
+XxPush(element, sc_pb)
+X object *element;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X
+X if (sc_pb->sp >= STKSIZE) {
+X err_scerr(StackOverflow);
+X return -1;
+X }
+X if (element == NULL) {
+X err_scerr(ElementIsNull);
+X return -1;
+X }
+X INCREF(element);
+X#ifdef STACK_TRACE
+X printf("pushed :");
+X printobject(element, stdout, 0);
+X printf("\n");
+X#endif
+X sc_pb->stack[sc_pb->sp++] = element;
+X return 0;
+X}
+X
+X/*
+X * Perform the RPC.
+X */
+Xstatic int
+XxTrans(self,cmd, sc_pb)
+X object *self;
+X TscOperand cmd;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X short ret;
+X capability cap;
+X object *capobj;
+X
+X if ((capobj = gettupleitem(self, CAP)) == NULL)
+X return -1;
+X if (getcapability(capobj, &cap) == -1)
+X return -1;
+X sc_pb->hdr.h_port = cap.cap_port;
+X sc_pb->hdr.h_priv = cap.cap_priv;
+X sc_pb->hdr.h_command = (command)cmd;
+X#ifdef SCDEBUG
+X printf("bp = %d maxbufsize = %d\n",sc_pb->bp, sc_pb->maxbufsize);
+X {
+X int i;
+X
+X for (i = 0; i < sc_pb->bp; i++) {
+X printf("%x ", sc_pb->buffer[i]);
+X }
+X }
+X printf("\n");
+X#endif
+X ret = trans(&sc_pb->hdr, sc_pb->buffer, (bufsize) sc_pb->bp,
+X &sc_pb->hdr, sc_pb->buffer, (bufsize)sc_pb->maxbufsize);
+X#ifdef SCDEBUG
+X printf("after Trans:ret = %d\n",ret);
+X {
+X int i;
+X
+X for (i = 0; i < ret; i++) {
+X printf("%x ", sc_pb->buffer[i]);
+X }
+X }
+X printf("\n");
+X#endif
+X if (ERR_STATUS(ret)) {
+X amoeba_error(ERR_CONVERT(ret));
+X return -1;
+X }
+X if (sc_pb->hdr.h_status != 0) {
+X object *v;
+X
+X if ((v = newintobject(sc_pb->hdr.h_status)) == NULL)
+X return -1;
+X err_scerrset(TransError, v, "Trans");
+X DECREF(v);
+X return -1;
+X }
+X reinit(sc_pb);
+X return 0;
+X}
+X
+X/*
+X * Test the tuple size.
+X */
+Xstatic int
+XxTTupleS(size, sc_pb)
+X TscOperand size;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *tuple;
+X
+X if ((tuple = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (!is_tupleobject(tuple))
+X return err_scerrset(TypeFailure, tuple, "TTupleS");
+X if (gettuplesize(tuple) != (unsigned int)size)
+X return err_scerrset(SizeError, tuple, "TTupleS");
+X return 0;
+X}
+X
+X/*
+X * Unpack a tuple
+X */
+Xstatic int
+XxUnpack(size, sc_pb)
+X TscOperand size;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *tuple, *element;
+X int i;
+X
+X if (size < (TscOperand)2) {
+X element = newintobject(size);
+X if (element == NULL)
+X return -1;
+X return err_scerrset(SizeError, element, "Unpack");
+X }
+X if ((tuple = stacktop(sc_pb)) == NULL)
+X return -1;
+X INCREF(tuple);
+X if (xPop((TscOperand) 1, sc_pb) != 0) {
+X DECREF(tuple);
+X return -1;
+X }
+X for (i = 0; i < (int)size; i++) {
+X if ((element = gettupleitem(tuple, i)) == NULL) {
+X DECREF(tuple);
+X return -1;
+X }
+X if (xPush(element, sc_pb) != 0) {
+X DECREF(tuple);
+X return -1;
+X }
+X }
+X DECREF(tuple);
+X return 0;
+X}
+X
+X/*
+X * Marshal the Ailword to a headerfiels.
+X */
+Xstatic int
+XxAilword(headerfield, sc_pb)
+X TscOperand headerfield;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X
+X switch(headerfield) {
+X
+X case H_EXTRA:
+X sc_pb->hdr.h_extra = (uint16)_ailword;
+X return 0;
+X
+X case H_SIZE:
+X sc_pb->hdr.h_size = (bufsize)_ailword;
+X return 0;
+X
+X case H_OFFSET:
+X sc_pb->hdr.h_offset = (int32)_ailword;
+X return 0;
+X
+X default:
+X {
+X object *v;
+X
+X if ((v = newintobject(headerfield)) == NULL)
+X return -1;
+X return err_scerrset(FlagError, v, "Ailword");
+X }
+X }
+X}
+X
+Xstatic int
+XxStringS(sc_pb)
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *size, *string;
+X int s;
+X
+X if ((string = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (!is_stringobject(string))
+X return err_scerrset(TypeFailure, string, "StringS");
+X if ((s = getstringsize(string)) < 0)
+X return -1;
+X if (xPop((TscOperand) 1, sc_pb) != 0)
+X return -1;
+X if ((size = newintobject(s)) == NULL)
+X return -1;
+X if (xPush(size, sc_pb) != 0) {
+X DECREF(size);
+X return -1;
+X }
+X DECREF(size);
+X return 0;
+X}
+X
+X/*
+X *
+X */
+Xstatic int
+XxListS(sc_pb)
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *size, *list;
+X int s;
+X
+X if ((list = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (!is_listobject(list))
+X return err_scerrset(TypeFailure, list, "ListS");
+X if ((s = getlistsize(list)) < 0)
+X return -1;
+X if (xPop((TscOperand) 1, sc_pb) != 0)
+X return -1;
+X if ((size = newintobject(s)) == NULL)
+X return -1;
+X if (xPush(size, sc_pb) != 0) {
+X DECREF(size);
+X return -1;
+X }
+X DECREF(size);
+X return 0;
+X}
+X
+X/*
+X * Marshal a fixed string to the buffer.
+X */
+Xstatic int
+XxPutFS(size, sc_pb)
+X TscOperand size;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *string;
+X char *str;
+X
+X if ((string = stacktop(sc_pb)) == NULL) {
+X return -1;
+X }
+X if (!is_stringobject(string))
+X return err_scerrset(TypeFailure, string, "PutFS");
+X if (getstringsize(string) != size)
+X return err_scerrset(SizeError, string, "PutFS");
+X if ((str = getstringvalue(string)) == NULL)
+X return -1;
+X if ((size + sc_pb->bp) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X memcpy(&sc_pb->buffer[sc_pb->bp], str, (int)size);
+X sc_pb->bp += size;
+X return xPop((TscOperand) 1, sc_pb);
+X}
+X
+X
+X/*
+X * Test the size of a string or list
+X */
+Xstatic int
+XxTStringSeq(size, sc_pb)
+X TscOperand size;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *string;
+X
+X if ((string = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (!is_stringobject(string))
+X return err_scerrset(TypeFailure, string, "TStringSeq");
+X if (getstringsize(string) != size)
+X return err_scerrset(SizeError, string, "TStringSeq");
+X return 0;
+X}
+X
+Xstatic int
+XxTStringSlt(size, sc_pb)
+X TscOperand size;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *string;
+X
+X if ((string = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (!is_stringobject(string))
+X return err_scerrset(TypeFailure, string, "TStringSlt");
+X if (getstringsize(string) > size)
+X return err_scerrset(SizeError, string, "TStringSlt");
+X return 0;
+X}
+X
+Xstatic int
+XxTListSeq(size, sc_pb)
+X TscOperand size;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *list;
+X
+X if ((list = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (!is_listobject(list))
+X return err_scerrset(TypeFailure, list, "TListSeq");
+X if (getlistsize(list) != size)
+X return err_scerrset(SizeError, list, "TListSeq");
+X return 0;
+X}
+X
+Xstatic int
+XxTListSlt(size, sc_pb)
+X TscOperand size;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *list;
+X
+X if ((list = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (!is_listobject(list))
+X return err_scerrset(TypeFailure, list, "TListSlt");
+X if (getlistsize(list) > size)
+X return err_scerrset(SizeError, list, "TListSlt");
+X return 0;
+X}
+X
+Xstatic int
+XxPutVS(sc_pb)
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *string;
+X char *str;
+X int size;
+X
+X if ((string = stacktop(sc_pb)) == NULL)
+X return -1;
+X if ((size = getstringsize(string)) < 0)
+X return (size == -1 ? -1 : err_scerrset(SizeError, string, "PutVS"));
+X if ((str = getstringvalue(string)) == NULL)
+X return -1;
+X if (sc_pb->bp + size > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X memcpy(&sc_pb->buffer[sc_pb->bp], str, size);
+X sc_pb->bp += size;
+X return xPop((TscOperand) 1, sc_pb);
+X}
+X
+X/*
+X * The loop instructions.
+X */
+Xstatic int
+XxLoopPut(label, sc_pb)
+X TscOperand label;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X TpsLoop this;
+X object *list, *element;
+X
+X if (findloop(&this, label, sc_pb) < 0)
+X return -1;
+X if ((list = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (!is_listobject(list))
+X return err_scerrset(TypeFailure, list, "LoopPut");
+X if (this->l_index >= getlistsize(list)) {
+X sc_pb->pc = this->l_endaddr;
+X /*
+X ** Pop the list from the stack
+X */
+X return xPop((TscOperand)1, sc_pb);
+X }
+X if ((element = getlistitem(list, this->l_index)) == NULL)
+X return -1;
+X return xPush(element, sc_pb);
+X}
+X
+Xstatic int
+XxLoopGet(label, sc_pb)
+X TscOperand label;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X TpsLoop this;
+X object *element, *integer;
+X int i;
+X
+X if ((i = findloop(&this, label, sc_pb)) < 0)
+X return -1;
+X else if (i == 1) {
+X /*
+X * It is the first time we enter LoopGet label
+X */
+X if ((this->l_list = newlistobject(0)) == NULL)
+X return -1;
+X if ((integer = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (!is_intobject(integer))
+X return err_scerrset(TypeFailure, integer, "LoopGet");
+X this->l_size = getintvalue(integer);
+X if (xPop((TscOperand) 1, sc_pb) != 0)
+X return -1;
+X } else {
+X if ((element = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (addlistitem(this->l_list, element) != 0)
+X return -1;
+X if (xPop((TscOperand) 1, sc_pb) != 0)
+X return -1;
+X }
+X if (this->l_index >= this->l_size) {
+X int ret;
+X
+X sc_pb->pc = this->l_endaddr;
+X ret = xPush(this->l_list, sc_pb);
+X DECREF(this->l_list);
+X return ret;
+X }
+X return 0;
+X}
+X
+Xstatic int
+XxEndLoop(label, sc_pb)
+X TscOperand label;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X TpsLoop this;
+X
+X if (findloop(&this, label, sc_pb) < 0)
+X return -1;
+X this ->l_index += 1;
+X sc_pb->pc = this->l_retaddr;
+X return 0;
+X}
+X
+Xstatic int
+XxPutI(flags, sc_pb)
+X TscOperand flags;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *integer;
+X
+X if ((integer = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (!is_intobject(integer))
+X return err_scerrset(TypeFailure, integer, "PutI");
+X if (flags & ALL_FIELDS) {
+X long i;
+X
+X /*
+X * The integer must be marshalles in the header.
+X * No type casting according to the type flag because
+X * we have to cast to the headerfield types.
+X */
+X i = getintvalue(integer);
+X switch(flags & ALL_FIELDS) {
+X
+X case H_EXTRA:
+X sc_pb->hdr.h_extra = (uint16)i;
+X break;
+X
+X case H_SIZE:
+X sc_pb->hdr.h_size = (bufsize)i;
+X break;
+X
+X case H_OFFSET:
+X sc_pb->hdr.h_offset = (int32)i;
+X break;
+X
+X default:
+X if ((integer = newintobject(flags & ALL_FIELDS)) == NULL)
+X return -1;
+X err_scerrset(FlagError, integer, "Ailword");
+X DECREF(integer);
+X return -1;
+X }
+X } else {
+X long i;
+X
+X i = getintvalue(integer);
+X switch(flags & ALLTYPES) {
+X
+X case 0:
+X {
+X int16 x;
+X
+X x = (int16)i;
+X if ((sc_pb->bp + sizeof(int16)) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X memcpy(&sc_pb->buffer[sc_pb->bp], &x, sizeof(int16));
+X sc_pb->bp += sizeof(int16);
+X break;
+X }
+X
+X case NOSIGN:
+X {
+X uint16 x;
+X
+X x = (uint16)i;
+X if ((sc_pb->bp + sizeof(uint16)) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X memcpy(&sc_pb->buffer[sc_pb->bp], &x, sizeof(uint16));
+X sc_pb->bp += sizeof(uint16);
+X break;
+X }
+X
+X case INT32:
+X {
+X int32 x;
+X
+X x = (int32)i;
+X if ((sc_pb->bp + sizeof(int32)) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X memcpy(&sc_pb->buffer[sc_pb->bp], &x, sizeof(int32));
+X sc_pb->bp += sizeof(int32);
+X break;
+X }
+X
+X case INT32 | NOSIGN:
+X {
+X uint32 x;
+X
+X x = (uint32)i;
+X if ((sc_pb->bp + sizeof(uint32)) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X memcpy(&sc_pb->buffer[sc_pb->bp], &x, sizeof(uint32));
+X sc_pb->bp += sizeof(uint32);
+X break;
+X }
+X default:
+X {
+X object *x;
+X
+X if ((x = newintobject(flags)) == NULL)
+X return -1;
+X err_scerrset(FlagError, x, "PutI");
+X DECREF(x);
+X return -1;
+X }
+X }
+X }
+X return xPop((TscOperand)1, sc_pb);
+X}
+X
+Xstatic int
+XxPutC(sc_pb)
+X struct sc_ProcessBlock *sc_pb;
+X{
+X capability cap;
+X object *capobj;
+X
+X if ((capobj = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (!is_capobj(capobj))
+X return err_scerrset(TypeFailure, capobj, "xPutC");
+X if (getcapability(capobj, &cap) != 0)
+X return -1;
+X if ((sc_pb->bp + CAPSIZE) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X memcpy(&sc_pb->buffer[sc_pb->bp], &cap, CAPSIZE);
+X sc_pb->bp += CAPSIZE;
+X return xPop((TscOperand) 1, sc_pb);
+X}
+X
+Xstatic int
+XxDup(n, sc_pb)
+X TscOperand n;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X
+X if ((int)n > sc_pb->sp) {
+X object *i;
+X
+X if ((i = newintobject((long)n)) == NULL)
+X return -1;
+X err_scerrset(RangeError, i, "Dup");
+X DECREF(i);
+X return -1;
+X }
+X return xPush(sc_pb->stack[sc_pb->sp - n], sc_pb);
+X}
+X
+Xstatic int
+XxPop(n, sc_pb)
+X TscOperand n;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X int i;
+X
+X if ((sc_pb->sp - (int)n) < 0) {
+X err_scerr(StackUnderflow);
+X return -1;
+X }
+X for (i = 0; i < (int)n; i++) {
+X sc_pb->sp--;
+X#ifdef STACK_TRACE
+X printf("popped :");
+X printobject(sc_pb->stack[sc_pb->sp], stdout, 0);
+X printf("\n");
+X#endif
+X DECREF(sc_pb->stack[sc_pb->sp]);
+X }
+X return 0;
+X}
+X
+Xstatic int
+XxAlign(n, sc_pb)
+X TscOperand n;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X int align = sc_pb->bp % (int)n;
+X
+X#ifdef SCDEBUG
+X printf("Old bp = %d\n", sc_pb->bp);
+X#endif
+X sc_pb->bp += (align == 0) ? 0 : ((int)n - align);
+X#ifdef SCDEBUG
+X printf("New bp = %d\n", sc_pb->bp);
+X#endif
+X return 0;
+X}
+X
+Xstatic int
+XxPack(size, sc_pb)
+X TscOperand size;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *element, *tuple;
+X int i, ret;
+X
+X if ((tuple = newtupleobject((int)size)) == NULL)
+X return -1;
+X for (i = 0; i < (int)size; i++) {
+X if ((element = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (settupleitem(tuple, (int)size - i - 1, element) != 0)
+X return -1;
+X INCREF(element);
+X if (xPop((TscOperand) 1, sc_pb) != 0)
+X return -1;
+X }
+X ret = xPush(tuple, sc_pb);
+X DECREF(tuple);
+X return ret;
+X}
+X
+Xstatic int
+XxGetVS(sc_pb)
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *string, *integer;
+X int size;
+X
+X if ((integer = stacktop(sc_pb)) == NULL)
+X return -1;
+X if (!is_intobject(integer))
+X return err_scerrset(TypeFailure, integer, "GetVS");
+X size = getintvalue(integer);
+X if ((sc_pb->bp + size) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X if ((string = newsizedstringobject(&sc_pb->buffer[sc_pb->bp], size)) == NULL)
+X return -1;
+X sc_pb->bp += size;
+X if (xPop((TscOperand) 1, sc_pb) != 0)
+X return -1;
+X if (xPush(string, sc_pb) != 0) {
+X return -1;
+X }
+X DECREF(string);
+X return 0;
+X}
+X
+Xstatic int
+XxGetFS(size, sc_pb)
+X TscOperand size;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *string;
+X
+X if ((sc_pb->bp + (int)size) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X if ((string = newsizedstringobject(&sc_pb->buffer[sc_pb->bp], (int)size)) == NULL)
+X return -1;
+X sc_pb->bp += (int)size;
+X if(xPush(string, sc_pb) != 0) {
+X return -1;
+X }
+X DECREF(string);
+X return 0;
+X}
+X
+Xstatic int
+XxGetI(flags, sc_pb)
+X TscOperand flags;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *integer;
+X long i;
+X
+X if (flags & ALL_FIELDS) {
+X
+X switch(flags & ALL_FIELDS) {
+X
+X case H_EXTRA:
+X i = (long)sc_pb->hdr.h_extra;
+X break;
+X
+X case H_SIZE:
+X i = (long)sc_pb->hdr.h_size;
+X break;
+X
+X case H_OFFSET:
+X i = (long)sc_pb->hdr.h_offset;
+X break;
+X
+X default:
+X if ((integer = newintobject(flags & ALL_FIELDS)) == NULL)
+X return -1;
+X err_scerrset(FlagError, integer, "Ailword");
+X DECREF(integer);
+X return -1;
+X }
+X } else {
+X switch(flags & ALLTYPES) {
+X
+X case 0:
+X {
+X int16 x;
+X
+X if ((sc_pb->bp + sizeof(int16)) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X memcpy(&x, &sc_pb->buffer[sc_pb->bp], sizeof(int16));
+X sc_pb->bp += sizeof(int16);
+X i = (long)x;
+X break;
+X }
+X
+X case NOSIGN:
+X {
+X uint16 x;
+X
+X if ((sc_pb->bp + sizeof(uint16)) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X memcpy(&x, &sc_pb->buffer[sc_pb->bp], sizeof(uint16));
+X sc_pb->bp += sizeof(uint16);
+X i = (long)x;
+X break;
+X }
+X
+X case INT32:
+X {
+X int32 x;
+X
+X if ((sc_pb->bp + sizeof(int32)) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X memcpy(&x, &sc_pb->buffer[sc_pb->bp], sizeof(int32));
+X sc_pb->bp += sizeof(int32);
+X i = (long)x;
+X break;
+X }
+X
+X case INT32 | NOSIGN:
+X {
+X uint32 x;
+X
+X if ((sc_pb->bp + sizeof(uint32)) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X memcpy(&x, &sc_pb->buffer[sc_pb->bp], sizeof(uint32));
+X sc_pb->bp += sizeof(uint32);
+X i = (long)x;
+X break;
+X }
+X default:
+X {
+X if ((integer = newintobject(flags)) == NULL)
+X return -1;
+X err_scerrset(FlagError, integer, "GetI");
+X DECREF(integer);
+X return -1;
+X }
+X }
+X }
+X if ((integer = newintobject(i)) == NULL)
+X return -1;
+X if (xPush(integer, sc_pb) != 0) {
+X DECREF(integer);
+X return -1;
+X }
+X DECREF(integer);
+X return 0;
+X}
+X
+Xstatic int
+XxGetC(flags, sc_pb)
+X TscOperand flags;
+X struct sc_ProcessBlock *sc_pb;
+X{
+X extern object *newcapobject();
+X object *capobj;
+X capability cap;
+X
+X if ((int)flags != 0) {
+X switch ((int)flags) {
+X
+X case PSEUDOFIELD:
+X cap.cap_port = sc_pb->hdr.h_port;
+X cap.cap_priv = sc_pb->hdr.h_priv;
+X break;
+X }
+X } else {
+X if ((CAPSIZE + sc_pb->bp) > sc_pb->maxbufsize) {
+X err_scerr(BufferOverflow);
+X return -1;
+X }
+X memcpy(&cap, &sc_pb->buffer[sc_pb->bp], CAPSIZE);
+X }
+X if ((capobj = newcapobject(&cap)) == NULL)
+X return -1;
+X return xPush(capobj, sc_pb);
+X}
+X
+Xstatic int
+XxEqual(sc_pb)
+X struct sc_ProcessBlock *sc_pb;
+X{
+X object *int1, *int2;
+X
+X if (sc_pb->sp < 2) {
+X err_scerr(StackUnderflow);
+X return -1;
+X }
+X int1 = sc_pb->stack[sc_pb->sp - 1];
+X int2 = sc_pb->stack[sc_pb->sp - 2];
+X if ((int1 == NULL) || (int2 == NULL))
+X return -1;
+X if (!is_intobject(int1))
+X return err_scerrset(TypeFailure, int1, "Equal");
+X if (!is_intobject(int2))
+X return err_scerrset(TypeFailure, int2, "Equal");
+X if (getintvalue(int1) != getintvalue(int2)) {
+X object *tmptuple;
+X
+X if ((tmptuple = newtupleobject(2)) == NULL)
+X return -1;
+X INCREF(int1);
+X if (settupleitem(tmptuple, 0, int1) != 0) {
+X DECREF(tmptuple);
+X DECREF(int1);
+X return -1;
+X }
+X if (settupleitem(tmptuple, 1, int2) != 0) {
+X DECREF(tmptuple);
+X DECREF(int2);
+X return -1;
+X }
+X return err_scerrset(SizeError, tmptuple, "Equal");
+X }
+X return 0;
+X}
+X
+Xobject *
+Xsc_interpreter(self, args)
+X object *self, *args;
+X{
+XTscOpcode opcode;
+XTscOperand operand;
+Xint datasize, ret;
+Xobject *returnobject;
+Xstruct sc_ProcessBlock sc_pb;
+X
+X if ((datasize = init(self, &sc_pb)) < 0)
+X return NULL;
+X memcpy(&opcode, sc_pb.data, sizeof(TscOpcode));
+X sc_pb.datsize = datasize;
+X sc_pb.pc += sizeof(TscOpcode);
+X if (opcode != BufSize) {
+X free((char *)sc_pb.stack);
+X return err_scerr(NoBufSize);
+X }
+X memcpy(&operand, &sc_pb.data[sc_pb.pc], sizeof(TscOperand));
+X sc_pb.pc += sizeof(TscOperand);
+X sc_pb.buffer = (unsigned char *)malloc(operand);
+X sc_pb.maxbufsize = (int)operand;
+X if (sc_pb.buffer == NULL) {
+X free((char *)sc_pb.stack);
+X return err_nomem();
+X }
+X memcpy(&opcode, &sc_pb.data[sc_pb.pc], sizeof(TscOpcode));
+X if (opcode != NoArgs) {
+X if (xPush(args, &sc_pb) != 0) {
+X UnInit(self, &sc_pb);
+X return NULL;
+X }
+X }
+X while (sc_pb.pc < datasize) {
+X memcpy(&opcode, &sc_pb.data[sc_pb.pc], sizeof(TscOpcode));
+X sc_pb.pc += sizeof(TscOpcode);
+X if (opcode & (OPERAND | FLAGS)) {
+X memcpy(&operand, &sc_pb.data[sc_pb.pc], sizeof(TscOperand));
+X sc_pb.pc += sizeof(TscOperand);
+X }
+X#ifdef SCDEBUG
+X xPrintCode(opcode);
+X if ((opcode & FLAGS) && (opcode & OPERAND))
+X xPrintFlags(operand);
+X else if (opcode & OPERAND)
+X xPrintNum(operand);
+X printf("\n");
+X fflush(stdout);
+X#endif
+X#ifdef STACK_TRACE
+X {
+X register i;
+X
+X printf("Stack trace :\n");
+X for(i = 0; i < sc_pb.sp; i++) {
+X printobject(sc_pb.stack[i], stdout, 0);
+X printf("\n");
+X }
+X }
+X#endif
+X switch(opcode) {
+X
+X case NoArgs:
+X ret = 0;
+X if (args != NULL) {
+X err_scerrset(TypeFailure, args, "NoArgs");
+X ret = -1;
+X }
+X break;
+X
+X case BufSize:
+X UnInit(self, &sc_pb);
+X return err_scerr(TwoBufSize);
+X
+X case Trans:
+X ret = xTrans(self, operand, &sc_pb);
+X break;
+X
+X case TTupleS:
+X ret = xTTupleS(operand, &sc_pb);
+X break;
+X
+X case Unpack:
+X ret = xUnpack(operand, &sc_pb);
+X break;
+X
+X case AilWord:
+X ret = xAilword(operand, &sc_pb);
+X break;
+X
+X case StringS:
+X ret = xStringS(&sc_pb);
+X break;
+X
+X case ListS:
+X ret = xListS(&sc_pb);
+X break;
+X
+X case PutFS:
+X ret = xPutFS(operand, &sc_pb);
+X break;
+X
+X case TStringSeq:
+X ret = xTStringSeq(operand, &sc_pb);
+X break;
+X
+X case TStringSlt:
+X ret = xTStringSlt(operand, &sc_pb);
+X break;
+X
+X case PutVS:
+X ret = xPutVS(&sc_pb);
+X break;
+X
+X case TListSeq:
+X ret = xTListSeq(operand, &sc_pb);
+X break;
+X
+X case TListSlt:
+X
+ret = xTListSlt(operand, &sc_pb);
+X break;
+X
+X case LoopPut:
+X ret = xLoopPut(operand, &sc_pb);
+X break;
+X
+X case EndLoop:
+X ret = xEndLoop(operand, &sc_pb);
+X break;
+X
+X case PutI:
+X ret = xPutI(operand, &sc_pb);
+X break;
+X
+X case PutC:
+X ret = xPutC(&sc_pb);
+X break;
+X
+X case Dup:
+X ret = xDup(operand, &sc_pb);
+X break;
+X
+X case Pop:
+X ret = xPop(operand, &sc_pb);
+X break;
+X
+X case Align:
+X ret = xAlign(operand, &sc_pb);
+X break;
+X
+X case Pack:
+X ret = xPack(operand, &sc_pb);
+X break;
+X
+X case GetVS:
+X ret = xGetVS(&sc_pb);
+X break;
+X
+X case LoopGet:
+X ret = xLoopGet(operand, &sc_pb);
+X break;
+X
+X case GetFS:
+X ret = xGetFS(operand, &sc_pb);
+X break;
+X
+X case GetI:
+X ret = xGetI(operand, &sc_pb);
+X break;
+X
+X case GetC:
+X ret = xGetC(operand, &sc_pb);
+X break;
+X
+X case PushI:
+X {
+X object *element;
+X
+X element = newintobject((long)operand);
+X if (element == NULL) {
+X UnInit(self, &sc_pb);
+X return NULL;
+X }
+X ret = xPush(element, &sc_pb);
+X if (ret == 0)
+X DECREF(element);
+X }
+X break;
+X
+X case Equal:
+X ret = xEqual(&sc_pb);
+X break;
+X
+X default:
+X {
+X char errstr[256];
+X
+X UnInit(self, &sc_pb);
+X sprintf(errstr, "Unknow stubcode %d", opcode);
+X err_setstr(RuntimeError, errstr);
+X return NULL;
+X }
+X }
+X if (ret != 0) {
+X UnInit(self, &sc_pb);
+X return NULL;
+X }
+X }
+X if (sc_pb.sp > 0) {
+X INCREF(sc_pb.stack[sc_pb.sp - 1]);
+X returnobject = sc_pb.stack[sc_pb.sp - 1];
+X } else {
+X INCREF(None);
+X returnobject = None;
+X }
+X UnInit(self, &sc_pb);
+X return returnobject;
+X}
+EOF
+fi
+echo 'Part 06 out of 21 of pack.out complete.'
+exit 0

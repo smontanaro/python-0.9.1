@@ -1,0 +1,1675 @@
+: This is a shell archive.
+: Extract with 'sh this_file'.
+:
+: Extract part 01 first since it makes all directories
+echo 'Start of pack.out, part 21 out of 21:'
+if test -s 'demo/README'
+then echo '*** I will not over-write existing file demo/README'
+else
+echo 'x - demo/README'
+sed 's/^X//' > 'demo/README' << 'EOF'
+XThis directory contains various demonstrations of what you can do with
+XPython. The demos are grouped sub(sub*)directories according to
+Xrequired optional built-in modules.
+X
+Xscripts Some useful Python scripts that I put in my bin
+X directory. No optional built-in modules meeded.
+X
+Xsgi Demos that only run on Silicon Graphics machines.
+X Require the built-in modules 'audio' and/or 'gl'.
+X
+Xstdwin Demos that use the STDWIN library. Require the 'stdwin'
+X built-in module.
+X
+XWARNING: some scripts are executable and have a first line saying
+X
+X #! /ufs/guido/bin/sgi/python
+X
+XThis is unlikely to give good results anywhere else except in my
+Xoffice. Edit the first line before installing such scripts; to try
+Xthem out, you can just say "python file.py". (The .py suffix is not
+Xnecessary in this case, but makes it possible to debug the modules
+Xinteractively by importing them.)
+EOF
+fi
+if test -s 'demo/scripts/findlinksto.py'
+then echo '*** I will not over-write existing file demo/scripts/findlinksto.py'
+else
+echo 'x - demo/scripts/findlinksto.py'
+sed 's/^X//' > 'demo/scripts/findlinksto.py' << 'EOF'
+X#! /ufs/guido/bin/sgi/python
+X
+X# findlinksto
+X#
+X# find symbolic links to a given path
+X
+Ximport posix, path, sys
+X
+Xdef visit(pattern, dirname, names):
+X if path.islink(dirname):
+X names[:] = []
+X return
+X if path.ismount(dirname):
+X print 'descend into', dirname
+X n = len(pattern)
+X for name in names:
+X name = path.cat(dirname, name)
+X try:
+X linkto = posix.readlink(name)
+X if linkto[:n] = pattern:
+X print name, '->', linkto
+X except posix.error:
+X pass
+X
+Xdef main(pattern, args):
+X for dirname in args:
+X path.walk(dirname, visit, pattern)
+X
+Xmain(sys.argv[1], sys.argv[2:])
+EOF
+chmod +x 'demo/scripts/findlinksto.py'
+fi
+if test -s 'demo/scripts/suff.py'
+then echo '*** I will not over-write existing file demo/scripts/suff.py'
+else
+echo 'x - demo/scripts/suff.py'
+sed 's/^X//' > 'demo/scripts/suff.py' << 'EOF'
+X#! /ufs/guido/bin/sgi/python
+X
+X# suff
+X#
+X# show different suffixes amongst arguments
+X
+Ximport sys
+X
+Xdef main():
+X files = sys.argv[1:]
+X suffixes = {}
+X for file in files:
+X suff = getsuffix(file)
+X if not suffixes.has_key(suff):
+X suffixes[suff] = []
+X suffixes[suff].append(file)
+X keys = suffixes.keys()
+X keys.sort()
+X for suff in keys:
+X print `suff`, len(suffixes[suff])
+X
+Xdef getsuffix(file):
+X suff = ''
+X for i in range(len(file)):
+X if file[i] = '.':
+X suff = file[i:]
+X return suff
+X
+Xmain()
+EOF
+chmod +x 'demo/scripts/suff.py'
+fi
+if test -s 'demo/sgi/README'
+then echo '*** I will not over-write existing file demo/sgi/README'
+else
+echo 'x - demo/sgi/README'
+sed 's/^X//' > 'demo/sgi/README' << 'EOF'
+XDemonstrations of Python that use various features of the Silicon
+XGraphics IRIS machines.
+X
+Xaudio Demonstrations of the audio capabilities of the 4D/25.
+X Require the built-in module 'audio'.
+X
+Xaudio_stdwin Window-based demonstrations the audio capabilities of
+X the 4D/25. Require the built-in modules 'stdwin' and
+X 'audio'.
+X
+Xgl Demonstrations of the Graphics Library (GL).
+X Require the built-in module 'gl'.
+X
+Xgl_panel Demonstrations of the Panel Library by NASA Ames.
+X Require the built-in modules 'gl' and 'pnl'.
+EOF
+fi
+if test -s 'demo/sgi/audio/README'
+then echo '*** I will not over-write existing file demo/sgi/audio/README'
+else
+echo 'x - demo/sgi/audio/README'
+sed 's/^X//' > 'demo/sgi/audio/README' << 'EOF'
+XPrograms that demonstrate the use of the audio device on the SGI 4D/25.
+XThese require the built-in module 'audio'.
+X
+Xplay Read a sound sample from a file and play it through the
+X speaker. Options to set volume, sampling rate etc.
+EOF
+fi
+if test -s 'demo/sgi/audio_stdwin/vumeter.py'
+then echo '*** I will not over-write existing file demo/sgi/audio_stdwin/vumeter.py'
+else
+echo 'x - demo/sgi/audio_stdwin/vumeter.py'
+sed 's/^X//' > 'demo/sgi/audio_stdwin/vumeter.py' << 'EOF'
+X#! /ufs/guido/bin/sgi/python
+X
+Ximport audio
+Ximport stdwin
+X
+Xfrom VUMeter import VUMeter
+Xfrom WindowParent import WindowParent
+Ximport MainLoop
+X
+XNBUFS=20
+XBUFSIZE = NBUFS*48
+XSCALE=128
+X
+Xclass MyVUMeter() = VUMeter():
+X def init_reactivity(self):
+X self.parent.need_mouse(self)
+X def mouse_down(self, detail):
+X if self.enabled:
+X self.stop()
+X else:
+X self.start()
+X def mouse_move(self, detail): pass
+X def mouse_up(self, detail): pass
+X
+Xdef main():
+X audio.setrate(3)
+X audio.setoutgain(0)
+X w = WindowParent().create('VU Meter', (200, 100))
+X v = MyVUMeter().define(w)
+X v.start()
+X w.realize()
+X while 1:
+X w.dispatch(stdwin.getevent())
+X
+Xmain()
+EOF
+chmod +x 'demo/sgi/audio_stdwin/vumeter.py'
+fi
+if test -s 'demo/sgi/gl/README'
+then echo '*** I will not over-write existing file demo/sgi/gl/README'
+else
+echo 'x - demo/sgi/gl/README'
+sed 's/^X//' > 'demo/sgi/gl/README' << 'EOF'
+XThese demos run only on SGI machines and require the 'gl' built-in module.
+XThe demonstrate the abilities of SGI's GL library as well as the ease of
+XGL programming in Python. Most demos require the Z-buffer (aka
+X24-bitplane) option.
+X
+Xbackface Demonstrates the 'backface' GL function.
+X
+Xkites Show 3 flying kites. Demonstrates the rendering speed
+X obtainable by Python programs.
+X
+Xmclock A colorful clock with more options than you can
+X remember. Works on 8-bit machines (but allows more
+X colors on 24-bit machines).
+X
+Xmixing Demonstrates the effect of color mixing: through
+X frequent color switching it gives the effect of white
+X light.
+X
+Xnurbs A simple demonstration of the 'nurbs' GL functions.
+X
+Xzrgb Displays a 3-D Gouraud-shaded figure which can be moved
+X around with the mouse.
+EOF
+fi
+if test -s 'demo/sgi/gl_panel/README'
+then echo '*** I will not over-write existing file demo/sgi/gl_panel/README'
+else
+echo 'x - demo/sgi/gl_panel/README'
+sed 's/^X//' > 'demo/sgi/gl_panel/README' << 'EOF'
+XThis directory contains demos that use the Panel Library by NASA Ames.
+XThey only run on SGI machines and require the 'pnl' and 'gl' built-in
+Xmodules. Each subdirectory contains one demo.
+X
+Xapanel A trivial user interface to the audio capabilities of
+X the 4D/25 (Personal IRIS). Lets you record a sample and
+X play it back at different volumes. Requires the 'audio'
+X built-in module.
+X
+Xflying A large demonstration that can display several
+X differently shaped objects through space. Control
+X panels let you manipulate light sources, material
+X properties and drawing modes.
+X
+Xnurbs A demo of the capabilities of the GL 'nurbs' functions
+X that can display the control points. (It was intended
+X to let you move these as well, but there was a problem
+X with the mapping of mouse movements in a 3-D world.)
+X
+Xtwoview A demo of GL's transformation primitives. Two views on
+X a scene are given, and the position and orientation of a
+X viewer in one of the views can be changed through
+X various buttons and dials in a control panel.
+EOF
+fi
+if test -s 'demo/sgi/gl_panel/apanel/apanel.py'
+then echo '*** I will not over-write existing file demo/sgi/gl_panel/apanel/apanel.py'
+else
+echo 'x - demo/sgi/gl_panel/apanel/apanel.py'
+sed 's/^X//' > 'demo/sgi/gl_panel/apanel/apanel.py' << 'EOF'
+X#! /ufs/guido/bin/sgi/python
+X
+X# A (too) trivial control panel to record a sound sample and play it back.
+X# Requires the audio built-in module.
+X# Requires the NASA AMES Panel Library.
+X
+Ximport sys
+X
+Ximport gl
+Ximport panel
+X
+Xpanel.block(1)
+X
+Ximport audio
+X
+Xdef main():
+X gl.foreground()
+X gl.noport()
+X #gl.prefposition(700, 850, 950, 970)
+X wid = gl.winopen('audio demo')
+X #
+X panels = panel.defpanellist('apanel.s') # XXX
+X p = panels[0]
+X p.playbackbutton.back = p
+X p.recordbutton.back = p
+X p.sample = ''
+X #
+X def quit(a):
+X sys.exit(0)
+X #
+X p.quitbutton.downfunc = quit
+X #
+X def playback(a):
+X p = a.back
+X gain = int(255.0*p.outputgain.val)
+X a.val = 1.0
+X a.fixact()
+X panel.drawpanel()
+X audio.setoutgain(gain)
+X audio.write(p.sample)
+X audio.setoutgain(0)
+X a.val = 0.0
+X a.fixact()
+X #
+X p.playbackbutton.downfunc = playback
+X #
+X def record(a):
+X p = a.back
+X size = int(10.0 * 8192.0 * p.recordsize.val)
+X a.val = 1.0
+X a.fixact()
+X panel.drawpanel()
+X audio.setoutgain(0)
+X p.sample = audio.read(size)
+X a.val = 0.0
+X a.fixact()
+X #
+X p.recordbutton.downfunc = record
+X #
+X while 1:
+X act = panel.dopanel()
+X
+Xmain()
+EOF
+chmod +x 'demo/sgi/gl_panel/apanel/apanel.py'
+fi
+if test -s 'demo/sgi/gl_panel/flying/material.py'
+then echo '*** I will not over-write existing file demo/sgi/gl_panel/flying/material.py'
+else
+echo 'x - demo/sgi/gl_panel/flying/material.py'
+sed 's/^X//' > 'demo/sgi/gl_panel/flying/material.py' << 'EOF'
+Ximport light
+X
+Xdef mkmatdict () :
+X m = {}
+X m['material 1'] = light.m1
+X m['material 2'] = light.m2
+X m['material 3'] = light.m3
+X m['material 4'] = light.m4
+X m['material 5'] = light.m5
+X m['material 6'] = light.m6
+X m['material 7'] = light.m7
+X m['material 8'] = light.m8
+X m['material 9'] = light.m9
+X #
+X return m
+X
+Xmaterdict = mkmatdict ()
+X
+Xdef mklichtdict () :
+X m = {}
+X m['light 1'] = light.light1
+X m['light 2'] = light.light2
+X #
+X return m
+X
+Xlichtdict = mklichtdict ()
+EOF
+fi
+if test -s 'demo/sgi/gl_panel/flying/objdict.py'
+then echo '*** I will not over-write existing file demo/sgi/gl_panel/flying/objdict.py'
+else
+echo 'x - demo/sgi/gl_panel/flying/objdict.py'
+sed 's/^X//' > 'demo/sgi/gl_panel/flying/objdict.py' << 'EOF'
+X
+Xfrom data import *
+X
+X#
+X#the color light-blue
+X#
+XLightBlue = lightblue
+X
+X# the 'object' dictionary contains the strings of the menu items
+X# that denote the objects
+Xobjects = {}
+X
+X# object dictionary initialization
+Xobjects['sphere'] = [ZERO, o1]
+Xobjects['cylinder'] = [ZERO, o2]
+Xobjects['cube'] = [ONE, o3]
+Xobjects['icecream'] = [ZERO, o4]
+Xobjects['disk'] = [ZERO, o5]
+Xobjects['diamond'] = [ZERO, o6]
+X#objects['glass'] = [ZERO]
+Xobjects['pyramid'] = [ZERO, o7]
+Xobjects['table'] = [ZERO, o8]
+X
+X# 'putDict' sets the value of entry 'key' of dictionary 'dict'
+Xdef putDict(dict, key, val) :
+X dict[key][0] = val
+X
+X#
+X# 'getDict' get the contents of entry i of key 'key'
+X# of dictionary 'dict'
+X#
+Xdef getDict(dict, key, i) :
+X return dict[key][i]
+X
+X# the 'options' dictionary contains the strings of the menu items
+X# that denote the options
+Xoptions = {}
+X
+X# option dictionary initialization
+Xoptions['wire'] = [ZERO]
+Xoptions['filled'] = [ONE]
+EOF
+fi
+if test -s 'demo/sgi/gl_panel/twoview/topview.s'
+then echo '*** I will not over-write existing file demo/sgi/gl_panel/twoview/topview.s'
+else
+echo 'x - demo/sgi/gl_panel/twoview/topview.s'
+sed 's/^X//' > 'demo/sgi/gl_panel/twoview/topview.s' << 'EOF'
+X;;; This file was automatically generated by the panel editor.
+X;;; If you read it into gnu emacs, it will automagically format itself.
+X
+X(panel (prop help creator:user-panel-help)
+X(prop user-panel #t)
+X(label "Top View Control")
+X(x 1020)
+X(y 287)
+X(al (pnl_hslider (name "xpos")
+X(prop help creator:user-act-help)
+X(label "X")
+X(x 2)
+X(y 0.5)
+X(w 3.85)
+X(h 0.4)
+X(val 0.5)
+X(downfunc move-then-resize)
+X)
+X(pnl_vslider (name "zpos")
+X(prop help creator:user-act-help)
+X(label "Z")
+X(x 1.25)
+X(y 1.3)
+X(w 0.4)
+X(h 3.6)
+X(val 0.5)
+X(downfunc move-then-resize)
+X)
+X(pnl_dial (name "direction")
+X(prop help creator:user-act-help)
+X(label "looking direction")
+X(x 2.15)
+X(y 1.4)
+X(w 3.5)
+X(h 3.45)
+X(val 0.5)
+X(downfunc move-then-resize)
+X)
+X)
+X)
+X;;; Local Variables:
+X;;; mode: scheme
+X;;; eval: (save-excursion (goto-char (point-min)) (kill-line 3))
+X;;; eval: (save-excursion (goto-char (point-min)) (replace-regexp "[ \n]*)" ")"))
+X;;; eval: (indent-region (point-min) (point-max) nil)
+X;;; eval: (progn (kill-line -3) (delete-backward-char 1) (save-buffer))
+X;;; End:
+EOF
+fi
+if test -s 'doc/README'
+then echo '*** I will not over-write existing file doc/README'
+else
+echo 'x - doc/README'
+sed 's/^X//' > 'doc/README' << 'EOF'
+XThis directory contains the LaTeX source to the Python documentation.
+XThe documentation is not all finished, but good enough to get you
+Xstarted.
+X
+XThe following are the important latex source files:
+X
+X tut.tex A tutorial
+X mod.tex The library reference
+X
+XThey both read the style option file "myformat.sty".
+X
+XYou can use the Makefile to format, preview and print the documents.
+XType "make tut" or "make mod" to preview either document with xdvi.
+XType "make print" to print them both (this only works if your print
+Xspooler is set up just like mine...), or "make all" to create postscript
+Xfiles that you can you can print using your local printing commands.
+XType "make clean" to get rid of all the intermediate files produced by
+Xthe latex process, and other junk files.
+X
+XYou can just as well ignore the Makefile; all you really need is:
+X latex tut
+X latex tut
+X dvips tut | lpr
+Xand similar for the "mod" document.
+EOF
+fi
+if test -s 'doc/SetClass.py'
+then echo '*** I will not over-write existing file doc/SetClass.py'
+else
+echo 'x - doc/SetClass.py'
+sed 's/^X//' > 'doc/SetClass.py' << 'EOF'
+Xclass Set():
+X def new(self):
+X self.elements = []
+X return self
+X def add(self, e):
+X if e not in self.elements:
+X self.elements.append(e)
+X def remove(self, e):
+X if e in self.elements:
+X for i in range(len(self.elements)):
+X if self.elements[i] = e:
+X del self.elements[i]
+X break
+X def is_element(self, e):
+X return e in self.elements
+X def size(self):
+X return len(self.elements)
+EOF
+fi
+if test -s 'doc/fibo.py'
+then echo '*** I will not over-write existing file doc/fibo.py'
+else
+echo 'x - doc/fibo.py'
+sed 's/^X//' > 'doc/fibo.py' << 'EOF'
+X# Fibonacci numbers demo
+X
+Xdef fib(n): # write Fibonacci series up to n
+X a, b = 0, 1
+X while b <= n:
+X print b,
+X a, b = b, a+b
+X
+Xdef fib2(n): # return Fibonacci series up to n
+X ret = []
+X a, b = 0, 1
+X while b <= n:
+X ret.append(b)
+X a, b = b, a+b
+X return ret
+EOF
+fi
+if test -s 'doc/mod.tex'
+then echo '*** I will not over-write existing file doc/mod.tex'
+else
+echo 'x - doc/mod.tex'
+sed 's/^X//' > 'doc/mod.tex' << 'EOF'
+X% Format this file with latex.
+X
+X%\documentstyle[garamond,11pt,myformat]{article}
+X\documentstyle[11pt,myformat]{article}
+X
+X% A command to force the text after an item to start on a new line
+X\newcommand{\itembreak}{
+X \mbox{}\\*[0mm]
+X}
+X
+X% A command to define a function item
+X\newcommand{\funcitem}[2]{\item[#1(#2)]}
+X
+X% A command to define an exception item
+X\newcommand{\excitem}[2]{
+X\item[#1 = {\tt '#2'}]
+X\itembreak
+X}
+X
+X\title{\bf
+X Python Library Reference \\
+X (DRAFT)
+X}
+X
+X\author{
+X Guido van Rossum \\
+X Dept. CST, CWI, Kruislaan 413 \\
+X 1098 SJ Amsterdam, The Netherlands \\
+X E-mail: {\tt gu...@cwi.nl}
+X}
+X
+X\begin{document}
+X
+X\pagenumbering{roman}
+X
+X\maketitle
+X
+X\begin{abstract}
+X
+X\noindent
+XThis document describes the built-in types, exceptions and functions and
+Xthe standard modules that come with the {\Python} system.
+XIt assumes basic knowledge about the {\Python} language.
+XFor an informal introduction to the language, see the Tutorial document.
+XThe Language Reference document (XXX not yet existing)
+Xgives a more formal reference to the language.
+X
+X\end{abstract}
+X
+X\pagebreak
+X
+X\tableofcontents
+X
+X\pagebreak
+X
+X\pagenumbering{arabic}
+X
+X\input{mod1.tex}
+X\input{mod2.tex}
+X\input{mod3.tex}
+X
+X\end{document}
+EOF
+fi
+if test -s 'doc/myformat.sty'
+then echo '*** I will not over-write existing file doc/myformat.sty'
+else
+echo 'x - doc/myformat.sty'
+sed 's/^X//' > 'doc/myformat.sty' << 'EOF'
+X% Style parameters and macros used by all documents here
+X
+X% Page lay-out parameters
+X\textwidth = 160mm
+X\textheight = 240mm
+X\topmargin = -11mm
+X\oddsidemargin = 0mm
+X\evensidemargin = 0mm
+X%\parindent = 0mm
+X
+X% Frequently used system names
+X\newcommand{\Python}{Python} % Sometimes I want this italicized
+X\newcommand{\UNIX}{U{\sc nix}}
+X
+X% Variable used by begin code command
+X\newlength{\codewidth}
+X
+X\newcommand{\bcode}{
+X % Calculate the text width for the minipage:
+X \setlength{\codewidth}{\linewidth}
+X \addtolength{\codewidth}{-\parindent}
+X %
+X \vspace{3mm}
+X \par
+X \indent
+X \begin{minipage}[t]{\codewidth}
+X}
+X
+X\newcommand{\ecode}{
+X \end{minipage}
+X \vspace{3mm}
+X \par
+X \noindent
+X}
+EOF
+fi
+if test -s 'doc/pytry'
+then echo '*** I will not over-write existing file doc/pytry'
+else
+echo 'x - doc/pytry'
+sed 's/^X//' > 'doc/pytry' << 'EOF'
+XTMP=/usr/tmp/pytry$$
+Xtrap 'rm -f $TMP; exit 1' 1 2 3 13 14 15
+X
+Xcat $* >$TMP
+X
+X(
+X cat $TMP
+X
+X sed '
+X s/^>>> //
+X s/^>>>$//
+X s/^\.\.\. //
+X s/^\.\.\.$//
+X ' $TMP |
+X python
+X
+X echo '>>> '
+X) 2>&1
+X
+Xrm $TMP
+EOF
+chmod +x 'doc/pytry'
+fi
+if test -s 'lib/Histogram.py'
+then echo '*** I will not over-write existing file lib/Histogram.py'
+else
+echo 'x - lib/Histogram.py'
+sed 's/^X//' > 'lib/Histogram.py' << 'EOF'
+X# Module 'Histogram'
+X
+Xfrom Buttons import *
+X
+X# A Histogram displays a histogram of numeric data.
+X#
+Xclass HistogramAppearance() = LabelAppearance(), Define():
+X #
+X def define(self, parent):
+X Define.define(self, (parent, ''))
+X self.ydata = []
+X self.scale = (0, 100)
+X return self
+X #
+X def setdata(self, (ydata, scale)):
+X self.ydata = ydata
+X self.scale = scale # (min, max)
+X self.parent.change(self.bounds)
+X #
+X def drawpict(self, d):
+X (left, top), (right, bottom) = self.bounds
+X min, max = self.scale
+X size = max-min
+X width, height = right-left, bottom-top
+X ydata = self.ydata
+X npoints = len(ydata)
+X v1 = top + height # constant
+X h1 = left # changed in loop
+X for i in range(npoints):
+X h0 = h1
+X v0 = top + height - (ydata[i]-min)*height/size
+X h1 = left + (i+1) * width/npoints
+X d.paint((h0, v0), (h1, v1))
+X #
+X
+Xclass Histogram() = NoReactivity(), HistogramAppearance(): pass
+EOF
+fi
+if test -s 'lib/Soundogram.py'
+then echo '*** I will not over-write existing file lib/Soundogram.py'
+else
+echo 'x - lib/Soundogram.py'
+sed 's/^X//' > 'lib/Soundogram.py' << 'EOF'
+X# Module 'Soundogram'
+X
+Ximport audio
+Xfrom Histogram import Histogram
+X
+Xclass Soundogram() = Histogram():
+X #
+X def define(self, (win, chunk)):
+X width, height = corner = win.getwinsize()
+X bounds = (0, 0), corner
+X self.chunk = chunk
+X self.step = (len(chunk)-1)/(width/2+1) + 1
+X ydata = _make_ydata(chunk, self.step)
+X return Histogram.define(self, (win, bounds, ydata, (0, 128)))
+X #
+X def setchunk(self, chunk):
+X self.chunk = chunk
+X self.recompute()
+X #
+X def recompute(self):
+X (left, top), (right, bottom) = self.bounds
+X width = right - left
+X self.step = (len(chunk)-1)/width + 1
+X ydata = _make_ydata(chunk, self.step)
+X self.setdata(ydata, (0, 128))
+X #
+X
+X
+Xdef _make_ydata(chunk, step):
+X ydata = []
+X for i in range(0, len(chunk), step):
+X piece = audio.chr2num(chunk[i:i+step])
+X mi, ma = min(piece), max(piece)
+X y = max(abs(mi), abs(ma))
+X ydata.append(y)
+X return ydata
+EOF
+fi
+if test -s 'lib/TestCSplit.py'
+then echo '*** I will not over-write existing file lib/TestCSplit.py'
+else
+echo 'x - lib/TestCSplit.py'
+sed 's/^X//' > 'lib/TestCSplit.py' << 'EOF'
+X# TestCSplit
+X
+Ximport stdwin
+Xfrom stdwinevents import WE_CLOSE
+Xfrom WindowParent import WindowParent
+Xfrom Buttons import PushButton
+X
+Xdef main(n):
+X from CSplit import CSplit
+X
+X the_window = WindowParent().create('TestCSplit', (0, 0))
+X the_csplit = CSplit().create(the_window)
+X
+X for i in range(n):
+X the_child = PushButton().define(the_csplit)
+X the_child.settext(`(i+n-1)%n+1`)
+X
+X the_window.realize()
+X
+X while 1:
+X the_event = stdwin.getevent()
+X if the_event[0] = WE_CLOSE: break
+X the_window.dispatch(the_event)
+X the_window.destroy()
+X
+Xmain(12)
+EOF
+fi
+if test -s 'lib/VUMeter.py'
+then echo '*** I will not over-write existing file lib/VUMeter.py'
+else
+echo 'x - lib/VUMeter.py'
+sed 's/^X//' > 'lib/VUMeter.py' << 'EOF'
+X# Module 'VUMeter'
+X
+Ximport audio
+Xfrom StripChart import StripChart
+X
+XK = 1024
+XRates = [0, 32*K, 16*K, 8*K]
+X
+Xclass VUMeter() = StripChart():
+X #
+X # Override define() and timer() methods
+X #
+X def define(self, parent):
+X self = StripChart.define(self, (parent, 128))
+X self.parent.need_timer(self)
+X self.sampling = 0
+X self.rate = 3
+X self.enable(0)
+X return self
+X #
+X def timer(self):
+X if self.sampling:
+X chunk = audio.wait_recording()
+X self.sampling = 0
+X nums = audio.chr2num(chunk)
+X ampl = max(abs(min(nums)), abs(max(nums)))
+X self.append(ampl)
+X if self.enabled and not self.sampling:
+X audio.setrate(self.rate)
+X size = Rates[self.rate]/10
+X size = size/48*48
+X audio.start_recording(size)
+X self.sampling = 1
+X if self.sampling:
+X self.parent.settimer(1)
+X #
+X # New methods: start() and stop()
+X #
+X def stop(self):
+X if self.sampling:
+X chunk = audio.stop_recording()
+X self.sampling = 0
+X self.enable(0)
+X #
+X def start(self):
+X self.enable(1)
+X self.timer()
+EOF
+fi
+if test -s 'lib/anywin.py'
+then echo '*** I will not over-write existing file lib/anywin.py'
+else
+echo 'x - lib/anywin.py'
+sed 's/^X//' > 'lib/anywin.py' << 'EOF'
+X# Module 'anywin'
+X# Open a file or directory in a window
+X
+Ximport dirwin
+Ximport filewin
+Ximport path
+X
+Xdef open(name):
+X print 'opening', name, '...'
+X if path.isdir(name):
+X w = dirwin.open(name)
+X else:
+X w = filewin.open(name)
+X return w
+EOF
+fi
+if test -s 'lib/dircache.py'
+then echo '*** I will not over-write existing file lib/dircache.py'
+else
+echo 'x - lib/dircache.py'
+sed 's/^X//' > 'lib/dircache.py' << 'EOF'
+X# Module 'dircache'
+X#
+X# Return a sorted list of the files in a POSIX directory, using a cache
+X# to avoid reading the directory more often than necessary.
+X# Also contains a subroutine to append slashes to directories.
+X
+Ximport posix
+Ximport path
+X
+Xcache = {}
+X
+Xdef listdir(path): # List directory contents, using cache
+X try:
+X cached_mtime, list = cache[path]
+X del cache[path]
+X except RuntimeError:
+X cached_mtime, list = -1, []
+X try:
+X mtime = posix.stat(path)[8]
+X except posix.error:
+X return []
+X if mtime <> cached_mtime:
+X try:
+X list = posix.listdir(path)
+X except posix.error:
+X return []
+X list.sort()
+X cache[path] = mtime, list
+X return list
+X
+Xopendir = listdir # XXX backward compatibility
+X
+Xdef annotate(head, list): # Add '/' suffixes to directories
+X for i in range(len(list)):
+X if path.isdir(path.cat(head, list[i])):
+X list[i] = list[i] + '/'
+EOF
+fi
+if test -s 'lib/dirwin.py'
+then echo '*** I will not over-write existing file lib/dirwin.py'
+else
+echo 'x - lib/dirwin.py'
+sed 's/^X//' > 'lib/dirwin.py' << 'EOF'
+X# Module 'dirwin'
+X
+X# Directory windows, a subclass of listwin
+X
+Ximport gwin
+Ximport listwin
+Ximport anywin
+Ximport path
+Ximport dircache
+X
+Xdef action(w, string, i, detail):
+X (h, v), clicks, button, mask = detail
+X if clicks = 2:
+X name = path.cat(w.name, string)
+X try:
+X w2 = anywin.open(name)
+X w2.parent = w
+X except posix.error, why:
+X stdwin.message('Can\'t open ' + name + ': ' + why[1])
+X
+Xdef open(name):
+X name = path.cat(name, '')
+X list = dircache.opendir(name)[:]
+X list.sort()
+X dircache.annotate(name, list)
+X w = listwin.open(name, list)
+X w.name = name
+X w.action = action
+X return w
+EOF
+fi
+if test -s 'lib/fact.py'
+then echo '*** I will not over-write existing file lib/fact.py'
+else
+echo 'x - lib/fact.py'
+sed 's/^X//' > 'lib/fact.py' << 'EOF'
+X# Factorize numbers -- slow, could use a table of all primes <= 2*16
+X
+Ximport sys
+Ximport math
+X
+Xerror = 'fact.error' # exception
+X
+Xdef fact(n):
+X if n < 1: raise error # fact() argument should be >= 1
+X if n = 1: return [] # special case
+X res = []
+X _fact(n, 2, res)
+X return res
+X
+Xdef _fact(n, lowest, res):
+X highest = int(math.sqrt(float(n+1)))
+X for i in range(lowest, highest+1):
+X if n%i = 0:
+X res.append(i)
+X _fact(n/i, i, res)
+X break
+X else:
+X res.append(n)
+X
+Xdef main():
+X if len(sys.argv) > 1:
+X for arg in sys.argv[1:]:
+X n = eval(arg)
+X print n, fact(n)
+X else:
+X try:
+X while 1:
+X print fact(input())
+X except EOFError:
+X pass
+X
+Xmain()
+EOF
+fi
+if test -s 'lib/filewin.py'
+then echo '*** I will not over-write existing file lib/filewin.py'
+else
+echo 'x - lib/filewin.py'
+sed 's/^X//' > 'lib/filewin.py' << 'EOF'
+X# Module 'filewin'
+X# File windows, a subclass of textwin (which is a subclass of gwin)
+X
+Ximport textwin
+Xfrom util import readfile
+X
+X
+X# FILE WINDOW
+X
+Xdef open_readonly(fn): # Open a file window
+X w = textwin.open_readonly(fn, readfile(fn))
+X w.fn = fn
+X return w
+X
+Xdef open(fn): # Open a file window
+X w = textwin.open(fn, readfile(fn))
+X w.fn = fn
+X return w
+EOF
+fi
+if test -s 'lib/fnmatch.py'
+then echo '*** I will not over-write existing file lib/fnmatch.py'
+else
+echo 'x - lib/fnmatch.py'
+sed 's/^X//' > 'lib/fnmatch.py' << 'EOF'
+X# module 'fnmatch' -- filename matching with shell patterns
+X
+X# XXX [] patterns are not supported (but recognized)
+X
+Xdef fnmatch(name, pat):
+X if '*' in pat or '?' in pat or '[' in pat:
+X return fnmatch1(name, pat)
+X return name = pat
+X
+Xdef fnmatch1(name, pat):
+X for i in range(len(pat)):
+X c = pat[i]
+X if c = '*':
+X restpat = pat[i+1:]
+X if '*' in restpat or '?' in restpat or '[' in restpat:
+X for i in range(i, len(name)):
+X if fnmatch1(name[i:], restpat):
+X return 1
+X return 0
+X else:
+X return name[len(name)-len(restpat):] = restpat
+X elif c = '?':
+X if len(name) <= i : return 0
+X elif c = '[':
+X return 0 # XXX
+X else:
+X if name[i:i+1] <> c:
+X return 0
+X return 1
+X
+Xdef fnmatchlist(names, pat):
+X res = []
+X for name in names:
+X if fnmatch(name, pat): res.append(name)
+X return res
+EOF
+fi
+if test -s 'lib/glob.py'
+then echo '*** I will not over-write existing file lib/glob.py'
+else
+echo 'x - lib/glob.py'
+sed 's/^X//' > 'lib/glob.py' << 'EOF'
+X# Module 'glob' -- filename globbing.
+X
+Ximport posix
+Ximport path
+Ximport fnmatch
+X
+Xdef glob(pathname):
+X if not has_magic(pathname): return [pathname]
+X dirname, basename = path.split(pathname)
+X if dirname[-1:] = '/' and dirname <> '/':
+X dirname = dirname[:-1]
+X if has_magic(dirname):
+X list = glob(dirname)
+X else:
+X list = [dirname]
+X if not has_magic(basename):
+X result = []
+X for dirname in list:
+X if basename or path.isdir(dirname):
+X name = path.cat(dirname, basename)
+X if path.exists(name):
+X result.append(name)
+X else:
+X result = []
+X for dirname in list:
+X sublist = glob1(dirname, basename)
+X for name in sublist:
+X result.append(path.cat(dirname, name))
+X return result
+X
+Xdef glob1(dirname, pattern):
+X if not dirname: dirname = '.'
+X try:
+X names = posix.listdir(dirname)
+X except posix.error:
+X return []
+X result = []
+X for name in names:
+X if name[0] <> '.' or pattern[0] = '.':
+X if fnmatch.fnmatch(name, pattern): result.append(name)
+X return result
+X
+Xdef has_magic(s):
+X return '*' in s or '?' in s or '[' in s
+EOF
+fi
+if test -s 'lib/grep.py'
+then echo '*** I will not over-write existing file lib/grep.py'
+else
+echo 'x - lib/grep.py'
+sed 's/^X//' > 'lib/grep.py' << 'EOF'
+X# 'grep'
+X
+Ximport regexp
+Ximport string
+X
+Xdef grep(expr, filename):
+X prog = regexp.compile(expr)
+X fp = open(filename, 'r')
+X lineno = 0
+X while 1:
+X line = fp.readline()
+X if not line: break
+X lineno = lineno + 1
+X res = prog.exec(line)
+X if res:
+X #print res
+X start, end = res[0]
+X if line[-1:] = '\n': line = line[:-1]
+X prefix = string.rjust(`lineno`, 3) + ': '
+X print prefix + line
+X if 0:
+X line = line[:start]
+X if '\t' not in line:
+X prefix = ' ' * (len(prefix) + start)
+X else:
+X prefix = ' ' * len(prefix)
+X for c in line:
+X if c <> '\t': c = ' '
+X prefix = prefix + c
+X if start = end: prefix = prefix + '\\'
+X else: prefix = prefix + '^'*(end-start)
+X print prefix
+EOF
+fi
+if test -s 'lib/maccache.py'
+then echo '*** I will not over-write existing file lib/maccache.py'
+else
+echo 'x - lib/maccache.py'
+sed 's/^X//' > 'lib/maccache.py' << 'EOF'
+X# Module 'maccache'
+X#
+X# Maintain a cache of listdir(), isdir(), isfile() or exists() outcomes.
+X
+Ximport mac
+Ximport macpath
+X
+X
+X# The cache.
+X# Keys are absolute pathnames;
+X# values are 0 (nothing), 1 (file) or [...] (dir).
+X#
+Xcache = {}
+X
+X
+X# Current working directory.
+X#
+Xcwd = mac.getcwd()
+X
+X
+X# Constants.
+X#
+XNONE = 0
+XFILE = 1
+XLISTTYPE = type([])
+X
+Xdef _stat(name):
+X name = macpath.cat(cwd, name)
+X if cache.has_key(name):
+X return cache[name]
+X if macpath.isfile(name):
+X cache[name] = FILE
+X return FILE
+X try:
+X list = mac.listdir(name)
+X except:
+X cache[name] = NONE
+X return NONE
+X cache[name] = list
+X if name[-1:] = ':': cache[name[:-1]] = list
+X else: cache[name+':'] = list
+X return list
+X
+Xdef isdir(name):
+X st = _stat(name)
+X return type(st) = LISTTYPE
+X
+Xdef isfile(name):
+X st = _stat(name)
+X return st = FILE
+X
+Xdef exists(name):
+X st = _stat(name)
+X return st <> NONE
+X
+Xdef listdir(name):
+X st = _stat(name)
+X if type(st) = LISTTYPE:
+X return st
+X else:
+X raise RuntimeError, 'list non-directory'
+EOF
+fi
+if test -s 'lib/macglob.py'
+then echo '*** I will not over-write existing file lib/macglob.py'
+else
+echo 'x - lib/macglob.py'
+sed 's/^X//' > 'lib/macglob.py' << 'EOF'
+X# Module 'macglob' -- version of 'glob' for the Macintosh.
+X
+X# XXX At least one bug is left: a pattern like '*:' is treated
+X# XXX as a relative pathname (and returns as if it was ':*:').
+X
+Ximport mac
+Ximport macpath
+Ximport fnmatch
+X
+Xdef glob(pathname):
+X if not has_magic(pathname): return [pathname]
+X dirname, basename = macpath.split(pathname)
+X if has_magic(dirname):
+X if dirname[-1:] = ':': dirname = dirname[:-1]
+X list = glob(dirname)
+X else:
+X list = [dirname]
+X if not has_magic(basename):
+X result = []
+X for dirname in list:
+X if basename or macpath.isdir(dirname):
+X name = macpath.cat(dirname, basename)
+X if macpath.exists(name):
+X result.append(name)
+X else:
+X result = []
+X for dirname in list:
+X sublist = glob1(dirname, basename)
+X for name in sublist:
+X result.append(macpath.cat(dirname, name))
+X return result
+X
+Xdef glob1(dirname, pattern):
+X if not dirname: dirname = ':'
+X try:
+X names = mac.listdir(dirname)
+X except mac.error:
+X return []
+X result = []
+X for name in names:
+X if name[0] <> '.' or pattern[0] = '.':
+X if fnmatch.fnmatch(name, pattern): result.append(name)
+X return result
+X
+Xdef has_magic(s):
+X return '*' in s or '?' in s or '[' in s
+EOF
+fi
+if test -s 'lib/minmax.py'
+then echo '*** I will not over-write existing file lib/minmax.py'
+else
+echo 'x - lib/minmax.py'
+sed 's/^X//' > 'lib/minmax.py' << 'EOF'
+X# Module 'minmax'
+X# These are now built in functions.
+X# For compatibility, we export the builtins
+X
+Xmin = min
+Xmax = max
+EOF
+fi
+if test -s 'lib/packmail.py'
+then echo '*** I will not over-write existing file lib/packmail.py'
+else
+echo 'x - lib/packmail.py'
+sed 's/^X//' > 'lib/packmail.py' << 'EOF'
+X# Module 'packmail' -- create a shell script out of some files.
+X
+Ximport mac
+Ximport macpath
+Xfrom stat import ST_MTIME
+X
+X# Pack one file
+Xdef pack(outfp, file, name):
+X fp = open(file, 'r')
+X outfp.write('sed "s/^X//" >' + name + ' <<"!"\n')
+X while 1:
+X line = fp.readline()
+X if not line: break
+X if line[-1:] <> '\n':
+X line = line + '\n'
+X outfp.write('X' + line)
+X outfp.write('!\n')
+X
+X# Pack some files from a directory
+Xdef packsome(outfp, dirname, names):
+X for name in names:
+X print name
+X file = macpath.cat(dirname, name)
+X pack(outfp, file, name)
+X
+X# Pack all files from a directory
+Xdef packall(outfp, dirname):
+X names = mac.listdir(dirname)
+X names.sort()
+X packsome(outfp, dirname, names)
+X
+X# Pack all files from a directory that are not older than a give one
+Xdef packnotolder(outfp, dirname, oldest):
+X names = mac.listdir(dirname)
+X oldest = macpath.cat(dirname, oldest)
+X st = mac.stat(oldest)
+X mtime = st[ST_MTIME]
+X todo = []
+X for name in names:
+X print name, '...',
+X st = mac.stat(macpath.cat(dirname, name))
+X if st[ST_MTIME] >= mtime:
+X print 'Yes.'
+X todo.append(name)
+X else:
+X print 'No.'
+X todo.sort()
+X packsome(outfp, dirname, todo)
+EOF
+fi
+if test -s 'lib/rand.py'
+then echo '*** I will not over-write existing file lib/rand.py'
+else
+echo 'x - lib/rand.py'
+sed 's/^X//' > 'lib/rand.py' << 'EOF'
+X# Module 'rand'
+X
+Ximport whrandom
+X
+Xdef srand(seed):
+X whrandom.seed(seed%256, seed/256%256, seed/65536%256)
+X
+Xdef rand():
+X return int(whrandom.random() * 32768.0) % 32768
+X
+Xdef choice(seq):
+X return seq[rand() % len(seq)]
+EOF
+fi
+if test -s 'lib/stat.py'
+then echo '*** I will not over-write existing file lib/stat.py'
+else
+echo 'x - lib/stat.py'
+sed 's/^X//' > 'lib/stat.py' << 'EOF'
+X# Module 'stat'
+X
+X# Defines constants and functions for interpreting stat/lstat struct
+X# as returned by posix.stat() and posix.lstat() (if it exists).
+X
+X# XXX This module may have to be adapted for UNIXoid systems whose
+X# <sys/stat.h> deviates from AT&T or BSD UNIX; their S_IF* constants
+X# may differ.
+X
+X# Suggested usage: from stat import *
+X
+X# Tuple indices for stat struct members
+X
+XST_MODE = 0
+XST_INO = 1
+XST_DEV = 2
+XST_NLINK = 3
+XST_UID = 4
+XST_GID = 5
+XST_SIZE = 6
+XST_ATIME = 7
+XST_MTIME = 8
+XST_CTIME = 9
+X
+Xdef S_IMODE(mode):
+X return mode%4096
+Xdef S_IFMT(mode):
+X return mode - mode%4096
+X
+XS_IFDIR = 0040000
+XS_IFCHR = 0020000
+XS_IFBLK = 0060000
+XS_IFREG = 0100000
+XS_IFIFO = 0010000
+XS_IFLNK = 0120000
+XS_IFSOCK = 0140000
+X
+Xdef S_ISDIR(mode):
+X return S_IFMT(mode) = S_IFDIR
+X
+Xdef S_ISCHR(mode):
+X return S_IFMT(mode) = S_IFCHR
+X
+Xdef S_ISBLK(mode):
+X return S_IFMT(mode) = S_IFBLK
+X
+Xdef S_ISREG(mode):
+X return S_IFMT(mode) = S_IFREG
+X
+Xdef S_ISFIFO(mode):
+X return S_IFMT(mode) = S_IFIFO
+X
+Xdef S_ISLNK(mode):
+X return S_IFMT(mode) = S_IFLNK
+X
+Xdef S_ISSOCK(mode):
+X return S_IFMT(mode) = S_IFSOCK
+EOF
+fi
+if test -s 'lib/stdwinsupport.py'
+then echo '*** I will not over-write existing file lib/stdwinsupport.py'
+else
+echo 'x - lib/stdwinsupport.py'
+sed 's/^X//' > 'lib/stdwinsupport.py' << 'EOF'
+X# Module 'stdwinsupport'
+X
+Ximport stdwin
+X
+Xeventnames = ['null', 'activate', 'char', 'command']
+Xeventnames = eventnames + ['mouse_down', 'mouse_move', 'mouse_up', 'menu']
+Xeventnames = eventnames + ['size', 'move', 'draw', 'timer', 'deactivate']
+X
+Xwe_null = 0
+Xwe_activate = 1
+Xwe_char = 2
+Xwe_command = 3
+Xwe_mouse_down = 4
+Xwe_mouse_move = 5
+Xwe_mouse_up = 6
+Xwe_menu = 7
+Xwe_size = 8
+Xwe_move = 9
+Xwe_draw = 10
+Xwe_timer = 11
+Xwe_deactivate = 12
+X
+Xcommandnames = ['?', 'close', 'left', 'right', 'up', 'down', 'cancel']
+Xcommandnames = commandnames + ['backspace', 'tab', 'return']
+X
+Xwc_close = 1
+Xwc_left = 2
+Xwc_right = 3
+Xwc_up = 4
+Xwc_down = 5
+Xwc_cancel = 6 # not reported -- turned into KeyboardInterrupt
+Xwc_backspace = 7
+Xwc_tab = 8
+Xwc_return = 9
+EOF
+fi
+if test -s 'lib/util.py'
+then echo '*** I will not over-write existing file lib/util.py'
+else
+echo 'x - lib/util.py'
+sed 's/^X//' > 'lib/util.py' << 'EOF'
+X# Module 'util' -- some useful functions that don't fit elsewhere
+X
+X
+X# Remove an item from a list.
+X# No complaints if it isn't in the list at all.
+X# If it occurs more than once, remove the first occurrence.
+X#
+Xdef remove(item, list):
+X for i in range(len(list)):
+X if list[i] = item:
+X del list[i]
+X break
+X
+X
+X# Return a string containing a file's contents.
+X#
+Xdef readfile(fn):
+X return readopenfile(open(fn, 'r'))
+X
+X
+X# Read an open file until EOF.
+X#
+Xdef readopenfile(fp):
+X BUFSIZE = 512*8
+X data = ''
+X while 1:
+X buf = fp.read(BUFSIZE)
+X if not buf: break
+X data = data + buf
+X return data
+EOF
+fi
+if test -s 'src/To.do'
+then echo '*** I will not over-write existing file src/To.do'
+else
+echo 'x - src/To.do'
+sed 's/^X//' > 'src/To.do' << 'EOF'
+X- return better errors for file objects (also check read/write allowed, etc.)
+X
+X- introduce more specific exceptions (e.g., zero divide, index failure, ...)
+X
+X- why do reads from stdin fail when I suspend the process?
+X
+X- introduce macros to set/inspect errno for syscalls, to support things
+X like getoserr()
+X
+X- fix interrupt handling (interruptable system calls should call
+X intrcheck() to clear the interrupt status)
+EOF
+fi
+if test -s 'src/assert.h'
+then echo '*** I will not over-write existing file src/assert.h'
+else
+echo 'x - src/assert.h'
+sed 's/^X//' > 'src/assert.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X#define assert(e) { if (!(e)) { printf("Assertion failed\n"); abort(); } }
+EOF
+fi
+if test -s 'src/bltinmodule.h'
+then echo '*** I will not over-write existing file src/bltinmodule.h'
+else
+echo 'x - src/bltinmodule.h'
+sed 's/^X//' > 'src/bltinmodule.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Built-in module interface */
+X
+Xextern object *getbuiltin PROTO((char *));
+EOF
+fi
+if test -s 'src/fgetsintr.h'
+then echo '*** I will not over-write existing file src/fgetsintr.h'
+else
+echo 'x - src/fgetsintr.h'
+sed 's/^X//' > 'src/fgetsintr.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+Xextern int fgets_intr PROTO((char *, int, FILE *));
+EOF
+fi
+if test -s 'src/rltokenizer.c'
+then echo '*** I will not over-write existing file src/rltokenizer.c'
+else
+echo 'x - src/rltokenizer.c'
+sed 's/^X//' > 'src/rltokenizer.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X#define USE_READLINE
+X#include "tokenizer.c"
+EOF
+fi
+if test -s 'src/stubcode.h'
+then echo '*** I will not over-write existing file src/stubcode.h'
+else
+echo 'x - src/stubcode.h'
+sed 's/^X//' > 'src/stubcode.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X
+X#define CAP 0
+X#define STUBC 1
+X#define NAME 2
+EOF
+fi
+echo 'Part 21 out of 21 of pack.out complete.'
+exit 0

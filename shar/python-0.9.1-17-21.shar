@@ -1,0 +1,2464 @@
+: This is a shell archive.
+: Extract with 'sh this_file'.
+:
+: Extract part 01 first since it makes all directories
+echo 'Start of pack.out, part 17 out of 21:'
+if test -s 'demo/sgi/gl/nurbs.py'
+then echo '*** I will not over-write existing file demo/sgi/gl/nurbs.py'
+else
+echo 'x - demo/sgi/gl/nurbs.py'
+sed 's/^X//' > 'demo/sgi/gl/nurbs.py' << 'EOF'
+X#! /ufs/guido/bin/sgi/python
+X
+X# Rotate a 3D surface created using NURBS.
+X#
+X# Press left mouse button to toggle surface trimming.
+X# Press ESC to quit.
+X#
+X# See the GL manual for an explanation of NURBS.
+X
+Xfrom gl import *
+Xfrom GL import *
+Xfrom DEVICE import *
+X
+XTRUE = 1
+XFALSE = 0
+XORDER = 4
+X
+Xidmat = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]
+X
+Xsurfknots = [-1, -1, -1, -1, 1, 1, 1, 1]
+X
+Xdef make_ctlpoints():
+X c = []
+X #
+X ci = []
+X ci.append(-2.5, -3.7, 1.0)
+X ci.append(-1.5, -3.7, 3.0)
+X ci.append(1.5, -3.7, -2.5)
+X ci.append(2.5, -3.7, -0.75)
+X c.append(ci)
+X #
+X ci = []
+X ci.append(-2.5, -2.0, 3.0)
+X ci.append(-1.5, -2.0, 4.0)
+X ci.append(1.5, -2.0, -3.0)
+X ci.append(2.5, -2.0, 0.0)
+X c.append(ci)
+X #
+X ci = []
+X ci.append(-2.5, 2.0, 1.0)
+X ci.append(-1.5, 2.0, 0.0)
+X ci.append(1.5, 2.0, -1.0)
+X ci.append(2.5, 2.0, 2.0)
+X c.append(ci)
+X #
+X ci = []
+X ci.append(-2.5, 2.7, 1.25)
+X ci.append(-1.5, 2.7, 0.1)
+X ci.append(1.5, 2.7, -0.6)
+X ci.append(2.5, 2.7, 0.2)
+X c.append(ci)
+X #
+X return c
+X
+Xctlpoints = make_ctlpoints()
+X
+Xtrimknots = [0., 0., 0., 1., 1., 2., 2., 3., 3., 4., 4., 4.]
+X
+Xdef make_trimpoints():
+X c = []
+X c.append(1.0, 0.0, 1.0)
+X c.append(1.0, 1.0, 1.0)
+X c.append(0.0, 2.0, 2.0)
+X c.append(-1.0, 1.0, 1.0)
+X c.append(-1.0, 0.0, 1.0)
+X c.append(-1.0, -1.0, 1.0)
+X c.append(0.0, -2.0, 2.0)
+X c.append(1.0, -1.0, 1.0)
+X c.append(1.0, 0.0, 1.0)
+X return c
+X
+Xtrimpoints = make_trimpoints()
+X
+Xdef main():
+X init_windows()
+X setup_queue()
+X make_lights()
+X init_view()
+X #
+X set_scene()
+X setnurbsproperty( N_ERRORCHECKING, 1.0 )
+X setnurbsproperty( N_PIXEL_TOLERANCE, 50.0 )
+X trim_flag = 0
+X draw_trim_surface(trim_flag)
+X #
+X while 1:
+X while qtest():
+X dev, val = qread()
+X if dev = ESCKEY:
+X return
+X elif dev = WINQUIT:
+X dglclose(-1) # this for DGL only
+X return
+X elif dev = REDRAW:
+X reshapeviewport()
+X set_scene()
+X draw_trim_surface(trim_flag)
+X elif dev = LEFTMOUSE:
+X if val:
+X trim_flag = (not trim_flag)
+X set_scene()
+X draw_trim_surface(trim_flag)
+X
+Xdef init_windows():
+X foreground()
+X #prefposition(0, 500, 0, 500)
+X wid = winopen('nurbs')
+X wintitle('NURBS Surface')
+X doublebuffer()
+X RGBmode()
+X gconfig()
+X lsetdepth(0x000, 0x7fffff)
+X zbuffer( TRUE )
+X
+Xdef setup_queue():
+X qdevice(ESCKEY)
+X qdevice(REDRAW)
+X qdevice(RIGHTMOUSE)
+X qdevice(WINQUIT)
+X qdevice(LEFTMOUSE) #trimming
+X
+Xdef init_view():
+X mmode(MPROJECTION)
+X ortho( -4., 4., -4., 4., -4., 4. )
+X #
+X mmode(MVIEWING)
+X loadmatrix(idmat)
+X #
+X lmbind(MATERIAL, 1)
+X
+Xdef set_scene():
+X lmbind(MATERIAL, 0)
+X RGBcolor(150,150,150)
+X lmbind(MATERIAL, 1)
+X clear()
+X zclear()
+X #
+X rotate( 100, 'y' )
+X rotate( 100, 'z' )
+X
+Xdef draw_trim_surface(trim_flag):
+X bgnsurface()
+X nurbssurface(surfknots, surfknots, ctlpoints, ORDER, ORDER, N_XYZ)
+X if trim_flag:
+X bgntrim()
+X nurbscurve(trimknots, trimpoints, ORDER-1, N_STW)
+X endtrim()
+X endsurface()
+X swapbuffers()
+X
+Xdef make_lights():
+X lmdef(DEFLMODEL,1,[])
+X lmdef(DEFLIGHT,1,[])
+X #
+X # define material #1
+X #
+X a = []
+X a = a + [EMISSION, 0.0, 0.0, 0.0]
+X a = a + [AMBIENT, 0.1, 0.1, 0.1]
+X a = a + [DIFFUSE, 0.6, 0.3, 0.3]
+X a = a + [SPECULAR, 0.0, 0.6, 0.0]
+X a = a + [SHININESS, 2.0]
+X a = a + [LMNULL]
+X lmdef(DEFMATERIAL, 1, a)
+X #
+X # turn on lighting
+X #
+X lmbind(LIGHT0, 1)
+X lmbind(LMODEL, 1)
+X
+Xmain()
+EOF
+chmod +x 'demo/sgi/gl/nurbs.py'
+fi
+if test -s 'demo/sgi/gl/zrgb.py'
+then echo '*** I will not over-write existing file demo/sgi/gl/zrgb.py'
+else
+echo 'x - demo/sgi/gl/zrgb.py'
+sed 's/^X//' > 'demo/sgi/gl/zrgb.py' << 'EOF'
+X#! /ufs/guido/bin/sgi/python
+X
+X# zrgb (Requires Z buffer.)
+X#
+X# This program demostrates zbuffering 3 intersecting RGB polygons while
+X# in doublebuffer mode where, movement of the mouse with the LEFTMOUSE
+X# button depressed will, rotate the 3 polygons. This is done by compound
+X# rotations allowing continuous screen-oriented rotations.
+X#
+X# Press the "Esc" key to exit.
+X
+Xfrom gl import *
+Xfrom GL import *
+Xfrom DEVICE import *
+X
+X
+Xobjmat=[1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0]
+X
+Xidmat=[1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0]
+X
+Xdef main() :
+X #
+X # old and new mouse position
+X #
+X #
+X mode = 0
+X omx = 0
+X mx = 0
+X omy = 0
+X my = 0
+X #
+X initialize ()
+X #
+X draw_scene (objmat)
+X #
+X while (1) :
+X #
+X dev, val = qread()
+X #
+X if dev = ESCKEY :
+X if val :
+X break
+X # exit when key is going up, not down
+X # this avoids the scenario where a window
+X # underneath this program's window
+X # would otherwise "eat up" the up-
+X # event of the Esc key being released
+X return
+X #
+X elif dev = REDRAW :
+X reshapeviewport()
+X draw_scene(objmat)
+X #
+X elif dev = LEFTMOUSE:
+X omx = mx
+X omy = my
+X if val :
+X mode = 1
+X else :
+X mode = 0
+X elif dev = MOUSEX :
+X omx = mx
+X mx = val
+X #print omx, mx
+X objmat = update_scene(objmat,mx,my,omx,omy,mode)
+X #
+X elif dev = MOUSEY :
+X omy = my
+X my = val
+X #print omy, my
+X objmat = update_scene(objmat,mx,my,omx,omy,mode)
+X #
+X
+X
+Xdef initialize () :
+X #
+X foreground ()
+X keepaspect(5, 4)
+X w = winopen('Zbuffered RGB')
+X #
+X doublebuffer()
+X RGBmode()
+X gconfig()
+X zbuffer(1)
+X lsetdepth(0x0, 0x7FFFFF)
+X #
+X qdevice(ESCKEY)
+X qdevice(LEFTMOUSE)
+X qdevice(MOUSEX)
+X qdevice(MOUSEY)
+X
+Xdef update_scene (mat, mx, my, omx, omy, mode) :
+X #
+X if mode = 1 :
+X mat = orient(mat, mx, my, omx, omy)
+X draw_scene(mat)
+X return mat
+X
+Xdef orient (mat, mx, my, omx, omy) :
+X #
+X #
+X pushmatrix()
+X loadmatrix(idmat)
+X #
+X if mx - omx : rot (float (mx - omx), 'y')
+X if omy - my : rot (float (omy - my), 'x')
+X #
+X multmatrix(mat)
+X mat = getmatrix()
+X #
+X #
+X popmatrix()
+X #
+X return mat
+X
+Xdef draw_scene (mat) :
+X RGBcolor(40, 100, 200)
+X clear()
+X zclear()
+X #
+X perspective(400, 1.25, 30.0, 60.0)
+X translate(0.0, 0.0, -40.0)
+X multmatrix(mat)
+X #
+X # skews original view to show all polygons
+X #
+X rotate(-580, 'y')
+X draw_polys()
+X #
+X swapbuffers()
+X
+Xpolygon1 = [(-10.0,-10.0,0.0),(10.0,-10.0,0.0),(-10.0,10.0,0.0)]
+X
+Xpolygon2 = [(0.0,-10.0,-10.0),(0.0,-10.0,10.0),(0.0,5.0,-10.0)]
+X
+Xpolygon3 = [(-10.0,6.0,4.0),(-10.0,3.0,4.0),(4.0,-9.0,-10.0),(4.0,-6.0,-10.0)]
+X
+Xdef draw_polys():
+X bgnpolygon()
+X cpack(0x0)
+X v3f(polygon1[0])
+X cpack(0x007F7F7F)
+X v3f(polygon1[1])
+X cpack(0x00FFFFFF)
+X v3f(polygon1[2])
+X endpolygon()
+X #
+X bgnpolygon()
+X cpack(0x0000FFFF)
+X v3f(polygon2[0])
+X cpack(0x007FFF00)
+X v3f(polygon2[1])
+X cpack(0x00FF0000)
+X v3f(polygon2[2])
+X endpolygon()
+X #
+X bgnpolygon()
+X cpack(0x0000FFFF)
+X v3f(polygon3[0])
+X cpack(0x00FF00FF)
+X v3f(polygon3[1])
+X cpack(0x00FF0000)
+X v3f(polygon3[2])
+X cpack(0x00FF00FF)
+X v3f(polygon3[3])
+X endpolygon()
+X
+X
+Xmain ()
+EOF
+chmod +x 'demo/sgi/gl/zrgb.py'
+fi
+if test -s 'demo/sgi/gl_panel/flying/flying.s'
+then echo '*** I will not over-write existing file demo/sgi/gl_panel/flying/flying.s'
+else
+echo 'x - demo/sgi/gl_panel/flying/flying.s'
+sed 's/^X//' > 'demo/sgi/gl_panel/flying/flying.s' << 'EOF'
+X;;; This file was automatically generated by the panel editor.
+X;;; If you read it into gnu emacs, it will automagically format itself.
+X
+X(panel (prop help creator:user-panel-help)
+X(prop user-panel #t)
+X(label "flying objects")
+X(al (pnl_toggle_button (name "table")
+X(prop help creator:user-act-help)
+X(label "table")
+X(x 4.75)
+X(y 0.25)
+X(downfunc move-then-resize)
+X)
+X(pnl_toggle_button (name "pyramid")
+X(prop help creator:user-act-help)
+X(label "pyramid")
+X(x 4.75)
+X(y 0.75)
+X(downfunc move-then-resize)
+X)
+X(pnl_toggle_button (name "glass")
+X(prop help creator:user-act-help)
+X(label "glass")
+X(x 4.75)
+X(y 1.25)
+X(downfunc move-then-resize)
+X)
+X(pnl_toggle_button (name "diamond")
+X(prop help creator:user-act-help)
+X(label "diamond")
+X(x 4.75)
+X(y 1.75)
+X(downfunc move-then-resize)
+X)
+X(pnl_toggle_button (name "disk")
+X(prop help creator:user-act-help)
+X(label "disk")
+X(x 4.75)
+X(y 2.25)
+X(downfunc move-then-resize)
+X)
+X(pnl_toggle_button (name "icecream")
+X(prop help creator:user-act-help)
+X(label "ice cream")
+X(x 4.75)
+X(y 2.75)
+X(downfunc move-then-resize)
+X)
+X(pnl_toggle_button (name "cube")
+X(prop help creator:user-act-help)
+X(label "cube")
+X(x 4.75)
+X(y 3.25)
+X(val 1)
+X(downfunc move-then-resize)
+X)
+X(pnl_toggle_button (name "cylinder")
+X(prop help creator:user-act-help)
+X(label "cylinder")
+X(x 4.75)
+X(y 3.75)
+X(downfunc move-then-resize)
+X)
+X(pnl_toggle_button (name "sphere")
+X(prop help creator:user-act-help)
+X(label "sphere")
+X(x 4.75)
+X(y 4.25)
+X(downfunc move-then-resize)
+X)
+X(pnl_button (name "quit")
+X(prop help creator:user-act-help)
+X(label "quit")
+X(x 0.25)
+X(y 2.25)
+X(w 1.3)
+X(h 0.65)
+X(labeltype 16)
+X(downfunc move-then-resize)
+X)
+X(pnl_button (name "showall")
+X(prop help creator:user-act-help)
+X(label "show all")
+X(x 3.75)
+X(y 3.75)
+X(labeltype 8)
+X(downfunc move-then-resize)
+X)
+X(pnl_button (name "shownone")
+X(prop help creator:user-act-help)
+X(label "show none")
+X(x 3.75)
+X(y 3.25)
+X(labeltype 8)
+X(downfunc move-then-resize)
+X)
+X(pnl_radio_button (name "wire")
+X(prop end-of-group #t)
+X(prop help creator:user-act-help)
+X(label "wire frame")
+X(x 0.25)
+X(y 4.5)
+X(h 0.36)
+X(downfunc move-then-resize)
+X)
+X(pnl_radio_button (name "filled")
+X(prop help creator:user-act-help)
+X(label "filled")
+X(x 0.25)
+X(y 4)
+X(h 0.36)
+X(val 1)
+X(downfunc move-then-resize)
+X)
+X(pnl_radio_button (name "flat")
+X(prop end-of-group #t)
+X(prop help creator:user-act-help)
+X(label "flat shaded")
+X(x 0.25)
+X(y 0.5)
+X(h 0.36)
+X(downfunc move-then-resize)
+X)
+X(pnl_radio_button (name "gouraud")
+X(prop help creator:user-act-help)
+X(label "gouraud shaded")
+X(x 0.25)
+X(h 0.36)
+X(val 1)
+X(downfunc move-then-resize)
+X)
+X)
+X)
+X;;; Local Variables:
+X;;; mode: scheme
+X;;; eval: (save-excursion (goto-char (point-min)) (kill-line 3))
+X;;; eval: (save-excursion (goto-char (point-min)) (replace-regexp "[ \n]*)" ")"))
+X;;; eval: (indent-region (point-min) (point-max) nil)
+X;;; eval: (progn (kill-line -3) (delete-backward-char 1) (save-buffer))
+X;;; End:
+EOF
+fi
+if test -s 'demo/sgi/gl_panel/flying/objectdef.py'
+then echo '*** I will not over-write existing file demo/sgi/gl_panel/flying/objectdef.py'
+else
+echo 'x - demo/sgi/gl_panel/flying/objectdef.py'
+sed 's/^X//' > 'demo/sgi/gl_panel/flying/objectdef.py' << 'EOF'
+Xfrom math import *
+Xfrom objdict import *
+Xfrom gl import *
+X
+XFUZZY = 0.00001
+X
+X# first try - brute force method (ala M.Overmars...)
+X
+Xdef makespinobject (smooth,rot,n,x1,z1,nx1,nz1,x2,z2,nx2,nz2) :
+X object = []
+X dth = 2.0 * pi / float (rot)
+X for i in range (0, n) :
+X for j in range (0, rot) :
+X th = dth * float (j)
+X #
+X if smooth = 1:
+X a1 = th
+X a2 =th+dth
+X else :
+X a1 = th + dth / 2.0
+X a2 = th + dth / 2.0
+X #
+X v0 = (x1[i]*sin(th),x1[i]*cos(th),z1[i])
+X n0 = (nx1[i]*sin(a1),nx1[i]*cos(a1),nz1[i])
+X #
+X v1 = (x1[i]*sin(th+dth),x1[i]*cos(th+dth),z1[i])
+X n1 = (nx1[i]*sin(a2), nx1[i]*cos(a2), nz1[i])
+X #
+X v2 = (x2[i]*sin(th+dth),x2[i]*cos(th+dth),z2[i])
+X n2 = (nx2[i]*sin(a2), nx2[i]*cos(a2), nz2[i])
+X #
+X v3 = (x2[i]*sin(th), x2[i]*cos(th), z2[i])
+X n3 = (nx2[i]*sin(a1), nx2[i]*cos(a1), nz2[i])
+X #
+X patch = ((v0,n0), (v1,n1), (v2,n2), (v3,n3))
+X #patch = ((n0,v0), (n1,v1), (n2,v2), (n3,v3))
+X #
+X if x1[i] < FUZZY :
+X patch = patch[1:]
+X #
+X object.append (patch)
+X #
+X return object
+X
+Xdef makesphere (n):
+X asin = []
+X acos = []
+X for i in range (0, n-1):
+X asin.append (sin((pi/float (n))*(1.0+float (i))))
+X acos.append(cos((pi/float (n))*(1.0+float (i))))
+X #
+X x1 = [0.0] + asin
+X z1 = [1.0] + acos
+X nx1 = [0.0] + asin
+X nz1 = [1.0] + acos
+X #
+X x2 = asin + [0.0]
+X z2 = acos + [-1.0]
+X nx2 = asin + [0.0]
+X nz2 = acos + [-1.0]
+X #
+X return makespinobject (1,2*n,n,x1,z1,nx1,nz1,x2,z2,nx2,nz2)
+X
+Xdef makecylinder(n) :
+X x1 = [0.0, 1.0, 1.0]
+X nx1 = [0.0, 1.0, 0.0]
+X z1 = [1.0, 1.0, -1.0]
+X nz1 = [1.0, 0.0, -1.0]
+X #
+X z2 = [1.0, -1.0, -1.0]
+X nz2 = [1.0, 0.0, -1.0]
+X x2 = [1.0, 1.0, 0.0]
+X nx2 = [0.0, 1.0, 0.0]
+X #
+X return makespinobject(1,2*n,3,x1,z1,nx1,nz1,x2,z2,nx2,nz2)
+X
+Xdef makecone(n) :
+X x1 = [0.0, 1.0, 1.0]
+X nx1 = [2.0/sqrt(5.0), 0.0, 0.0]
+X z1 = [1.0, -1.0, -1.0]
+X nz1 = [1.0/sqrt(5.0), -1.0, -1.0]
+X #
+X x2 = [1.0, 0.0, 0.0]
+X nx2 = [2.0/sqrt(5.0), 0.0, 0.0]
+X nz2 = [1.0/sqrt(5.0), -1.0, -1.0]
+X z2 = [-1.0, -1.0, -1.0]
+X #
+X return makespinobject(1,2*n,2,x1,z1,nx1,nz1,x2,z2,nx2,nz2)
+X
+Xdef makecube() :
+X x1 = [0.0, sqrt(2.0), sqrt (2.0)]
+X nx1 = [0.0, 1.0, 0.0]
+X z1 = [1.0, 1.0, -1.0]
+X nz1 = [1.0, 0.0, -1.0]
+X #
+X x2 = [sqrt(2.0), sqrt(2.0), 0.0]
+X nx2 = [0.0, 1.0, 0.0]
+X z2 = [1.0, -1.0, -1.0]
+X nz2 = [1.0, 0.0, -1.0]
+X #
+X return makespinobject(0,4,3,x1,z1,nx1,nz1,x2,z2,nx2,nz2)
+X
+X
+Xdef makepyramid() :
+X x1 = [0.0, sqrt(2.0), 0.0]
+X nx1 = [2.0 / sqrt(5.0), 0.0, 0.0]
+X z1 = [1.0, -1.0, 0.0]
+X nz1 = [1.0 / sqrt(5.0), -1.0, 0.0]
+X #
+X x2 = [sqrt(2.0), 0.0, 0.0]
+X nx2 = [2.0 / sqrt(5.0), 0.0, 0.0]
+X z2 = [-1.0, -1.0, -1.0]
+X nz2 = [1.0/sqrt(5.0), -1.0, 0.0]
+X #
+X return makespinobject(0,4,3,x1,z1,nx1,nz1,x2,z2,nx2,nz2)
+X
+Xdef makeobjects () :
+X cube = makecube()
+X sphere = makesphere (6)
+X cylinder = makecylinder (6)
+X cone = makecone (6)
+X pyramid = makepyramid ()
+X #
+X odict = {}
+X odict ['cube'] = cube
+X odict ['pyramid'] = pyramid
+X odict ['sphere'] = sphere
+X odict ['cylinder'] = cylinder
+X odict ['cone'] = cone
+X odict ['diamond'] = cube
+X odict ['disk'] = sphere
+X #
+X return odict
+X
+X
+Xrenderfuncs = [bgnpolygon, endpolygon]
+X
+Xdef putFunc (funcs) :
+X renderfuncs [:] = funcs
+X
+Xdef drawobject (obj) :
+X #
+X for patch in obj :
+X renderfuncs[0] ()
+X vnarray (patch)
+X renderfuncs[1] ()
+X
+EOF
+fi
+if test -s 'lib/Split.py'
+then echo '*** I will not over-write existing file lib/Split.py'
+else
+echo 'x - lib/Split.py'
+sed 's/^X//' > 'lib/Split.py' << 'EOF'
+X# Generic Split implementation.
+X# Use as a base class for other splits.
+X# Derived classes should at least implement the methods that call
+X# unimpl() below: minsize(), getbounds() and setbounds().
+X
+XError = 'Split.Error' # Exception
+X
+Ximport rect
+Xfrom util import remove
+X
+Xclass Split():
+X #
+X # Calls from creator
+X # NB derived classes may add parameters to create()
+X #
+X def create(self, parent):
+X parent.addchild(self)
+X self.parent = parent
+X self.children = []
+X self.mouse_interest = []
+X self.timer_interest = []
+X self.mouse_focus = 0
+X return self
+X #
+X # Downcalls from parent to child
+X #
+X def destroy(self):
+X self.parent = None
+X for child in self.children:
+X child.destroy()
+X del self.children[:]
+X del self.mouse_interest[:]
+X del self.timer_interest[:]
+X self.mouse_focus = None
+X #
+X def minsize(self, m): return unimpl()
+X def getbounds(self): return unimpl()
+X def setbounds(self, bounds): unimpl()
+X #
+X def draw(self, d_detail):
+X # (Could avoid calls to children outside the area)
+X for child in self.children:
+X child.draw(d_detail)
+X #
+X # Downcalls only made after certain upcalls
+X #
+X def mouse_down(self, detail):
+X if self.mouse_focus:
+X self.mouse_focus.mouse_down(detail)
+X p = detail[0]
+X for child in self.mouse_interest:
+X if rect.pointinrect(p, child.getbounds()):
+X self.mouse_focus = child
+X child.mouse_down(detail)
+X def mouse_move(self, detail):
+X if self.mouse_focus:
+X self.mouse_focus.mouse_move(detail)
+X def mouse_up(self, detail):
+X if self.mouse_focus:
+X self.mouse_focus.mouse_up(detail)
+X self.mouse_focus = 0
+X #
+X def timer(self):
+X for child in self.timer_interest:
+X child.timer()
+X #
+X # Upcalls from child to parent
+X #
+X def addchild(self, child):
+X if child in self.children:
+X raise Error, 'addchild: child already inlist'
+X self.children.append(child)
+X def delchild(self, child):
+X if child not in self.children:
+X raise Error, 'delchild: child not in list'
+X remove(child, self.children)
+X if child in self.mouse_interest:
+X remove(child, self.mouse_interest)
+X if child in self.timer_interest:
+X remove(child, self.timer_interest)
+X if child = self.mouse_focus:
+X self.mouse_focus = 0
+X #
+X def need_mouse(self, child):
+X if child not in self.mouse_interest:
+X self.mouse_interest.append(child)
+X self.parent.need_mouse(self)
+X def no_mouse(self, child):
+X if child in self.mouse_interest:
+X remove(child, self.mouse_interest)
+X if not self.mouse_interest:
+X self.parent.no_mouse(self)
+X #
+X def need_timer(self, child):
+X if child not in self.timer_interest:
+X self.timer_interest.append(child)
+X self.parent.need_timer(self)
+X def no_timer(self, child):
+X if child in self.timer_interest:
+X remove(child, self.timer_interest)
+X if not self.timer_interest:
+X self.parent.no_timer(self)
+X #
+X # The rest are transparent:
+X #
+X def begindrawing(self):
+X return self.parent.begindrawing()
+X def beginmeasuring(self):
+X return self.parent.beginmeasuring()
+X #
+X def change(self, area):
+X self.parent.change(area)
+X def scroll(self, area_vector):
+X self.parent.scroll(area_vector)
+X def settimer(self, itimer):
+X self.parent.settimer(itimer)
+EOF
+fi
+if test -s 'lib/WindowParent.py'
+then echo '*** I will not over-write existing file lib/WindowParent.py'
+else
+echo 'x - lib/WindowParent.py'
+sed 's/^X//' > 'lib/WindowParent.py' << 'EOF'
+X# A 'WindowParent' is the only module that uses real stdwin functionality.
+X# It is the root of the tree.
+X# It should have exactly one child when realized.
+X
+Ximport stdwin
+Xfrom stdwinevents import *
+X
+Xfrom TransParent import ManageOneChild
+X
+XError = 'WindowParent.Error' # Exception
+X
+Xclass WindowParent() = ManageOneChild():
+X #
+X def create(self, (title, size)):
+X self.title = title
+X self.size = size # (width, height)
+X self._reset()
+X return self
+X #
+X def _reset(self):
+X self.child = 0
+X self.win = 0
+X self.itimer = 0
+X self.do_mouse = 0
+X self.do_timer = 0
+X #
+X def destroy(self):
+X if self.child: self.child.destroy()
+X self._reset()
+X #
+X def need_mouse(self, child): self.do_mouse = 1
+X def no_mouse(self, child): self.do_mouse = 0
+X #
+X def need_timer(self, child): self.do_timer = 1
+X def no_timer(self, child): self.do_timer = 0
+X #
+X def realize(self):
+X if self.win:
+X raise Error, 'realize(): called twice'
+X if not self.child:
+X raise Error, 'realize(): no child'
+X size = self.child.minsize(self.beginmeasuring())
+X self.size = max(self.size[0], size[0]), \
+X max(self.size[1], size[1])
+X #stdwin.setdefwinsize(self.size)
+X # XXX Compensate stdwin bug:
+X stdwin.setdefwinsize(self.size[0]+4, self.size[1]+2)
+X self.win = stdwin.open(self.title)
+X if self.itimer:
+X self.win.settimer(self.itimer)
+X bounds = (0, 0), self.win.getwinsize()
+X self.child.setbounds(bounds)
+X #
+X def beginmeasuring(self):
+X # Return something with which a child can measure text
+X if self.win:
+X return self.win.begindrawing()
+X else:
+X return stdwin
+X #
+X def begindrawing(self):
+X if self.win:
+X return self.win.begindrawing()
+X else:
+X raise Error, 'begindrawing(): not realized yet'
+X #
+X def change(self, area):
+X if self.win:
+X self.win.change(area)
+X #
+X def scroll(self, args):
+X if self.win:
+X self.win.scroll(args)
+X #
+X def settimer(self, itimer):
+X if self.win:
+X self.win.settimer(itimer)
+X else:
+X self.itimer = itimer
+X #
+X # Only call dispatch if we have a child
+X #
+X def dispatch(self, (type, win, detail)):
+X if win <> self.win:
+X return
+X elif type = WE_DRAW:
+X d = self.win.begindrawing()
+X self.child.draw(d, detail)
+X elif type = WE_MOUSE_DOWN:
+X if self.do_mouse: self.child.mouse_down(detail)
+X elif type = WE_MOUSE_MOVE:
+X if self.do_mouse: self.child.mouse_move(detail)
+X elif type = WE_MOUSE_UP:
+X if self.do_mouse: self.child.mouse_up(detail)
+X elif type = WE_TIMER:
+X if self.do_timer: self.child.timer()
+X elif type = WE_SIZE:
+X self.win.change((0, 0), (10000, 10000)) # XXX
+X bounds = (0, 0), self.win.getwinsize()
+X self.child.setbounds(bounds)
+X #
+EOF
+fi
+if test -s 'lib/gwin.py'
+then echo '*** I will not over-write existing file lib/gwin.py'
+else
+echo 'x - lib/gwin.py'
+sed 's/^X//' > 'lib/gwin.py' << 'EOF'
+X# Module 'gwin'
+X# Generic stdwin windows
+X
+X# This is used as a base class from which to derive other window types.
+X# The mainloop() function here is an event dispatcher for all window types.
+X
+Ximport stdwin
+Xfrom stdwinevents import *
+X
+X# XXX Old version of stdwinevents, should go
+Ximport stdwinsupport
+XS = stdwinsupport # Shorthand
+X
+Xwindows = [] # List of open windows
+X
+X
+X# Open a window
+X
+Xdef open(title): # Open a generic window
+X w = stdwin.open(title)
+X stdwin.setdefwinsize(0, 0)
+X # Set default event handlers
+X w.draw = nop
+X w.char = nop
+X w.mdown = nop
+X w.mmove = nop
+X w.mup = nop
+X w.m2down = m2down
+X w.m2up = m2up
+X w.size = nop
+X w.move = nop
+X w.activate = w.deactivate = nop
+X w.timer = nop
+X # default command handlers
+X w.close = close
+X w.tab = tab
+X w.enter = enter
+X w.backspace = backspace
+X w.arrow = arrow
+X w.kleft = w.kup = w.kright = w.kdown = nop
+X windows.append(w)
+X return w
+X
+X
+X# Generic event dispatching
+X
+Xdef mainloop(): # Handle events until no windows left
+X while windows:
+X treatevent(stdwin.getevent())
+X
+Xdef treatevent(e): # Handle a stdwin event
+X type, w, detail = e
+X if type = S.we_draw:
+X w.draw(w, detail)
+X elif type = S.we_menu:
+X m, item = detail
+X m.action[item](w, m, item)
+X elif type = S.we_command:
+X treatcommand(w, detail)
+X elif type = S.we_char:
+X w.char(w, detail)
+X elif type = S.we_mouse_down:
+X if detail[1] > 1: w.m2down(w, detail)
+X else: w.mdown(w, detail)
+X elif type = S.we_mouse_move:
+X w.mmove(w, detail)
+X elif type = S.we_mouse_up:
+X if detail[1] > 1: w.m2up(w, detail)
+X else: w.mup(w, detail)
+X elif type = S.we_size:
+X w.size(w, w.getwinsize())
+X elif type = S.we_activate:
+X w.activate(w)
+X elif type = S.we_deactivate:
+X w.deactivate(w)
+X elif type = S.we_move:
+X w.move(w)
+X elif type = S.we_timer:
+X w.timer(w)
+X elif type = WE_CLOSE:
+X w.close(w)
+X
+Xdef treatcommand(w, type): # Handle a we_command event
+X if type = S.wc_close:
+X w.close(w)
+X elif type = S.wc_return:
+X w.enter(w)
+X elif type = S.wc_tab:
+X w.tab(w)
+X elif type = S.wc_backspace:
+X w.backspace(w)
+X elif type in (S.wc_left, S.wc_up, S.wc_right, S.wc_down):
+X w.arrow(w, type)
+X
+X
+X# Methods
+X
+Xdef close(w): # Close method
+X for i in range(len(windows)):
+X if windows[i] is w:
+X del windows[i]
+X break
+X
+Xdef arrow(w, detail): # Arrow key method
+X if detail = S.wc_left:
+X w.kleft(w)
+X elif detail = S.wc_up:
+X w.kup(w)
+X elif detail = S.wc_right:
+X w.kright(w)
+X elif detail = S.wc_down:
+X w.kdown(w)
+X
+X
+X# Trivial methods
+X
+Xdef tab(w): w.char(w, '\t')
+Xdef enter(w): w.char(w, '\n') # 'return' is a Python reserved word
+Xdef backspace(w): w.char(w, '\b')
+Xdef m2down(w, detail): w.mdown(w, detail)
+Xdef m2up(w, detail): w.mup(w, detail)
+Xdef nop(args): pass
+EOF
+fi
+if test -s 'lib/panelparser.py'
+then echo '*** I will not over-write existing file lib/panelparser.py'
+else
+echo 'x - lib/panelparser.py'
+sed 's/^X//' > 'lib/panelparser.py' << 'EOF'
+X# Module 'parser'
+X#
+X# Parse S-expressions output by the Panel Editor
+X# (which is written in Scheme so it can't help writing S-expressions).
+X#
+X# See notes at end of file.
+X
+X
+Xwhitespace = ' \t\n'
+Xoperators = '()\''
+Xseparators = operators + whitespace + ';' + '"'
+X
+X
+X# Tokenize a string.
+X# Return a list of tokens (strings).
+X#
+Xdef tokenize_string(s):
+X tokens = []
+X while s:
+X c = s[:1]
+X if c in whitespace:
+X s = s[1:]
+X elif c = ';':
+X s = ''
+X elif c = '"':
+X n = len(s)
+X i = 1
+X while i < n:
+X c = s[i]
+X i = i+1
+X if c = '"': break
+X if c = '\\': i = i+1
+X tokens.append(s[:i])
+X s = s[i:]
+X elif c in operators:
+X tokens.append(c)
+X s = s[1:]
+X else:
+X n = len(s)
+X i = 1
+X while i < n:
+X if s[i] in separators: break
+X i = i+1
+X tokens.append(s[:i])
+X s = s[i:]
+X return tokens
+X
+X
+X# Tokenize a whole file (given as file object, not as file name).
+X# Return a list of tokens (strings).
+X#
+Xdef tokenize_file(fp):
+X tokens = []
+X while 1:
+X line = fp.readline()
+X if not line: break
+X tokens = tokens + tokenize_string(line)
+X return tokens
+X
+X
+X# Exception raised by parse_exr.
+X#
+Xsyntax_error = 'syntax error'
+X
+X
+X# Parse an S-expression.
+X# Input is a list of tokens as returned by tokenize_*().
+X# Return a pair (expr, tokens)
+X# where expr is a list representing the s-expression,
+X# and tokens contains the remaining tokens.
+X# May raise syntax_error.
+X#
+Xdef parse_expr(tokens):
+X if (not tokens) or tokens[0] <> '(':
+X raise syntax_error, 'expected "("'
+X tokens = tokens[1:]
+X expr = []
+X while 1:
+X if not tokens:
+X raise syntax_error, 'missing ")"'
+X if tokens[0] = ')':
+X return expr, tokens[1:]
+X elif tokens[0] = '(':
+X subexpr, tokens = parse_expr(tokens)
+X expr.append(subexpr)
+X else:
+X expr.append(tokens[0])
+X tokens = tokens[1:]
+X
+X
+X# Parse a file (given as file object, not as file name).
+X# Return a list of parsed S-expressions found at the top level.
+X#
+Xdef parse_file(fp):
+X tokens = tokenize_file(fp)
+X exprlist = []
+X while tokens:
+X expr, tokens = parse_expr(tokens)
+X exprlist.append(expr)
+X return exprlist
+X
+X
+X# EXAMPLE:
+X#
+X# The input
+X# '(hip (hop hur-ray))'
+X#
+X# passed to tokenize_string() returns the token list
+X# ['(', 'hip', '(', 'hop', 'hur-ray', ')', ')']
+X#
+X# When this is passed to parse_expr() it returns the expression
+X# ['hip', ['hop', 'hur-ray']]
+X# plus an empty token list (because there are no tokens left.
+X#
+X# When a file containing the example is passed to parse_file() it returns
+X# a list whose only element is the output of parse_expr() above:
+X# [['hip', ['hop', 'hur-ray']]]
+X
+X
+X# TOKENIZING:
+X#
+X# Comments start with semicolon (;) and continue till the end of the line.
+X#
+X# Tokens are separated by whitespace, except the following characters
+X# always form a separate token (outside strings):
+X# ( ) '
+X# Strings are enclosed in double quotes (") and backslash (\) is used
+X# as escape character in strings.
+EOF
+fi
+if test -s 'lib/path.py'
+then echo '*** I will not over-write existing file lib/path.py'
+else
+echo 'x - lib/path.py'
+sed 's/^X//' > 'lib/path.py' << 'EOF'
+X# Module 'path' -- common operations on POSIX pathnames
+X
+Ximport posix
+Ximport stat
+X
+X
+X# Intelligent pathname concatenation.
+X# Inserts a '/' unless the first part is empty or already ends in '/'.
+X# Ignores the first part altogether if the second part is absolute
+X# (begins with '/').
+X#
+Xdef cat(a, b):
+X if b[:1] = '/': return b
+X if a = '' or a[-1:] = '/': return a + b
+X return a + '/' + b
+X
+X
+X# Split a path in head (empty or ending in '/') and tail (no '/').
+X# The tail will be empty if the path ends in '/'.
+X#
+Xdef split(p):
+X head, tail = '', ''
+X for c in p:
+X tail = tail + c
+X if c = '/':
+X head, tail = head + tail, ''
+X return head, tail
+X
+X
+X# Return the tail (basename) part of a path.
+X#
+Xdef basename(p):
+X return split(p)[1]
+X
+X
+X# Return the longest prefix of all list elements.
+X#
+Xdef commonprefix(m):
+X if not m: return ''
+X prefix = m[0]
+X for item in m:
+X for i in range(len(prefix)):
+X if prefix[:i+1] <> item[:i+1]:
+X prefix = prefix[:i]
+X if i = 0: return ''
+X break
+X return prefix
+X
+X
+X# Does a file/directory exist?
+X#
+Xdef exists(path):
+X try:
+X st = posix.stat(path)
+X except posix.error:
+X return 0
+X return 1
+X
+X
+X# Is a path a posix directory?
+X#
+Xdef isdir(path):
+X try:
+X st = posix.stat(path)
+X except posix.error:
+X return 0
+X return stat.S_ISDIR(st[stat.ST_MODE])
+X
+X
+X# Is a path a symbolic link?
+X# This will always return false on systems where posix.lstat doesn't exist.
+X#
+Xdef islink(path):
+X try:
+X st = posix.lstat(path)
+X except (posix.error, NameError):
+X return 0
+X return stat.S_ISLNK(st[stat.ST_MODE])
+X
+X
+X_mounts = []
+X
+Xdef _getmounts():
+X import commands, string
+X mounts = []
+X data = commands.getoutput('/etc/mount')
+X lines = string.splitfields(data, '\n')
+X for line in lines:
+X words = string.split(line)
+X if len(words) >= 3 and words[1] = 'on':
+X mounts.append(words[2])
+X return mounts
+X
+X
+X# Is a path a mount point?
+X# This only works for normalized, absolute paths,
+X# and only if the mount table as printed by /etc/mount is correct.
+X# Sorry.
+X#
+Xdef ismount(path):
+X if not _mounts:
+X _mounts[:] = _getmounts()
+X return path in _mounts
+X
+X
+X# Directory tree walk.
+X# For each directory under top (including top itself),
+X# func(arg, dirname, filenames) is called, where dirname
+X# is the name of the directory and filenames is the list of
+X# files (and subdirectories etc.) in the directory.
+X# func may modify the filenames list, to implement a filter,
+X# or to impose a different order of visiting.
+X#
+Xdef walk(top, func, arg):
+X try:
+X names = posix.listdir(top)
+X except posix.error:
+X return
+X func(arg, top, names)
+X exceptions = ('.', '..')
+X for name in names:
+X if name not in exceptions:
+X name = cat(top, name)
+X if isdir(name):
+X walk(name, func, arg)
+EOF
+fi
+if test -s 'lib/string.py'
+then echo '*** I will not over-write existing file lib/string.py'
+else
+echo 'x - lib/string.py'
+sed 's/^X//' > 'lib/string.py' << 'EOF'
+X# module 'string' -- A collection of string operations
+X
+X# XXX Some of these operations are incredibly slow and should be built in
+X
+X# Some strings for ctype-style character classification
+Xwhitespace = ' \t\n'
+Xlowercase = 'abcdefghijklmnopqrstuvwxyz'
+Xuppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+Xletters = lowercase + uppercase
+Xdigits = '0123456789'
+Xhexdigits = digits + 'abcdef' + 'ABCDEF'
+Xoctdigits = '01234567'
+X
+X# Case conversion helpers
+X_caseswap = {}
+Xfor i in range(26):
+X _caseswap[lowercase[i]] = uppercase[i]
+X _caseswap[uppercase[i]] = lowercase[i]
+Xdel i
+X
+X# convert UPPER CASE letters to lower case
+Xdef lower(s):
+X res = ''
+X for c in s:
+X if 'A' <= c <= 'Z': c = _caseswap[c]
+X res = res + c
+X return res
+X
+X# Convert lower case letters to UPPER CASE
+Xdef upper(s):
+X res = ''
+X for c in s:
+X if 'a' <= c <= 'z': c = _caseswap[c]
+X res = res + c
+X return res
+X
+X# Swap lower case letters and UPPER CASE
+Xdef swapcase(s):
+X res = ''
+X for c in s:
+X if 'a' <= c <= 'z' or 'A' <= c <= 'Z': c = _caseswap[c]
+X res = res + c
+X return res
+X
+X# Strip leading and trailing tabs and spaces
+Xdef strip(s):
+X i, j = 0, len(s)
+X while i < j and s[i] in whitespace: i = i+1
+X while i < j and s[j-1] in whitespace: j = j-1
+X return s[i:j]
+X
+X# Split a string into a list of space/tab-separated words
+X# NB: split(s) is NOT the same as splitfields(s, ' ')!
+Xdef split(s):
+X res = []
+X i, n = 0, len(s)
+X while i < n:
+X while i < n and s[i] in whitespace: i = i+1
+X if i = n: break
+X j = i
+X while j < n and s[j] not in whitespace: j = j+1
+X res.append(s[i:j])
+X i = j
+X return res
+X
+X# Split a list into fields separated by a given string
+X# NB: splitfields(s, ' ') is NOT the same as split(s)!
+Xdef splitfields(s, sep):
+X res = []
+X ns = len(s)
+X nsep = len(sep)
+X i = j = 0
+X while j+nsep <= ns:
+X if s[j:j+nsep] = sep:
+X res.append(s[i:j])
+X i = j = j + nsep
+X else:
+X j = j + 1
+X res.append(s[i:])
+X return res
+X
+X# Find substring
+Xindex_error = 'substring not found in string.index'
+Xdef index(s, sub):
+X n = len(sub)
+X for i in range(len(s) + 1 - n):
+X if sub = s[i:i+n]: return i
+X raise index_error, (s, sub)
+X
+X# Convert string to integer
+Xatoi_error = 'non-numeric argument to string.atoi'
+Xdef atoi(str):
+X s = str
+X if s[:1] in '+-': s = s[1:]
+X if not s: raise atoi_error, str
+X for c in s:
+X if c not in digits: raise atoi_error, str
+X return eval(str)
+X
+X# Left-justify a string
+Xdef ljust(s, width):
+X n = len(s)
+X if n >= width: return s
+X return s + ' '*(width-n)
+X
+X# Right-justify a string
+Xdef rjust(s, width):
+X n = len(s)
+X if n >= width: return s
+X return ' '*(width-n) + s
+X
+X# Center a string
+Xdef center(s, width):
+X n = len(s)
+X if n >= width: return s
+X return ' '*((width-n)/2) + s + ' '*(width -(width-n)/2)
+X
+X# Zero-fill a number, e.g., (12, 3) --> '012' and (-3, 3) --> '-03'
+X# Decadent feature: the argument may be a string or a number
+X# (Use of this is deprecated; it should be a string as with ljust c.s.)
+Xdef zfill(x, width):
+X if type(x) = type(''): s = x
+X else: s = `x`
+X n = len(s)
+X if n >= width: return s
+X sign = ''
+X if s[0] = '-':
+X sign, s = '-', s[1:]
+X return sign + '0'*(width-n) + s
+EOF
+fi
+if test -s 'src/Grammar'
+then echo '*** I will not over-write existing file src/Grammar'
+else
+echo 'x - src/Grammar'
+sed 's/^X//' > 'src/Grammar' << 'EOF'
+X# Grammar for Python, version 4
+X
+X# Changes compared to version 3:
+X# Removed 'dir' statement.
+X# Function call argument is a testlist instead of exprlist.
+X
+X# Changes compared to version 2:
+X# The syntax of Boolean operations is changed to use more
+X# conventional priorities: or < and < not.
+X
+X# Changes compared to version 1:
+X# modules and scripts are unified;
+X# 'quit' is gone (use ^D);
+X# empty_stmt is gone, replaced by explicit NEWLINE where appropriate;
+X# 'import' and 'def' aren't special any more;
+X# added 'from' NAME option on import clause, and '*' to import all;
+X# added class definition.
+X
+X# Start symbols for the grammar:
+X# single_input is a single interactive statement;
+X# file_input is a module or sequence of commands read from an input file;
+X# expr_input is the input for the input() function;
+X# eval_input is the input for the eval() function.
+X
+X# NB: compound_stmt in single_input is followed by extra NEWLINE!
+Xsingle_input: NEWLINE | simple_stmt | compound_stmt NEWLINE
+Xfile_input: (NEWLINE | stmt)* ENDMARKER
+Xexpr_input: testlist NEWLINE
+Xeval_input: testlist ENDMARKER
+X
+Xfuncdef: 'def' NAME parameters ':' suite
+Xparameters: '(' [fplist] ')'
+Xfplist: fpdef (',' fpdef)*
+Xfpdef: NAME | '(' fplist ')'
+X
+Xstmt: simple_stmt | compound_stmt
+Xsimple_stmt: expr_stmt | print_stmt | pass_stmt | del_stmt | flow_stmt | import_stmt
+Xexpr_stmt: (exprlist '=')* exprlist NEWLINE
+X# For assignments, additional restrictions enforced by the interpreter
+Xprint_stmt: 'print' (test ',')* [test] NEWLINE
+Xdel_stmt: 'del' exprlist NEWLINE
+Xpass_stmt: 'pass' NEWLINE
+Xflow_stmt: break_stmt | return_stmt | raise_stmt
+Xbreak_stmt: 'break' NEWLINE
+Xreturn_stmt: 'return' [testlist] NEWLINE
+Xraise_stmt: 'raise' expr [',' expr] NEWLINE
+Ximport_stmt: 'import' NAME (',' NAME)* NEWLINE | 'from' NAME 'import' ('*' | NAME (',' NAME)*) NEWLINE
+Xcompound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | funcdef | classdef
+Xif_stmt: 'if' test ':' suite ('elif' test ':' suite)* ['else' ':' suite]
+Xwhile_stmt: 'while' test ':' suite ['else' ':' suite]
+Xfor_stmt: 'for' exprlist 'in' exprlist ':' suite ['else' ':' suite]
+Xtry_stmt: 'try' ':' suite (except_clause ':' suite)* ['finally' ':' suite]
+Xexcept_clause: 'except' [expr [',' expr]]
+Xsuite: simple_stmt | NEWLINE INDENT NEWLINE* (stmt NEWLINE*)+ DEDENT
+X
+Xtest: and_test ('or' and_test)*
+Xand_test: not_test ('and' not_test)*
+Xnot_test: 'not' not_test | comparison
+Xcomparison: expr (comp_op expr)*
+Xcomp_op: '<'|'>'|'='|'>' '='|'<' '='|'<' '>'|'in'|'not' 'in'|'is'|'is' 'not'
+Xexpr: term (('+'|'-') term)*
+Xterm: factor (('*'|'/'|'%') factor)*
+Xfactor: ('+'|'-') factor | atom trailer*
+Xatom: '(' [testlist] ')' | '[' [testlist] ']' | '{' '}' | '`' testlist '`' | NAME | NUMBER | STRING
+Xtrailer: '(' [testlist] ')' | '[' subscript ']' | '.' NAME
+Xsubscript: expr | [expr] ':' [expr]
+Xexprlist: expr (',' expr)* [',']
+Xtestlist: test (',' test)* [',']
+X
+Xclassdef: 'class' NAME parameters ['=' baselist] ':' suite
+Xbaselist: atom arguments (',' atom arguments)*
+Xarguments: '(' [testlist] ')'
+EOF
+fi
+if test -s 'src/firstsets.c'
+then echo '*** I will not over-write existing file src/firstsets.c'
+else
+echo 'x - src/firstsets.c'
+sed 's/^X//' > 'src/firstsets.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Computation of FIRST stets */
+X
+X#include "pgenheaders.h"
+X#include "grammar.h"
+X#include "token.h"
+X
+Xextern int debugging;
+X
+X/* Forward */
+Xstatic void calcfirstset PROTO((grammar *, dfa *));
+X
+Xvoid
+Xaddfirstsets(g)
+X grammar *g;
+X{
+X int i;
+X dfa *d;
+X
+X printf("Adding FIRST sets ...\n");
+X for (i = 0; i < g->g_ndfas; i++) {
+X d = &g->g_dfa[i];
+X if (d->d_first == NULL)
+X calcfirstset(g, d);
+X }
+X}
+X
+Xstatic void
+Xcalcfirstset(g, d)
+X grammar *g;
+X dfa *d;
+X{
+X int i, j;
+X state *s;
+X arc *a;
+X int nsyms;
+X int *sym;
+X int nbits;
+X static bitset dummy;
+X bitset result;
+X int type;
+X dfa *d1;
+X label *l0;
+X
+X if (debugging)
+X printf("Calculate FIRST set for '%s'\n", d->d_name);
+X
+X if (dummy == NULL)
+X dummy = newbitset(1);
+X if (d->d_first == dummy) {
+X fprintf(stderr, "Left-recursion for '%s'\n", d->d_name);
+X return;
+X }
+X if (d->d_first != NULL) {
+X fprintf(stderr, "Re-calculating FIRST set for '%s' ???\n",
+X d->d_name);
+X }
+X d->d_first = dummy;
+X
+X l0 = g->g_ll.ll_label;
+X nbits = g->g_ll.ll_nlabels;
+X result = newbitset(nbits);
+X
+X sym = NEW(int, 1);
+X if (sym == NULL)
+X fatal("no mem for new sym in calcfirstset");
+X nsyms = 1;
+X sym[0] = findlabel(&g->g_ll, d->d_type, (char *)NULL);
+X
+X s = &d->d_state[d->d_initial];
+X for (i = 0; i < s->s_narcs; i++) {
+X a = &s->s_arc[i];
+X for (j = 0; j < nsyms; j++) {
+X if (sym[j] == a->a_lbl)
+X break;
+X }
+X if (j >= nsyms) { /* New label */
+X RESIZE(sym, int, nsyms + 1);
+X if (sym == NULL)
+X fatal("no mem to resize sym in calcfirstset");
+X sym[nsyms++] = a->a_lbl;
+X type = l0[a->a_lbl].lb_type;
+X if (ISNONTERMINAL(type)) {
+X d1 = finddfa(g, type);
+X if (d1->d_first == dummy) {
+X fprintf(stderr,
+X "Left-recursion below '%s'\n",
+X d->d_name);
+X }
+X else {
+X if (d1->d_first == NULL)
+X calcfirstset(g, d1);
+X mergebitset(result, d1->d_first, nbits);
+X }
+X }
+X else if (ISTERMINAL(type)) {
+X addbit(result, a->a_lbl);
+X }
+X }
+X }
+X d->d_first = result;
+X if (debugging) {
+X printf("FIRST set for '%s': {", d->d_name);
+X for (i = 0; i < nbits; i++) {
+X if (testbit(result, i))
+X printf(" %s", labelrepr(&l0[i]));
+X }
+X printf(" }\n");
+X }
+X}
+EOF
+fi
+if test -s 'src/frameobject.h'
+then echo '*** I will not over-write existing file src/frameobject.h'
+else
+echo 'x - src/frameobject.h'
+sed 's/^X//' > 'src/frameobject.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Frame object interface */
+X
+Xtypedef struct {
+X int b_type; /* what kind of block this is */
+X int b_handler; /* where to jump to find handler */
+X int b_level; /* value stack level to pop to */
+X} block;
+X
+Xtypedef struct _frame {
+X OB_HEAD
+X struct _frame *f_back; /* previous frame, or NULL */
+X codeobject *f_code; /* code segment */
+X object *f_globals; /* global symbol table (dictobject) */
+X object *f_locals; /* local symbol table (dictobject) */
+X object **f_valuestack; /* malloc'ed array */
+X block *f_blockstack; /* malloc'ed array */
+X int f_nvalues; /* size of f_valuestack */
+X int f_nblocks; /* size of f_blockstack */
+X int f_iblock; /* index in f_blockstack */
+X} frameobject;
+X
+X
+X/* Standard object interface */
+X
+Xextern typeobject Frametype;
+X
+X#define is_frameobject(op) ((op)->ob_type == &Frametype)
+X
+Xframeobject * newframeobject PROTO(
+X (frameobject *, codeobject *, object *, object *, int, int));
+X
+X
+X/* The rest of the interface is specific for frame objects */
+X
+X/* List access macros */
+X
+X#ifdef NDEBUG
+X#define GETITEM(v, i) GETLISTITEM((listobject *)(v), (i))
+X#define GETITEMNAME(v, i) GETSTRINGVALUE((stringobject *)GETITEM((v), (i)))
+X#else
+X#define GETITEM(v, i) getlistitem((v), (i))
+X#define GETITEMNAME(v, i) getstringvalue(getlistitem((v), (i)))
+X#endif
+X
+X#define GETUSTRINGVALUE(s) ((unsigned char *)GETSTRINGVALUE(s))
+X
+X/* Code access macros */
+X
+X#define Getconst(f, i) (GETITEM((f)->f_code->co_consts, (i)))
+X#define Getname(f, i) (GETITEMNAME((f)->f_code->co_names, (i)))
+X
+X
+X/* Block management functions */
+X
+Xvoid setup_block PROTO((frameobject *, int, int, int));
+Xblock *pop_block PROTO((frameobject *));
+EOF
+fi
+if test -s 'src/funcobject.c'
+then echo '*** I will not over-write existing file src/funcobject.c'
+else
+echo 'x - src/funcobject.c'
+sed 's/^X//' > 'src/funcobject.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Function object implementation */
+X
+X#include "allobjects.h"
+X
+X#include "structmember.h"
+X
+Xtypedef struct {
+X OB_HEAD
+X object *func_code;
+X object *func_globals;
+X} funcobject;
+X
+Xobject *
+Xnewfuncobject(code, globals)
+X object *code;
+X object *globals;
+X{
+X funcobject *op = NEWOBJ(funcobject, &Functype);
+X if (op != NULL) {
+X INCREF(code);
+X op->func_code = code;
+X INCREF(globals);
+X op->func_globals = globals;
+X }
+X return (object *)op;
+X}
+X
+Xobject *
+Xgetfunccode(op)
+X object *op;
+X{
+X if (!is_funcobject(op)) {
+X err_badcall();
+X return NULL;
+X }
+X return ((funcobject *) op) -> func_code;
+X}
+X
+Xobject *
+Xgetfuncglobals(op)
+X object *op;
+X{
+X if (!is_funcobject(op)) {
+X err_badcall();
+X return NULL;
+X }
+X return ((funcobject *) op) -> func_globals;
+X}
+X
+X/* Methods */
+X
+X#define OFF(x) offsetof(funcobject, x)
+X
+Xstatic struct memberlist func_memberlist[] = {
+X {"func_code", T_OBJECT, OFF(func_code)},
+X {"func_globals",T_OBJECT, OFF(func_globals)},
+X {NULL} /* Sentinel */
+X};
+X
+Xstatic object *
+Xfunc_getattr(op, name)
+X funcobject *op;
+X char *name;
+X{
+X return getmember((char *)op, func_memberlist, name);
+X}
+X
+Xstatic void
+Xfunc_dealloc(op)
+X funcobject *op;
+X{
+X DECREF(op->func_code);
+X DECREF(op->func_globals);
+X DEL(op);
+X}
+X
+Xtypeobject Functype = {
+X OB_HEAD_INIT(&Typetype)
+X 0,
+X "function",
+X sizeof(funcobject),
+X 0,
+X func_dealloc, /*tp_dealloc*/
+X 0, /*tp_print*/
+X func_getattr, /*tp_getattr*/
+X 0, /*tp_setattr*/
+X 0, /*tp_compare*/
+X 0, /*tp_repr*/
+X};
+EOF
+fi
+if test -s 'src/grammar.h'
+then echo '*** I will not over-write existing file src/grammar.h'
+else
+echo 'x - src/grammar.h'
+sed 's/^X//' > 'src/grammar.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Grammar interface */
+X
+X#include "bitset.h" /* Sigh... */
+X
+X/* A label of an arc */
+X
+Xtypedef struct _label {
+X int lb_type;
+X char *lb_str;
+X} label;
+X
+X#define EMPTY 0 /* Label number 0 is by definition the empty label */
+X
+X/* A list of labels */
+X
+Xtypedef struct _labellist {
+X int ll_nlabels;
+X label *ll_label;
+X} labellist;
+X
+X/* An arc from one state to another */
+X
+Xtypedef struct _arc {
+X short a_lbl; /* Label of this arc */
+X short a_arrow; /* State where this arc goes to */
+X} arc;
+X
+X/* A state in a DFA */
+X
+Xtypedef struct _state {
+X int s_narcs;
+X arc *s_arc; /* Array of arcs */
+X
+X /* Optional accelerators */
+X int s_lower; /* Lowest label index */
+X int s_upper; /* Highest label index */
+X int *s_accel; /* Accelerator */
+X int s_accept; /* Nonzero for accepting state */
+X} state;
+X
+X/* A DFA */
+X
+Xtypedef struct _dfa {
+X int d_type; /* Non-terminal this represents */
+X char *d_name; /* For printing */
+X int d_initial; /* Initial state */
+X int d_nstates;
+X state *d_state; /* Array of states */
+X bitset d_first;
+X} dfa;
+X
+X/* A grammar */
+X
+Xtypedef struct _grammar {
+X int g_ndfas;
+X dfa *g_dfa; /* Array of DFAs */
+X labellist g_ll;
+X int g_start; /* Start symbol of the grammar */
+X int g_accel; /* Set if accelerators present */
+X} grammar;
+X
+X/* FUNCTIONS */
+X
+Xgrammar *newgrammar PROTO((int start));
+Xdfa *adddfa PROTO((grammar *g, int type, char *name));
+Xint addstate PROTO((dfa *d));
+Xvoid addarc PROTO((dfa *d, int from, int to, int lbl));
+Xdfa *finddfa PROTO((grammar *g, int type));
+Xchar *typename PROTO((grammar *g, int lbl));
+X
+Xint addlabel PROTO((labellist *ll, int type, char *str));
+Xint findlabel PROTO((labellist *ll, int type, char *str));
+Xchar *labelrepr PROTO((label *lb));
+Xvoid translatelabels PROTO((grammar *g));
+X
+Xvoid addfirstsets PROTO((grammar *g));
+X
+Xvoid addaccellerators PROTO((grammar *g));
+X
+Xvoid printgrammar PROTO((grammar *g, FILE *fp));
+Xvoid printnonterminals PROTO((grammar *g, FILE *fp));
+EOF
+fi
+if test -s 'src/intobject.h'
+then echo '*** I will not over-write existing file src/intobject.h'
+else
+echo 'x - src/intobject.h'
+sed 's/^X//' > 'src/intobject.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Integer object interface */
+X
+X/*
+X123456789-123456789-123456789-123456789-123456789-123456789-123456789-12
+X
+Xintobject represents a (long) integer. This is an immutable object;
+Xan integer cannot change its value after creation.
+X
+XThere are functions to create new integer objects, to test an object
+Xfor integer-ness, and to get the integer value. The latter functions
+Xreturns -1 and sets errno to EBADF if the object is not an intobject.
+XNone of the functions should be applied to nil objects.
+X
+XThe type intobject is (unfortunately) exposed bere so we can declare
+XTrueObject and FalseObject below; don't use this.
+X*/
+X
+Xtypedef struct {
+X OB_HEAD
+X long ob_ival;
+X} intobject;
+X
+Xextern typeobject Inttype;
+X
+X#define is_intobject(op) ((op)->ob_type == &Inttype)
+X
+Xextern object *newintobject PROTO((long));
+Xextern long getintvalue PROTO((object *));
+X
+X
+X/*
+X123456789-123456789-123456789-123456789-123456789-123456789-123456789-12
+X
+XFalse and True are special intobjects used by Boolean expressions.
+XAll values of type Boolean must point to either of these; but in
+Xcontexts where integers are required they are integers (valued 0 and 1).
+XHope these macros don't conflict with other people's.
+X
+XDon't forget to apply INCREF() when returning True or False!!!
+X*/
+X
+Xextern intobject FalseObject, TrueObject; /* Don't use these directly */
+X
+X#define False ((object *) &FalseObject)
+X#define True ((object *) &TrueObject)
+X
+X/* Macro, trading safety for speed */
+X#define GETINTVALUE(op) ((op)->ob_ival)
+EOF
+fi
+if test -s 'src/intrcheck.c'
+then echo '*** I will not over-write existing file src/intrcheck.c'
+else
+echo 'x - src/intrcheck.c'
+sed 's/^X//' > 'src/intrcheck.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Check for interrupts */
+X
+X#ifdef MSDOS
+X
+X/* This might work for MS-DOS (untested though): */
+X
+Xvoid
+Xinitintr()
+X{
+X}
+X
+Xint
+Xintrcheck()
+X{
+X int interrupted = 0;
+X while (kbhit()) {
+X if (getch() == '\003')
+X interrupted = 1;
+X }
+X return interrupted;
+X}
+X
+X#define OK
+X
+X#endif
+X
+X
+X#ifdef THINK_C
+X
+X/* This is for THINK C 4.0.
+X For 3.0, you may have to remove the signal stuff. */
+X
+X#include <MacHeaders>
+X#include <signal.h>
+X#include "sigtype.h"
+X
+Xstatic int interrupted;
+X
+Xstatic SIGTYPE
+Xintcatcher(sig)
+X int sig;
+X{
+X interrupted = 1;
+X signal(SIGINT, intcatcher);
+X}
+X
+Xvoid
+Xinitintr()
+X{
+X if (signal(SIGINT, SIG_IGN) != SIG_IGN)
+X signal(SIGINT, intcatcher);
+X}
+X
+Xint
+Xintrcheck()
+X{
+X register EvQElPtr q;
+X
+X /* This is like THINK C 4.0's <console.h>.
+X I'm not sure why FlushEvents must be called from asm{}. */
+X for (q = (EvQElPtr)EventQueue.qHead; q; q = (EvQElPtr)q->qLink) {
+X if (q->evtQWhat == keyDown &&
+X (char)q->evtQMessage == '.' &&
+X (q->evtQModifiers & cmdKey) != 0) {
+X
+X asm {
+X moveq #keyDownMask,d0
+X _FlushEvents
+X }
+X interrupted = 1;
+X break;
+X }
+X }
+X if (interrupted) {
+X interrupted = 0;
+X return 1;
+X }
+X return 0;
+X}
+X
+X#define OK
+X
+X#endif /* THINK_C */
+X
+X
+X#ifndef OK
+X
+X/* Default version -- for real operating systems and for Standard C */
+X
+X#include <stdio.h>
+X#include <signal.h>
+X#include "sigtype.h"
+X
+Xstatic int interrupted;
+X
+Xstatic SIGTYPE
+Xintcatcher(sig)
+X int sig;
+X{
+X interrupted = 1;
+X signal(SIGINT, intcatcher);
+X}
+X
+Xvoid
+Xinitintr()
+X{
+X if (signal(SIGINT, SIG_IGN) != SIG_IGN)
+X signal(SIGINT, intcatcher);
+X}
+X
+Xint
+Xintrcheck()
+X{
+X if (!interrupted)
+X return 0;
+X interrupted = 0;
+X return 1;
+X}
+X
+X#endif /* !OK */
+EOF
+fi
+if test -s 'src/profmain.c'
+then echo '*** I will not over-write existing file src/profmain.c'
+else
+echo 'x - src/profmain.c'
+sed 's/^X//' > 'src/profmain.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X#include <stdio.h>
+X#include "string.h"
+X
+X#include "PROTO.h"
+X#include "grammar.h"
+X#include "node.h"
+X#include "parsetok.h"
+X#include "graminit.h"
+X#include "tokenizer.h"
+X#include "errcode.h"
+X#include "malloc.h"
+X
+Xextern int _profile;
+X
+Xextern grammar gram; /* From graminit.c */
+X
+Xint debugging = 1;
+X
+XFILE *getopenfile()
+X{
+X char buf[256];
+X char *p;
+X FILE *fp;
+X for (;;) {
+X fprintf(stderr, "File name: ");
+X if (fgets(buf, sizeof buf, stdin) == NULL) {
+X fprintf(stderr, "EOF\n");
+X exit(1);
+X }
+X p = strchr(buf, '\n');
+X if (p != NULL)
+X *p = '\0';
+X if ((fp = fopen(buf, "r")) != NULL)
+X break;
+X fprintf(stderr, "Sorry, try again.\n");
+X }
+X return fp;
+X}
+X
+Xmain()
+X{
+X FILE *fp;
+X _profile = 0;
+X fp = getopenfile();
+X#if 0
+X askgo("Start tokenizing");
+X runtokenizer(fp);
+X fseek(fp, 0L, 0);
+X#endif
+X if (!gram.g_accel)
+X addaccelerators(&gram);
+X askgo("Start parsing");
+X _profile = 1;
+X runparser(fp);
+X _profile = 0;
+X freopen("prof.out", "w", stdout);
+X DumpProfile();
+X fflush(stdout);
+X exit(0);
+X}
+X
+Xstatic int
+Xruntokenizer(fp)
+X FILE *fp;
+X{
+X struct tok_state *tok;
+X tok = tok_setupf(fp, "Tokenizing", ".");
+X for (;;) {
+X char *a, *b;
+X register char *str;
+X register int len;
+X (void) tok_get(tok, &a, &b);
+X if (tok->done != E_OK)
+X break;
+X len = b - a;
+X str = NEW(char, len + 1);
+X if (str == NULL) {
+X fprintf(stderr, "no mem for next token");
+X break;
+X }
+X strncpy(str, a, len);
+X str[len] = '\0';
+X }
+X fprintf(stderr, "done (%d)\n", tok->done);
+X}
+X
+Xstatic
+Xrunparser(fp, start)
+X FILE *fp;
+X{
+X node *n;
+X int ret;
+X ret = parsefile(fp, &gram, module_input, "Parsing", ".", &n);
+X fprintf(stderr, "done (%d)\n", ret);
+X#if 0
+X _profile = 0;
+X if (ret == E_DONE)
+X listtree(n);
+X#endif
+X}
+X
+Xstatic int
+Xaskgo(prompt)
+X char *prompt;
+X{
+X char buf[256];
+X fprintf(stderr, "%s: hit return when ready: ", prompt);
+X fgets(buf, sizeof buf, stdin);
+X}
+EOF
+fi
+if test -s 'src/strtol.c'
+then echo '*** I will not over-write existing file src/strtol.c'
+else
+echo 'x - src/strtol.c'
+sed 's/^X//' > 'src/strtol.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/*
+X** strtol
+X** This is a general purpose routine for converting
+X** an ascii string to an integer in an arbitrary base.
+X** Leading white space is ignored, if 'base' is zero
+X** it looks for a leading 0, 0x or 0X to tell which
+X** base. If these are absent it defaults to 10.
+X** Base must be between 0 and 36.
+X** If 'ptr' is non-NULL it will contain a pointer to
+X** the end of the scan.
+X** Errors due to bad pointers will probably result in
+X** exceptions - we don't check for them.
+X*/
+X
+X#include "ctype.h"
+X
+Xlong
+Xstrtol(str, ptr, base)
+Xregister char * str;
+Xchar ** ptr;
+Xint base;
+X{
+X register long result; /* return value of the function */
+X register int c; /* current input character */
+X int minus; /* true if a leading minus was found */
+X
+X result = 0;
+X minus = 0;
+X
+X/* catch silly bases */
+X if (base < 0 || base > 36)
+X {
+X if (ptr)
+X *ptr = str;
+X return result;
+X }
+X
+X/* skip leading white space */
+X while (*str && isspace(*str))
+X str++;
+X
+X/* check for optional leading minus sign */
+X if (*str == '-')
+X {
+X minus = 1;
+X str++;
+X }
+X
+X/* check for leading 0 or 0x for auto-base or base 16 */
+X switch (base)
+X {
+X case 0: /* look for leading 0, 0x or 0X */
+X if (*str == '0')
+X {
+X str++;
+X if (*str == 'x' || *str == 'X')
+X {
+X str++;
+X base = 16;
+X }
+X else
+X base = 8;
+X }
+X else
+X base = 10;
+X break;
+X
+X case 16: /* skip leading 0x or 0X */
+X if (*str == '0' && (*(str+1) == 'x' || *(str+1) == 'X'))
+X str += 2;
+X break;
+X }
+X
+X/* do the conversion */
+X while (c = *str)
+X {
+X if (isdigit(c) && c - '0' < base)
+X c -= '0';
+X else
+X {
+X if (isupper(c))
+X c = tolower(c);
+X if (c >= 'a' && c <= 'z')
+X c -= 'a' - 10;
+X else /* non-"digit" character */
+X break;
+X if (c >= base) /* non-"digit" character */
+X break;
+X }
+X result = result * base + c;
+X str++;
+X }
+X
+X/* set pointer to point to the last character scanned */
+X if (ptr)
+X *ptr = str;
+X return minus ? -result : result;
+X}
+EOF
+fi
+echo 'Part 17 out of 21 of pack.out complete.'
+exit 0

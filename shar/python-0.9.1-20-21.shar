@@ -1,0 +1,1941 @@
+: This is a shell archive.
+: Extract with 'sh this_file'.
+:
+: Extract part 01 first since it makes all directories
+echo 'Start of pack.out, part 20 out of 21:'
+if test -s 'demo/scripts/mkreal.py'
+then echo '*** I will not over-write existing file demo/scripts/mkreal.py'
+else
+echo 'x - demo/scripts/mkreal.py'
+sed 's/^X//' > 'demo/scripts/mkreal.py' << 'EOF'
+X#! /ufs/guido/bin/sgi/python
+X
+X# mkreal
+X#
+X# turn a symlink to a directory into a real directory
+X
+Ximport sys
+Ximport posix
+Ximport path
+Xfrom stat import *
+X
+Xcat = path.cat
+X
+Xerror = 'mkreal error'
+X
+XBUFSIZE = 32*1024
+X
+Xdef mkrealfile(name):
+X st = posix.stat(name) # Get the mode
+X mode = S_IMODE(st[ST_MODE])
+X linkto = posix.readlink(name) # Make sure again it's a symlink
+X f_in = open(name, 'r') # This ensures it's a file
+X posix.unlink(name)
+X f_out = open(name, 'w')
+X while 1:
+X buf = f_in.read(BUFSIZE)
+X if not buf: break
+X f_out.write(buf)
+X del f_out # Flush data to disk before changing mode
+X posix.chmod(name, mode)
+X
+Xdef mkrealdir(name):
+X st = posix.stat(name) # Get the mode
+X mode = S_IMODE(st[ST_MODE])
+X linkto = posix.readlink(name)
+X files = posix.listdir(name)
+X posix.unlink(name)
+X posix.mkdir(name, mode)
+X posix.chmod(name, mode)
+X linkto = cat('..', linkto)
+X #
+X for file in files:
+X if file not in ('.', '..'):
+X posix.symlink(cat(linkto, file), cat(name, file))
+X
+Xdef main():
+X sys.stdout = sys.stderr
+X progname = path.basename(sys.argv[0])
+X args = sys.argv[1:]
+X if not args:
+X print 'usage:', progname, 'path ...'
+X sys.exit(2)
+X status = 0
+X for name in args:
+X if not path.islink(name):
+X print progname+':', name+':', 'not a symlink'
+X status = 1
+X else:
+X if path.isdir(name):
+X mkrealdir(name)
+X else:
+X mkrealfile(name)
+X sys.exit(status)
+X
+Xmain()
+EOF
+chmod +x 'demo/scripts/mkreal.py'
+fi
+if test -s 'demo/scripts/ptags.py'
+then echo '*** I will not over-write existing file demo/scripts/ptags.py'
+else
+echo 'x - demo/scripts/ptags.py'
+sed 's/^X//' > 'demo/scripts/ptags.py' << 'EOF'
+X#! /ufs/guido/bin/sgi/python
+X
+X# ptags
+X#
+XCreate a tags file for Python programs
+X# Tagged are:
+X# - functions (even inside other defs or classes)
+X# - classes
+X# - filenames
+X# Warns about files it cannot open.
+X# No warnings about duplicate tags.
+X
+Ximport sys
+Ximport posix
+Ximport path
+Ximport string
+X
+Xkeywords = ['def', 'class'] # If you add keywords, update starts!!!
+Xstarts = 'dc' # Starting characters of keywords
+X
+Xwhitespace = string.whitespace
+Xidentchars = string.letters + string.digits + '_'
+X
+Xtags = [] # Modified!
+X
+Xdef main():
+X args = sys.argv[1:]
+X for file in args: treat_file(file)
+X if tags:
+X fp = open('tags', 'w')
+X tags.sort()
+X for s in tags: fp.write(s)
+X
+Xdef treat_file(file):
+X try:
+X fp = open(file, 'r')
+X except:
+X print 'Cannot open', file
+X return
+X base = path.basename(file)
+X if base[-3:] = '.py': base = base[:-3]
+X s = base + '\t' + file + '\t' + '1\n'
+X tags.append(s)
+X while 1:
+X line = fp.readline()
+X if not line: break
+X maketag(line, file)
+X
+Xdef maketag(line, file):
+X i = 0
+X while line[i:i+1] in whitespace: i = i+1
+X if line[i:i+1] not in starts: return
+X n = len(line)
+X j = i
+X while i < n and line[i] not in whitespace: i = i+1
+X if line[j:i] not in keywords: return
+X while i < n and line[i] in whitespace: i = i+1
+X j = i
+X while i < n and line[i] in identchars: i = i+1
+X name = line[j:i]
+X while i < n and line[i] in whitespace: i = i+1
+X if i < n and line[i] = '(': i = i+1
+X s = name + '\t' + file + '\t' + '/^' + line[:i] + '/\n'
+X tags.append(s)
+X
+Xmain()
+EOF
+chmod +x 'demo/scripts/ptags.py'
+fi
+if test -s 'demo/sgi/audio/play.py'
+then echo '*** I will not over-write existing file demo/sgi/audio/play.py'
+else
+echo 'x - demo/sgi/audio/play.py'
+sed 's/^X//' > 'demo/sgi/audio/play.py' << 'EOF'
+X#!/ufs/guido/bin/sgi/python
+X
+Ximport sys
+Ximport audio
+X
+Ximport string
+Ximport getopt
+Ximport auds
+X
+Xdebug = []
+X
+XDEF_RATE = 3
+X
+Xdef main():
+X #
+X gain = 100
+X rate = 0
+X starter = audio.write
+X stopper = 0
+X #
+X optlist, args = getopt.getopt(sys.argv[1:], 'adg:r:')
+X #
+X for optname, optarg in optlist:
+X if 0:
+X pass
+X elif optname = '-d':
+X debug.append(1)
+X elif optname = '-g':
+X gain = string.atoi(optarg)
+X if not (0 < gain < 256):
+X raise optarg.error, '-g gain out of range'
+X elif optname = '-r':
+X rate = string.atoi(optarg)
+X if not (1 <= rate <= 3):
+X raise optarg.error, '-r rate out of range'
+X elif optname = '-a':
+X starter = audio.start_playing
+X stopper = audio.wait_playing
+X #
+X audio.setoutgain(gain)
+X audio.setrate(rate)
+X #
+X if not args:
+X play(starter, rate, auds.loadfp(sys.stdin))
+X else:
+X real_stopper = 0
+X for file in args:
+X if real_stopper:
+X real_stopper()
+X play(starter, rate, auds.load(file))
+X real_stopper = stopper
+X
+Xdef play(starter, rate, data):
+X magic = data[:4]
+X if magic = '0008':
+X mrate = 3
+X elif magic = '0016':
+X mrate = 2
+X elif magic = '0032':
+X mrate = 1
+X else:
+X mrate = 0
+X if mrate:
+X data = data[4:]
+X else:
+X mrate = DEF_RATE
+X if not rate: rate = mrate
+X audio.setrate(rate)
+X starter(data)
+X
+Xtry:
+X main()
+Xfinally:
+X audio.setoutgain(0)
+X audio.done()
+EOF
+chmod +x 'demo/sgi/audio/play.py'
+fi
+if test -s 'demo/sgi/gl_panel/flying/data.py'
+then echo '*** I will not over-write existing file demo/sgi/gl_panel/flying/data.py'
+else
+echo 'x - demo/sgi/gl_panel/flying/data.py'
+sed 's/^X//' > 'demo/sgi/gl_panel/flying/data.py' << 'EOF'
+X
+X# two string constants
+XARROW = '-> '
+XNULL = ''
+XZERO = 0
+XONE = 1
+X
+X#
+X# the color light-blue
+X#
+Xlightblue = (43,169,255)
+X
+X
+X#
+X# a couple of rotation, translation, scaling vectors
+X#
+Xrts1 = [[3.0,3.1,2.0],[2.2, 1.2, 2.0], [0.8,0.8,0.8]]
+Xrts2 = [[3.2,2.6,1.8],[-1.9, 1.2, 1.6], [0.3,0.3,1.0]]
+Xrts3 = [[2.2,3.3,1.4], [-1.0, 1.2,-1.5], [0.6,0.6, 0.6]]
+Xrts4 = [[4.2,2.1,3.2],[1.2, 1.3, 1.0],[0.5,0.5,0.8]]
+Xrts5 = [[1.2,3.3,2.4], [-2.0, 1.4,-2.1], [0.8, 0.8, 0.2]]
+Xrts6 = [[3.2,3.6,2.4], [1.1, 1.6, 2.5], [0.8,0.3,0.1]]
+Xrts7 = [[2.3,2.7,3.3], [1.1, 2.3, 1.7], [0.6,0.6,0.5]]
+Xrts8 = [[4.2,2.1,3.2], [1.2, 1.3, 0.0], [0.5,0.5,0.5]]
+X#
+Xrts90 = [[4.2,2.1,3.2], [2.0, 0.0, 0.9], [0.3,0.3,1.0]]
+Xrts91 = [[4.2,2.1,3.2], [-2.0, 0.0, 0.9], [0.3,0.3,1.0]]
+Xrts92 = [[4.2,2.1,3.2], [0.0, 2.0, 0.9], [0.3,0.3,1.0]]
+Xrts93 = [[4.2,2.1,3.2], [0.0, -2.0, 0.9], [0.3,0.3,1.0]]
+Xrts10 = [[4.2,2.1,3.2], [0.0, 0.0, 0.0], [2.2,2.2,0.2]]
+X
+X#
+X# (composite) object definitions
+X#
+Xo1 = [['sphere',rts1, 1]]
+Xo2 = [['cylinder', rts2, 4]]
+Xo3 = [['cube', rts3, 3]]
+Xo4 = [['cone', rts4, 2], ['sphere', rts8, 9]]
+Xo5 = [['sphere', rts5, 5]]
+Xo6 = [['cube', rts6, 6]]
+Xo7 = [['pyramid', rts7, 8]]
+Xo8 = [['cube', rts10, 9], ['cylinder', rts90, 2], ['cylinder', rts91, 2], ['cylinder', rts92, 2], ['cylinder', rts93, 2]]
+EOF
+fi
+if test -s 'demo/sgi/gl_panel/nurbs/nurbsdata.py'
+then echo '*** I will not over-write existing file demo/sgi/gl_panel/nurbs/nurbsdata.py'
+else
+echo 'x - demo/sgi/gl_panel/nurbs/nurbsdata.py'
+sed 's/^X//' > 'demo/sgi/gl_panel/nurbs/nurbsdata.py' << 'EOF'
+X# Data used by fancy nurbs demo.
+X
+XTRUE = 1
+XFALSE = 0
+X
+XRED = 0xff
+XYELLOW = 0xffff
+X
+X#
+X# nurb order
+X#
+XORDER = 4
+X
+X#
+X# identity matrix
+X#
+Xidmat = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]
+X
+X#
+X# s and t knots
+X#
+Xsurfknots = [-1, -1, -1, -1, 1, 1, 1, 1]
+X
+X#
+X# list of list of control points
+X#
+Xdef make_ctlpoints():
+X c = []
+X #
+X ci = []
+X ci.append(-2.5, -3.7, 1.0)
+X ci.append(-1.5, -3.7, 3.0)
+X ci.append(1.5, -3.7, -2.5)
+X ci.append(2.5, -3.7, -0.75)
+X c.append(ci)
+X #
+X ci = []
+X ci.append(-2.5, -2.0, 3.0)
+X ci.append(-1.5, -2.0, 4.0)
+X ci.append(1.5, -2.0, -3.0)
+X ci.append(2.5, -2.0, 0.0)
+X c.append(ci)
+X #
+X ci = []
+X ci.append(-2.5, 2.0, 1.0)
+X ci.append(-1.5, 2.0, 0.0)
+X ci.append(1.5, 2.0, -1.0)
+X ci.append(2.5, 2.0, 2.0)
+X c.append(ci)
+X #
+X ci = []
+X ci.append(-2.5, 2.7, 1.25)
+X ci.append(-1.5, 2.7, 0.1)
+X ci.append(1.5, 2.7, -0.6)
+X ci.append(2.5, 2.7, 0.2)
+X c.append(ci)
+X #
+X return c
+X
+Xctlpoints = make_ctlpoints ()
+X
+X#
+X# trim knots
+X#
+Xtrimknots = [0., 0., 0., 1., 1., 2., 2., 3., 3., 4., 4., 4.]
+X
+Xdef make_trimpoints():
+X c = []
+X #
+X c.append(1.0, 0.0, 1.0)
+X c.append(1.0, 1.0, 1.0)
+X c.append(0.0, 2.0, 2.0)
+X c.append(-1.0, 1.0, 1.0)
+X c.append(-1.0, 0.0, 1.0)
+X c.append(-1.0, -1.0, 1.0)
+X c.append(0.0, -2.0, 2.0)
+X c.append(1.0, -1.0, 1.0)
+X c.append(1.0, 0.0, 1.0)
+X #
+X return c
+X
+Xtrimpoints = make_trimpoints()
+EOF
+fi
+if test -s 'demo/sgi/gl_panel/twoview/block.py'
+then echo '*** I will not over-write existing file demo/sgi/gl_panel/twoview/block.py'
+else
+echo 'x - demo/sgi/gl_panel/twoview/block.py'
+sed 's/^X//' > 'demo/sgi/gl_panel/twoview/block.py' << 'EOF'
+X# module 'block' imported by twoview demo.
+X
+Xfrom gl import n3f, bgnpolygon, varray, endpolygon, lmbind
+Xfrom GL import MATERIAL
+X
+X# Draw a single 2x2x2 block with its center at (0, 0, 0)
+X# Arguments are the material indices (0 = don't call lmbind)
+X#
+Xdef block(m_front, m_back, m_left, m_right, m_top, m_bottom):
+X #
+X # Distances defining the sides
+X #
+X x_left = -1.0
+X x_right = 1.0
+X y_top = 1.0
+X y_bottom = -1.0
+X z_front = 1.0
+X z_back = -1.0
+X #
+X # Top surface points: A, B, C, D
+X #
+X A = x_right, y_top, z_front
+X B = x_right, y_top, z_back
+X C = x_left, y_top, z_back
+X D = x_left, y_top, z_front
+X #
+X # Bottom surface points: E, F, G, H
+X #
+X E = x_right, y_bottom, z_front
+X F = x_right, y_bottom, z_back
+X G = x_left, y_bottom, z_back
+X H = x_left, y_bottom, z_front
+X #
+X # Draw front face
+X #
+X if m_front: lmbind(MATERIAL, m_front)
+X n3f(0.0, 0.0, 1.0)
+X face(H, E, A, D)
+X #
+X # Draw back face
+X #
+X if m_back: lmbind(MATERIAL, m_back)
+X n3f(0.0, 0.0, -1.0)
+X face(G, F, B, C)
+X #
+X # Draw left face
+X #
+X if m_left: lmbind(MATERIAL, m_left)
+X n3f(-1.0, 0.0, 0.0)
+X face(G, H, D, C)
+X #
+X # Draw right face
+X #
+X if m_right: lmbind(MATERIAL, m_right)
+X n3f(1.0, 0.0, 0.0)
+X face(F, E, A, B)
+X #
+X # Draw top face
+X #
+X if m_top: lmbind(MATERIAL, m_top)
+X n3f(0.0, 1.0, 0.0)
+X face(A, B, C, D)
+X #
+X # Draw bottom face
+X #
+X if m_bottom: lmbind(MATERIAL, m_bottom)
+X n3f(0.0, -1.0, 0.0)
+X face(E, F, G, H)
+X
+Xdef face(points):
+X bgnpolygon()
+X varray(points)
+X endpolygon()
+EOF
+fi
+if test -s 'demo/sgi/gl_panel/twoview/camera.s'
+then echo '*** I will not over-write existing file demo/sgi/gl_panel/twoview/camera.s'
+else
+echo 'x - demo/sgi/gl_panel/twoview/camera.s'
+sed 's/^X//' > 'demo/sgi/gl_panel/twoview/camera.s' << 'EOF'
+X;;; This file was automatically generated by the panel editor.
+X;;; If you read it into gnu emacs, it will automagically format itself.
+X
+X(panel (prop help creator:user-panel-help)
+X(prop user-panel #t)
+X(label "Camera Control")
+X(x 1010)
+X(y 589)
+X(al (pnl_wide_button (name "quitbutton")
+X(prop help creator:user-act-help)
+X(label "quit")
+X(x 3.5)
+X(y 1)
+X(w 0.94)
+X(downfunc move-then-resize)
+X)
+X(pnl_filled_hslider (name "farclip")
+X(prop help creator:user-act-help)
+X(label "far clipping plane")
+X(x 1.25)
+X(y 3.5)
+X(w 3.3)
+X(h 0.4)
+X(val 0.752)
+X(downfunc move-then-resize)
+X)
+X(pnl_filled_hslider (name "nearclip")
+X(prop help creator:user-act-help)
+X(label "near clipping plane")
+X(x 1.25)
+X(y 4.5)
+X(w 3.3)
+X(h 0.4)
+X(val 0.17)
+X(downfunc move-then-resize)
+X)
+X(pnl_filled_vslider (name "zoom")
+X(prop help creator:user-act-help)
+X(label "zoom")
+X(x 0.2)
+X(y 1.25)
+X(w 0.4)
+X(h 3.9)
+X(val 0.344)
+X(downfunc move-then-resize)
+X)
+X)
+X)
+X;;; Local Variables:
+X;;; mode: scheme
+X;;; eval: (save-excursion (goto-char (point-min)) (kill-line 3))
+X;;; eval: (save-excursion (goto-char (point-min)) (replace-regexp "[ \n]*)" ")"))
+X;;; eval: (indent-region (point-min) (point-max) nil)
+X;;; eval: (progn (kill-line -3) (delete-backward-char 1) (save-buffer))
+X;;; End:
+EOF
+fi
+if test -s 'lib/HVSplit.py'
+then echo '*** I will not over-write existing file lib/HVSplit.py'
+else
+echo 'x - lib/HVSplit.py'
+sed 's/^X//' > 'lib/HVSplit.py' << 'EOF'
+X# HVSplit contains generic code for HSplit and VSplit.
+X# HSplit and VSplit are specializations to either dimension.
+X
+X# XXX This does not yet stretch/shrink children if there is too much
+X# XXX or too little space in the split dimension.
+X# XXX (NB There is no interface to ask children for stretch preferences.)
+X
+Xfrom Split import Split
+X
+Xclass HVSplit() = Split():
+X #
+X def create(self, (parent, hv)):
+X # hv is 0 or 1 for HSplit or VSplit
+X self = Split.create(self, parent)
+X self.hv = hv
+X return self
+X #
+X def minsize(self, m):
+X hv, vh = self.hv, 1 - self.hv
+X size = [0, 0]
+X for c in self.children:
+X csize = c.minsize(m)
+X if csize[vh] > size[vh]: size[vh] = csize[vh]
+X size[hv] = size[hv] + csize[hv]
+X return size[0], size[1]
+X #
+X def getbounds(self):
+X return self.bounds
+X #
+X def setbounds(self, bounds):
+X self.bounds = bounds
+X hv, vh = self.hv, 1 - self.hv
+X mf = self.parent.beginmeasuring
+X size = self.minsize(mf())
+X # XXX not yet used! Later for stretching
+X maxsize_hv = bounds[1][hv] - bounds[0][hv]
+X origin = [self.bounds[0][0], self.bounds[0][1]]
+X for c in self.children:
+X size = c.minsize(mf())
+X corner = [0, 0]
+X corner[vh] = bounds[1][vh]
+X corner[hv] = origin[hv] + size[hv]
+X c.setbounds((origin[0], origin[1]), \
+X (corner[0], corner[1]))
+X origin[hv] = corner[hv]
+X # XXX stretch
+X # XXX too-small
+X #
+X
+Xclass HSplit() = HVSplit():
+X def create(self, parent):
+X return HVSplit.create(self, (parent, 0))
+X
+Xclass VSplit() = HVSplit():
+X def create(self, parent):
+X return HVSplit.create(self, (parent, 1))
+EOF
+fi
+if test -s 'lib/dump.py'
+then echo '*** I will not over-write existing file lib/dump.py'
+else
+echo 'x - lib/dump.py'
+sed 's/^X//' > 'lib/dump.py' << 'EOF'
+X# Module 'dump'
+X#
+X# Print python code that reconstructs a variable.
+X# This only works in certain cases.
+X#
+X# It works fine for:
+X# - ints and floats (except NaNs and other weird things)
+X# - strings
+X# - compounds and lists, provided it works for all their elements
+X# - imported modules, provided their name is the module name
+X#
+X# It works for top-level dictionaries but not for dictionaries
+X# contained in other objects (could be made to work with some hassle
+X# though).
+X#
+X# It does not work for functions (all sorts), classes, class objects,
+X# windows, files etc.
+X#
+X# Finally, objects referenced by more than one name or contained in more
+X# than one other object lose their sharing property (this is bad for
+X# strings used as exception identifiers, for instance).
+X
+X# Dump a whole symbol table
+X#
+Xdef dumpsymtab(dict):
+X for key in dict.keys():
+X dumpvar(key, dict[key])
+X
+X# Dump a single variable
+X#
+Xdef dumpvar(name, x):
+X import sys
+X t = type(x)
+X if t = type({}):
+X print name, '= {}'
+X for key in x.keys():
+X item = x[key]
+X if not printable(item):
+X print '#',
+X print name, '[', `key`, '] =', `item`
+X elif t in (type(''), type(0), type(0.0), type([]), type(())):
+X if not printable(x):
+X print '#',
+X print name, '=', `x`
+X elif t = type(sys):
+X print 'import', name, '#', x
+X else:
+X print '#', name, '=', x
+X
+X# check if a value is printable in a way that can be read back with input()
+X#
+Xdef printable(x):
+X t = type(x)
+X if t in (type(''), type(0), type(0.0)):
+X return 1
+X if t in (type([]), type(())):
+X for item in x:
+X if not printable(item):
+X return 0
+X return 1
+X if x = {}:
+X return 1
+X return 0
+EOF
+fi
+if test -s 'lib/localtime.py'
+then echo '*** I will not over-write existing file lib/localtime.py'
+else
+echo 'x - lib/localtime.py'
+sed 's/^X//' > 'lib/localtime.py' << 'EOF'
+X# module localtime -- Time conversions
+X
+Ximport posix
+X
+Xepoch = 1970 # 1 jan 00:00:00, UCT
+Xday0 = 4 # day 0 was a thursday
+X
+Xday_names = ('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat')
+X
+Xmonth_names = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun')
+Xmonth_names = month_names + ('Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
+X
+Xmonth_sizes = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+X
+Xdef isleap(year):
+X return year % 4 = 0 and (year % 100 <> 0 or year % 400 = 0)
+X
+Xdef gmtime(secs): # decode time into UCT
+X mins, secs = divmod(secs, 60)
+X hours, mins = divmod(mins, 60)
+X days, hours = divmod(hours, 24)
+X wday = (day0 + days) % 7
+X year = epoch
+X lp = isleap(year)
+X dpy = 365 + lp
+X while days >= dpy:
+X days = days - dpy
+X year = year + 1
+X lp = isleap(year)
+X dpy = 365 + lp
+X yday = days
+X month = 0
+X dpm = month_sizes[month] + (lp and month = 1)
+X while days >= dpm:
+X days = days - dpm
+X month = month + 1
+X dpm = month_sizes[month] + (lp and month = 1)
+X return (year, month, days+1, hours, mins, secs, yday, wday)
+X
+Xdef dd(x):
+X s = `x`
+X while len(s) < 2: s = '0' + s
+X return s
+X
+Xdef zd(x):
+X s = `x`
+X while len(s) < 2: s = ' ' + s
+X return s
+X
+Xdef format(year, month, days, hours, mins, secs, yday, wday):
+X s = day_names[wday] + ' ' + zd(days) + ' ' + month_names[month] + ' '
+X s = s + dd(hours) + ':' + dd(mins) + ':' + dd(secs)
+X return s
+EOF
+fi
+if test -s 'lib/poly.py'
+then echo '*** I will not over-write existing file lib/poly.py'
+else
+echo 'x - lib/poly.py'
+sed 's/^X//' > 'lib/poly.py' << 'EOF'
+X# module 'poly' -- Polynomials
+X
+X# A polynomial is represented by a list of coefficients, e.g.,
+X# [1, 10, 5] represents 1*x**0 + 10*x**1 + 5*x**2 (or 1 + 10x + 5x**2).
+X# There is no way to suppress internal zeros; trailing zeros are
+X# taken out by normalize().
+X
+Xdef normalize(p): # Strip unnecessary zero coefficients
+X n = len(p)
+X while p:
+X if p[n-1]: return p[:n]
+X n = n-1
+X return []
+X
+Xdef plus(a, b):
+X if len(a) < len(b): a, b = b, a # make sure a is the longest
+X res = a[:] # make a copy
+X for i in range(len(b)):
+X res[i] = res[i] + b[i]
+X return normalize(res)
+X
+Xdef minus(a, b):
+X if len(a) < len(b): a, b = b, a # make sure a is the longest
+X res = a[:] # make a copy
+X for i in range(len(b)):
+X res[i] = res[i] - b[i]
+X return normalize(res)
+X
+Xdef one(power, coeff): # Representation of coeff * x**power
+X res = []
+X for i in range(power): res.append(0)
+X return res + [coeff]
+X
+Xdef times(a, b):
+X res = []
+X for i in range(len(a)):
+X for j in range(len(b)):
+X res = plus(res, one(i+j, a[i]*b[j]))
+X return res
+X
+Xdef power(a, n): # Raise polynomial a to the positive integral power n
+X if n = 0: return [1]
+X if n = 1: return a
+X if n/2*2 = n:
+X b = power(a, n/2)
+X return times(b, b)
+X return times(power(a, n-1), a)
+X
+Xdef der(a): # First derivative
+X res = a[1:]
+X for i in range(len(res)):
+X res[i] = res[i] * (i+1)
+X return res
+X
+X# Computing a primitive function would require rational arithmetic...
+EOF
+fi
+if test -s 'lib/shutil.py'
+then echo '*** I will not over-write existing file lib/shutil.py'
+else
+echo 'x - lib/shutil.py'
+sed 's/^X//' > 'lib/shutil.py' << 'EOF'
+X# Module 'shutil' -- utility functions usable in a shell-like program
+X
+Ximport posix
+Ximport path
+X
+XMODEBITS = 010000 # Lower 12 mode bits
+X# Change this to 01000 (9 mode bits) to avoid copying setuid etc.
+X
+X# Copy data from src to dst
+X#
+Xdef copyfile(src, dst):
+X fsrc = open(src, 'r')
+X fdst = open(dst, 'w')
+X while 1:
+X buf = fsrc.read(16*1024)
+X if not buf: break
+X fdst.write(buf)
+X
+X# Copy mode bits from src to dst
+X#
+Xdef copymode(src, dst):
+X st = posix.stat(src)
+X mode = divmod(st[0], MODEBITS)[1]
+X posix.chmod(dst, mode)
+X
+X# Copy all stat info (mode bits, atime and mtime) from src to dst
+X#
+Xdef copystat(src, dst):
+X st = posix.stat(src)
+X mode = divmod(st[0], MODEBITS)[1]
+X posix.chmod(dst, mode)
+X posix.utimes(dst, st[7:9])
+X
+X# Copy data and mode bits ("cp src dst")
+X#
+Xdef copy(src, dst):
+X copyfile(src, dst)
+X copymode(src, dst)
+X
+X# Copy data and all stat info ("cp -p src dst")
+X#
+Xdef copy2(src, dst):
+X copyfile(src, dst)
+X copystat(src, dst)
+X
+X# Recursively copy a directory tree.
+X# The destination must not already exist.
+X#
+Xdef copytree(src, dst):
+X names = posix.listdir(src)
+X posix.mkdir(dst, 0777)
+X dot_dotdot = '.', '..'
+X for name in names:
+X if name not in dot_dotdot:
+X srcname = path.cat(src, name)
+X dstname = path.cat(dst, name)
+X #print 'Copying', srcname, 'to', dstname
+X try:
+X #if path.islink(srcname):
+X # linkto = posix.readlink(srcname)
+X # posix.symlink(linkto, dstname)
+X #elif path.isdir(srcname):
+X if path.isdir(srcname):
+X copytree(srcname, dstname)
+X else:
+X copy2(srcname, dstname)
+X # XXX What about devices, sockets etc.?
+X except posix.error, why:
+X print 'Could not copy', srcname, 'to', dstname,
+X print '(', why[1], ')'
+EOF
+fi
+if test -s 'lib/stdwinevents.py'
+then echo '*** I will not over-write existing file lib/stdwinevents.py'
+else
+echo 'x - lib/stdwinevents.py'
+sed 's/^X//' > 'lib/stdwinevents.py' << 'EOF'
+X# Module 'stdwinevents' -- Constants for stdwin event types
+X#
+X# Suggested usage:
+X# from stdwinevents import *
+X
+X# The function stdwin.getevent() returns a tuple containing:
+X# (type, window, detail)
+X# where detail may be <no value> or a value depending on type, see below:
+X
+X# Values for type:
+X
+XWE_NULL = 0 # not reported -- means 'no event' internally
+XWE_ACTIVATE = 1 # detail is <no object>
+XWE_CHAR = 2 # detail is the character
+XWE_COMMAND = 3 # detail is one of the WC_* constants below
+XWE_MOUSE_DOWN = 4 # detail is ((h, v), clicks, button, mask)
+XWE_MOUSE_MOVE = 5 # ditto
+XWE_MOUSE_UP = 6 # ditto
+XWE_MENU = 7 # detail is (menu, item)
+XWE_SIZE = 8 # detail is (width, height) [???]
+XWE_MOVE = 9 # not reported -- reserved for future use
+XWE_DRAW = 10 # detail is ((left, top), (right, bottom))
+XWE_TIMER = 11 # detail is <no object>
+XWE_DEACTIVATE = 12 # detail is <no object>
+XWE_EXTERN = 13 # detail is <no object>
+XWE_KEY = 14 # detail is ???
+XWE_LOST_SEL = 15 # detail is selection number
+XWE_CLOSE = 16 # detail is <no object>
+X
+X# Values for detail when type is WE_COMMAND:
+X
+XWC_CLOSE = 1 # user hit close box
+XWC_LEFT = 2 # left arrow key
+XWC_RIGHT = 3 # right arrow key
+XWC_UP = 4 # up arrow key
+XWC_DOWN = 5 # down arrow key
+XWC_CANCEL = 6 # not reported -- turned into KeyboardInterrupt
+XWC_BACKSPACE = 7 # backspace key
+XWC_TAB = 8 # tab key
+XWC_RETURN = 9 # return or enter key
+X
+X# Selection numbers
+X
+XWS_CLIPBOARD = 0
+XWS_PRIMARY = 1
+XWS_SECONDARY = 2
+EOF
+fi
+if test -s 'lib/sunaudio.py'
+then echo '*** I will not over-write existing file lib/sunaudio.py'
+else
+echo 'x - lib/sunaudio.py'
+sed 's/^X//' > 'lib/sunaudio.py' << 'EOF'
+X# Module 'sunaudio' -- interpret sun audio headers
+X
+Ximport audio
+X
+XMAGIC = '.snd'
+X
+Xerror = 'sunaudio sound header conversion error'
+X
+X
+X# convert a 4-char value to integer
+X
+Xdef c2i(data):
+X if type(data) <> type('') or len(data) <> 4:
+X raise error, 'c2i: bad arg (not string[4])'
+X bytes = audio.chr2num(data)
+X for i in (1, 2, 3):
+X if bytes[i] < 0:
+X bytes[i] = bytes[i] + 256
+X return ((bytes[0]*256 + bytes[1])*256 + bytes[2])*256 + bytes[3]
+X
+X
+X# read a sound header from an open file
+X
+Xdef gethdr(fp):
+X if fp.read(4) <> MAGIC:
+X raise error, 'gethdr: bad magic word'
+X hdr_size = c2i(fp.read(4))
+X data_size = c2i(fp.read(4))
+X encoding = c2i(fp.read(4))
+X sample_rate = c2i(fp.read(4))
+X channels = c2i(fp.read(4))
+X excess = hdr_size - 24
+X if excess < 0:
+X raise error, 'gethdr: bad hdr_size'
+X if excess > 0:
+X info = fp.read(excess)
+X else:
+X info = ''
+X return (data_size, encoding, sample_rate, channels, info)
+X
+X
+X# read and print the sound header of a named file
+X
+Xdef printhdr(file):
+X hdr = gethdr(open(file, 'r'))
+X data_size, encoding, sample_rate, channels, info = hdr
+X while info[-1:] = '\0':
+X info = info[:-1]
+X print 'File name: ', file
+X print 'Data size: ', data_size
+X print 'Encoding: ', encoding
+X print 'Sample rate:', sample_rate
+X print 'Channels: ', channels
+X print 'Info: ', `info`
+EOF
+fi
+if test -s 'lib/whrandom.py'
+then echo '*** I will not over-write existing file lib/whrandom.py'
+else
+echo 'x - lib/whrandom.py'
+sed 's/^X//' > 'lib/whrandom.py' << 'EOF'
+X# WICHMANN-HILL RANDOM NUMBER GENERATOR
+X#
+X# Wichmann, B. A. & Hill, I. D. (1982)
+X# Algorithm AS 183:
+X# An efficient and portable pseudo-random number generator
+X# Applied Statistics 31 (1982) 188-190
+X#
+X# see also:
+X# Correction to Algorithm AS 183
+X# Applied Statistics 33 (1984) 123
+X#
+X# McLeod, A. I. (1985)
+X# A remark on Algorithm AS 183
+X# Applied Statistics 34 (1985),198-200
+X#
+X#
+X# USE:
+X# whrandom.random() yields double precision random numbers
+X# uniformly distributed between 0 and 1.
+X#
+X# whrandom.seed() must be called before whrandom.random()
+X# to seed the generator
+X
+X
+X# Translated by Guido van Rossum from C source provided by
+X# Adrian Baddeley.
+X
+X
+X# The seed
+X#
+X_seed = [0, 0, 0]
+X
+X
+X# Set the seed
+X#
+Xdef seed(x, y, z):
+X _seed[:] = [x, y, z]
+X
+X
+X# Return the next random number in the range [0.0 .. 1.0)
+X#
+Xdef random():
+X from math import floor # floor() function
+X #
+X [x, y, z] = _seed
+X x = 171 * (x % 177) - 2 * (x/177)
+X y = 172 * (y % 176) - 35 * (y/176)
+X z = 170 * (z % 178) - 63 * (z/178)
+X #
+X if x < 0: x = x + 30269
+X if y < 0: y = y + 30307
+X if z < 0: z = z + 30323
+X #
+X _seed[:] = [x, y, z]
+X #
+X term = float(x)/30269.0 + float(y)/30307.0 + float(z)/30323.0
+X rand = term - floor(term)
+X #
+X if rand >= 1.0: rand = 0.0 # floor() inaccuracy?
+X #
+X return rand
+X
+X
+X# Initialize from the current time
+X#
+Xdef init():
+X import time
+X t = time.time()
+X seed(t%256, t/256%256, t/65536%256)
+X
+X
+X# Make sure the generator is preset to a nonzero value
+X#
+Xinit()
+EOF
+fi
+if test -s 'src/README'
+then echo '*** I will not over-write existing file src/README'
+else
+echo 'x - src/README'
+sed 's/^X//' > 'src/README' << 'EOF'
+XThis directory contains the source for the Python interpreter.
+X
+XTo build the interpreter, edit the Makefile, follow the instructions
+Xthere, and type "make python".
+X
+XTo use the interpreter, you must set the environment variable PYTHONPATH
+Xto point to the directory containing the standard modules. These are
+Xdistributed as a sister directory called 'lib' of this source directory.
+XTry importing the module 'testall' to see if everything works.
+X
+XGood Luck!
+EOF
+fi
+if test -s 'src/asa.h'
+then echo '*** I will not over-write existing file src/asa.h'
+else
+echo 'x - src/asa.h'
+sed 's/^X//' > 'src/asa.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Interface for asynchronous audio module */
+X
+Xextern int asa_init(void);
+Xextern void asa_done(void);
+Xextern void asa_start_write(char *, int);
+Xextern void asa_start_read(char *, int);
+Xextern int asa_poll(void);
+Xextern int asa_wait(void);
+Xextern int asa_cancel(void);
+EOF
+fi
+if test -s 'src/ceval.h'
+then echo '*** I will not over-write existing file src/ceval.h'
+else
+echo 'x - src/ceval.h'
+sed 's/^X//' > 'src/ceval.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Interface to execute compiled code */
+X/* This header depends on "compile.h" */
+X
+Xobject *eval_code PROTO((codeobject *, object *, object *, object *));
+X
+Xobject *getglobals PROTO((void));
+Xobject *getlocals PROTO((void));
+X
+Xvoid printtraceback PROTO((FILE *));
+EOF
+fi
+if test -s 'src/errcode.h'
+then echo '*** I will not over-write existing file src/errcode.h'
+else
+echo 'x - src/errcode.h'
+sed 's/^X//' > 'src/errcode.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Error codes passed around between file input, tokenizer, parser and
+X interpreter. This was necessary so we can turn them into Python
+X exceptions at a higher level. */
+X
+X#define E_OK 10 /* No error */
+X#define E_EOF 11 /* (Unexpected) EOF read */
+X#define E_INTR 12 /* Interrupted */
+X#define E_TOKEN 13 /* Bad token */
+X#define E_SYNTAX 14 /* Syntax error */
+X#define E_NOMEM 15 /* Ran out of memory */
+X#define E_DONE 16 /* Parsing complete */
+X#define E_ERROR 17 /* Execution error */
+EOF
+fi
+if test -s 'src/fileobject.h'
+then echo '*** I will not over-write existing file src/fileobject.h'
+else
+echo 'x - src/fileobject.h'
+sed 's/^X//' > 'src/fileobject.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* File object interface */
+X
+Xextern typeobject Filetype;
+X
+X#define is_fileobject(op) ((op)->ob_type == &Filetype)
+X
+Xextern object *newfileobject PROTO((char *, char *));
+Xextern object *newopenfileobject PROTO((FILE *, char *, char *));
+Xextern FILE *getfilefile PROTO((object *));
+EOF
+fi
+if test -s 'src/floatobject.h'
+then echo '*** I will not over-write existing file src/floatobject.h'
+else
+echo 'x - src/floatobject.h'
+sed 's/^X//' > 'src/floatobject.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Float object interface */
+X
+X/*
+Xfloatobject represents a (double precision) floating point number.
+X*/
+X
+Xtypedef struct {
+X OB_HEAD
+X double ob_fval;
+X} floatobject;
+X
+Xextern typeobject Floattype;
+X
+X#define is_floatobject(op) ((op)->ob_type == &Floattype)
+X
+Xextern object *newfloatobject PROTO((double));
+Xextern double getfloatvalue PROTO((object *));
+X
+X/* Macro, trading safety for speed */
+X#define GETFLOATVALUE(op) ((op)->ob_fval)
+EOF
+fi
+if test -s 'src/fmod.c'
+then echo '*** I will not over-write existing file src/fmod.c'
+else
+echo 'x - src/fmod.c'
+sed 's/^X//' > 'src/fmod.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Portable fmod(x, y) implementation for systems that don't have it */
+X
+X#include <math.h>
+X#include <errno.h>
+X
+Xextern int errno;
+X
+Xdouble
+Xfmod(x, y)
+X double x, y;
+X{
+X double i, f;
+X
+X if (y == 0.0) {
+X errno = EDOM;
+X return 0.0;
+X }
+X
+X /* return f such that x = i*y + f for some integer i
+X such that |f| < |y| and f has the same sign as x */
+X
+X i = floor(x/y);
+X f = x - i*y;
+X if ((x < 0.0) != (y < 0.0))
+X f = f-y;
+X return f;
+X}
+EOF
+fi
+if test -s 'src/funcobject.h'
+then echo '*** I will not over-write existing file src/funcobject.h'
+else
+echo 'x - src/funcobject.h'
+sed 's/^X//' > 'src/funcobject.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Function object interface */
+X
+Xextern typeobject Functype;
+X
+X#define is_funcobject(op) ((op)->ob_type == &Functype)
+X
+Xextern object *newfuncobject PROTO((object *, object *));
+Xextern object *getfunccode PROTO((object *));
+Xextern object *getfuncglobals PROTO((object *));
+EOF
+fi
+if test -s 'src/import.h'
+then echo '*** I will not over-write existing file src/import.h'
+else
+echo 'x - src/import.h'
+sed 's/^X//' > 'src/import.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Module definition and import interface */
+X
+Xobject *get_modules PROTO((void));
+Xobject *add_module PROTO((char *name));
+Xobject *import_module PROTO((char *name));
+Xobject *reload_module PROTO((object *m));
+Xvoid doneimport PROTO((void));
+EOF
+fi
+if test -s 'src/metagrammar.h'
+then echo '*** I will not over-write existing file src/metagrammar.h'
+else
+echo 'x - src/metagrammar.h'
+sed 's/^X//' > 'src/metagrammar.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X#define MSTART 256
+X#define RULE 257
+X#define RHS 258
+X#define ALT 259
+X#define ITEM 260
+X#define ATOM 261
+EOF
+fi
+if test -s 'src/methodobject.h'
+then echo '*** I will not over-write existing file src/methodobject.h'
+else
+echo 'x - src/methodobject.h'
+sed 's/^X//' > 'src/methodobject.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Method object interface */
+X
+Xextern typeobject Methodtype;
+X
+X#define is_methodobject(op) ((op)->ob_type == &Methodtype)
+X
+Xtypedef object *(*method) FPROTO((object *, object *));
+X
+Xextern object *newmethodobject PROTO((char *, method, object *));
+Xextern method getmethod PROTO((object *));
+Xextern object *getself PROTO((object *));
+X
+Xstruct methodlist {
+X char *ml_name;
+X method ml_meth;
+X};
+X
+Xextern object *findmethod PROTO((struct methodlist *, object *, char *));
+EOF
+fi
+if test -s 'src/modsupport.h'
+then echo '*** I will not over-write existing file src/modsupport.h'
+else
+echo 'x - src/modsupport.h'
+sed 's/^X//' > 'src/modsupport.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Module support interface */
+X
+Xextern object *initmodule PROTO((char *, struct methodlist *));
+EOF
+fi
+if test -s 'src/moduleobject.h'
+then echo '*** I will not over-write existing file src/moduleobject.h'
+else
+echo 'x - src/moduleobject.h'
+sed 's/^X//' > 'src/moduleobject.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Module object interface */
+X
+Xextern typeobject Moduletype;
+X
+X#define is_moduleobject(op) ((op)->ob_type == &Moduletype)
+X
+Xextern object *newmoduleobject PROTO((char *));
+Xextern object *getmoduledict PROTO((object *));
+Xextern char *getmodulename PROTO((object *));
+EOF
+fi
+if test -s 'src/parsetok.h'
+then echo '*** I will not over-write existing file src/parsetok.h'
+else
+echo 'x - src/parsetok.h'
+sed 's/^X//' > 'src/parsetok.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Parser-tokenizer link interface */
+X
+Xextern int parsestring PROTO((char *, grammar *, int start, node **n_ret));
+Xextern int parsefile PROTO((FILE *, char *, grammar *, int start,
+X char *ps1, char *ps2, node **n_ret));
+EOF
+fi
+if test -s 'src/pgen.h'
+then echo '*** I will not over-write existing file src/pgen.h'
+else
+echo 'x - src/pgen.h'
+sed 's/^X//' > 'src/pgen.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Parser generator interface */
+X
+Xextern grammar gram;
+X
+Xextern grammar *meta_grammar PROTO((void));
+Xextern grammar *pgen PROTO((struct _node *));
+EOF
+fi
+if test -s 'src/regmagic.h'
+then echo '*** I will not over-write existing file src/regmagic.h'
+else
+echo 'x - src/regmagic.h'
+sed 's/^X//' > 'src/regmagic.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/*
+X * The first byte of the regexp internal "program" is actually this magic
+X * number; the start node begins in the second byte.
+X */
+X#define MAGIC 0234
+EOF
+fi
+if test -s 'src/sc_errors.h'
+then echo '*** I will not over-write existing file src/sc_errors.h'
+else
+echo 'x - src/sc_errors.h'
+sed 's/^X//' > 'src/sc_errors.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X
+X#define NoBufSize 1
+X#define TwoBufSize 2
+X#define StackOverflow 3
+X#define StackUnderflow 4
+X#define TypeFailure 5
+X#define RangeError 6
+X#define SizeError 7
+X#define BufferOverflow 8
+X#define NoEndLoop 9
+X#define FlagError 10
+X#define ElementIsNull 11
+X#define TransError 12
+X
+Xextern object *err_scerr PROTO((int sc_errno));
+Xextern err_scerrset PROTO((int sc_errno, object *value, char *instr));
+Xextern object *StubcodeError;
+EOF
+fi
+if test -s 'src/stdwinobject.h'
+then echo '*** I will not over-write existing file src/stdwinobject.h'
+else
+echo 'x - src/stdwinobject.h'
+sed 's/^X//' > 'src/stdwinobject.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Stdwin object interface */
+X
+Xextern typeobject Stdwintype;
+X
+X#define is_stdwinobject(op) ((op)->ob_type == &Stdwintype)
+X
+Xextern object *newstdwinobject PROTO((void));
+EOF
+fi
+if test -s 'src/strdup.c'
+then echo '*** I will not over-write existing file src/strdup.c'
+else
+echo 'x - src/strdup.c'
+sed 's/^X//' > 'src/strdup.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X#include "PROTO.h"
+X#include "malloc.h"
+X#include "string.h"
+X
+Xchar *
+Xstrdup(str)
+X const char *str;
+X{
+X if (str != NULL) {
+X register char *copy = NEW(char, strlen(str) + 1);
+X if (copy != NULL)
+X return strcpy(copy, str);
+X }
+X return NULL;
+X}
+EOF
+fi
+if test -s 'src/strerror.c'
+then echo '*** I will not over-write existing file src/strerror.c'
+else
+echo 'x - src/strerror.c'
+sed 's/^X//' > 'src/strerror.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* PD implementation of strerror() for systems that don't have it.
+X Author: Guido van Rossum, CWI Amsterdam, Oct. 1990, <gu...@cwi.nl>. */
+X
+X#include <stdio.h>
+X
+Xextern int sys_nerr;
+Xextern char *sys_errlist[];
+X
+Xchar *
+Xstrerror(err)
+X int err;
+X{
+X static char buf[20];
+X if (err >= 0 && err < sys_nerr)
+X return sys_errlist[err];
+X sprintf(buf, "Unknown errno %d", err);
+X return buf;
+X}
+X
+X#ifdef THINK_C
+Xint sys_nerr = 0;
+Xchar *sys_errlist[1] = 0;
+X#endif
+EOF
+fi
+if test -s 'src/sysmodule.h'
+then echo '*** I will not over-write existing file src/sysmodule.h'
+else
+echo 'x - src/sysmodule.h'
+sed 's/^X//' > 'src/sysmodule.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* System module interface */
+X
+Xobject *sysget PROTO((char *));
+Xint sysset PROTO((char *, object *));
+XFILE *sysgetfile PROTO((char *, FILE *));
+Xvoid initsys PROTO((void));
+EOF
+fi
+if test -s 'src/traceback.h'
+then echo '*** I will not over-write existing file src/traceback.h'
+else
+echo 'x - src/traceback.h'
+sed 's/^X//' > 'src/traceback.h' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Traceback interface */
+X
+Xint tb_here PROTO((struct _frame *, int, int));
+Xobject *tb_fetch PROTO((void));
+Xint tb_store PROTO((object *));
+Xint tb_print PROTO((object *, FILE *));
+EOF
+fi
+echo 'Part 20 out of 21 of pack.out complete.'
+exit 0

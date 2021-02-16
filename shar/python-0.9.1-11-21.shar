@@ -1,0 +1,2618 @@
+: This is a shell archive.
+: Extract with 'sh this_file'.
+:
+: Extract part 01 first since it makes all directories
+echo 'Start of pack.out, part 11 out of 21:'
+if test -s 'lib/Buttons.py'
+then echo '*** I will not over-write existing file lib/Buttons.py'
+else
+echo 'x - lib/Buttons.py'
+sed 's/^X//' > 'lib/Buttons.py' << 'EOF'
+X# Module 'Buttons'
+X
+X
+X# Import module 'rect' renamed as '_rect' to avoid exporting it on
+X# 'from Buttons import *'
+X#
+Ximport rect
+X_rect = rect
+Xdel rect
+X
+X
+X# Field indices in mouse event detail
+X#
+X_HV = 0
+X_CLICKS = 1
+X_BUTTON = 2
+X_MASK = 3
+X
+X
+X# LabelAppearance provides defaults for all appearance methods.
+X# selected state not visible
+X# disabled --> crossed out
+X# hilited --> inverted
+X#
+Xclass LabelAppearance():
+X #
+X # Initialization
+X #
+X def init_appearance(self):
+X self.bounds = _rect.empty
+X self.enabled = 1
+X self.hilited = 0
+X self.selected = 0
+X self.text = ''
+X #
+X # Size enquiry
+X #
+X def minsize(self, m):
+X try:
+X self.text = self.text
+X except NameError:
+X self.text = ''
+X return m.textwidth(self.text) + 6, m.lineheight() + 6
+X #
+X def getbounds(self):
+X return self.bounds
+X #
+X # Changing the parameters
+X #
+X def settext(self, text):
+X self.text = text
+X if self.bounds <> _rect.empty:
+X self.recalctextpos()
+X self.redraw()
+X #
+X def setbounds(self, bounds):
+X if self.bounds <> _rect.empty:
+X self.parent.change(self.bounds)
+X self.bounds = bounds
+X if self.bounds <> _rect.empty:
+X self.recalc()
+X self.parent.change(bounds)
+X #
+X # Changing the state bits
+X #
+X def enable(self, flag):
+X if flag <> self.enabled:
+X self.enabled = flag
+X if self.bounds <> _rect.empty:
+X self.flipenable(self.parent.begindrawing())
+X #
+X def hilite(self, flag):
+X if flag <> self.hilited:
+X self.hilited = flag
+X if self.bounds <> _rect.empty:
+X self.fliphilite(self.parent.begindrawing())
+X #
+X def select(self, flag):
+X if flag <> self.selected:
+X self.selected = flag
+X if self.bounds <> _rect.empty:
+X self.redraw()
+X #
+X # Recalculate the box bounds and text position.
+X # This can be overridden by buttons that draw different boxes
+X # or want their text in a different position.
+X #
+X def recalc(self):
+X if self.bounds <> _rect.empty:
+X self.recalcbounds()
+X self.recalctextpos()
+X #
+X def recalcbounds(self):
+X self.hilitebounds = _rect.inset(self.bounds, (3, 3))
+X self.crossbounds = self.bounds
+X #
+X def recalctextpos(self):
+X (left, top), (right, bottom) = self.bounds
+X m = self.parent.beginmeasuring()
+X h = (left + right - m.textwidth(self.text)) / 2
+X v = (top + bottom - m.lineheight()) / 2
+X self.textpos = h, v
+X #
+X # Generic drawing interface.
+X # Do not override redraw() or draw() methods; override drawit() c.s.
+X #
+X def redraw(self):
+X if self.bounds <> _rect.empty:
+X self.draw(self.parent.begindrawing(), self.bounds)
+X #
+X def draw(self, (d, area)):
+X area = _rect.intersect(area, self.bounds)
+X if area = _rect.empty:
+X return
+X d.cliprect(area)
+X d.erase(self.bounds)
+X self.drawit(d)
+X d.noclip()
+X #
+X # The drawit() method is fairly generic but may be overridden.
+X #
+X def drawit(self, d):
+X self.drawpict(d)
+X if self.text:
+X d.text(self.textpos, self.text)
+X if not self.enabled:
+X self.flipenable(d)
+X if self.hilited:
+X self.fliphilite(d)
+X #
+X # Default drawing detail functions.
+X # Overriding these is normally sufficient to get different
+X # appearances.
+X #
+X def drawpict(self, d):
+X pass
+X #
+X def flipenable(self, d):
+X _xorcross(d, self.crossbounds)
+X #
+X def fliphilite(self, d):
+X d.invert(self.hilitebounds)
+X
+X
+X# ButtonAppearance displays a centered string in a box.
+X# selected --> bold border
+X# disabled --> crossed out
+X# hilited --> inverted
+X#
+Xclass ButtonAppearance() = LabelAppearance():
+X #
+X def drawpict(self, d):
+X d.box(_rect.inset(self.bounds, (1, 1)))
+X if self.selected:
+X # Make a thicker box
+X d.box(self.bounds)
+X d.box(_rect.inset(self.bounds, (2, 2)))
+X d.box(_rect.inset(self.bounds, (3, 3)))
+X #
+X
+X
+X# CheckAppearance displays a small square box and a left-justified string.
+X# selected --> a cross appears in the box
+X# disabled --> whole button crossed out
+X# hilited --> box is inverted
+X#
+Xclass CheckAppearance() = LabelAppearance():
+X #
+X def minsize(self, m):
+X width, height = m.textwidth(self.text) + 6, m.lineheight() + 6
+X return width + height + m.textwidth(' '), height
+X #
+X def drawpict(self, d):
+X d.box(self.boxbounds)
+X if self.selected: _xorcross(d, self.boxbounds)
+X #
+X def recalcbounds(self):
+X LabelAppearance.recalcbounds(self)
+X (left, top), (right, bottom) = self.bounds
+X self.size = bottom - top - 4
+X self.boxbounds = (left+2, top+2), (left+2+self.size, bottom-2)
+X self.hilitebounds = self.boxbounds
+X #
+X def recalctextpos(self):
+X m = self.parent.beginmeasuring()
+X (left, top), (right, bottom) = self.boxbounds
+X h = right + m.textwidth(' ')
+X v = top + (self.size - m.lineheight()) / 2
+X self.textpos = h, v
+X #
+X
+X
+X# RadioAppearance displays a round indicator and a left-justified string.
+X# selected --> a dot appears in the indicator
+X# disabled --> whole button crossed out
+X# hilited --> indicator is inverted
+X#
+Xclass RadioAppearance() = CheckAppearance():
+X #
+X def drawpict(self, d):
+X (left, top), (right, bottom) = self.boxbounds
+X radius = self.size / 2
+X h, v = left + radius, top + radius
+X d.circle((h, v), radius)
+X if self.selected:
+X some = radius/3
+X d.paint((h-some, v-some), (h+some, v+some))
+X #
+X
+X
+X# NoReactivity ignores mouse events.
+X#
+Xclass NoReactivity():
+X def init_reactivity(self): pass
+X
+X
+X# BaseReactivity defines hooks and asks for mouse events,
+X# but provides only dummy mouse event handlers.
+X# The trigger methods call the corresponding hooks set by the user.
+X# Hooks (and triggers) mean the following:
+X# down_hook called on some mouse-down events
+X# move_hook called on some mouse-move events
+X# up_hook called on mouse-up events
+X# on_hook called for buttons with on/off state, when it goes on
+X# hook called when a button 'fires' or a radiobutton goes on
+X# There are usually extra conditions, e.g., hooks are only called
+X# when the button is enabled, or active, or selected (on).
+X#
+Xclass BaseReactivity():
+X #
+X def init_reactivity(self):
+X self.down_hook = self.move_hook = self.up_hook = \
+X self.on_hook = self.off_hook = \
+X self.hook = self.active = 0
+X self.parent.need_mouse(self)
+X #
+X def mousetest(self, hv):
+X return _rect.pointinrect(hv, self.bounds)
+X #
+X def mouse_down(self, detail):
+X pass
+X #
+X def mouse_move(self, detail):
+X pass
+X #
+X def mouse_up(self, detail):
+X pass
+X #
+X def down_trigger(self):
+X if self.down_hook: self.down_hook(self)
+X #
+X def move_trigger(self):
+X if self.move_hook: self.move_hook(self)
+X #
+X def up_trigger(self):
+X if self.up_hook: self.up_hook(self)
+X #
+X def on_trigger(self):
+X if self.on_hook: self.on_hook(self)
+X #
+X def off_trigger(self):
+X if self.off_hook: self.off_hook(self)
+X #
+X def trigger(self):
+X if self.hook: self.hook(self)
+X
+X
+X# ToggleReactivity acts like a simple pushbutton.
+X# It toggles its hilite state on mouse down events.
+X#
+Xclass ToggleReactivity() = BaseReactivity():
+X #
+X def mouse_down(self, detail):
+X if self.enabled and self.mousetest(detail[_HV]):
+X self.active = 1
+X self.hilite(not self.hilited)
+X self.down_trigger()
+X #
+X def mouse_move(self, detail):
+X if self.active:
+X self.move_trigger()
+X #
+X def mouse_up(self, detail):
+X if self.active:
+X self.up_trigger()
+X self.active = 0
+X #
+X def down_trigger(self):
+X if self.hilited:
+X self.on_trigger()
+X else:
+X self.off_trigger()
+X self.trigger()
+X #
+X
+X
+X# TriggerReactivity acts like a fancy pushbutton.
+X# It hilites itself while the mouse is down within its bounds.
+X#
+Xclass TriggerReactivity() = BaseReactivity():
+X #
+X def mouse_down(self, detail):
+X if self.enabled and self.mousetest(detail[_HV]):
+X self.active = 1
+X self.hilite(1)
+X self.down_trigger()
+X #
+X def mouse_move(self, detail):
+X if self.active:
+X self.hilite(self.mousetest(detail[_HV]))
+X if self.hilited:
+X self.move_trigger()
+X #
+X def mouse_up(self, detail):
+X if self.active:
+X self.hilite(self.mousetest(detail[_HV]))
+X if self.hilited:
+X self.up_trigger()
+X self.trigger()
+X self.active = 0
+X self.hilite(0)
+X #
+X
+X
+X# CheckReactivity handles mouse events like TriggerReactivity,
+X# It overrides the up_trigger method to flip its selected state.
+X#
+Xclass CheckReactivity() = TriggerReactivity():
+X #
+X def up_trigger(self):
+X self.select(not self.selected)
+X if self.selected:
+X self.on_trigger()
+X else:
+X self.off_trigger()
+X self.trigger()
+X
+X
+X# RadioReactivity turns itself on and the other buttons in its group
+X# off when its up_trigger method is called.
+X#
+Xclass RadioReactivity() = TriggerReactivity():
+X #
+X def init_reactivity(self):
+X TriggerReactivity.init_reactivity(self)
+X self.group = []
+X #
+X def up_trigger(self):
+X for b in self.group:
+X if b <> self:
+X if b.selected:
+X b.select(0)
+X b.off_trigger()
+X self.select(1)
+X self.on_trigger()
+X self.trigger()
+X
+X
+X# Auxiliary class for 'define' method.
+X# Call the initializers in the right order.
+X#
+Xclass Define():
+X #
+X def define(self, parent):
+X self.parent = parent
+X parent.addchild(self)
+X self.init_appearance()
+X self.init_reactivity()
+X return self
+X #
+X def destroy(self):
+X self.parent = 0
+X #
+X def definetext(self, (parent, text)):
+X self = self.define(parent)
+X self.settext(text)
+X return self
+X
+X
+X# Subroutine to cross out a rectangle.
+X#
+Xdef _xorcross(d, bounds):
+X ((left, top), (right, bottom)) = bounds
+X # This is s bit funny to make it look better
+X left = left + 2
+X right = right - 2
+X top = top + 2
+X bottom = bottom - 3
+X d.xorline(((left, top), (right, bottom)))
+X d.xorline((left, bottom), (right, top))
+X
+X
+X# Ready-made button classes.
+X#
+Xclass Label() = NoReactivity(), LabelAppearance(), Define(): pass
+Xclass PushButton() = TriggerReactivity(), ButtonAppearance(), Define(): pass
+Xclass CheckButton() = CheckReactivity(), CheckAppearance(), Define(): pass
+Xclass RadioButton() = RadioReactivity(), RadioAppearance(), Define(): pass
+Xclass ToggleButton() = ToggleReactivity(), ButtonAppearance(), Define(): pass
+EOF
+fi
+if test -s 'lib/TclUtil.py'
+then echo '*** I will not over-write existing file lib/TclUtil.py'
+else
+echo 'x - lib/TclUtil.py'
+sed 's/^X//' > 'lib/TclUtil.py' << 'EOF'
+X# Utilities used by 'Tcl' emulator.
+X
+X
+X# Many functions in this file parse specific constructs from strings.
+X# In order to limit the number of slice operations (the strings can
+X# be very large), they always receive indices into the string that
+X# indicate the slice of the string that should be considered.
+X# The return value is in general another index, pointing to the first
+X# character in the string beyond the recognized construct.
+X# Errors are reported as exceptions (TclSyntaxError, TclMatchingError).
+X# A few functions have multiple return values.
+X
+X
+X# For efficiency, the Tcl "tokenizing" routines used pre-compiled
+X# regular expressions. This is less readable but should be much faster
+X# than scanning the string a character at a time.
+X#
+X# The global variables
+X# containing the compiled regexp's are named _foo_prog where foo is
+X# an indication of the function that uses them.
+X#
+X# The patterns always
+X# have the form <something>* so they always match at the start of the
+X# search buffer---maybe with the empty string. This makes it possible
+X# to use the expression "_foo_prog.exec(str, i)[0][1]" to find the first
+X# character beyond the matched string. Note that this may be beyond the
+X# end variable -- where this matters, "min(i, end)" is used.
+X
+X# Constructs that cannot
+X# be recognized by a finite automaton (like matching braces) are scanned
+X# by a hybrid technique where the regular expression excludes the
+X# braces.
+X#
+X# Many regular expressions contain an expression that matches
+X# a Tcl backslash sequence as a subpart:
+X# \\\\C?M?(.|\n)
+X#
+X# This is a bit hard to
+X# read because the backslash contained in it must be doubled twice:
+X# once to get past Python's backslash mechanism, once to get past that
+X# of regular expressions. It uses (.|\n) to match absolutely
+X# *every character*, becase the MULTILINE regular expression package does
+X# not accept '\n' as a match for '.'.
+X#
+X# There is also a simplification in the pattern for backslashes:
+X# *any* single character following a backslash is escaped,
+X# so hex and octal
+X# excapes are not scanned fully. The forms \Cx, \Mx and \CMx are
+X# scanned correctly, as these may hide a special character.
+X# (This does not invalidate the recognition of strings, although the
+X# match is effectuated in a different way than by the Backslash function.)
+X
+Ximport regexp
+X
+X
+X# Exceptions raised for various error conditions.
+X
+XTclAssertError = 'Tcl assert error'
+XTclSyntaxError = 'Tcl syntax error'
+XTclRuntimeError = 'Tcl runtime error'
+XTclMatchingError = 'Tcl matching error'
+X
+X
+X# Find a variable name.
+X# A variable name is either a (possiblly empty) sequence of letters,
+X# digits and underscores, or anything enclosed in matching braces.
+X# Return the index past the end of the name.
+X
+X_varname_prog = regexp.compile('[a-zA-Z0-9_]*')
+X
+Xdef FindVarName(str, i, end):
+X if i < end and str[i] = '{': return BalanceBraces(str, i, end)
+X i = _varname_prog.exec(str, i)[0][1]
+X return min(i, end)
+X
+X
+X# Split a list into its elements.
+X# Return a list of elements (strings).
+X
+Xdef SplitList(str):
+X i, end = 0, len(str)
+X list = []
+X while 1:
+X i = SkipSpaces(str, i, end)
+X if i >= end: break
+X j = i
+X i = FindNextElement(str, i, end)
+X if str[j] = '{' and str[i-1] = '}':
+X element = str[j+1:i-1]
+X else:
+X element = Collapse(str[j:i])
+X list.append(element)
+X return list
+X
+X
+X# Find the next element from a list.
+X
+X_element_prog = regexp.compile('([^ \t\n\\]+|\\\\C?M?(.|\n))*')
+X
+Xdef FindNextElement(str, i, end):
+X if i < end and str[i] = '{':
+X i = BalanceBraces(str, i, end)
+X if i < end and str[i] not in ' \t\n':
+X raise TclSyntaxError, 'Garbage after } in list'
+X return i
+X i = _element_prog.exec(str, i)[0][1]
+X return min(i, end)
+X
+X
+X# Copy a string, expanding all backslash sequences.
+X
+X_collapse_prog = regexp.compile('(\n|[^\\]+)*')
+X
+Xdef Collapse(str):
+X if '\\' not in str: return str
+X i, end = 0, len(str)
+X result = ''
+X while i < end:
+X j = _collapse_prog.exec(str, i)[0][1]
+X j = min(j, end)
+X result = result + str[i:j]
+X if j >= end: break
+X c = str[j]
+X if c <> '\\': raise TclAssertError, 'collapse error'
+X x, i = Backslash(str, j, end)
+X result = result + x
+X return result
+X
+X
+X# Find the next full command.
+X# Return a list of begin, end indices of words in the string,
+X# and an index pointing just after the terminating newline or
+X# semicolon.
+X# Initial spaces are skipped.
+X# If the command begins with '#', it is considered empty and
+X# characters until '\n' are skipped.
+X
+X_eol_prog = regexp.compile('[^\n]*')
+X
+Xdef FindNextCommand(str, i, end, bracketed):
+X i = SkipSpaces(str, i, end)
+X if i >= end: return [], end
+X if str[i] = '#':
+X i = _eol_prog.exec(str, i)
+X i = min(i, end)
+X if i < end and str[i] = '\n': i = i+1
+X return [], i
+X if bracketed: terminators = [';']
+X else: terminators = [';', '\n']
+X list = []
+X while i < end:
+X j = FindNextWord(str, i, end)
+X word = str[i:j]
+X if word in terminators:
+X i = j
+X break
+X if word <> '\n': list.append(i, j)
+X i = SkipSpaces(str, j, end)
+X return list, i
+X
+X
+X# Find the next word of a command.
+X# Semicolon and newline terminate words but also count as a word
+X# themselves.
+X# The start index must point to the start of the word.
+X
+X_word_prog = regexp.compile('([^ \t\n;[\\]+|\\\\C?M?(.|\n))*')
+X
+Xdef FindNextWord(str, i, end):
+X if i >= end: return end
+X if str[i] in '{"':
+X if str[i] = '{': i = BalanceBraces(str, i, end)
+X else: i = BalanceQuotes(str, i, end)
+X if i >= end or str[i] in ' \t\n;': return min(i, end)
+X raise TclSyntaxError, 'Garbage after } or "'
+X begin = i
+X while i < end:
+X i = _word_prog.exec(str, i)[0][1]
+X if i >= end:
+X i = end
+X break
+X c = str[i]
+X if c in ' \t': break
+X if c in ';\n':
+X if i = begin: i = i+1
+X break
+X if c = '[': i = BalanceBrackets(str, i, end)
+X else: raise TclAssertError, 'word error'
+X return i
+X
+X
+X# Parse balanced brackets from str[i:end].
+X# str[i] must be '['.
+X# Returns end such that str[i:end] ends with ']'
+X# and contains balanced braces and brackets.
+X
+X_brackets_prog = regexp.compile('([^][{\\]+|\n|\\\\C?M?(.|\n))*')
+X
+Xdef BalanceBrackets(str, i, end):
+X if i >= end or str[i] <> '[':
+X raise TclAssertError, 'BalanceBrackets'
+X nesting = 0
+X while i < end:
+X i = _brackets_prog.exec(str, i)[0][1]
+X if i >= end: break
+X c = str[i]
+X if c = '{': i = BalanceBraces(str, i, end)
+X else:
+X i = i+1
+X if c = '[': nesting = nesting + 1
+X elif c = ']':
+X nesting = nesting - 1
+X if nesting = 0: return i
+X else: raise TclAssertError, 'brackets error'
+X raise TclMatchingError, 'Unmatched bracket ([)'
+X
+X
+X# Parse balanced braces from str[i:end].
+X# str[i] must be '{'.
+X# Returns end such that str[i:end] ends with '}'
+X# and contains balanced braces.
+X
+X_braces_prog = regexp.compile('([^{}\\]+|\n|\\\\C?M?(.|\n))*')
+X
+Xdef BalanceBraces(str, i, end):
+X if i >= end or str[i] <> '{':
+X raise TclAssertError, 'BalanceBraces'
+X nesting = 0
+X while i < end:
+X i = _braces_prog.exec(str, i)[0][1]
+X if i >= end: break
+X c = str[i]
+X i = i+1
+X if c = '{': nesting = nesting + 1
+X elif c = '}':
+X nesting = nesting - 1
+X if nesting = 0: return i
+X else: raise TclAssertError, 'braces error'
+X raise TclMatchingError, 'Unmatched brace ({)'
+X
+X
+X# Parse double quotes from str[i:end].
+X# str[i] must be '"'.
+X# Returns end such that str[i:end] ends with an unescaped '"'.
+X
+X_quotes_prog = regexp.compile('([^"\\]+|\n|\\\\C?M?(.|\n))*')
+X
+Xdef BalanceQuotes(str, i, end):
+X if i >= end or str[i] <> '"':
+X raise TclAssertError, 'BalanceQuotes'
+X i = _quotes_prog.exec(str, i+1)[0][1]
+X if i < end and str[i] = '"': return i+1
+X raise TclMatchingError, 'Unmatched quote (")'
+X
+X
+X# Static data used by Backslash()
+X
+X_bstab = {}
+X_bstab['n'] = '\n'
+X_bstab['r'] = '\r'
+X_bstab['t'] = '\t'
+X_bstab['b'] = '\b'
+X_bstab['e'] = '\033'
+X_bstab['\n'] = ''
+Xfor c in ' {}[]$";\\': _bstab[c] = c
+Xdel c
+X
+X# Backslash interpretation.
+X# First character must be a backslash.
+X# Return a pair (<replacement string>, <end of sequence>).
+X# Unrecognized or incomplete backslash sequences are not errors;
+X# this takes only the backslash itself off the string.
+X
+Xdef Backslash(str, i, end):
+X if i >= end or str[i] <> '\\':
+X raise TclAssertError, 'Backslash'
+X i = i+1
+X if i = end: return '\\', i
+X c = str[i]
+X i = i+1
+X if _bstab.has_key(c): return _bstab[c], i
+X if c = 'C':
+X if i = end: return '\\', i-1
+X c = str[i]
+X i = i+1
+X if c = 'M':
+X if i = end: return '\\', i-2
+X c = str[i]
+X i = i+1
+X x = ord(c) % 040 + 0200
+X else:
+X x = ord(c) % 040
+X return chr(x), i
+X elif c = 'M':
+X if i = end: return '\\', i-1
+X c = str[i]
+X i = i+1
+X x = ord(c)
+X if x < 0200: x = x + 0200
+X return chr(x), i
+X elif c and c in '0123456789':
+X x = ord(c) - ord('0')
+X end = min(end, i+2)
+X while i < end:
+X c = str[i]
+X if c not in '0123456789': break
+X i = i+1
+X x = x*8 + ord(c) - ord('0')
+X return ord(x), i
+X else:
+X # Not something that we recognize
+X return '\\', i-1
+X
+X
+X# Skip over spaces and tabs (but not newlines).
+X
+X_spaces_prog = regexp.compile('[ \t]*')
+X
+Xdef SkipSpaces(str, i, end):
+X i = _spaces_prog.exec(str, i)[0][1]
+X return min(i, end)
+X
+X
+X# Concatenate the elements of a list with intervening spaces.
+X
+Xdef Concat(argv):
+X result = ''
+X sep = ''
+X for arg in argv:
+X result = result + (sep + arg)
+X sep = ' '
+X return result
+X
+X
+X# Concatenate list elements, adding braces etc. to make them parseable
+X# again with SplitList.
+X
+Xdef BuildList(argv):
+X result = ''
+X sep = ''
+X for arg in argv:
+X arg = AddBraces(arg)
+X result = result + (sep + arg)
+X sep = ' '
+X return result
+X
+X
+X# Add braces around a string if necessary to make it parseable by SplitList.
+X
+Xdef AddBraces(str):
+X # Special case for empty string
+X if str = '': return '{}'
+X # See if it contains balanced braces
+X res = '{' + str + '}'
+X if TryNextElement(res):
+X # See if it would survive unquoted
+X # XXX should escape [] and $ as well???
+X if TryNextElement(str) and Collapse(str) = str: return str
+X # No -- return with added braces
+X return res
+X # Unbalanced braces. Add backslashes before suspect characters
+X res = ''
+X for c in str:
+X if c in '$\\[]{} ;': c = '\\' + c
+X elif c = '\n': c = '\\n'
+X elif c = '\t': c = '\\t'
+X res = res + c
+X return res
+X
+X
+Xdef TryNextElement(str):
+X end = len(str)
+X try:
+X i = FindNextElement(str, 0, end)
+X return i = end
+X except (TclSyntaxError, TclMatchingError):
+X return 0
+EOF
+fi
+if test -s 'lib/testall.py'
+then echo '*** I will not over-write existing file lib/testall.py'
+else
+echo 'x - lib/testall.py'
+sed 's/^X//' > 'lib/testall.py' << 'EOF'
+X# Module 'testall'
+X#
+X# Python test set, should exercise:
+X# - all lexical and grammatical constructs
+X# - all opcodes from "opcode.h"
+X# - all operations on all object types
+X# - all builtin functions
+X# Ideally also:
+X# - all possible exception situations (Thank God we've got 'try')
+X# - all boundary cases
+X
+X
+XTestFailed = 'testall -- test failed' # Exception
+X
+X
+X#########################################################
+X# Part 1. Test all lexical and grammatical constructs.
+X# This just tests whether the parser accepts them all.
+X#########################################################
+X
+Xprint '1. Parser'
+X
+Xprint '1.1 Tokens'
+X
+Xprint '1.1.1 Backslashes'
+X
+X# Backslash means line continuation:
+Xx = 1 \
+X+ 1
+Xif x <> 2: raise TestFailed, 'backslash for line continuation'
+X
+X# Backslash does not means continuation in comments :\
+Xx = 0
+Xif x <> 0: raise TestFailed, 'backslash ending comment'
+X
+Xprint '1.1.2 Number formats'
+X
+Xif 0xff <> 255: raise TestFailed, 'hex number'
+Xif 0377 <> 255: raise TestFailed, 'octal number'
+Xx = 3.14
+Xx = 0.314
+Xx = 3e14
+Xx = 3E14
+Xx = 3e-14
+X
+Xprint '1.2 Grammar'
+X
+Xprint 'single_input' # NEWLINE | simple_stmt | compound_stmt NEWLINE
+X# XXX can't test in a script -- this rule is only used when interactive
+X
+Xprint 'file_input' # (NEWLINE | stmt)* ENDMARKER
+X# Being tested as this very moment this very module
+X
+Xprint 'expr_input' # testlist NEWLINE
+X# XXX Hard to test -- used only in calls to input()
+X
+Xprint 'eval_input' # testlist ENDMARKER
+Xx = eval('1, 0 or 1')
+X
+Xprint 'funcdef' # 'def' NAME parameters ':' suite
+X### parameters: '(' [fplist] ')'
+X### fplist: fpdef (',' fpdef)*
+X### fpdef: NAME | '(' fplist ')'
+Xdef f1(): pass
+Xdef f2(one_argument): pass
+Xdef f3(two, arguments): pass
+Xdef f4(two, (compound, (arguments))): pass
+X
+X### stmt: simple_stmt | compound_stmt
+X### simple_stmt: expr_stmt | print_stmt | pass_stmt | del_stmt | flow_stmt | import_stmt
+X# Tested below
+X
+Xprint 'expr_stmt' # (exprlist '=')* exprlist NEWLINE
+X1
+X1, 2, 3
+Xx = 1
+Xx = 1, 2, 3
+Xx = y = z = 1, 2, 3
+Xx, y, z = 1, 2, 3
+Xabc = a, b, c = x, y, z = xyz = 1, 2, (3, 4)
+X# NB these variables are deleted below
+X
+Xprint 'print_stmt' # 'print' (test ',')* [test] NEWLINE
+Xprint 1, 2, 3
+Xprint 1, 2, 3,
+Xprint
+Xprint 0 or 1, 0 or 1,
+Xprint 0 or 1
+X
+Xprint 'del_stmt' # 'del' exprlist NEWLINE
+Xdel abc
+Xdel x, y, (z, xyz)
+X
+Xprint 'pass_stmt' # 'pass' NEWLINE
+Xpass
+X
+Xprint 'flow_stmt' # break_stmt | return_stmt | raise_stmt
+X# Tested below
+X
+Xprint 'break_stmt' # 'break' NEWLINE
+Xwhile 1: break
+X
+Xprint 'return_stmt' # 'return' [testlist] NEWLINE
+Xdef g1(): return
+Xdef g2(): return 1
+Xg1()
+Xx = g2()
+X
+Xprint 'raise_stmt' # 'raise' expr [',' expr] NEWLINE
+Xtry: raise RuntimeError, 'just testing'
+Xexcept RuntimeError: pass
+Xtry: raise KeyboardInterrupt
+Xexcept KeyboardInterrupt: pass
+X
+Xprint 'import_stmt' # 'import' NAME (',' NAME)* NEWLINE | 'from' NAME 'import' ('*' | NAME (',' NAME)*) NEWLINE
+X[1]
+Ximport sys
+X[2]
+Ximport time, math
+X[3]
+Xfrom time import sleep
+X[4]
+Xfrom math import *
+X[5]
+Xfrom sys import modules, ps1, ps2
+X[6]
+X
+X### compound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | funcdef | classdef
+X# Tested below
+X
+Xprint 'if_stmt' # 'if' test ':' suite ('elif' test ':' suite)* ['else' ':' suite]
+Xif 1: pass
+Xif 1: pass
+Xelse: pass
+Xif 0: pass
+Xelif 0: pass
+Xif 0: pass
+Xelif 0: pass
+Xelif 0: pass
+Xelif 0: pass
+Xelse: pass
+X
+Xprint 'while_stmt' # 'while' test ':' suite ['else' ':' suite]
+Xwhile 0: pass
+Xwhile 0: pass
+Xelse: pass
+X
+Xprint 'for_stmt' # 'for' exprlist 'in' exprlist ':' suite ['else' ':' suite]
+X[1]
+Xfor i in 1, 2, 3: pass
+X[2]
+Xfor i, j, k in (): pass
+Xelse: pass
+X[3]
+X
+Xprint 'try_stmt' # 'try' ':' suite (except_clause ':' suite)* ['finally' ':' suite]
+X### except_clause: 'except' [expr [',' expr]]
+Xtry: pass
+Xtry: 1/0
+Xexcept RuntimeError: pass
+Xtry: 1/0
+Xexcept EOFError: pass
+Xexcept TypeError, msg: pass
+Xexcept RuntimeError, msg: pass
+Xexcept: pass
+Xtry: pass
+Xfinally: pass
+Xtry: 1/0
+Xexcept: pass
+Xfinally: pass
+X
+Xprint 'suite' # simple_stmt | NEWLINE INDENT NEWLINE* (stmt NEWLINE*)+ DEDENT
+Xif 1: pass
+Xif 1:
+X pass
+Xif 1:
+X #
+X #
+X #
+X pass
+X pass
+X #
+X pass
+X #
+X
+Xprint 'test' # and_test ('or' and_test)*
+X### and_test: not_test ('and' not_test)*
+X### not_test: 'not' not_test | comparison
+X### comparison: expr (comp_op expr)*
+X### comp_op: '<'|'>'|'='|'>' '='|'<' '='|'<' '>'|'in'|'not' 'in'|'is'|'is' 'not'
+Xif 1: pass
+Xif 1 = 1: pass
+Xif 1 < 1 > 1 = 1 >= 1 <= 1 <> 1 in 1 not in 1 is 1 is not 1: pass
+Xif not 1 = 1 = 1: pass
+Xif not 1 = 1 and 1 and 1: pass
+Xif 1 and 1 or 1 and 1 and 1 or not 1 = 1 = 1 and 1: pass
+X
+Xprint 'expr' # term (('+'|'-') term)*
+Xx = 1
+Xx = 1 + 1
+Xx = 1 - 1 - 1
+Xx = 1 - 1 + 1 - 1 + 1
+X
+Xprint 'term' # factor (('*'|'/'|'%') factor)*
+Xx = 1 * 1
+Xx = 1 / 1
+Xx = 1 % 1
+Xx = 1 / 1 * 1 % 1
+X
+Xprint 'factor' # ('+'|'-') factor | atom trailer*
+X### trailer: '(' [testlist] ')' | '[' subscript ']' | '.' NAME
+X### subscript: expr | [expr] ':' [expr]
+Xx = +1
+Xx = -1
+Xx = 1
+Xc = sys.ps1[0]
+Xx = time.time()
+Xx = sys.modules['time'].time()
+Xa = '01234'
+Xc = a[0]
+Xc = a[0:5]
+Xc = a[:5]
+Xc = a[0:]
+Xc = a[:]
+Xc = a[-5:]
+Xc = a[:-1]
+Xc = a[-4:-3]
+X
+Xprint 'atom' # '(' [testlist] ')' | '[' [testlist] ']' | '{' '}' | '`' testlist '`' | NAME | NUMBER | STRING
+Xx = (1)
+Xx = (1 or 2 or 3)
+Xx = (1 or 2 or 3, 2, 3)
+Xx = []
+Xx = [1]
+Xx = [1 or 2 or 3]
+Xx = [1 or 2 or 3, 2, 3]
+Xx = []
+Xx = {}
+Xx = `x`
+Xx = x
+Xx = 'x'
+Xx = 123
+X
+X### exprlist: expr (',' expr)* [',']
+X### testlist: test (',' test)* [',']
+X# These have been exercised enough above
+X
+Xprint 'classdef' # 'class' NAME parameters ['=' baselist] ':' suite
+X### baselist: atom arguments (',' atom arguments)*
+X### arguments: '(' [testlist] ')'
+Xclass B(): pass
+Xclass C1() = B(): pass
+Xclass C2() = B(): pass
+Xclass D() = C1(), C2(), B(): pass
+Xclass C():
+X def meth1(self): pass
+X def meth2(self, arg): pass
+X def meth3(self, (a1, a2)): pass
+X
+X
+X#########################################################
+X# Part 2. Test all opcodes from "opcode.h"
+X#########################################################
+X
+Xprint '2. Opcodes'
+Xprint 'XXX Not yet fully implemented'
+X
+Xprint '2.1 try inside for loop'
+Xn = 0
+Xfor i in range(10):
+X n = n+i
+X try: 1/0
+X except NameError: pass
+X except RuntimeError: pass
+X except TypeError: pass
+X finally: pass
+X try: pass
+X except: pass
+X try: pass
+X finally: pass
+X n = n+i
+Xif n <> 90:
+X raise TestFailed, 'try inside for'
+X
+X
+X#########################################################
+X# Part 3. Test all operations on all object types
+X#########################################################
+X
+Xprint '3. Object types'
+Xprint 'XXX Not yet implemented'
+X
+X
+X#########################################################
+X# Part 4. Test all built-in functions
+X#########################################################
+X
+Xprint '4. Built-in functions'
+X
+Xprint 'abs'
+Xif abs(0) <> 0: raise TestFailed, 'abs(0)'
+Xif abs(1234) <> 1234: raise TestFailed, 'abs(1234)'
+Xif abs(-1234) <> 1234: raise TestFailed, 'abs(-1234)'
+Xif abs(0.0) <> 0.0: raise TestFailed, 'abs(0.0)'
+Xif abs(3.14) <> 3.14: raise TestFailed, 'abs(3.14)'
+Xif abs(-3.14) <> 3.14: raise TestFailed, 'abs(-3.14)'
+X
+Xprint 'dir'
+Xif 'x' not in dir(): raise TestFailed, 'dir()'
+Xif 'modules' not in dir(sys): raise TestFailed, 'dir(sys)'
+X
+Xprint 'divmod'
+Xif divmod(12, 7) <> (1, 5): raise TestFailed, 'divmod(12, 7)'
+Xif divmod(-12, 7) <> (-2, 2): raise TestFailed, 'divmod(-12, 7)'
+Xif divmod(12, -7) <> (-2, -2): raise TestFailed, 'divmod(12, -7)'
+Xif divmod(-12, -7) <> (1, -5): raise TestFailed, 'divmod(-12, -7)'
+X
+Xprint 'eval'
+Xif eval('1+1') <> 2: raise TestFailed, 'eval(\'1+1\')'
+X
+Xprint 'exec'
+Xexec('z=1+1\n')
+Xif z <> 2: raise TestFailed, 'exec(\'z=1+1\'\\n)'
+X
+Xprint 'float'
+Xif float(3.14) <> 3.14: raise TestFailed, 'float(3.14)'
+Xif float(314) <> 314.0: raise TestFailed, 'float(314)'
+X
+Xprint 'input'
+X# Can't test in a script
+X
+Xprint 'int'
+Xif int(100) <> 100: raise TestFailed, 'int(100)'
+Xif int(3.14) <> 3: raise TestFailed, 'int(3.14)'
+X
+Xprint 'len'
+Xif len('123') <> 3: raise TestFailed, 'len(\'123\')'
+Xif len(()) <> 0: raise TestFailed, 'len(())'
+Xif len((1, 2, 3, 4)) <> 4: raise TestFailed, 'len((1, 2, 3, 4))'
+Xif len([1, 2, 3, 4]) <> 4: raise TestFailed, 'len([1, 2, 3, 4])'
+Xif len({}) <> 0: raise TestFailed, 'len({})'
+X
+Xprint 'min'
+Xif min('123123') <> '1': raise TestFailed, 'min(\'123123\')'
+Xif min(1, 2, 3) <> 1: raise TestFailed, 'min(1, 2, 3)'
+Xif min((1, 2, 3, 1, 2, 3)) <> 1: raise TestFailed, 'min((1, 2, 3, 1, 2, 3))'
+Xif min([1, 2, 3, 1, 2, 3]) <> 1: raise TestFailed, 'min([1, 2, 3, 1, 2, 3])'
+X
+Xprint 'max'
+Xif max('123123') <> '3': raise TestFailed, 'max(\'123123\')'
+Xif max(1, 2, 3) <> 3: raise TestFailed, 'max(1, 2, 3)'
+Xif max((1, 2, 3, 1, 2, 3)) <> 3: raise TestFailed, 'max((1, 2, 3, 1, 2, 3))'
+Xif max([1, 2, 3, 1, 2, 3]) <> 3: raise TestFailed, 'max([1, 2, 3, 1, 2, 3])'
+X
+Xprint 'open'
+Xprint 'NB! This test creates a file named "@test" in the current directory.'
+Xfp = open('@test', 'w')
+Xfp.write('The quick brown fox jumps over the lazy dog')
+Xfp.write('.\n')
+Xfp.write('Dear John\n')
+Xfp.write('XXX'*100)
+Xfp.write('YYY'*100)
+Xfp.close()
+Xdel fp
+Xfp = open('@test', 'r')
+Xif fp.readline() <> 'The quick brown fox jumps over the lazy dog.\n':
+X raise TestFailed, 'readline()'
+Xif fp.readline(4) <> 'Dear': raise TestFailed, 'readline(4) # short'
+Xif fp.readline(100) <> ' John\n': raise TestFailed, 'readline(100)'
+Xif fp.read(300) <> 'XXX'*100: raise TestFailed, 'read(300)'
+Xif fp.read(1000) <> 'YYY'*100: raise TestFailed, 'read(1000) # truncate'
+Xfp.close()
+Xdel fp
+X
+Xprint 'range'
+Xif range(3) <> [0, 1, 2]: raise TestFailed, 'range(3)'
+Xif range(1, 5) <> [1, 2, 3, 4]: raise TestFailed, 'range(1, 5)'
+Xif range(0) <> []: raise TestFailed, 'range(0)'
+Xif range(-3) <> []: raise TestFailed, 'range(-3)'
+Xif range(1, 10, 3) <> [1, 4, 7]: raise TestFailed, 'range(1, 10, 3)'
+Xif range(5, -5, -3) <> [5, 2, -1, -4]: raise TestFailed, 'range(5, -5, -3)'
+X
+Xprint 'raw_input'
+Xsavestdin = sys.stdin
+Xtry:
+X sys.stdin = open('@test', 'r')
+X if raw_input() <> 'The quick brown fox jumps over the lazy dog.':
+X raise TestFailed, 'raw_input()'
+X if raw_input('testing\n') <> 'Dear John':
+X raise TestFailed, 'raw_input(\'testing\\n\')'
+Xfinally:
+X sys.stdin = savestdin
+X
+Xprint 'reload'
+Ximport string
+Xreload(string)
+X
+Xprint 'type'
+Xif type('') <> type('123') or type('') = type(()):
+X raise TestFailed, 'type()'
+X
+X
+Xprint 'Passed all tests.'
+X
+Xtry:
+X import mac
+X unlink = mac.unlink
+Xexcept NameError:
+X try:
+X import posix
+X unlink = posix.unlink
+X except NameError:
+X pass
+X
+Xunlink('@test')
+Xprint 'Unlinked @test'
+EOF
+fi
+if test -s 'src/listobject.c'
+then echo '*** I will not over-write existing file src/listobject.c'
+else
+echo 'x - src/listobject.c'
+sed 's/^X//' > 'src/listobject.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* List object implementation */
+X
+X#include "allobjects.h"
+X
+Xobject *
+Xnewlistobject(size)
+X int size;
+X{
+X int i;
+X listobject *op;
+X if (size < 0) {
+X err_badcall();
+X return NULL;
+X }
+X op = (listobject *) malloc(sizeof(listobject));
+X if (op == NULL) {
+X return err_nomem();
+X }
+X if (size <= 0) {
+X op->ob_item = NULL;
+X }
+X else {
+X op->ob_item = (object **) malloc(size * sizeof(object *));
+X if (op->ob_item == NULL) {
+X free((ANY *)op);
+X return err_nomem();
+X }
+X }
+X NEWREF(op);
+X op->ob_type = &Listtype;
+X op->ob_size = size;
+X for (i = 0; i < size; i++)
+X op->ob_item[i] = NULL;
+X return (object *) op;
+X}
+X
+Xint
+Xgetlistsize(op)
+X object *op;
+X{
+X if (!is_listobject(op)) {
+X err_badcall();
+X return -1;
+X }
+X else
+X return ((listobject *)op) -> ob_size;
+X}
+X
+Xobject *
+Xgetlistitem(op, i)
+X object *op;
+X int i;
+X{
+X if (!is_listobject(op)) {
+X err_badcall();
+X return NULL;
+X }
+X if (i < 0 || i >= ((listobject *)op) -> ob_size) {
+X err_setstr(IndexError, "list index out of range");
+X return NULL;
+X }
+X return ((listobject *)op) -> ob_item[i];
+X}
+X
+Xint
+Xsetlistitem(op, i, newitem)
+X register object *op;
+X register int i;
+X register object *newitem;
+X{
+X register object *olditem;
+X if (!is_listobject(op)) {
+X if (newitem != NULL)
+X DECREF(newitem);
+X err_badcall();
+X return -1;
+X }
+X if (i < 0 || i >= ((listobject *)op) -> ob_size) {
+X if (newitem != NULL)
+X DECREF(newitem);
+X err_setstr(IndexError, "list assignment index out of range");
+X return -1;
+X }
+X olditem = ((listobject *)op) -> ob_item[i];
+X ((listobject *)op) -> ob_item[i] = newitem;
+X if (olditem != NULL)
+X DECREF(olditem);
+X return 0;
+X}
+X
+Xstatic int
+Xins1(self, where, v)
+X listobject *self;
+X int where;
+X object *v;
+X{
+X int i;
+X object **items;
+X if (v == NULL) {
+X err_badcall();
+X return -1;
+X }
+X items = self->ob_item;
+X RESIZE(items, object *, self->ob_size+1);
+X if (items == NULL) {
+X err_nomem();
+X return -1;
+X }
+X if (where < 0)
+X where = 0;
+X if (where > self->ob_size)
+X where = self->ob_size;
+X for (i = self->ob_size; --i >= where; )
+X items[i+1] = items[i];
+X INCREF(v);
+X items[where] = v;
+X self->ob_item = items;
+X self->ob_size++;
+X return 0;
+X}
+X
+Xint
+Xinslistitem(op, where, newitem)
+X object *op;
+X int where;
+X object *newitem;
+X{
+X if (!is_listobject(op)) {
+X err_badcall();
+X return -1;
+X }
+X return ins1((listobject *)op, where, newitem);
+X}
+X
+Xint
+Xaddlistitem(op, newitem)
+X object *op;
+X object *newitem;
+X{
+X if (!is_listobject(op)) {
+X err_badcall();
+X return -1;
+X }
+X return ins1((listobject *)op,
+X (int) ((listobject *)op)->ob_size, newitem);
+X}
+X
+X/* Methods */
+X
+Xstatic void
+Xlist_dealloc(op)
+X listobject *op;
+X{
+X int i;
+X for (i = 0; i < op->ob_size; i++) {
+X if (op->ob_item[i] != NULL)
+X DECREF(op->ob_item[i]);
+X }
+X if (op->ob_item != NULL)
+X free((ANY *)op->ob_item);
+X free((ANY *)op);
+X}
+X
+Xstatic void
+Xlist_print(op, fp, flags)
+X listobject *op;
+X FILE *fp;
+X int flags;
+X{
+X int i;
+X fprintf(fp, "[");
+X for (i = 0; i < op->ob_size && !StopPrint; i++) {
+X if (i > 0) {
+X fprintf(fp, ", ");
+X }
+X printobject(op->ob_item[i], fp, flags);
+X }
+X fprintf(fp, "]");
+X}
+X
+Xobject *
+Xlist_repr(v)
+X listobject *v;
+X{
+X object *s, *t, *comma;
+X int i;
+X s = newstringobject("[");
+X comma = newstringobject(", ");
+X for (i = 0; i < v->ob_size && s != NULL; i++) {
+X if (i > 0)
+X joinstring(&s, comma);
+X t = reprobject(v->ob_item[i]);
+X joinstring(&s, t);
+X DECREF(t);
+X }
+X DECREF(comma);
+X t = newstringobject("]");
+X joinstring(&s, t);
+X DECREF(t);
+X return s;
+X}
+X
+Xstatic int
+Xlist_compare(v, w)
+X listobject *v, *w;
+X{
+X int len = (v->ob_size < w->ob_size) ? v->ob_size : w->ob_size;
+X int i;
+X for (i = 0; i < len; i++) {
+X int cmp = cmpobject(v->ob_item[i], w->ob_item[i]);
+X if (cmp != 0)
+X return cmp;
+X }
+X return v->ob_size - w->ob_size;
+X}
+X
+Xstatic int
+Xlist_length(a)
+X listobject *a;
+X{
+X return a->ob_size;
+X}
+X
+Xstatic object *
+Xlist_item(a, i)
+X listobject *a;
+X int i;
+X{
+X if (i < 0 || i >= a->ob_size) {
+X err_setstr(IndexError, "list index out of range");
+X return NULL;
+X }
+X INCREF(a->ob_item[i]);
+X return a->ob_item[i];
+X}
+X
+Xstatic object *
+Xlist_slice(a, ilow, ihigh)
+X listobject *a;
+X int ilow, ihigh;
+X{
+X listobject *np;
+X int i;
+X if (ilow < 0)
+X ilow = 0;
+X else if (ilow > a->ob_size)
+X ilow = a->ob_size;
+X if (ihigh < 0)
+X ihigh = 0;
+X if (ihigh < ilow)
+X ihigh = ilow;
+X else if (ihigh > a->ob_size)
+X ihigh = a->ob_size;
+X np = (listobject *) newlistobject(ihigh - ilow);
+X if (np == NULL)
+X return NULL;
+X for (i = ilow; i < ihigh; i++) {
+X object *v = a->ob_item[i];
+X INCREF(v);
+X np->ob_item[i - ilow] = v;
+X }
+X return (object *)np;
+X}
+X
+Xstatic object *
+Xlist_concat(a, bb)
+X listobject *a;
+X object *bb;
+X{
+X int size;
+X int i;
+X listobject *np;
+X if (!is_listobject(bb)) {
+X err_badarg();
+X return NULL;
+X }
+X#define b ((listobject *)bb)
+X size = a->ob_size + b->ob_size;
+X np = (listobject *) newlistobject(size);
+X if (np == NULL) {
+X return err_nomem();
+X }
+X for (i = 0; i < a->ob_size; i++) {
+X object *v = a->ob_item[i];
+X INCREF(v);
+X np->ob_item[i] = v;
+X }
+X for (i = 0; i < b->ob_size; i++) {
+X object *v = b->ob_item[i];
+X INCREF(v);
+X np->ob_item[i + a->ob_size] = v;
+X }
+X return (object *)np;
+X#undef b
+X}
+X
+Xstatic int
+Xlist_ass_item(a, i, v)
+X listobject *a;
+X int i;
+X object *v;
+X{
+X if (i < 0 || i >= a->ob_size) {
+X err_setstr(IndexError, "list assignment index out of range");
+X return -1;
+X }
+X if (v == NULL)
+X return list_ass_slice(a, i, i+1, v);
+X INCREF(v);
+X DECREF(a->ob_item[i]);
+X a->ob_item[i] = v;
+X return 0;
+X}
+X
+Xstatic int
+Xlist_ass_slice(a, ilow, ihigh, v)
+X listobject *a;
+X int ilow, ihigh;
+X object *v;
+X{
+X object **item;
+X int n; /* Size of replacement list */
+X int d; /* Change in size */
+X int k; /* Loop index */
+X#define b ((listobject *)v)
+X if (v == NULL)
+X n = 0;
+X else if (is_listobject(v))
+X n = b->ob_size;
+X else {
+X err_badarg();
+X return -1;
+X }
+X if (ilow < 0)
+X ilow = 0;
+X else if (ilow > a->ob_size)
+X ilow = a->ob_size;
+X if (ihigh < 0)
+X ihigh = 0;
+X if (ihigh < ilow)
+X ihigh = ilow;
+X else if (ihigh > a->ob_size)
+X ihigh = a->ob_size;
+X item = a->ob_item;
+X d = n - (ihigh-ilow);
+X if (d <= 0) { /* Delete -d items; DECREF ihigh-ilow items */
+X for (k = ilow; k < ihigh; k++)
+X DECREF(item[k]);
+X if (d < 0) {
+X for (/*k = ihigh*/; k < a->ob_size; k++)
+X item[k+d] = item[k];
+X a->ob_size += d;
+X RESIZE(item, object *, a->ob_size); /* Can't fail */
+X a->ob_item = item;
+X }
+X }
+X else { /* Insert d items; DECREF ihigh-ilow items */
+X RESIZE(item, object *, a->ob_size + d);
+X if (item == NULL) {
+X err_nomem();
+X return -1;
+X }
+X for (k = a->ob_size; --k >= ihigh; )
+X item[k+d] = item[k];
+X for (/*k = ihigh-1*/; k >= ilow; --k)
+X DECREF(item[k]);
+X a->ob_item = item;
+X a->ob_size += d;
+X }
+X for (k = 0; k < n; k++, ilow++) {
+X object *w = b->ob_item[k];
+X INCREF(w);
+X item[ilow] = w;
+X }
+X return 0;
+X#undef b
+X}
+X
+Xstatic object *
+Xins(self, where, v)
+X listobject *self;
+X int where;
+X object *v;
+X{
+X if (ins1(self, where, v) != 0)
+X return NULL;
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xlistinsert(self, args)
+X listobject *self;
+X object *args;
+X{
+X int i;
+X if (args == NULL || !is_tupleobject(args) || gettuplesize(args) != 2) {
+X err_badarg();
+X return NULL;
+X }
+X if (!getintarg(gettupleitem(args, 0), &i))
+X return NULL;
+X return ins(self, i, gettupleitem(args, 1));
+X}
+X
+Xstatic object *
+Xlistappend(self, args)
+X listobject *self;
+X object *args;
+X{
+X return ins(self, (int) self->ob_size, args);
+X}
+X
+Xstatic int
+Xcmp(v, w)
+X char *v, *w;
+X{
+X return cmpobject(* (object **) v, * (object **) w);
+X}
+X
+Xstatic object *
+Xlistsort(self, args)
+X listobject *self;
+X object *args;
+X{
+X if (args != NULL) {
+X err_badarg();
+X return NULL;
+X }
+X err_clear();
+X if (self->ob_size > 1)
+X qsort((char *)self->ob_item,
+X (int) self->ob_size, sizeof(object *), cmp);
+X if (err_occurred())
+X return NULL;
+X INCREF(None);
+X return None;
+X}
+X
+Xint
+Xsortlist(v)
+X object *v;
+X{
+X if (v == NULL || !is_listobject(v)) {
+X err_badcall();
+X return -1;
+X }
+X v = listsort((listobject *)v, (object *)NULL);
+X if (v == NULL)
+X return -1;
+X DECREF(v);
+X return 0;
+X}
+X
+Xstatic struct methodlist list_methods[] = {
+X {"append", listappend},
+X {"insert", listinsert},
+X {"sort", listsort},
+X {NULL, NULL} /* sentinel */
+X};
+X
+Xstatic object *
+Xlist_getattr(f, name)
+X listobject *f;
+X char *name;
+X{
+X return findmethod(list_methods, (object *)f, name);
+X}
+X
+Xstatic sequence_methods list_as_sequence = {
+X list_length, /*sq_length*/
+X list_concat, /*sq_concat*/
+X 0, /*sq_repeat*/
+X list_item, /*sq_item*/
+X list_slice, /*sq_slice*/
+X list_ass_item, /*sq_ass_item*/
+X list_ass_slice, /*sq_ass_slice*/
+X};
+X
+Xtypeobject Listtype = {
+X OB_HEAD_INIT(&Typetype)
+X 0,
+X "list",
+X sizeof(listobject),
+X 0,
+X list_dealloc, /*tp_dealloc*/
+X list_print, /*tp_print*/
+X list_getattr, /*tp_getattr*/
+X 0, /*tp_setattr*/
+X list_compare, /*tp_compare*/
+X list_repr, /*tp_repr*/
+X 0, /*tp_as_number*/
+X &list_as_sequence, /*tp_as_sequence*/
+X 0, /*tp_as_mapping*/
+X};
+EOF
+fi
+if test -s 'src/parser.c'
+then echo '*** I will not over-write existing file src/parser.c'
+else
+echo 'x - src/parser.c'
+sed 's/^X//' > 'src/parser.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* Parser implementation */
+X
+X/* For a description, see the comments at end of this file */
+X
+X/* XXX To do: error recovery */
+X
+X#include "pgenheaders.h"
+X#include "assert.h"
+X#include "token.h"
+X#include "grammar.h"
+X#include "node.h"
+X#include "parser.h"
+X#include "errcode.h"
+X
+X
+X#ifdef DEBUG
+Xextern int debugging;
+X#define D(x) if (!debugging); else x
+X#else
+X#define D(x)
+X#endif
+X
+X
+X/* STACK DATA TYPE */
+X
+Xstatic void s_reset PROTO((stack *));
+X
+Xstatic void
+Xs_reset(s)
+X stack *s;
+X{
+X s->s_top = &s->s_base[MAXSTACK];
+X}
+X
+X#define s_empty(s) ((s)->s_top == &(s)->s_base[MAXSTACK])
+X
+Xstatic int s_push PROTO((stack *, dfa *, node *));
+X
+Xstatic int
+Xs_push(s, d, parent)
+X register stack *s;
+X dfa *d;
+X node *parent;
+X{
+X register stackentry *top;
+X if (s->s_top == s->s_base) {
+X fprintf(stderr, "s_push: parser stack overflow\n");
+X return -1;
+X }
+X top = --s->s_top;
+X top->s_dfa = d;
+X top->s_parent = parent;
+X top->s_state = 0;
+X return 0;
+X}
+X
+X#ifdef DEBUG
+X
+Xstatic void s_pop PROTO((stack *));
+X
+Xstatic void
+Xs_pop(s)
+X register stack *s;
+X{
+X if (s_empty(s)) {
+X fprintf(stderr, "s_pop: parser stack underflow -- FATAL\n");
+X abort();
+X }
+X s->s_top++;
+X}
+X
+X#else /* !DEBUG */
+X
+X#define s_pop(s) (s)->s_top++
+X
+X#endif
+X
+X
+X/* PARSER CREATION */
+X
+Xparser_state *
+Xnewparser(g, start)
+X grammar *g;
+X int start;
+X{
+X parser_state *ps;
+X
+X if (!g->g_accel)
+X addaccelerators(g);
+X ps = NEW(parser_state, 1);
+X if (ps == NULL)
+X return NULL;
+X ps->p_grammar = g;
+X ps->p_tree = newtree(start);
+X if (ps->p_tree == NULL) {
+X DEL(ps);
+X return NULL;
+X }
+X s_reset(&ps->p_stack);
+X (void) s_push(&ps->p_stack, finddfa(g, start), ps->p_tree);
+X return ps;
+X}
+X
+Xvoid
+Xdelparser(ps)
+X parser_state *ps;
+X{
+X /* NB If you want to save the parse tree,
+X you must set p_tree to NULL before calling delparser! */
+X freetree(ps->p_tree);
+X DEL(ps);
+X}
+X
+X
+X/* PARSER STACK OPERATIONS */
+X
+Xstatic int shift PROTO((stack *, int, char *, int, int));
+X
+Xstatic int
+Xshift(s, type, str, newstate, lineno)
+X register stack *s;
+X int type;
+X char *str;
+X int newstate;
+X int lineno;
+X{
+X assert(!s_empty(s));
+X if (addchild(s->s_top->s_parent, type, str, lineno) == NULL) {
+X fprintf(stderr, "shift: no mem in addchild\n");
+X return -1;
+X }
+X s->s_top->s_state = newstate;
+X return 0;
+X}
+X
+Xstatic int push PROTO((stack *, int, dfa *, int, int));
+X
+Xstatic int
+Xpush(s, type, d, newstate, lineno)
+X register stack *s;
+X int type;
+X dfa *d;
+X int newstate;
+X int lineno;
+X{
+X register node *n;
+X n = s->s_top->s_parent;
+X assert(!s_empty(s));
+X if (addchild(n, type, (char *)NULL, lineno) == NULL) {
+X fprintf(stderr, "push: no mem in addchild\n");
+X return -1;
+X }
+X s->s_top->s_state = newstate;
+X return s_push(s, d, CHILD(n, NCH(n)-1));
+X}
+X
+X
+X/* PARSER PROPER */
+X
+Xstatic int classify PROTO((grammar *, int, char *));
+X
+Xstatic int
+Xclassify(g, type, str)
+X grammar *g;
+X register int type;
+X char *str;
+X{
+X register int n = g->g_ll.ll_nlabels;
+X
+X if (type == NAME) {
+X register char *s = str;
+X register label *l = g->g_ll.ll_label;
+X register int i;
+X for (i = n; i > 0; i--, l++) {
+X if (l->lb_type == NAME && l->lb_str != NULL &&
+X l->lb_str[0] == s[0] &&
+X strcmp(l->lb_str, s) == 0) {
+X D(printf("It's a keyword\n"));
+X return n - i;
+X }
+X }
+X }
+X
+X {
+X register label *l = g->g_ll.ll_label;
+X register int i;
+X for (i = n; i > 0; i--, l++) {
+X if (l->lb_type == type && l->lb_str == NULL) {
+X D(printf("It's a token we know\n"));
+X return n - i;
+X }
+X }
+X }
+X
+X D(printf("Illegal token\n"));
+X return -1;
+X}
+X
+Xint
+Xaddtoken(ps, type, str, lineno)
+X register parser_state *ps;
+X register int type;
+X char *str;
+X int lineno;
+X{
+X register int ilabel;
+X
+X D(printf("Token %s/'%s' ... ", tok_name[type], str));
+X
+X /* Find out which label this token is */
+X ilabel = classify(ps->p_grammar, type, str);
+X if (ilabel < 0)
+X return E_SYNTAX;
+X
+X /* Loop until the token is shifted or an error occurred */
+X for (;;) {
+X /* Fetch the current dfa and state */
+X register dfa *d = ps->p_stack.s_top->s_dfa;
+X register state *s = &d->d_state[ps->p_stack.s_top->s_state];
+X
+X D(printf(" DFA '%s', state %d:",
+X d->d_name, ps->p_stack.s_top->s_state));
+X
+X /* Check accelerator */
+X if (s->s_lower <= ilabel && ilabel < s->s_upper) {
+X register int x = s->s_accel[ilabel - s->s_lower];
+X if (x != -1) {
+X if (x & (1<<7)) {
+X /* Push non-terminal */
+X int nt = (x >> 8) + NT_OFFSET;
+X int arrow = x & ((1<<7)-1);
+X dfa *d1 = finddfa(ps->p_grammar, nt);
+X if (push(&ps->p_stack, nt, d1,
+X arrow, lineno) < 0) {
+X D(printf(" MemError: push.\n"));
+X return E_NOMEM;
+X }
+X D(printf(" Push ...\n"));
+X continue;
+X }
+X
+X /* Shift the token */
+X if (shift(&ps->p_stack, type, str,
+X x, lineno) < 0) {
+X D(printf(" MemError: shift.\n"));
+X return E_NOMEM;
+X }
+X D(printf(" Shift.\n"));
+X /* Pop while we are in an accept-only state */
+X while (s = &d->d_state
+X [ps->p_stack.s_top->s_state],
+X s->s_accept && s->s_narcs == 1) {
+X D(printf(" Direct pop.\n"));
+X s_pop(&ps->p_stack);
+X if (s_empty(&ps->p_stack)) {
+X D(printf(" ACCEPT.\n"));
+X return E_DONE;
+X }
+X d = ps->p_stack.s_top->s_dfa;
+X }
+X return E_OK;
+X }
+X }
+X
+X if (s->s_accept) {
+X /* Pop this dfa and try again */
+X s_pop(&ps->p_stack);
+X D(printf(" Pop ...\n"));
+X if (s_empty(&ps->p_stack)) {
+X D(printf(" Error: bottom of stack.\n"));
+X return E_SYNTAX;
+X }
+X continue;
+X }
+X
+X /* Stuck, report syntax error */
+X D(printf(" Error.\n"));
+X return E_SYNTAX;
+X }
+X}
+X
+X
+X#ifdef DEBUG
+X
+X/* DEBUG OUTPUT */
+X
+Xvoid
+Xdumptree(g, n)
+X grammar *g;
+X node *n;
+X{
+X int i;
+X
+X if (n == NULL)
+X printf("NIL");
+X else {
+X label l;
+X l.lb_type = TYPE(n);
+X l.lb_str = TYPE(str);
+X printf("%s", labelrepr(&l));
+X if (ISNONTERMINAL(TYPE(n))) {
+X printf("(");
+X for (i = 0; i < NCH(n); i++) {
+X if (i > 0)
+X printf(",");
+X dumptree(g, CHILD(n, i));
+X }
+X printf(")");
+X }
+X }
+X}
+X
+Xvoid
+Xshowtree(g, n)
+X grammar *g;
+X node *n;
+X{
+X int i;
+X
+X if (n == NULL)
+X return;
+X if (ISNONTERMINAL(TYPE(n))) {
+X for (i = 0; i < NCH(n); i++)
+X showtree(g, CHILD(n, i));
+X }
+X else if (ISTERMINAL(TYPE(n))) {
+X printf("%s", tok_name[TYPE(n)]);
+X if (TYPE(n) == NUMBER || TYPE(n) == NAME)
+X printf("(%s)", STR(n));
+X printf(" ");
+X }
+X else
+X printf("? ");
+X}
+X
+Xvoid
+Xprinttree(ps)
+X parser_state *ps;
+X{
+X if (debugging) {
+X printf("Parse tree:\n");
+X dumptree(ps->p_grammar, ps->p_tree);
+X printf("\n");
+X printf("Tokens:\n");
+X showtree(ps->p_grammar, ps->p_tree);
+X printf("\n");
+X }
+X printf("Listing:\n");
+X listtree(ps->p_tree);
+X printf("\n");
+X}
+X
+X#endif /* DEBUG */
+X
+X/*
+X
+XDescription
+X-----------
+X
+XThe parser's interface is different than usual: the function addtoken()
+Xmust be called for each token in the input. This makes it possible to
+Xturn it into an incremental parsing system later. The parsing system
+Xconstructs a parse tree as it goes.
+X
+XA parsing rule is represented as a Deterministic Finite-state Automaton
+X(DFA). A node in a DFA represents a state of the parser; an arc represents
+Xa transition. Transitions are either labeled with terminal symbols or
+Xwith non-terminals. When the parser decides to follow an arc labeled
+Xwith a non-terminal, it is invoked recursively with the DFA representing
+Xthe parsing rule for that as its initial state; when that DFA accepts,
+Xthe parser that invoked it continues. The parse tree constructed by the
+Xrecursively called parser is inserted as a child in the current parse tree.
+X
+XThe DFA's can be constructed automatically from a more conventional
+Xlanguage description. An extended LL(1) grammar (ELL(1)) is suitable.
+XCertain restrictions make the parser's life easier: rules that can produce
+Xthe empty string should be outlawed (there are other ways to put loops
+Xor optional parts in the language). To avoid the need to construct
+XFIRST sets, we can require that all but the last alternative of a rule
+X(really: arc going out of a DFA's state) must begin with a terminal
+Xsymbol.
+X
+XAs an example, consider this grammar:
+X
+Xexpr: term (OP term)*
+Xterm: CONSTANT | '(' expr ')'
+X
+XThe DFA corresponding to the rule for expr is:
+X
+X------->.---term-->.------->
+X ^ |
+X | |
+X \----OP----/
+X
+XThe parse tree generated for the input a+b is:
+X
+X(expr: (term: (NAME: a)), (OP: +), (term: (NAME: b)))
+X
+X*/
+EOF
+fi
+if test -s 'src/patchlevel.h'
+then echo '*** I will not over-write existing file src/patchlevel.h'
+else
+echo 'x - src/patchlevel.h'
+sed 's/^X//' > 'src/patchlevel.h' << 'EOF'
+X1
+EOF
+fi
+if test -s 'src/posixmodule.c'
+then echo '*** I will not over-write existing file src/posixmodule.c'
+else
+echo 'x - src/posixmodule.c'
+sed 's/^X//' > 'src/posixmodule.c' << 'EOF'
+X/***********************************************************
+XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
+XNetherlands.
+X
+X All Rights Reserved
+X
+XPermission to use, copy, modify, and distribute this software and its
+Xdocumentation for any purpose and without fee is hereby granted,
+Xprovided that the above copyright notice appear in all copies and that
+Xboth that copyright notice and this permission notice appear in
+Xsupporting documentation, and that the names of Stichting Mathematisch
+XCentrum or CWI not be used in advertising or publicity pertaining to
+Xdistribution of the software without specific, written prior permission.
+X
+XSTICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+XTHIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+XFITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+XFOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+XWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+XACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+XOF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+X
+X******************************************************************/
+X
+X/* POSIX module implementation */
+X
+X#include <signal.h>
+X#include <string.h>
+X#include <setjmp.h>
+X#include <sys/types.h>
+X#include <sys/stat.h>
+X#include <sys/time.h>
+X#ifdef SYSV
+X#include <dirent.h>
+X#define direct dirent
+X#else
+X#include <sys/dir.h>
+X#endif
+X
+X#include "allobjects.h"
+X#include "modsupport.h"
+X
+Xextern char *strerror PROTO((int));
+X
+X#ifdef AMOEBA
+X#define NO_LSTAT
+X#endif
+X
+X
+X/* Return a dictionary corresponding to the POSIX environment table */
+X
+Xextern char **environ;
+X
+Xstatic object *
+Xconvertenviron()
+X{
+X object *d;
+X char **e;
+X d = newdictobject();
+X if (d == NULL)
+X return NULL;
+X if (environ == NULL)
+X return d;
+X /* XXX This part ignores errors */
+X for (e = environ; *e != NULL; e++) {
+X object *v;
+X char *p = strchr(*e, '=');
+X if (p == NULL)
+X continue;
+X v = newstringobject(p+1);
+X if (v == NULL)
+X continue;
+X *p = '\0';
+X (void) dictinsert(d, *e, v);
+X *p = '=';
+X DECREF(v);
+X }
+X return d;
+X}
+X
+X
+Xstatic object *PosixError; /* Exception posix.error */
+X
+X/* Set a POSIX-specific error from errno, and return NULL */
+X
+Xstatic object *
+Xposix_error()
+X{
+X return err_errno(PosixError);
+X}
+X
+X
+X/* POSIX generic methods */
+X
+Xstatic object *
+Xposix_1str(args, func)
+X object *args;
+X int (*func) FPROTO((const char *));
+X{
+X object *path1;
+X if (!getstrarg(args, &path1))
+X return NULL;
+X if ((*func)(getstringvalue(path1)) < 0)
+X return posix_error();
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xposix_2str(args, func)
+X object *args;
+X int (*func) FPROTO((const char *, const char *));
+X{
+X object *path1, *path2;
+X if (!getstrstrarg(args, &path1, &path2))
+X return NULL;
+X if ((*func)(getstringvalue(path1), getstringvalue(path2)) < 0)
+X return posix_error();
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xposix_strint(args, func)
+X object *args;
+X int (*func) FPROTO((const char *, int));
+X{
+X object *path1;
+X int i;
+X if (!getstrintarg(args, &path1, &i))
+X return NULL;
+X if ((*func)(getstringvalue(path1), i) < 0)
+X return posix_error();
+X INCREF(None);
+X return None;
+X}
+X
+Xstatic object *
+Xposix_do_stat(self, args, statfunc)
+X object *self;
+X object *args;
+X int (*statfunc) FPROTO((const char *, struct stat *));
+X{
+X struct stat st;
+X object *path;
+X object *v;
+X if (!getstrarg(args, &path))
+X return NULL;
+X if ((*statfunc)(getstringvalue(path), &st) != 0)
+X return posix_error();
+X v = newtupleobject(10);
+X if (v == NULL)
+X return NULL;
+X#define SET(i, st_member) settupleitem(v, i, newintobject((long)st.st_member))
+X SET(0, st_mode);
+X SET(1, st_ino);
+X SET(2, st_dev);
+X SET(3, st_nlink);
+X SET(4, st_uid);
+X SET(5, st_gid);
+X SET(6, st_size);
+X SET(7, st_atime);
+X SET(8, st_mtime);
+X SET(9, st_ctime);
+X#undef SET
+X if (err_occurred()) {
+X DECREF(v);
+X return NULL;
+X }
+X return v;
+X}
+X
+X
+X/* POSIX methods */
+X
+Xstatic object *
+Xposix_chdir(self, args)
+X object *self;
+X object *args;
+X{
+X extern int chdir PROTO((const char *));
+X return posix_1str(args, chdir);
+X}
+X
+Xstatic object *
+Xposix_chmod(self, args)
+X object *self;
+X object *args;
+X{
+X extern int chmod PROTO((const char *, mode_t));
+X return posix_strint(args, chmod);
+X}
+X
+Xstatic object *
+Xposix_getcwd(self, args)
+X object *self;
+X object *args;
+X{
+X char buf[1026];
+X extern char *getcwd PROTO((char *, int));
+X if (!getnoarg(args))
+X return NULL;
+X if (getcwd(buf, sizeof buf) == NULL)
+X return posix_error();
+X return newstringobject(buf);
+X}
+X
+Xstatic object *
+Xposix_link(self, args)
+X object *self;
+X object *args;
+X{
+X extern int link PROTO((const char *, const char *));
+X return posix_2str(args, link);
+X}
+X
+Xstatic object *
+Xposix_listdir(self, args)
+X object *self;
+X object *args;
+X{
+X object *name, *d, *v;
+X DIR *dirp;
+X struct direct *ep;
+X if (!getstrarg(args, &name))
+X return NULL;
+X if ((dirp = opendir(getstringvalue(name))) == NULL)
+X return posix_error();
+X if ((d = newlistobject(0)) == NULL) {
+X closedir(dirp);
+X return NULL;
+X }
+X while ((ep = readdir(dirp)) != NULL) {
+X v = newstringobject(ep->d_name);
+X if (v == NULL) {
+X DECREF(d);
+X d = NULL;
+X break;
+X }
+X if (addlistitem(d, v) != 0) {
+X DECREF(v);
+X DECREF(d);
+X d = NULL;
+X break;
+X }
+X DECREF(v);
+X }
+X closedir(dirp);
+X return d;
+X}
+X
+Xstatic object *
+Xposix_mkdir(self, args)
+X object *self;
+X object *args;
+X{
+X extern int mkdir PROTO((const char *, mode_t));
+X return posix_strint(args, mkdir);
+X}
+X
+Xstatic object *
+Xposix_rename(self, args)
+X object *self;
+X object *args;
+X{
+X extern int rename PROTO((const char *, const char *));
+X return posix_2str(args, rename);
+X}
+X
+Xstatic object *
+Xposix_rmdir(self, args)
+X object *self;
+X object *args;
+X{
+X extern int rmdir PROTO((const char *));
+X return posix_1str(args, rmdir);
+X}
+X
+Xstatic object *
+Xposix_stat(self, args)
+X object *self;
+X object *args;
+X{
+X extern int stat PROTO((const char *, struct stat *));
+X return posix_do_stat(self, args, stat);
+X}
+X
+Xstatic object *
+Xposix_system(self, args)
+X object *self;
+X object *args;
+X{
+X object *command;
+X int sts;
+X if (!getstrarg(args, &command))
+X return NULL;
+X sts = system(getstringvalue(command));
+X return newintobject((long)sts);
+X}
+X
+Xstatic object *
+Xposix_umask(self, args)
+X object *self;
+X object *args;
+X{
+X int i;
+X if (!getintarg(args, &i))
+X return NULL;
+X i = umask(i);
+X if (i < 0)
+X return posix_error();
+X return newintobject((long)i);
+X}
+X
+Xstatic object *
+Xposix_unlink(self, args)
+X object *self;
+X object *args;
+X{
+X extern int unlink PROTO((const char *));
+X return posix_1str(args, unlink);
+X}
+X
+Xstatic object *
+Xposix_utimes(self, args)
+X object *self;
+X object *args;
+X{
+X object *path;
+X struct timeval tv[2];
+X if (args == NULL || !is_tupleobject(args) || gettuplesize(args) != 2) {
+X err_badarg();
+X return NULL;
+X }
+X if (!getstrarg(gettupleitem(args, 0), &path) ||
+X !getlonglongargs(gettupleitem(args, 1),
+X &tv[0].tv_sec, &tv[1].tv_sec))
+X return NULL;
+X tv[0].tv_usec = tv[1].tv_usec = 0;
+X if (utimes(getstringvalue(path), tv) < 0)
+X return posix_error();
+X INCREF(None);
+X return None;
+X}
+X
+X
+X#ifndef NO_LSTAT
+X
+Xstatic object *
+Xposix_lstat(self, args)
+X object *self;
+X object *args;
+X{
+X extern int lstat PROTO((const char *, struct stat *));
+X return posix_do_stat(self, args, lstat);
+X}
+X
+Xstatic object *
+Xposix_readlink(self, args)
+X object *self;
+X object *args;
+X{
+X char buf[1024]; /* XXX Should use MAXPATHLEN */
+X object *path;
+X int n;
+X if (!getstrarg(args, &path))
+X return NULL;
+X n = readlink(getstringvalue(path), buf, sizeof buf);
+X if (n < 0)
+X return posix_error();
+X return newsizedstringobject(buf, n);
+X}
+X
+Xstatic object *
+Xposix_symlink(self, args)
+X object *self;
+X object *args;
+X{
+X extern int symlink PROTO((const char *, const char *));
+X return posix_2str(args, symlink);
+X}
+X
+X#endif /* NO_LSTAT */
+X
+X
+Xstatic struct methodlist posix_methods[] = {
+X {"chdir", posix_chdir},
+X {"chmod", posix_chmod},
+X {"getcwd", posix_getcwd},
+X {"link", posix_link},
+X {"listdir", posix_listdir},
+X {"mkdir", posix_mkdir},
+X {"rename", posix_rename},
+X {"rmdir", posix_rmdir},
+X {"stat", posix_stat},
+X {"system", posix_system},
+X {"umask", posix_umask},
+X {"unlink", posix_unlink},
+X {"utimes", posix_utimes},
+X#ifndef NO_LSTAT
+X {"lstat", posix_lstat},
+X {"readlink", posix_readlink},
+X {"symlink", posix_symlink},
+X#endif
+X {NULL, NULL} /* Sentinel */
+X};
+X
+X
+Xvoid
+Xinitposix()
+X{
+X object *m, *d, *v;
+X
+X m = initmodule("posix", posix_methods);
+X d = getmoduledict(m);
+X
+X /* Initialize posix.environ dictionary */
+X v = convertenviron();
+X if (v == NULL || dictinsert(d, "environ", v) != 0)
+X fatal("can't define posix.environ");
+X DECREF(v);
+X
+X /* Initialize posix.error exception */
+X PosixError = newstringobject("posix.error");
+X if (PosixError == NULL || dictinsert(d, "error", PosixError) != 0)
+X fatal("can't define posix.error");
+X}
+EOF
+fi
+echo 'Part 11 out of 21 of pack.out complete.'
+exit 0
