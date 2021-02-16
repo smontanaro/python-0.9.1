@@ -86,8 +86,8 @@ DEFPYTHONPATH= .:/usr/local/lib/python:/ufs/guido/lib/python:../lib
 # is missing in most systems I have encountered, so it is turned on
 # in the Makefile. Turn it off if your system doesn't have sys_errlist.)
 
-STRERROR_SRC= strerror.c
-STRERROR_OBJ= strerror.o
+# STRERROR_SRC= strerror.c
+# STRERROR_OBJ= strerror.o
 
 # If your BSD system does not have a fmod() function in the library,
 # uncomment the following two lines to use one I wrote.
@@ -383,8 +383,7 @@ GENSOURCES= acceler.c fgetsintr.c grammar1.c \
 # ============
 
 python: libpython.a $(OBJECTS) $(LIBDEPS) Makefile
-	$(CC) $(CFLAGS) $(OBJECTS) $(LIBS) -o @python
-	mv @python python
+	$(CC) $(CFLAGS) $(OBJECTS) $(LIBS) -o python
 
 libpython.a: $(LIBOBJECTS)
 	-rm -f @lib

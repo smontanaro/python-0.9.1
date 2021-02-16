@@ -167,6 +167,8 @@ load_module(name)
  return m;
 }
 
+static int init_builtin(char *name);
+
 object *
 import_module(name)
  char *name;

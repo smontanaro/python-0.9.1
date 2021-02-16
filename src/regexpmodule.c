@@ -38,7 +38,7 @@ typedef struct {
  regexp *re_prog; /* The compiled regular expression */
 } regexpobject;
 
-extern typeobject Regexptype; /* Really static, forward */
+static typeobject Regexptype;
 
 static regexpobject *
 newregexpobject(string, prog)

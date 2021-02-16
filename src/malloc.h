@@ -36,6 +36,11 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #define HAVE_STDLIB
 #endif
 
+#ifdef __STDC__
+#define ANY void
+#define HAVE_STDLIB
+#endif
+
 #ifndef ANY
 #define ANY char
 #endif
