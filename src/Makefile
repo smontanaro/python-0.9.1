@@ -65,10 +65,12 @@ RANLIB =	ranlib	# For BSD
 # Installation Options
 # ====================
 
-# You may want to change PYTHONPATH to reflect where you install the
-# Python module library.
+# You may want to change DEFPYTHONPATH to reflect where you install the
+# Python module library. The default contains "../lib" so running
+# the interpreter from the source/build directory as distributed will
+# find the library (admittedly a hack).
 
-PYTHONPATH=	.:/usr/local/lib/python:/ufs/guido/lib/python
+DEFPYTHONPATH= .:/usr/local/lib/python:/ufs/guido/lib/python:../lib
 
 
 # For "Pure" BSD Systems
@@ -248,10 +250,16 @@ PYTHONPATH=	.:/usr/local/lib/python:/ufs/guido/lib/python
 # about 70K to the Python text size and about 260K to the unstripped
 # binary size.
 #
-# Note: the file 'glmodule.c' is created by a Python script.  If you
-# lost the file and have no working Python interpreter, turn off the GL
-# and Panel options, rebuild the Python interpreter, use it to create
-# glmodule.c, and then turn the options back on.
+# NOTE WHEN BUILDING FOR THE FIRST TIME:
+# There is a circular dependency in the build process: you need to have
+# a working Python interpreter before you can build a Python interpreter
+# that incorporates the 'gl' module -- the source file 'glmodule.c' is
+# not distributed (it's about 140K!) and a Python script is used to
+# create it. Thus, you first have to build python without the the GL
+# and Panel options, then edit the Makefile to turn them (or at least GL)
+# on and rebuild. You may also have to set PYTHONPATH to point to
+# the place where the module library is for the generation script to
+# work.
 #
 # Uncomment the following block to use the GL option.
 
@@ -270,7 +278,9 @@ PYTHONPATH=	.:/usr/local/lib/python:/ufs/guido/lib/python
 # the standard module 'panel' to provide an interface to most features
 # of the Panel Library.  This option requires that you also turn on the
 # GL option.  It adds about 100K to the Python text size and about 160K
-# to the unstripped binary size.
+# to the unstripped binary size. This requires Panel Library version 9.7
+# (for lower versions you may have to remove some functionality -- send
+# me the patches if you bothered to do this).
 #
 # Uncomment and edit the following block to use the Panel option.
 # - Edit the PANELDIR definition to point to the top-level directory
@@ -335,7 +345,7 @@ STANDARD_SRC=	acceler.c bltinmodule.c ceval.c classobject.c \
 		tupleobject.c typeobject.c
 
 CONFIGDEFS=	$(STDW_USE) $(AM_USE) $(AUDIO_USE) $(GL_USE) $(PANEL_USE) \
-		'-DPYTHONPATH="$(PYTHONPATH)"'
+		'-DPYTHONPATH="$(DEFPYTHONPATH)"'
 
 CONFIGINCLS=	$(STDW_INCL)
 
@@ -480,7 +490,10 @@ tokenizer.o:	tokenizer.c
 # The rules for doing so are given here.
 
 # Build "glmodule.c", the GL interface.
-# Ignore the messages emitted by the cgen script.
+# See important note at "GL Option" above.
+# You may have to set and export PYTHONPATH for this to work.
+# Ignore the messages emitted by the cgen script as long as its exit
+# status is zero.
 # Also ignore the warnings emitted while compiling glmodule.c; it works.
 
 glmodule.c:	cstubs cgen
