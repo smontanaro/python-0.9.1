@@ -23,66 +23,66 @@ X
 XMAXSIZE = 200*1024 # Files this big must be binaries and are skipped.
 X
 Xdef getargs():
-X args = sys.argv[1:]
-X if args:
-X return args
-X print 'No arguments, checking almost *'
-X for file in posix.listdir('.'):
-X if not skipfile(file):
-X args.append(file)
-X if not args:
-X print 'Nothing to do -- exit 1'
-X sys.exit(1)
-X args.sort()
-X return args
+X	args = sys.argv[1:]
+X	if args:
+X		return args
+X	print 'No arguments, checking almost *'
+X	for file in posix.listdir('.'):
+X		if not skipfile(file):
+X			args.append(file)
+X	if not args:
+X		print 'Nothing to do -- exit 1'
+X		sys.exit(1)
+X	args.sort()
+X	return args
 X
 Xbadnames = ['tags', 'xyzzy']
 Xbadprefixes = ['.', ',', '@', '#', 'o.']
 Xbadsuffixes = \
-X ['~', '.a', '.o', '.old', '.bak', '.orig', '.new', '.prev', '.not']
+X	['~', '.a', '.o', '.old', '.bak', '.orig', '.new', '.prev', '.not']
 X# XXX Should generalize even more to use fnmatch!
 X
 Xdef skipfile(file):
-X if file in badnames or \
-X badprefix(file) or badsuffix(file) or \
-X path.islink(file) or path.isdir(file):
-X return 1
-X # Skip huge files -- probably binaries.
-X try:
-X st = posix.stat(file)
-X except posix.error:
-X return 1 # Doesn't exist -- skip it
-X return st[stat.ST_SIZE] >= MAXSIZE
+X	if file in badnames or \
+X		badprefix(file) or badsuffix(file) or \
+X		path.islink(file) or path.isdir(file):
+X		return 1
+X	# Skip huge files -- probably binaries.
+X	try:
+X		st = posix.stat(file)
+X	except posix.error:
+X		return 1 # Doesn't exist -- skip it
+X	return st[stat.ST_SIZE] >= MAXSIZE
 X
 Xdef badprefix(file):
-X for bad in badprefixes:
-X if file[:len(bad)] = bad: return 1
-X return 0
+X	for bad in badprefixes:
+X		if file[:len(bad)] = bad: return 1
+X	return 0
 X
 Xdef badsuffix(file):
-X for bad in badsuffixes:
-X if file[-len(bad):] = bad: return 1
-X return 0
+X	for bad in badsuffixes:
+X		if file[-len(bad):] = bad: return 1
+X	return 0
 X
 Xdef go(args):
-X for file in args:
-X print file + ':'
-X if run('rcsdiff -c', file):
-X if askyesno('Check in ' + file + ' ? '):
-X sts = run('rcs -l', file) # ignored
-X # can't use run() here because it's interactive
-X sts = posix.system('ci -l ' + file)
+X	for file in args:
+X		print file + ':'
+X		if run('rcsdiff -c', file):
+X			if askyesno('Check in ' + file + ' ? '):
+X				sts = run('rcs -l', file) # ignored
+X				# can't use run() here because it's interactive
+X				sts = posix.system('ci -l ' + file)
 X
 Xdef run(cmd, file):
-X sts, output = commands.getstatusoutput(cmd + commands.mkarg(file))
-X if sts:
-X print output
-X print 'Exit status', sts
-X return sts
+X	sts, output = commands.getstatusoutput(cmd + commands.mkarg(file))
+X	if sts:
+X		print output
+X		print 'Exit status', sts
+X	return sts
 X
 Xdef askyesno(prompt):
-X s = raw_input(prompt)
-X return s in ['y', 'yes']
+X	s = raw_input(prompt)
+X	return s in ['y', 'yes']
 X
 Xgo(getargs())
 EOF
@@ -373,45 +373,45 @@ X# For historical reasons, button creation methods are called
 X# define() while split creation methods are called create().
 X
 Xclass AbstractParent():
-X #
-X # Upcalls from child to parent
-X #
-X def addchild(self, child): unimpl()
-X def delchild(self, child): unimpl()
-X #
-X def need_mouse(self, child): unimpl()
-X def no_mouse(self, child): unimpl()
-X #
-X def need_timer(self, child): unimpl()
-X def no_timer(self, child): unimpl()
-X #
-X # XXX need_kbd, no_kbd; focus???
-X #
-X def begindrawing(self): return unimpl()
-X def beginmeasuring(self): return unimpl()
-X #
-X def change(self, area): unimpl()
-X def scroll(self, (area, (dh, dv))): unimpl()
-X def settimer(self, itimer): unimpl()
+X	#
+X	# Upcalls from child to parent
+X	#
+X	def addchild(self, child): unimpl()
+X	def delchild(self, child): unimpl()
+X	#
+X	def need_mouse(self, child): unimpl()
+X	def no_mouse(self, child): unimpl()
+X	#
+X	def need_timer(self, child): unimpl()
+X	def no_timer(self, child): unimpl()
+X	#
+X	# XXX need_kbd, no_kbd; focus???
+X	#
+X	def begindrawing(self): return unimpl()
+X	def beginmeasuring(self): return unimpl()
+X	#
+X	def change(self, area): unimpl()
+X	def scroll(self, (area, (dh, dv))): unimpl()
+X	def settimer(self, itimer): unimpl()
 X
 Xclass AbstractChild():
-X #
-X # Downcalls from parent to child
-X #
-X def destroy(self): unimpl()
-X #
-X def minsize(self, m): return unimpl()
-X def getbounds(self): return unimpl()
-X def setbounds(self, bounds): unimpl()
-X def draw(self, (d, area)): unimpl()
-X #
-X # Downcalls only made after certain upcalls
-X #
-X def mouse_down(self, detail): unimpl()
-X def mouse_move(self, detail): unimpl()
-X def mouse_up(self, detail): unimpl()
-X #
-X def timer(self): unimpl()
+X	#
+X	# Downcalls from parent to child
+X	#
+X	def destroy(self): unimpl()
+X	#
+X	def minsize(self, m): return unimpl()
+X	def getbounds(self): return unimpl()
+X	def setbounds(self, bounds): unimpl()
+X	def draw(self, (d, area)): unimpl()
+X	#
+X	# Downcalls only made after certain upcalls
+X	#
+X	def mouse_down(self, detail): unimpl()
+X	def mouse_move(self, detail): unimpl()
+X	def mouse_up(self, detail): unimpl()
+X	#
+X	def timer(self): unimpl()
 X
 X# A "Split" is a child that manages one or more children.
 X# (This terminology is due to DEC SRC, except for CSplits.)
@@ -420,7 +420,7 @@ X# Certain upcalls and downcalls can be handled transparently, but
 X# for others (e.g., all geometry related calls) this is not possible.
 X
 Xclass AbstractSplit() = AbstractChild(), AbstractParent():
-X pass
+X	pass
 EOF
 fi
 if test -s 'lib/StripChart.py'
@@ -437,65 +437,65 @@ X# A StripChart doesn't really look like a label but it needs a base class.
 X# LabelAppearance allows it to be disabled and hilited.
 X
 Xclass StripChart() = LabelAppearance(), NoReactivity():
-X #
-X def define(self, (parent, scale)):
-X self.parent = parent
-X parent.addchild(self)
-X self.init_appearance()
-X self.init_reactivity()
-X self.ydata = []
-X self.scale = scale
-X self.resetbounds()
-X return self
-X #
-X def setbounds(self, bounds):
-X LabelAppearance.setbounds(self, bounds)
-X self.resetbounds()
-X #
-X def resetbounds(self):
-X (left, top), (right, bottom) = self.bounds
-X self.width = right-left
-X self.height = bottom-top
-X excess = len(self.ydata) - self.width
-X if excess > 0:
-X del self.ydata[:excess]
-X elif excess < 0:
-X while len(self.ydata) < self.width:
-X self.ydata.insert(0, 0)
-X #
-X def append(self, y):
-X self.ydata.append(y)
-X excess = len(self.ydata) - self.width
-X if excess > 0:
-X del self.ydata[:excess]
-X if self.bounds <> rect.empty:
-X self.parent.scroll(self.bounds, (-excess, 0))
-X if self.bounds <> rect.empty:
-X (left, top), (right, bottom) = self.bounds
-X i = len(self.ydata)
-X area = (left+i-1, top), (left+i, bottom)
-X self.draw(self.parent.begindrawing(), area)
-X #
-X def draw(self, (d, area)):
-X area = rect.intersect(area, self.bounds)
-X if area = rect.empty:
-X print 'mt'
-X return
-X d.cliprect(area)
-X d.erase(self.bounds)
-X (a_left, a_top), (a_right, a_bottom) = area
-X (left, top), (right, bottom) = self.bounds
-X height = bottom - top
-X i1 = a_left - left
-X i2 = a_right - left
-X for i in range(max(0, i1), min(len(self.ydata), i2)):
-X split = bottom-self.ydata[i]*height/self.scale
-X d.paint((left+i, split), (left+i+1, bottom))
-X if not self.enabled:
-X self.flipenable(d)
-X if self.hilited:
-X self.fliphilite(d)
-X d.noclip()
+X	#
+X	def define(self, (parent, scale)):
+X		self.parent = parent
+X		parent.addchild(self)
+X		self.init_appearance()
+X		self.init_reactivity()
+X		self.ydata = []
+X		self.scale = scale
+X		self.resetbounds()
+X		return self
+X	#
+X	def setbounds(self, bounds):
+X		LabelAppearance.setbounds(self, bounds)
+X		self.resetbounds()
+X	#
+X	def resetbounds(self):
+X		(left, top), (right, bottom) = self.bounds
+X		self.width = right-left
+X		self.height = bottom-top
+X		excess = len(self.ydata) - self.width
+X		if excess > 0:
+X			del self.ydata[:excess]
+X		elif excess < 0:
+X			while len(self.ydata) < self.width:
+X				self.ydata.insert(0, 0)
+X	#
+X	def append(self, y):
+X		self.ydata.append(y)
+X		excess = len(self.ydata) - self.width
+X		if excess > 0:
+X			del self.ydata[:excess]
+X			if self.bounds <> rect.empty:
+X				self.parent.scroll(self.bounds, (-excess, 0))
+X		if self.bounds <> rect.empty:
+X			(left, top), (right, bottom) = self.bounds
+X			i = len(self.ydata)
+X			area = (left+i-1, top), (left+i, bottom)
+X			self.draw(self.parent.begindrawing(), area)
+X	#
+X	def draw(self, (d, area)):
+X		area = rect.intersect(area, self.bounds)
+X		if area = rect.empty:
+X			print 'mt'
+X			return
+X		d.cliprect(area)
+X		d.erase(self.bounds)
+X		(a_left, a_top), (a_right, a_bottom) = area
+X		(left, top), (right, bottom) = self.bounds
+X		height = bottom - top
+X		i1 = a_left - left
+X		i2 = a_right - left
+X		for i in range(max(0, i1), min(len(self.ydata), i2)):
+X			split = bottom-self.ydata[i]*height/self.scale
+X			d.paint((left+i, split), (left+i+1, bottom))
+X		if not self.enabled:
+X			self.flipenable(d)
+X		if self.hilited:
+X			self.fliphilite(d)
+X		d.noclip()
 EOF
 fi
 if test -s 'lib/cmp.py'
@@ -508,62 +508,62 @@ X
 X# Efficiently compare files, boolean outcome only (equal / not equal).
 X
 X# Tricks (used in this order):
-X# - Files with identical type, size & mtime are assumed to be clones
-X# - Files with different type or size cannot be identical
-X# - We keep a cache of outcomes of earlier comparisons
-X# - We don't fork a process to run 'cmp' but read the files ourselves
+X#	- Files with identical type, size & mtime are assumed to be clones
+X#	- Files with different type or size cannot be identical
+X#	- We keep a cache of outcomes of earlier comparisons
+X#	- We don't fork a process to run 'cmp' but read the files ourselves
 X
 Ximport posix
 X
 Xcache = {}
 X
 Xdef cmp(f1, f2): # Compare two files, use the cache if possible.
-X # Return 1 for identical files, 0 for different.
-X # Raise exceptions if either file could not be statted, read, etc.
-X s1, s2 = sig(posix.stat(f1)), sig(posix.stat(f2))
-X if s1[0] <> 8 or s2[0] <> 8:
-X # Either is a not a plain file -- always report as different
-X return 0
-X if s1 = s2:
-X # type, size & mtime match -- report same
-X return 1
-X if s1[:2] <> s2[:2]: # Types or sizes differ, don't bother
-X # types or sizes differ -- report different
-X return 0
-X # same type and size -- look in the cache
-X key = f1 + ' ' + f2
-X try:
-X cs1, cs2, outcome = cache[key]
-X # cache hit
-X if s1 = cs1 and s2 = cs2:
-X # cached signatures match
-X return outcome
-X # stale cached signature(s)
-X except RuntimeError:
-X # cache miss
-X pass
-X # really compare
-X outcome = do_cmp(f1, f2)
-X cache[key] = s1, s2, outcome
-X return outcome
+X	# Return 1 for identical files, 0 for different.
+X	# Raise exceptions if either file could not be statted, read, etc.
+X	s1, s2 = sig(posix.stat(f1)), sig(posix.stat(f2))
+X	if s1[0] <> 8 or s2[0] <> 8:
+X		# Either is a not a plain file -- always report as different
+X		return 0
+X	if s1 = s2:
+X		# type, size & mtime match -- report same
+X		return 1
+X	if s1[:2] <> s2[:2]: # Types or sizes differ, don't bother
+X		# types or sizes differ -- report different
+X		return 0
+X	# same type and size -- look in the cache
+X	key = f1 + ' ' + f2
+X	try:
+X		cs1, cs2, outcome = cache[key]
+X		# cache hit
+X		if s1 = cs1 and s2 = cs2:
+X			# cached signatures match
+X			return outcome
+X		# stale cached signature(s)
+X	except RuntimeError:
+X		# cache miss
+X		pass
+X	# really compare
+X	outcome = do_cmp(f1, f2)
+X	cache[key] = s1, s2, outcome
+X	return outcome
 X
 Xdef sig(st): # Return signature (i.e., type, size, mtime) from raw stat data
-X # 0-5: st_mode, st_ino, st_dev, st_nlink, st_uid, st_gid
-X # 6-9: st_size, st_atime, st_mtime, st_ctime
-X type = st[0] / 4096
-X size = st[6]
-X mtime = st[8]
-X return type, size, mtime
+X	# 0-5: st_mode, st_ino, st_dev, st_nlink, st_uid, st_gid
+X	# 6-9: st_size, st_atime, st_mtime, st_ctime
+X	type = st[0] / 4096
+X	size = st[6]
+X	mtime = st[8]
+X	return type, size, mtime
 X
 Xdef do_cmp(f1, f2): # Compare two files, really
-X bufsize = 8096 # Could be tuned
-X fp1 = open(f1, 'r')
-X fp2 = open(f2, 'r')
-X while 1:
-X b1 = fp1.read(bufsize)
-X b2 = fp2.read(bufsize)
-X if b1 <> b2: return 0
-X if not b1: return 1
+X	bufsize = 8096 # Could be tuned
+X	fp1 = open(f1, 'r')
+X	fp2 = open(f2, 'r')
+X	while 1:
+X		b1 = fp1.read(bufsize)
+X		b2 = fp2.read(bufsize)
+X		if b1 <> b2: return 0
+X		if not b1: return 1
 EOF
 fi
 if test -s 'lib/commands.py'
@@ -584,7 +584,7 @@ X
 X# Get 'ls -l' status for an object into a string
 X#
 Xdef getstatus(file):
-X return getoutput('ls -ld' + mkarg(file))
+X	return getoutput('ls -ld' + mkarg(file))
 X
 X
 X# Get the output from a shell command into a string.
@@ -593,44 +593,44 @@ X# Assume the command will work with ' >tempfile 2>&1' appended.
 X# XXX This should use posix.popen() instead, should it exist.
 X#
 Xdef getoutput(cmd):
-X return getstatusoutput(cmd)[1]
+X	return getstatusoutput(cmd)[1]
 X
 X
 X# Ditto but preserving the exit status.
 X# Returns a pair (sts, output)
 X#
 Xdef getstatusoutput(cmd):
-X tmp = '/usr/tmp/wdiff' + `rand.rand()`
-X sts = -1
-X try:
-X sts = posix.system(cmd + ' >' + tmp + ' 2>&1')
-X text = readfile(tmp)
-X finally:
-X altsts = posix.system('rm -f ' + tmp)
-X if text[-1:] = '\n': text = text[:-1]
-X return sts, text
+X	tmp = '/usr/tmp/wdiff' + `rand.rand()`
+X	sts = -1
+X	try:
+X		sts = posix.system(cmd + ' >' + tmp + ' 2>&1')
+X		text = readfile(tmp)
+X	finally:
+X		altsts = posix.system('rm -f ' + tmp)
+X	if text[-1:] = '\n': text = text[:-1]
+X	return sts, text
 X
 X
 X# Return a string containing a file's contents.
 X#
 Xdef readfile(fn):
-X st = posix.stat(fn)
-X size = st[stat.ST_SIZE]
-X if not size: return ''
-X try:
-X fp = open(fn, 'r')
-X except:
-X raise posix.error, 'readfile(' + fn + '): open failed'
-X try:
-X return fp.read(size)
-X except:
-X raise posix.error, 'readfile(' + fn + '): read failed'
+X	st = posix.stat(fn)
+X	size = st[stat.ST_SIZE]
+X	if not size: return ''
+X	try:
+X		fp = open(fn, 'r')
+X	except:
+X		raise posix.error, 'readfile(' + fn + '): open failed'
+X	try:
+X		return fp.read(size)
+X	except:
+X		raise posix.error, 'readfile(' + fn + '): read failed'
 X
 X
 X# Make command argument from directory and pathname (prefix space, add quotes).
 X#
 Xdef mk2arg(head, x):
-X return mkarg(path.cat(head, x))
+X	return mkarg(path.cat(head, x))
 X
 X
 X# Make a shell command argument from a string.
@@ -639,15 +639,15 @@ X# otherwis, enclose in double quotes and prefix quotable characters
 X# with backslash.
 X#
 Xdef mkarg(x):
-X if '\'' not in x:
-X return ' \'' + x + '\''
-X s = ' "'
-X for c in x:
-X if c in '\\$"':
-X s = s + '\\'
-X s = s + c
-X s = s + '"'
-X return s
+X	if '\'' not in x:
+X		return ' \'' + x + '\''
+X	s = ' "'
+X	for c in x:
+X		if c in '\\$"':
+X			s = s + '\\'
+X		s = s + c
+X	s = s + '"'
+X	return s
 EOF
 fi
 if test -s 'lib/getopt.py'
@@ -669,39 +669,39 @@ X# It raises the exception getopt.error with a string argument if it
 X# detects an error.
 X
 X# It returns two items:
-X# (1) a list of pairs (option, option_argument) giving the options in
-X# the order in which they were specified. (I'd use a dictionary
-X# but applications may depend on option order or multiple
-X# occurrences.) Boolean options have '' as option_argument.
-X# (2) the list of remaining arguments (may be empty).
+X# (1)	a list of pairs (option, option_argument) giving the options in
+X#	the order in which they were specified.  (I'd use a dictionary
+X#	but applications may depend on option order or multiple
+X#	occurrences.)  Boolean options have '' as option_argument.
+X# (2)	the list of remaining arguments (may be empty).
 X
 Xerror = 'getopt error'
 X
 Xdef getopt(args, options):
-X list = []
-X while args and args[0][0] = '-' and args[0] <> '-':
-X if args[0] = '--':
-X args = args[1:]
-X break
-X optstring, args = args[0][1:], args[1:]
-X while optstring <> '':
-X opt, optstring = optstring[0], optstring[1:]
-X if classify(opt, options): # May raise exception as well
-X if optstring = '':
-X if not args:
-X raise error, 'option -' + opt + ' requires argument'
-X optstring, args = args[0], args[1:]
-X optarg, optstring = optstring, ''
-X else:
-X optarg = ''
-X list.append('-' + opt, optarg)
-X return list, args
+X    list = []
+X    while args and args[0][0] = '-' and args[0] <> '-':
+X    	if args[0] = '--':
+X    	    args = args[1:]
+X    	    break
+X    	optstring, args = args[0][1:], args[1:]
+X    	while optstring <> '':
+X    	    opt, optstring = optstring[0], optstring[1:]
+X    	    if classify(opt, options): # May raise exception as well
+X    	    	if optstring = '':
+X    	    	    if not args:
+X    	    	    	raise error, 'option -' + opt + ' requires argument'
+X    	    	    optstring, args = args[0], args[1:]
+X    	    	optarg, optstring = optstring, ''
+X    	    else:
+X    	    	optarg = ''
+X    	    list.append('-' + opt, optarg)
+X    return list, args
 X
 Xdef classify(opt, options): # Helper to check type of option
-X for i in range(len(options)):
-X if opt = options[i] <> ':':
-X return options[i+1:i+2] = ':'
-X raise error, 'option -' + opt + ' not recognized'
+X    for i in range(len(options)):
+X	if opt = options[i] <> ':':
+X	    return options[i+1:i+2] = ':'
+X    raise error, 'option -' + opt + ' not recognized'
 EOF
 fi
 if test -s 'lib/rect.py'
@@ -729,74 +729,74 @@ X
 X# Check if a rectangle is empty.
 X#
 Xdef is_empty((left, top), (right, bottom)):
-X return left >= right or top >= bottom
+X	return left >= right or top >= bottom
 X
 X
 X# Compute the intersection or two or more rectangles.
 X# This works with a list or tuple argument.
 X#
 Xdef intersect(list):
-X if not list: raise error, 'intersect called with empty list'
-X if is_empty(list[0]): return empty
-X (left, top), (right, bottom) = list[0]
-X for rect in list[1:]:
-X if is_empty(rect):
-X return empty
-X (l, t), (r, b) = rect
-X if left < l: left = l
-X if top < t: top = t
-X if right > r: right = r
-X if bottom > b: bottom = b
-X if is_empty((left, top), (right, bottom)):
-X return empty
-X return (left, top), (right, bottom)
+X	if not list: raise error, 'intersect called with empty list'
+X	if is_empty(list[0]): return empty
+X	(left, top), (right, bottom) = list[0]
+X	for rect in list[1:]:
+X		if is_empty(rect):
+X			return empty
+X		(l, t), (r, b) = rect
+X		if left < l: left = l
+X		if top < t: top = t
+X		if right > r: right = r
+X		if bottom > b: bottom = b
+X		if is_empty((left, top), (right, bottom)):
+X			return empty
+X	return (left, top), (right, bottom)
 X
 X
 X# Compute the smallest rectangle containing all given rectangles.
 X# This works with a list or tuple argument.
 X#
 Xdef union(list):
-X (left, top), (right, bottom) = empty
-X for (l, t), (r, b) in list[1:]:
-X if not is_empty((l, t), (r, b)):
-X if l < left: left = l
-X if t < top: top = t
-X if r > right: right = r
-X if b > bottom: bottom = b
-X res = (left, top), (right, bottom)
-X if is_empty(res):
-X return empty
-X return res
+X	(left, top), (right, bottom) = empty
+X	for (l, t), (r, b) in list[1:]:
+X		if not is_empty((l, t), (r, b)):
+X			if l < left: left = l
+X			if t < top: top = t
+X			if r > right: right = r
+X			if b > bottom: bottom = b
+X	res = (left, top), (right, bottom)
+X	if is_empty(res):
+X		return empty
+X	return res
 X
 X
 X# Check if a point is in a rectangle.
 X#
 Xdef pointinrect((h, v), ((left, top), (right, bottom))):
-X return left <= h < right and top <= v < bottom
+X	return left <= h < right and top <= v < bottom
 X
 X
 X# Return a rectangle that is dh, dv inside another
 X#
 Xdef inset(((left, top), (right, bottom)), (dh, dv)):
-X left = left + dh
-X top = top + dv
-X right = right - dh
-X bottom = bottom - dv
-X r = (left, top), (right, bottom)
-X if is_empty(r):
-X return empty
-X else:
-X return r
+X	left = left + dh
+X	top = top + dv
+X	right = right - dh
+X	bottom = bottom - dv
+X	r = (left, top), (right, bottom)
+X	if is_empty(r):
+X		return empty
+X	else:
+X		return r
 X
 X
 X# Conversions between rectangles and 'geometry tuples',
 X# given as origin (h, v) and dimensions (width, height).
 X#
 Xdef rect2geom((left, top), (right, bottom)):
-X return (left, top), (right-left, bottom-top)
+X	return (left, top), (right-left, bottom-top)
 X
 Xdef geom2rect((h, v), (width, height)):
-X return (h, v), (h+width, v+height)
+X	return (h, v), (h+width, v+height)
 EOF
 fi
 if test -s 'lib/selection.py'
@@ -806,7 +806,7 @@ echo 'x - lib/selection.py'
 sed 's/^X//' > 'lib/selection.py' << 'EOF'
 X# DAWKINS' BLIND WATCHMAKER -- "METHINKS IT IS LIKE A WEASEL" EXAMPLE
 X#
-X# Start with a random phrase. Successively:
+X# Start with a random phrase.  Successively:
 X# Breed a next generation by copying with small mutations.
 X# Choose the member of the next generation that most closely resembles
 X# the target phrase to start breeding the next generation.
@@ -822,58 +822,58 @@ X# Parameters to play with
 XGenerationSize = 100
 XMutationChance = 1.0/28.0
 X
-XIndexSet = range(len(Target)) # Used to speed up loops
+XIndexSet = range(len(Target))	# Used to speed up loops
 X
 Xdef choice(sequence):
-X n = len(sequence)
-X i = int(random() * float(n)) % n
-X return sequence[i]
+X	n = len(sequence)
+X	i = int(random() * float(n)) % n
+X	return sequence[i]
 X
 Xdef random_phrase():
-X phrase = ''
-X for i in IndexSet:
-X phrase = phrase + choice(Alphabet)
-X return phrase
+X	phrase = ''
+X	for i in IndexSet:
+X		phrase = phrase + choice(Alphabet)
+X	return phrase
 X
 Xdef mutate_phrase(phrase):
-X mutant = phrase
-X for i in range(int(0.5 + MutationChance*float(len(phrase)))):
-X i = choice(IndexSet)
-X c = choice(Alphabet)
-X mutant = mutant[:i] + c + mutant[i+1:]
-X #print `mutant`
-X return mutant
+X	mutant = phrase
+X	for i in range(int(0.5 + MutationChance*float(len(phrase)))):
+X		i = choice(IndexSet)
+X		c = choice(Alphabet)
+X		mutant = mutant[:i] + c + mutant[i+1:]
+X	#print `mutant`
+X	return mutant
 X
 Xdef matching_factor(phrase):
-X factor = 0
-X for i in IndexSet:
-X if phrase[i] = Target[i]: factor = factor + 1
-X return factor
+X	factor = 0
+X	for i in IndexSet:
+X		if phrase[i] = Target[i]: factor = factor + 1
+X	return factor
 X
 Xdef breed_generation(phrase):
-X generation = [phrase]
-X while len(generation) < GenerationSize:
-X generation.append(mutate_phrase(phrase))
-X return generation
+X	generation = [phrase]
+X	while len(generation) < GenerationSize:
+X		generation.append(mutate_phrase(phrase))
+X	return generation
 X
 Xdef select_best(generation):
-X factor, selected = -1, ''
-X for phrase in generation:
-X f = matching_factor(phrase)
-X if f > factor:
-X factor, selected = f, phrase
-X return selected
+X	factor, selected = -1, ''
+X	for phrase in generation:
+X		f = matching_factor(phrase)
+X		if f > factor:
+X			factor, selected = f, phrase
+X	return selected
 X
 Xdef main():
-X gen = 0
-X phrase = random_phrase()
-X print gen, `phrase`
-X while phrase <> Target:
-X next_generation = breed_generation(phrase)
-X #print next_generation
-X phrase = select_best(next_generation)
-X gen = gen+1
-X print gen, `phrase`
+X	gen = 0
+X	phrase = random_phrase()
+X	print gen, `phrase`
+X	while phrase <> Target:
+X		next_generation = breed_generation(phrase)
+X		#print next_generation
+X		phrase = select_best(next_generation)
+X		gen = gen+1
+X		print gen, `phrase`
 X
 Xmain()
 EOF
@@ -900,75 +900,75 @@ X
 X# Stat a file, possibly out of the cache.
 X#
 Xdef stat(path):
-X if cache.has_key(path):
-X return cache[path]
-X cache[path] = ret = posix.stat(path)
-X return ret
+X	if cache.has_key(path):
+X		return cache[path]
+X	cache[path] = ret = posix.stat(path)
+X	return ret
 X
 X
 X# Reset the cache completely.
 X# Hack: to reset a global variable, we import this module.
 X#
 Xdef reset():
-X import statcache
-X # Check that we really imported the same module
-X if cache is not statcache.cache:
-X raise 'sorry, statcache identity crisis'
-X statcache.cache = {}
+X	import statcache
+X	# Check that we really imported the same module
+X	if cache is not statcache.cache:
+X		raise 'sorry, statcache identity crisis'
+X	statcache.cache = {}
 X
 X
 X# Remove a given item from the cache, if it exists.
 X#
 Xdef forget(path):
-X if cache.has_key(path):
-X del cache[path]
+X	if cache.has_key(path):
+X		del cache[path]
 X
 X
 X# Remove all pathnames with a given prefix.
 X#
 Xdef forget_prefix(prefix):
-X n = len(prefix)
-X for path in cache.keys():
-X if path[:n] = prefix:
-X del cache[path]
+X	n = len(prefix)
+X	for path in cache.keys():
+X		if path[:n] = prefix:
+X			del cache[path]
 X
 X
 X# Forget about a directory and all entries in it, but not about
 X# entries in subdirectories.
 X#
 Xdef forget_dir(prefix):
-X if prefix[-1:] = '/' and prefix <> '/':
-X prefix = prefix[:-1]
-X forget(prefix)
-X if prefix[-1:] <> '/':
-X prefix = prefix + '/'
-X n = len(prefix)
-X for path in cache.keys():
-X if path[:n] = prefix:
-X rest = path[n:]
-X if rest[-1:] = '/': rest = rest[:-1]
-X if '/' not in rest:
-X del cache[path]
+X	if prefix[-1:] = '/' and prefix <> '/':
+X		prefix = prefix[:-1]
+X	forget(prefix)
+X	if prefix[-1:] <> '/':
+X		prefix = prefix + '/'
+X	n = len(prefix)
+X	for path in cache.keys():
+X		if path[:n] = prefix:
+X			rest = path[n:]
+X			if rest[-1:] = '/': rest = rest[:-1]
+X			if '/' not in rest:
+X				del cache[path]
 X
 X
 X# Remove all pathnames except with a given prefix.
 X# Normally used with prefix = '/' after a chdir().
 X#
 Xdef forget_except_prefix(prefix):
-X n = len(prefix)
-X for path in cache.keys():
-X if path[:n] <> prefix:
-X del cache[path]
+X	n = len(prefix)
+X	for path in cache.keys():
+X		if path[:n] <> prefix:
+X			del cache[path]
 X
 X
 X# Check for directory.
 X#
 Xdef isdir(path):
-X try:
-X st = stat(path)
-X except posix.error:
-X return 0
-X return S_ISDIR(st[ST_MODE])
+X	try:
+X		st = stat(path)
+X	except posix.error:
+X		return 0
+X	return S_ISDIR(st[ST_MODE])
 EOF
 fi
 if test -s 'src/allobjects.h'
@@ -980,12 +980,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1037,12 +1037,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1059,7 +1059,7 @@ X******************************************************************/
 X
 X/* Bitset interface */
 X
-X#define BYTE char
+X#define BYTE		char
 X
 Xtypedef BYTE *bitset;
 X
@@ -1070,13 +1070,13 @@ Xint addbit PROTO((bitset bs, int ibit)); /* Returns 0 if already set */
 Xint samebitset PROTO((bitset bs1, bitset bs2, int nbits));
 Xvoid mergebitset PROTO((bitset bs1, bitset bs2, int nbits));
 X
-X#define BITSPERBYTE (8*sizeof(BYTE))
-X#define NBYTES(nbits) (((nbits) + BITSPERBYTE - 1) / BITSPERBYTE)
+X#define BITSPERBYTE	(8*sizeof(BYTE))
+X#define NBYTES(nbits)	(((nbits) + BITSPERBYTE - 1) / BITSPERBYTE)
 X
-X#define BIT2BYTE(ibit) ((ibit) / BITSPERBYTE)
-X#define BIT2SHIFT(ibit) ((ibit) % BITSPERBYTE)
-X#define BIT2MASK(ibit) (1 << BIT2SHIFT(ibit))
-X#define BYTE2BIT(ibyte) ((ibyte) * BITSPERBYTE)
+X#define BIT2BYTE(ibit)	((ibit) / BITSPERBYTE)
+X#define BIT2SHIFT(ibit)	((ibit) % BITSPERBYTE)
+X#define BIT2MASK(ibit)	(1 << BIT2SHIFT(ibit))
+X#define BYTE2BIT(ibyte)	((ibyte) * BITSPERBYTE)
 X
 X#define testbit(ss, ibit) (((ss)[BIT2BYTE(ibit)] & BIT2MASK(ibit)) != 0)
 EOF
@@ -1090,12 +1090,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1136,12 +1136,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1161,7 +1161,7 @@ X
 X/*
 XClasses are really hacked in at the last moment.
 XIt should be possible to use other object types as base classes,
-Xbut currently it isn't. We'll see if we can fix that later, sigh...
+Xbut currently it isn't.  We'll see if we can fix that later, sigh...
 X*/
 X
 Xextern typeobject Classtype, Classmembertype, Classmethodtype;
@@ -1187,12 +1187,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1211,16 +1211,16 @@ X/* Definitions for compiled intermediate code */
 X
 X
 X/* An intermediate code fragment contains:
-X - a string that encodes the instructions,
-X - a list of the constants,
-X - and a list of the names used. */
+X   - a string that encodes the instructions,
+X   - a list of the constants,
+X   - and a list of the names used. */
 X
 Xtypedef struct {
-X OB_HEAD
-X stringobject *co_code; /* instruction opcodes */
-X object *co_consts; /* list of immutable constant objects */
-X object *co_names; /* list of stringobjects */
-X object *co_filename; /* string */
+X	OB_HEAD
+X	stringobject *co_code;	/* instruction opcodes */
+X	object *co_consts;	/* list of immutable constant objects */
+X	object *co_names;	/* list of stringobjects */
+X	object *co_filename;	/* string */
 X} codeobject;
 X
 Xextern typeobject Codetype;
@@ -1241,12 +1241,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1264,9 +1264,9 @@ X
 X/*
 XDictionary object type -- mapping from char * to object.
 XNB: the key is given as a char *, not as a stringobject.
-XThese functions set errno for errors. Functions dictremove() and
+XThese functions set errno for errors.  Functions dictremove() and
 Xdictinsert() return nonzero for errors, getdictsize() returns -1,
-Xthe others NULL. A successful call to dictinsert() calls INCREF()
+Xthe others NULL.  A successful call to dictinsert() calls INCREF()
 Xfor the inserted item.
 X*/
 X
@@ -1292,12 +1292,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1333,10 +1333,10 @@ Xextern object *KeyboardInterrupt;
 X
 X/* Some more planned for the future */
 X
-X#define IndexError RuntimeError
-X#define KeyError RuntimeError
-X#define ZeroDivisionError RuntimeError
-X#define OverflowError RuntimeError
+X#define IndexError		RuntimeError
+X#define KeyError		RuntimeError
+X#define ZeroDivisionError	RuntimeError
+X#define OverflowError		RuntimeError
 X
 X/* Convenience functions */
 X
@@ -1357,12 +1357,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1388,45 +1388,45 @@ X/* Return the DFA for the given type */
 X
 Xdfa *
 Xfinddfa(g, type)
-X grammar *g;
-X register int type;
+X	grammar *g;
+X	register int type;
 X{
-X register int i;
-X register dfa *d;
-X
-X for (i = g->g_ndfas, d = g->g_dfa; --i >= 0; d++) {
-X if (d->d_type == type)
-X return d;
-X }
-X assert(0);
-X /* NOTREACHED */
+X	register int i;
+X	register dfa *d;
+X	
+X	for (i = g->g_ndfas, d = g->g_dfa; --i >= 0; d++) {
+X		if (d->d_type == type)
+X			return d;
+X	}
+X	assert(0);
+X	/* NOTREACHED */
 X}
 X
 Xchar *
 Xlabelrepr(lb)
-X label *lb;
+X	label *lb;
 X{
-X static char buf[100];
-X
-X if (lb->lb_type == ENDMARKER)
-X return "EMPTY";
-X else if (ISNONTERMINAL(lb->lb_type)) {
-X if (lb->lb_str == NULL) {
-X sprintf(buf, "NT%d", lb->lb_type);
-X return buf;
-X }
-X else
-X return lb->lb_str;
-X }
-X else {
-X if (lb->lb_str == NULL)
-X return tok_name[lb->lb_type];
-X else {
-X sprintf(buf, "%.32s(%.32s)",
-X tok_name[lb->lb_type], lb->lb_str);
-X return buf;
-X }
-X }
+X	static char buf[100];
+X	
+X	if (lb->lb_type == ENDMARKER)
+X		return "EMPTY";
+X	else if (ISNONTERMINAL(lb->lb_type)) {
+X		if (lb->lb_str == NULL) {
+X			sprintf(buf, "NT%d", lb->lb_type);
+X			return buf;
+X		}
+X		else
+X			return lb->lb_str;
+X	}
+X	else {
+X		if (lb->lb_str == NULL)
+X			return tok_name[lb->lb_type];
+X		else {
+X			sprintf(buf, "%.32s(%.32s)",
+X				tok_name[lb->lb_type], lb->lb_str);
+X			return buf;
+X		}
+X	}
 X}
 EOF
 fi
@@ -1439,12 +1439,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1483,10 +1483,10 @@ X#endif
 X
 X#define NEW(type, n) ( (type *) malloc((n) * sizeof(type)) )
 X#define RESIZE(p, type, n) \
-X if ((p) == NULL) \
-X (p) = (type *) malloc((n) * sizeof(type)); \
-X else \
-X (p) = (type *) realloc((char *)(p), (n) * sizeof(type))
+X	if ((p) == NULL) \
+X		(p) =  (type *) malloc((n) * sizeof(type)); \
+X	else \
+X		(p) = (type *) realloc((char *)(p), (n) * sizeof(type))
 X#define DEL(p) free((char *)p)
 X#define XDEL(p) if ((p) == NULL) ; else DEL(p)
 X
@@ -1509,12 +1509,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1532,11 +1532,11 @@ X
 X/* Parse tree node interface */
 X
 Xtypedef struct _node {
-X int n_type;
-X char *n_str;
-X int n_lineno;
-X int n_nchildren;
-X struct _node *n_child;
+X	int		n_type;
+X	char		*n_str;
+X	int		n_lineno;
+X	int		n_nchildren;
+X	struct _node	*n_child;
 X} node;
 X
 Xextern node *newtree PROTO((int type));
@@ -1544,21 +1544,21 @@ Xextern node *addchild PROTO((node *n, int type, char *str, int lineno));
 Xextern void freetree PROTO((node *n));
 X
 X/* Node access functions */
-X#define NCH(n) ((n)->n_nchildren)
-X#define CHILD(n, i) (&(n)->n_child[i])
-X#define TYPE(n) ((n)->n_type)
-X#define STR(n) ((n)->n_str)
+X#define NCH(n)		((n)->n_nchildren)
+X#define CHILD(n, i)	(&(n)->n_child[i])
+X#define TYPE(n)		((n)->n_type)
+X#define STR(n)		((n)->n_str)
 X
 X/* Assert that the type of a node is what we expect */
 X#ifndef DEBUG
 X#define REQ(n, type) { /*pass*/ ; }
 X#else
 X#define REQ(n, type) \
-X { if (TYPE(n) != (type)) { \
-X fprintf(stderr, "FATAL: node type %d, required %d\n", \
-X TYPE(n), type); \
-X abort(); \
-X } }
+X	{ if (TYPE(n) != (type)) { \
+X		fprintf(stderr, "FATAL: node type %d, required %d\n", \
+X			TYPE(n), type); \
+X		abort(); \
+X	} }
 X#endif
 X
 Xextern void listtree PROTO((node *));
@@ -1574,12 +1574,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1599,21 +1599,21 @@ X
 X#define MAXSTACK 100
 X
 Xtypedef struct _stackentry {
-X int s_state; /* State in current DFA */
-X dfa *s_dfa; /* Current DFA */
-X struct _node *s_parent; /* Where to add next node */
+X	int		 s_state;	/* State in current DFA */
+X	dfa		*s_dfa;		/* Current DFA */
+X	struct _node	*s_parent;	/* Where to add next node */
 X} stackentry;
 X
 Xtypedef struct _stack {
-X stackentry *s_top; /* Top entry */
-X stackentry s_base[MAXSTACK];/* Array of stack entries */
-X /* NB The stack grows down */
+X	stackentry	*s_top;		/* Top entry */
+X	stackentry	 s_base[MAXSTACK];/* Array of stack entries */
+X					/* NB The stack grows down */
 X} stack;
 X
 Xtypedef struct {
-X struct _stack p_stack; /* Stack of parser states */
-X struct _grammar *p_grammar; /* Grammar to use */
-X struct _node *p_tree; /* Top of parse tree */
+X	struct _stack	 p_stack;	/* Stack of parser states */
+X	struct _grammar	*p_grammar;	/* Grammar to use */
+X	struct _node	*p_tree;	/* Top of parse tree */
 X} parser_state;
 X
 Xparser_state *newparser PROTO((struct _grammar *g, int start));
@@ -1631,12 +1631,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1652,13 +1652,13 @@ X
 X******************************************************************/
 X
 X/* Include files and extern declarations used by most of the parser.
-X This is a precompiled header for THINK C. */
+X   This is a precompiled header for THINK C. */
 X
 X#include <stdio.h>
 X#include <string.h>
 X
 X#ifdef THINK_C
-X/* #define THINK_C_3_0 /*** TURN THIS ON FOR THINK C 3.0 ****/
+X/* #define THINK_C_3_0			/*** TURN THIS ON FOR THINK C 3.0 ****/
 X#define label label_
 X#undef label
 X#endif
@@ -1688,12 +1688,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1742,12 +1742,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1765,21 +1765,21 @@ X
 X/*
 X * Definitions etc. for regexp(3) routines.
 X *
-X * Caveat: this is V8 regexp(3) [actually, a reimplementation thereof],
+X * Caveat:  this is V8 regexp(3) [actually, a reimplementation thereof],
 X * not the System V one.
 X */
 X
 X#define MULTILINE
 X
-X#define NSUBEXP 10
+X#define NSUBEXP  10
 Xtypedef struct regexp {
-X char *startp[NSUBEXP];
-X char *endp[NSUBEXP];
-X char regstart; /* Internal use only. */
-X char reganch; /* Internal use only. */
-X char *regmust; /* Internal use only. */
-X int regmlen; /* Internal use only. */
-X char program[1]; /* Unwarranted chumminess with compiler. */
+X	char *startp[NSUBEXP];
+X	char *endp[NSUBEXP];
+X	char regstart;		/* Internal use only. */
+X	char reganch;		/* Internal use only. */
+X	char *regmust;		/* Internal use only. */
+X	int regmlen;		/* Internal use only. */
+X	char program[1];	/* Unwarranted chumminess with compiler. */
 X} regexp;
 X
 Xextern regexp *regcomp();
@@ -1800,12 +1800,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1821,10 +1821,10 @@ X
 X******************************************************************/
 X
 X/* The type of signal handlers is somewhat problematic.
-X This file encapsulates my knowledge about it:
-X - on the Mac (THINK C), it's int for 3.0, void for 4.0
-X - on other systems, it's usually void, except it's int on vax Ultrix.
-X Pass -DSIGTYPE=... to cc if you know better. */
+X   This file encapsulates my knowledge about it:
+X   - on the Mac (THINK C), it's int for 3.0, void for 4.0
+X   - on other systems, it's usually void, except it's int on vax Ultrix.
+X   Pass -DSIGTYPE=... to cc if you know better. */
 X
 X#ifndef SIGTYPE
 X
@@ -1858,12 +1858,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1880,45 +1880,45 @@ X******************************************************************/
 X
 X/* Token types */
 X
-X#define ENDMARKER 0
-X#define NAME 1
-X#define NUMBER 2
-X#define STRING 3
-X#define NEWLINE 4
-X#define INDENT 5
-X#define DEDENT 6
-X#define LPAR 7
-X#define RPAR 8
-X#define LSQB 9
-X#define RSQB 10
-X#define COLON 11
-X#define COMMA 12
-X#define SEMI 13
-X#define PLUS 14
-X#define MINUS 15
-X#define STAR 16
-X#define SLASH 17
-X#define VBAR 18
-X#define AMPER 19
-X#define LESS 20
-X#define GREATER 21
-X#define EQUAL 22
-X#define DOT 23
-X#define PERCENT 24
-X#define BACKQUOTE 25
-X#define LBRACE 26
-X#define RBRACE 27
-X#define OP 28
-X#define ERRORTOKEN 29
-X#define N_TOKENS 30
+X#define ENDMARKER	0
+X#define NAME		1
+X#define NUMBER		2
+X#define STRING		3
+X#define NEWLINE		4
+X#define INDENT		5
+X#define DEDENT		6
+X#define LPAR		7
+X#define RPAR		8
+X#define LSQB		9
+X#define RSQB		10
+X#define COLON		11
+X#define COMMA		12
+X#define SEMI		13
+X#define PLUS		14
+X#define MINUS		15
+X#define STAR		16
+X#define SLASH		17
+X#define VBAR		18
+X#define AMPER		19
+X#define LESS		20
+X#define GREATER		21
+X#define EQUAL		22
+X#define DOT		23
+X#define PERCENT		24
+X#define BACKQUOTE	25
+X#define LBRACE		26
+X#define RBRACE		27
+X#define OP		28
+X#define ERRORTOKEN	29
+X#define N_TOKENS	30
 X
 X/* Special definitions for cooperation with parser */
 X
-X#define NT_OFFSET 256
+X#define NT_OFFSET		256
 X
-X#define ISTERMINAL(x) ((x) < NT_OFFSET)
-X#define ISNONTERMINAL(x) ((x) >= NT_OFFSET)
-X#define ISEOF(x) ((x) == ENDMARKER)
+X#define ISTERMINAL(x)		((x) < NT_OFFSET)
+X#define ISNONTERMINAL(x)	((x) >= NT_OFFSET)
+X#define ISEOF(x)		((x) == ENDMARKER)
 X
 X
 Xextern char *tok_name[]; /* Token names */
@@ -1934,12 +1934,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1962,34 +1962,34 @@ X/* Type object implementation */
 X
 Xstatic void
 Xtype_print(v, fp, flags)
-X typeobject *v;
-X FILE *fp;
-X int flags;
+X	typeobject *v;
+X	FILE *fp;
+X	int flags;
 X{
-X fprintf(fp, "<type '%s'>", v->tp_name);
+X	fprintf(fp, "<type '%s'>", v->tp_name);
 X}
 X
 Xstatic object *
 Xtype_repr(v)
-X typeobject *v;
+X	typeobject *v;
 X{
-X char buf[100];
-X sprintf(buf, "<type '%.80s'>", v->tp_name);
-X return newstringobject(buf);
+X	char buf[100];
+X	sprintf(buf, "<type '%.80s'>", v->tp_name);
+X	return newstringobject(buf);
 X}
 X
 Xtypeobject Typetype = {
-X OB_HEAD_INIT(&Typetype)
-X 0, /* Number of items for varobject */
-X "type", /* Name of this type */
-X sizeof(typeobject), /* Basic object size */
-X 0, /* Item size for varobject */
-X 0, /*tp_dealloc*/
-X type_print, /*tp_print*/
-X 0, /*tp_getattr*/
-X 0, /*tp_setattr*/
-X 0, /*tp_compare*/
-X type_repr, /*tp_repr*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,			/* Number of items for varobject */
+X	"type",			/* Name of this type */
+X	sizeof(typeobject),	/* Basic object size */
+X	0,			/* Item size for varobject */
+X	0,			/*tp_dealloc*/
+X	type_print,		/*tp_print*/
+X	0,			/*tp_getattr*/
+X	0,			/*tp_setattr*/
+X	0,			/*tp_compare*/
+X	type_repr,		/*tp_repr*/
 X};
 EOF
 fi

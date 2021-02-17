@@ -66,7 +66,7 @@ X(y 2.5)
 X(h 0.36)
 X(downfunc move-then-resize)
 X)
-X(pnl_radio_button (name "m4")
+X(pnl_radio_button  (name "m4")
 X(prop help creator:user-act-help)
 X(label "material 4")
 X(x 6.5)
@@ -90,7 +90,7 @@ X(y 4)
 X(h 0.36)
 X(downfunc move-then-resize)
 X)
-X(pnl_radio_button (name "m1")
+X(pnl_radio_button  (name "m1")
 X(prop help creator:user-act-help)
 X(label "material 1")
 X(x 6.5)
@@ -180,12 +180,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -213,41 +213,41 @@ X
 X/*ARGSUSED*/
 Xvoid
 Xinitargs(p_argc, p_argv)
-X int *p_argc;
-X char ***p_argv;
+X	int *p_argc;
+X	char ***p_argv;
 X{
 X#ifdef USE_STDWIN
-X extern char *getenv();
-X char *display;
+X	extern char *getenv();
+X	char *display;
 X
-X /* Ignore an initial argument of '-s', for backward compatibility */
-X if (*p_argc > 1 && strcmp((*p_argv)[1], "-s") == 0) {
-X (*p_argv)[1] = (*p_argv)[0];
-X (*p_argc)--, (*p_argv)++;
-X }
+X	/* Ignore an initial argument of '-s', for backward compatibility */
+X	if (*p_argc > 1 && strcmp((*p_argv)[1], "-s") == 0) {
+X		(*p_argv)[1] = (*p_argv)[0];
+X		(*p_argc)--, (*p_argv)++;
+X	}
 X
-X /* Assume we have to initialize stdwin if either of the following
-X conditions holds:
-X - the environment variable $DISPLAY is set
-X - there is an argument "-display" somewhere
-X */
-X
-X display = getenv("DISPLAY");
-X if (display != 0)
-X use_stdwin = 1;
-X else {
-X int i;
-X /* Scan through the arguments looking for "-display" */
-X for (i = 1; i < *p_argc; i++) {
-X if (strcmp((*p_argv)[i], "-display") == 0) {
-X use_stdwin = 1;
-X break;
-X }
-X }
-X }
-X
-X if (use_stdwin)
-X wargs(p_argc, p_argv);
+X	/* Assume we have to initialize stdwin if either of the following
+X	   conditions holds:
+X	   - the environment variable $DISPLAY is set
+X	   - there is an argument "-display" somewhere
+X	*/
+X	
+X	display = getenv("DISPLAY");
+X	if (display != 0)
+X		use_stdwin = 1;
+X	else {
+X		int i;
+X		/* Scan through the arguments looking for "-display" */
+X		for (i = 1; i < *p_argc; i++) {
+X			if (strcmp((*p_argv)[i], "-display") == 0) {
+X				use_stdwin = 1;
+X				break;
+X			}
+X		}
+X	}
+X	
+X	if (use_stdwin)
+X		wargs(p_argc, p_argv);
 X#endif
 X}
 X
@@ -260,11 +260,11 @@ Xvoid
 Xdonecalls()
 X{
 X#ifdef USE_STDWIN
-X if (use_stdwin)
-X wdone();
+X	if (use_stdwin)
+X		wdone();
 X#endif
 X#ifdef USE_AUDIO
-X asa_done();
+X	asa_done();
 X#endif
 X}
 X
@@ -272,11 +272,11 @@ X#ifdef USE_STDWIN
 Xstatic void
 Xmaybeinitstdwin()
 X{
-X if (use_stdwin)
-X initstdwin();
-X else
-X fprintf(stderr,
-X "No $DISPLAY nor -display arg -- stdwin not available\n");
+X	if (use_stdwin)
+X		initstdwin();
+X	else
+X		fprintf(stderr,
+X		 "No $DISPLAY nor -display arg -- stdwin not available\n");
 X}
 X#endif
 X
@@ -289,15 +289,15 @@ X
 Xchar *
 Xgetpythonpath()
 X{
-X char *path = getenv("PYTHONPATH");
-X if (path == 0)
-X path = PYTHONPATH;
-X return path;
+X	char *path = getenv("PYTHONPATH");
+X	if (path == 0)
+X		path = PYTHONPATH;
+X	return path;
 X}
 X
 X
 X/* Table of built-in modules.
-X These are initialized when first imported. */
+X   These are initialized when first imported. */
 X
 X/* Standard modules */
 Xextern void inittime();
@@ -321,40 +321,40 @@ Xextern void maybeinitstdwin();
 X#endif
 X
 Xstruct {
-X char *name;
-X void (*initfunc)();
+X	char *name;
+X	void (*initfunc)();
 X} inittab[] = {
 X
-X /* Standard modules */
+X	/* Standard modules */
 X
-X {"time", inittime},
-X {"math", initmath},
-X {"regexp", initregexp},
-X {"posix", initposix},
+X	{"time",	inittime},
+X	{"math",	initmath},
+X	{"regexp",	initregexp},
+X	{"posix",	initposix},
 X
 X
-X /* Optional modules */
+X	/* Optional modules */
 X
 X#ifdef USE_AUDIO
-X {"audio", initaudio},
+X	{"audio",	initaudio},
 X#endif
 X
 X#ifdef USE_AMOEBA
-X {"amoeba", initamoeba},
+X	{"amoeba",	initamoeba},
 X#endif
 X
 X#ifdef USE_GL
-X {"gl", initgl},
+X	{"gl",		initgl},
 X#ifdef USE_PANEL
-X {"pnl", initpanel},
+X	{"pnl",		initpanel},
 X#endif
 X#endif
 X
 X#ifdef USE_STDWIN
-X {"stdwin", maybeinitstdwin},
+X	{"stdwin",	maybeinitstdwin},
 X#endif
 X
-X {0, 0} /* Sentinel */
+X	{0,		0}		/* Sentinel */
 X};
 EOF
 fi
@@ -367,12 +367,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -399,125 +399,125 @@ X
 X#define OFF(x) offsetof(frameobject, x)
 X
 Xstatic struct memberlist frame_memberlist[] = {
-X {"f_back", T_OBJECT, OFF(f_back)},
-X {"f_code", T_OBJECT, OFF(f_code)},
-X {"f_globals", T_OBJECT, OFF(f_globals)},
-X {"f_locals", T_OBJECT, OFF(f_locals)},
-X {NULL} /* Sentinel */
+X	{"f_back",	T_OBJECT,	OFF(f_back)},
+X	{"f_code",	T_OBJECT,	OFF(f_code)},
+X	{"f_globals",	T_OBJECT,	OFF(f_globals)},
+X	{"f_locals",	T_OBJECT,	OFF(f_locals)},
+X	{NULL}	/* Sentinel */
 X};
 X
 Xstatic object *
 Xframe_getattr(f, name)
-X frameobject *f;
-X char *name;
+X	frameobject *f;
+X	char *name;
 X{
-X return getmember((char *)f, frame_memberlist, name);
+X	return getmember((char *)f, frame_memberlist, name);
 X}
 X
 Xstatic void
 Xframe_dealloc(f)
-X frameobject *f;
+X	frameobject *f;
 X{
-X XDECREF(f->f_back);
-X XDECREF(f->f_code);
-X XDECREF(f->f_globals);
-X XDECREF(f->f_locals);
-X XDEL(f->f_valuestack);
-X XDEL(f->f_blockstack);
-X DEL(f);
+X	XDECREF(f->f_back);
+X	XDECREF(f->f_code);
+X	XDECREF(f->f_globals);
+X	XDECREF(f->f_locals);
+X	XDEL(f->f_valuestack);
+X	XDEL(f->f_blockstack);
+X	DEL(f);
 X}
 X
 Xtypeobject Frametype = {
-X OB_HEAD_INIT(&Typetype)
-X 0,
-X "frame",
-X sizeof(frameobject),
-X 0,
-X frame_dealloc, /*tp_dealloc*/
-X 0, /*tp_print*/
-X frame_getattr, /*tp_getattr*/
-X 0, /*tp_setattr*/
-X 0, /*tp_compare*/
-X 0, /*tp_repr*/
-X 0, /*tp_as_number*/
-X 0, /*tp_as_sequence*/
-X 0, /*tp_as_mapping*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,
+X	"frame",
+X	sizeof(frameobject),
+X	0,
+X	frame_dealloc,	/*tp_dealloc*/
+X	0,		/*tp_print*/
+X	frame_getattr,	/*tp_getattr*/
+X	0,		/*tp_setattr*/
+X	0,		/*tp_compare*/
+X	0,		/*tp_repr*/
+X	0,		/*tp_as_number*/
+X	0,		/*tp_as_sequence*/
+X	0,		/*tp_as_mapping*/
 X};
 X
 Xframeobject *
 Xnewframeobject(back, code, globals, locals, nvalues, nblocks)
-X frameobject *back;
-X codeobject *code;
-X object *globals;
-X object *locals;
-X int nvalues;
-X int nblocks;
+X	frameobject *back;
+X	codeobject *code;
+X	object *globals;
+X	object *locals;
+X	int nvalues;
+X	int nblocks;
 X{
-X frameobject *f;
-X if ((back != NULL && !is_frameobject(back)) ||
-X code == NULL || !is_codeobject(code) ||
-X globals == NULL || !is_dictobject(globals) ||
-X locals == NULL || !is_dictobject(locals) ||
-X nvalues < 0 || nblocks < 0) {
-X err_badcall();
-X return NULL;
-X }
-X f = NEWOBJ(frameobject, &Frametype);
-X if (f != NULL) {
-X if (back)
-X INCREF(back);
-X f->f_back = back;
-X INCREF(code);
-X f->f_code = code;
-X INCREF(globals);
-X f->f_globals = globals;
-X INCREF(locals);
-X f->f_locals = locals;
-X f->f_valuestack = NEW(object *, nvalues+1);
-X f->f_blockstack = NEW(block, nblocks+1);
-X f->f_nvalues = nvalues;
-X f->f_nblocks = nblocks;
-X f->f_iblock = 0;
-X if (f->f_valuestack == NULL || f->f_blockstack == NULL) {
-X err_nomem();
-X DECREF(f);
-X f = NULL;
-X }
-X }
-X return f;
+X	frameobject *f;
+X	if ((back != NULL && !is_frameobject(back)) ||
+X		code == NULL || !is_codeobject(code) ||
+X		globals == NULL || !is_dictobject(globals) ||
+X		locals == NULL || !is_dictobject(locals) ||
+X		nvalues < 0 || nblocks < 0) {
+X		err_badcall();
+X		return NULL;
+X	}
+X	f = NEWOBJ(frameobject, &Frametype);
+X	if (f != NULL) {
+X		if (back)
+X			INCREF(back);
+X		f->f_back = back;
+X		INCREF(code);
+X		f->f_code = code;
+X		INCREF(globals);
+X		f->f_globals = globals;
+X		INCREF(locals);
+X		f->f_locals = locals;
+X		f->f_valuestack = NEW(object *, nvalues+1);
+X		f->f_blockstack = NEW(block, nblocks+1);
+X		f->f_nvalues = nvalues;
+X		f->f_nblocks = nblocks;
+X		f->f_iblock = 0;
+X		if (f->f_valuestack == NULL || f->f_blockstack == NULL) {
+X			err_nomem();
+X			DECREF(f);
+X			f = NULL;
+X		}
+X	}
+X	return f;
 X}
 X
 X/* Block management */
 X
 Xvoid
 Xsetup_block(f, type, handler, level)
-X frameobject *f;
-X int type;
-X int handler;
-X int level;
+X	frameobject *f;
+X	int type;
+X	int handler;
+X	int level;
 X{
-X block *b;
-X if (f->f_iblock >= f->f_nblocks) {
-X fprintf(stderr, "XXX block stack overflow\n");
-X abort();
-X }
-X b = &f->f_blockstack[f->f_iblock++];
-X b->b_type = type;
-X b->b_level = level;
-X b->b_handler = handler;
+X	block *b;
+X	if (f->f_iblock >= f->f_nblocks) {
+X		fprintf(stderr, "XXX block stack overflow\n");
+X		abort();
+X	}
+X	b = &f->f_blockstack[f->f_iblock++];
+X	b->b_type = type;
+X	b->b_level = level;
+X	b->b_handler = handler;
 X}
 X
 Xblock *
 Xpop_block(f)
-X frameobject *f;
+X	frameobject *f;
 X{
-X block *b;
-X if (f->f_iblock <= 0) {
-X fprintf(stderr, "XXX block stack underflow\n");
-X abort();
-X }
-X b = &f->f_blockstack[--f->f_iblock];
-X return b;
+X	block *b;
+X	if (f->f_iblock <= 0) {
+X		fprintf(stderr, "XXX block stack underflow\n");
+X		abort();
+X	}
+X	b = &f->f_blockstack[--f->f_iblock];
+X	return b;
 X}
 EOF
 fi
@@ -530,12 +530,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -555,152 +555,152 @@ X#include "metagrammar.h"
 X#include "grammar.h"
 X#include "pgen.h"
 Xstatic arc arcs_0_0[3] = {
-X {2, 0},
-X {3, 0},
-X {4, 1},
+X	{2, 0},
+X	{3, 0},
+X	{4, 1},
 X};
 Xstatic arc arcs_0_1[1] = {
-X {0, 1},
+X	{0, 1},
 X};
 Xstatic state states_0[2] = {
-X {3, arcs_0_0},
-X {1, arcs_0_1},
+X	{3, arcs_0_0},
+X	{1, arcs_0_1},
 X};
 Xstatic arc arcs_1_0[1] = {
-X {5, 1},
+X	{5, 1},
 X};
 Xstatic arc arcs_1_1[1] = {
-X {6, 2},
+X	{6, 2},
 X};
 Xstatic arc arcs_1_2[1] = {
-X {7, 3},
+X	{7, 3},
 X};
 Xstatic arc arcs_1_3[1] = {
-X {3, 4},
+X	{3, 4},
 X};
 Xstatic arc arcs_1_4[1] = {
-X {0, 4},
+X	{0, 4},
 X};
 Xstatic state states_1[5] = {
-X {1, arcs_1_0},
-X {1, arcs_1_1},
-X {1, arcs_1_2},
-X {1, arcs_1_3},
-X {1, arcs_1_4},
+X	{1, arcs_1_0},
+X	{1, arcs_1_1},
+X	{1, arcs_1_2},
+X	{1, arcs_1_3},
+X	{1, arcs_1_4},
 X};
 Xstatic arc arcs_2_0[1] = {
-X {8, 1},
+X	{8, 1},
 X};
 Xstatic arc arcs_2_1[2] = {
-X {9, 0},
-X {0, 1},
+X	{9, 0},
+X	{0, 1},
 X};
 Xstatic state states_2[2] = {
-X {1, arcs_2_0},
-X {2, arcs_2_1},
+X	{1, arcs_2_0},
+X	{2, arcs_2_1},
 X};
 Xstatic arc arcs_3_0[1] = {
-X {10, 1},
+X	{10, 1},
 X};
 Xstatic arc arcs_3_1[2] = {
-X {10, 1},
-X {0, 1},
+X	{10, 1},
+X	{0, 1},
 X};
 Xstatic state states_3[2] = {
-X {1, arcs_3_0},
-X {2, arcs_3_1},
+X	{1, arcs_3_0},
+X	{2, arcs_3_1},
 X};
 Xstatic arc arcs_4_0[2] = {
-X {11, 1},
-X {13, 2},
+X	{11, 1},
+X	{13, 2},
 X};
 Xstatic arc arcs_4_1[1] = {
-X {7, 3},
+X	{7, 3},
 X};
 Xstatic arc arcs_4_2[3] = {
-X {14, 4},
-X {15, 4},
-X {0, 2},
+X	{14, 4},
+X	{15, 4},
+X	{0, 2},
 X};
 Xstatic arc arcs_4_3[1] = {
-X {12, 4},
+X	{12, 4},
 X};
 Xstatic arc arcs_4_4[1] = {
-X {0, 4},
+X	{0, 4},
 X};
 Xstatic state states_4[5] = {
-X {2, arcs_4_0},
-X {1, arcs_4_1},
-X {3, arcs_4_2},
-X {1, arcs_4_3},
-X {1, arcs_4_4},
+X	{2, arcs_4_0},
+X	{1, arcs_4_1},
+X	{3, arcs_4_2},
+X	{1, arcs_4_3},
+X	{1, arcs_4_4},
 X};
 Xstatic arc arcs_5_0[3] = {
-X {5, 1},
-X {16, 1},
-X {17, 2},
+X	{5, 1},
+X	{16, 1},
+X	{17, 2},
 X};
 Xstatic arc arcs_5_1[1] = {
-X {0, 1},
+X	{0, 1},
 X};
 Xstatic arc arcs_5_2[1] = {
-X {7, 3},
+X	{7, 3},
 X};
 Xstatic arc arcs_5_3[1] = {
-X {18, 1},
+X	{18, 1},
 X};
 Xstatic state states_5[4] = {
-X {3, arcs_5_0},
-X {1, arcs_5_1},
-X {1, arcs_5_2},
-X {1, arcs_5_3},
+X	{3, arcs_5_0},
+X	{1, arcs_5_1},
+X	{1, arcs_5_2},
+X	{1, arcs_5_3},
 X};
 Xstatic dfa dfas[6] = {
-X {256, "MSTART", 0, 2, states_0,
-X "\070\000\000"},
-X {257, "RULE", 0, 5, states_1,
-X "\040\000\000"},
-X {258, "RHS", 0, 2, states_2,
-X "\040\010\003"},
-X {259, "ALT", 0, 2, states_3,
-X "\040\010\003"},
-X {260, "ITEM", 0, 5, states_4,
-X "\040\010\003"},
-X {261, "ATOM", 0, 4, states_5,
-X "\040\000\003"},
+X	{256, "MSTART", 0, 2, states_0,
+X	 "\070\000\000"},
+X	{257, "RULE", 0, 5, states_1,
+X	 "\040\000\000"},
+X	{258, "RHS", 0, 2, states_2,
+X	 "\040\010\003"},
+X	{259, "ALT", 0, 2, states_3,
+X	 "\040\010\003"},
+X	{260, "ITEM", 0, 5, states_4,
+X	 "\040\010\003"},
+X	{261, "ATOM", 0, 4, states_5,
+X	 "\040\000\003"},
 X};
 Xstatic label labels[19] = {
-X {0, "EMPTY"},
-X {256, 0},
-X {257, 0},
-X {4, 0},
-X {0, 0},
-X {1, 0},
-X {11, 0},
-X {258, 0},
-X {259, 0},
-X {18, 0},
-X {260, 0},
-X {9, 0},
-X {10, 0},
-X {261, 0},
-X {16, 0},
-X {14, 0},
-X {3, 0},
-X {7, 0},
-X {8, 0},
+X	{0, "EMPTY"},
+X	{256, 0},
+X	{257, 0},
+X	{4, 0},
+X	{0, 0},
+X	{1, 0},
+X	{11, 0},
+X	{258, 0},
+X	{259, 0},
+X	{18, 0},
+X	{260, 0},
+X	{9, 0},
+X	{10, 0},
+X	{261, 0},
+X	{16, 0},
+X	{14, 0},
+X	{3, 0},
+X	{7, 0},
+X	{8, 0},
 X};
 Xstatic grammar gram = {
-X 6,
-X dfas,
-X {19, labels},
-X 256
+X	6,
+X	dfas,
+X	{19, labels},
+X	256
 X};
 X
 Xgrammar *
 Xmeta_grammar()
 X{
-X return &gram;
+X	return &gram;
 X}
 EOF
 fi
@@ -713,12 +713,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -740,121 +740,121 @@ X
 X#include "token.h"
 X
 Xtypedef struct {
-X OB_HEAD
-X char *m_name;
-X method m_meth;
-X object *m_self;
+X	OB_HEAD
+X	char *m_name;
+X	method m_meth;
+X	object *m_self;
 X} methodobject;
 X
 Xobject *
 Xnewmethodobject(name, meth, self)
-X char *name; /* static string */
-X method meth;
-X object *self;
+X	char *name; /* static string */
+X	method meth;
+X	object *self;
 X{
-X methodobject *op = NEWOBJ(methodobject, &Methodtype);
-X if (op != NULL) {
-X op->m_name = name;
-X op->m_meth = meth;
-X if (self != NULL)
-X INCREF(self);
-X op->m_self = self;
-X }
-X return (object *)op;
+X	methodobject *op = NEWOBJ(methodobject, &Methodtype);
+X	if (op != NULL) {
+X		op->m_name = name;
+X		op->m_meth = meth;
+X		if (self != NULL)
+X			INCREF(self);
+X		op->m_self = self;
+X	}
+X	return (object *)op;
 X}
 X
 Xmethod
 Xgetmethod(op)
-X object *op;
+X	object *op;
 X{
-X if (!is_methodobject(op)) {
-X err_badcall();
-X return NULL;
-X }
-X return ((methodobject *)op) -> m_meth;
+X	if (!is_methodobject(op)) {
+X		err_badcall();
+X		return NULL;
+X	}
+X	return ((methodobject *)op) -> m_meth;
 X}
 X
 Xobject *
 Xgetself(op)
-X object *op;
+X	object *op;
 X{
-X if (!is_methodobject(op)) {
-X err_badcall();
-X return NULL;
-X }
-X return ((methodobject *)op) -> m_self;
+X	if (!is_methodobject(op)) {
+X		err_badcall();
+X		return NULL;
+X	}
+X	return ((methodobject *)op) -> m_self;
 X}
 X
 X/* Methods (the standard built-in methods, that is) */
 X
 Xstatic void
 Xmeth_dealloc(m)
-X methodobject *m;
+X	methodobject *m;
 X{
-X if (m->m_self != NULL)
-X DECREF(m->m_self);
-X free((char *)m);
+X	if (m->m_self != NULL)
+X		DECREF(m->m_self);
+X	free((char *)m);
 X}
 X
 Xstatic void
 Xmeth_print(m, fp, flags)
-X methodobject *m;
-X FILE *fp;
-X int flags;
+X	methodobject *m;
+X	FILE *fp;
+X	int flags;
 X{
-X if (m->m_self == NULL)
-X fprintf(fp, "<built-in function '%s'>", m->m_name);
-X else
-X fprintf(fp, "<built-in method '%s' of some %s object>",
-X m->m_name, m->m_self->ob_type->tp_name);
+X	if (m->m_self == NULL)
+X		fprintf(fp, "<built-in function '%s'>", m->m_name);
+X	else
+X		fprintf(fp, "<built-in method '%s' of some %s object>",
+X			m->m_name, m->m_self->ob_type->tp_name);
 X}
 X
 Xstatic object *
 Xmeth_repr(m)
-X methodobject *m;
+X	methodobject *m;
 X{
-X char buf[200];
-X if (m->m_self == NULL)
-X sprintf(buf, "<built-in function '%.80s'>", m->m_name);
-X else
-X sprintf(buf,
-X "<built-in method '%.80s' of some %.80s object>",
-X m->m_name, m->m_self->ob_type->tp_name);
-X return newstringobject(buf);
+X	char buf[200];
+X	if (m->m_self == NULL)
+X		sprintf(buf, "<built-in function '%.80s'>", m->m_name);
+X	else
+X		sprintf(buf,
+X			"<built-in method '%.80s' of some %.80s object>",
+X			m->m_name, m->m_self->ob_type->tp_name);
+X	return newstringobject(buf);
 X}
 X
 Xtypeobject Methodtype = {
-X OB_HEAD_INIT(&Typetype)
-X 0,
-X "method",
-X sizeof(methodobject),
-X 0,
-X meth_dealloc, /*tp_dealloc*/
-X meth_print, /*tp_print*/
-X 0, /*tp_getattr*/
-X 0, /*tp_setattr*/
-X 0, /*tp_compare*/
-X meth_repr, /*tp_repr*/
-X 0, /*tp_as_number*/
-X 0, /*tp_as_sequence*/
-X 0, /*tp_as_mapping*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,
+X	"method",
+X	sizeof(methodobject),
+X	0,
+X	meth_dealloc,	/*tp_dealloc*/
+X	meth_print,	/*tp_print*/
+X	0,		/*tp_getattr*/
+X	0,		/*tp_setattr*/
+X	0,		/*tp_compare*/
+X	meth_repr,	/*tp_repr*/
+X	0,		/*tp_as_number*/
+X	0,		/*tp_as_sequence*/
+X	0,		/*tp_as_mapping*/
 X};
 X
 X/* Find a method in a module's method table.
-X Usually called from an object's getattr method. */
+X   Usually called from an object's getattr method. */
 X
 Xobject *
 Xfindmethod(ml, op, name)
-X struct methodlist *ml;
-X object *op;
-X char *name;
+X	struct methodlist *ml;
+X	object *op;
+X	char *name;
 X{
-X for (; ml->ml_name != NULL; ml++) {
-X if (strcmp(name, ml->ml_name) == 0)
-X return newmethodobject(ml->ml_name, ml->ml_meth, op);
-X }
-X err_setstr(NameError, name);
-X return NULL;
+X	for (; ml->ml_name != NULL; ml++) {
+X		if (strcmp(name, ml->ml_name) == 0)
+X			return newmethodobject(ml->ml_name, ml->ml_meth, op);
+X	}
+X	err_setstr(NameError, name);
+X	return NULL;
 X}
 EOF
 fi
@@ -867,12 +867,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -892,130 +892,130 @@ X
 X#include "allobjects.h"
 X
 Xtypedef struct {
-X OB_HEAD
-X object *md_name;
-X object *md_dict;
+X	OB_HEAD
+X	object *md_name;
+X	object *md_dict;
 X} moduleobject;
 X
 Xobject *
 Xnewmoduleobject(name)
-X char *name;
+X	char *name;
 X{
-X moduleobject *m = NEWOBJ(moduleobject, &Moduletype);
-X if (m == NULL)
-X return NULL;
-X m->md_name = newstringobject(name);
-X m->md_dict = newdictobject();
-X if (m->md_name == NULL || m->md_dict == NULL) {
-X DECREF(m);
-X return NULL;
-X }
-X return (object *)m;
+X	moduleobject *m = NEWOBJ(moduleobject, &Moduletype);
+X	if (m == NULL)
+X		return NULL;
+X	m->md_name = newstringobject(name);
+X	m->md_dict = newdictobject();
+X	if (m->md_name == NULL || m->md_dict == NULL) {
+X		DECREF(m);
+X		return NULL;
+X	}
+X	return (object *)m;
 X}
 X
 Xobject *
 Xgetmoduledict(m)
-X object *m;
+X	object *m;
 X{
-X if (!is_moduleobject(m)) {
-X err_badcall();
-X return NULL;
-X }
-X return ((moduleobject *)m) -> md_dict;
+X	if (!is_moduleobject(m)) {
+X		err_badcall();
+X		return NULL;
+X	}
+X	return ((moduleobject *)m) -> md_dict;
 X}
 X
 Xchar *
 Xgetmodulename(m)
-X object *m;
+X	object *m;
 X{
-X if (!is_moduleobject(m)) {
-X err_badarg();
-X return NULL;
-X }
-X return getstringvalue(((moduleobject *)m) -> md_name);
+X	if (!is_moduleobject(m)) {
+X		err_badarg();
+X		return NULL;
+X	}
+X	return getstringvalue(((moduleobject *)m) -> md_name);
 X}
 X
 X/* Methods */
 X
 Xstatic void
 Xmodule_dealloc(m)
-X moduleobject *m;
+X	moduleobject *m;
 X{
-X if (m->md_name != NULL)
-X DECREF(m->md_name);
-X if (m->md_dict != NULL)
-X DECREF(m->md_dict);
-X free((char *)m);
+X	if (m->md_name != NULL)
+X		DECREF(m->md_name);
+X	if (m->md_dict != NULL)
+X		DECREF(m->md_dict);
+X	free((char *)m);
 X}
 X
 Xstatic void
 Xmodule_print(m, fp, flags)
-X moduleobject *m;
-X FILE *fp;
-X int flags;
+X	moduleobject *m;
+X	FILE *fp;
+X	int flags;
 X{
-X fprintf(fp, "<module '%s'>", getstringvalue(m->md_name));
+X	fprintf(fp, "<module '%s'>", getstringvalue(m->md_name));
 X}
 X
 Xstatic object *
 Xmodule_repr(m)
-X moduleobject *m;
+X	moduleobject *m;
 X{
-X char buf[100];
-X sprintf(buf, "<module '%.80s'>", getstringvalue(m->md_name));
-X return newstringobject(buf);
+X	char buf[100];
+X	sprintf(buf, "<module '%.80s'>", getstringvalue(m->md_name));
+X	return newstringobject(buf);
 X}
 X
 Xstatic object *
 Xmodule_getattr(m, name)
-X moduleobject *m;
-X char *name;
+X	moduleobject *m;
+X	char *name;
 X{
-X object *res;
-X if (strcmp(name, "__dict__") == 0) {
-X INCREF(m->md_dict);
-X return m->md_dict;
-X }
-X if (strcmp(name, "__name__") == 0) {
-X INCREF(m->md_name);
-X return m->md_name;
-X }
-X res = dictlookup(m->md_dict, name);
-X if (res == NULL)
-X err_setstr(NameError, name);
-X else
-X INCREF(res);
-X return res;
+X	object *res;
+X	if (strcmp(name, "__dict__") == 0) {
+X		INCREF(m->md_dict);
+X		return m->md_dict;
+X	}
+X	if (strcmp(name, "__name__") == 0) {
+X		INCREF(m->md_name);
+X		return m->md_name;
+X	}
+X	res = dictlookup(m->md_dict, name);
+X	if (res == NULL)
+X		err_setstr(NameError, name);
+X	else
+X		INCREF(res);
+X	return res;
 X}
 X
 Xstatic int
 Xmodule_setattr(m, name, v)
-X moduleobject *m;
-X char *name;
-X object *v;
+X	moduleobject *m;
+X	char *name;
+X	object *v;
 X{
-X if (strcmp(name, "__dict__") == 0 || strcmp(name, "__name__") == 0) {
-X err_setstr(NameError, "can't assign to reserved member name");
-X return -1;
-X }
-X if (v == NULL)
-X return dictremove(m->md_dict, name);
-X else
-X return dictinsert(m->md_dict, name, v);
+X	if (strcmp(name, "__dict__") == 0 || strcmp(name, "__name__") == 0) {
+X		err_setstr(NameError, "can't assign to reserved member name");
+X		return -1;
+X	}
+X	if (v == NULL)
+X		return dictremove(m->md_dict, name);
+X	else
+X		return dictinsert(m->md_dict, name, v);
 X}
 X
 Xtypeobject Moduletype = {
-X OB_HEAD_INIT(&Typetype)
-X 0, /*ob_size*/
-X "module", /*tp_name*/
-X sizeof(moduleobject), /*tp_size*/
-X 0, /*tp_itemsize*/
-X module_dealloc, /*tp_dealloc*/
-X module_print, /*tp_print*/
-X module_getattr, /*tp_getattr*/
-X module_setattr, /*tp_setattr*/
-X 0, /*tp_compare*/
-X module_repr, /*tp_repr*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,			/*ob_size*/
+X	"module",		/*tp_name*/
+X	sizeof(moduleobject),	/*tp_size*/
+X	0,			/*tp_itemsize*/
+X	module_dealloc,		/*tp_dealloc*/
+X	module_print,		/*tp_print*/
+X	module_getattr,		/*tp_getattr*/
+X	module_setattr,		/*tp_setattr*/
+X	0,			/*tp_compare*/
+X	module_repr,		/*tp_repr*/
 X};
 EOF
 fi
@@ -1028,12 +1028,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1050,84 +1050,84 @@ X******************************************************************/
 X
 X/* Instruction opcodes for compiled code */
 X
-X#define STOP_CODE 0
-X#define POP_TOP 1
-X#define ROT_TWO 2
-X#define ROT_THREE 3
-X#define DUP_TOP 4
+X#define STOP_CODE	0
+X#define POP_TOP		1
+X#define ROT_TWO		2
+X#define ROT_THREE	3
+X#define DUP_TOP		4
 X
-X#define UNARY_POSITIVE 10
-X#define UNARY_NEGATIVE 11
-X#define UNARY_NOT 12
-X#define UNARY_CONVERT 13
-X#define UNARY_CALL 14
+X#define UNARY_POSITIVE	10
+X#define UNARY_NEGATIVE	11
+X#define UNARY_NOT	12
+X#define UNARY_CONVERT	13
+X#define UNARY_CALL	14
 X
-X#define BINARY_MULTIPLY 20
-X#define BINARY_DIVIDE 21
-X#define BINARY_MODULO 22
-X#define BINARY_ADD 23
-X#define BINARY_SUBTRACT 24
-X#define BINARY_SUBSCR 25
-X#define BINARY_CALL 26
+X#define BINARY_MULTIPLY	20
+X#define BINARY_DIVIDE	21
+X#define BINARY_MODULO	22
+X#define BINARY_ADD	23
+X#define BINARY_SUBTRACT	24
+X#define BINARY_SUBSCR	25
+X#define BINARY_CALL	26
 X
-X#define SLICE 30
+X#define SLICE		30
 X/* Also uses 31-33 */
 X
-X#define STORE_SLICE 40
+X#define STORE_SLICE	40
 X/* Also uses 41-43 */
 X
-X#define DELETE_SLICE 50
+X#define DELETE_SLICE	50
 X/* Also uses 51-53 */
 X
-X#define STORE_SUBSCR 60
-X#define DELETE_SUBSCR 61
+X#define STORE_SUBSCR	60
+X#define DELETE_SUBSCR	61
 X
-X#define PRINT_EXPR 70
-X#define PRINT_ITEM 71
-X#define PRINT_NEWLINE 72
+X#define PRINT_EXPR	70
+X#define PRINT_ITEM	71
+X#define PRINT_NEWLINE	72
 X
-X#define BREAK_LOOP 80
-X#define RAISE_EXCEPTION 81
-X#define LOAD_LOCALS 82
-X#define RETURN_VALUE 83
-X#define REQUIRE_ARGS 84
-X#define REFUSE_ARGS 85
-X#define BUILD_FUNCTION 86
-X#define POP_BLOCK 87
-X#define END_FINALLY 88
-X#define BUILD_CLASS 89
+X#define BREAK_LOOP	80
+X#define RAISE_EXCEPTION	81
+X#define LOAD_LOCALS	82
+X#define RETURN_VALUE	83
+X#define REQUIRE_ARGS	84
+X#define REFUSE_ARGS	85
+X#define BUILD_FUNCTION	86
+X#define POP_BLOCK	87
+X#define END_FINALLY	88
+X#define BUILD_CLASS	89
 X
-X#define HAVE_ARGUMENT 90 /* Opcodes from here have an argument: */
+X#define HAVE_ARGUMENT	90	/* Opcodes from here have an argument: */
 X
-X#define STORE_NAME 90 /* Index in name list */
-X#define DELETE_NAME 91 /* "" */
-X#define UNPACK_TUPLE 92 /* Number of tuple items */
-X#define UNPACK_LIST 93 /* Number of list items */
-X/* unused: 94 */
-X#define STORE_ATTR 95 /* Index in name list */
-X#define DELETE_ATTR 96 /* "" */
+X#define STORE_NAME	90	/* Index in name list */
+X#define DELETE_NAME	91	/* "" */
+X#define UNPACK_TUPLE	92	/* Number of tuple items */
+X#define UNPACK_LIST	93	/* Number of list items */
+X/* unused:		94 */
+X#define STORE_ATTR	95	/* Index in name list */
+X#define DELETE_ATTR	96	/* "" */
 X
-X#define LOAD_CONST 100 /* Index in const list */
-X#define LOAD_NAME 101 /* Index in name list */
-X#define BUILD_TUPLE 102 /* Number of tuple items */
-X#define BUILD_LIST 103 /* Number of list items */
-X#define BUILD_MAP 104 /* Always zero for now */
-X#define LOAD_ATTR 105 /* Index in name list */
-X#define COMPARE_OP 106 /* Comparison operator */
-X#define IMPORT_NAME 107 /* Index in name list */
-X#define IMPORT_FROM 108 /* Index in name list */
+X#define LOAD_CONST	100	/* Index in const list */
+X#define LOAD_NAME	101	/* Index in name list */
+X#define BUILD_TUPLE	102	/* Number of tuple items */
+X#define BUILD_LIST	103	/* Number of list items */
+X#define BUILD_MAP	104	/* Always zero for now */
+X#define LOAD_ATTR	105	/* Index in name list */
+X#define COMPARE_OP	106	/* Comparison operator */
+X#define IMPORT_NAME	107	/* Index in name list */
+X#define IMPORT_FROM	108	/* Index in name list */
 X
-X#define JUMP_FORWARD 110 /* Number of bytes to skip */
-X#define JUMP_IF_FALSE 111 /* "" */
-X#define JUMP_IF_TRUE 112 /* "" */
-X#define JUMP_ABSOLUTE 113 /* Target byte offset from beginning of code */
-X#define FOR_LOOP 114 /* Number of bytes to skip */
+X#define JUMP_FORWARD	110	/* Number of bytes to skip */
+X#define JUMP_IF_FALSE	111	/* "" */
+X#define JUMP_IF_TRUE	112	/* "" */
+X#define JUMP_ABSOLUTE	113	/* Target byte offset from beginning of code */
+X#define FOR_LOOP	114	/* Number of bytes to skip */
 X
-X#define SETUP_LOOP 120 /* Target address (absolute) */
-X#define SETUP_EXCEPT 121 /* "" */
-X#define SETUP_FINALLY 122 /* "" */
+X#define SETUP_LOOP	120	/* Target address (absolute) */
+X#define SETUP_EXCEPT	121	/* "" */
+X#define SETUP_FINALLY	122	/* "" */
 X
-X#define SET_LINENO 127 /* Current line number */
+X#define SET_LINENO	127	/* Current line number */
 X
 X/* Comparison operator codes (argument to COMPARE_OP) */
 Xenum cmp_op {LT, LE, EQ, NE, GT, GE, IN, NOT_IN, IS, IS_NOT, EXC_MATCH, BAD};
@@ -1144,12 +1144,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1179,124 +1179,124 @@ X/* Forward */
 Xstatic int parsetok PROTO((struct tok_state *, grammar *, int, node **));
 X
 X
-X/* Parse input coming from a string. Return error code, print some errors. */
+X/* Parse input coming from a string.  Return error code, print some errors. */
 X
 Xint
 Xparsestring(s, g, start, n_ret)
-X char *s;
-X grammar *g;
-X int start;
-X node **n_ret;
+X	char *s;
+X	grammar *g;
+X	int start;
+X	node **n_ret;
 X{
-X struct tok_state *tok = tok_setups(s);
-X int ret;
-X
-X if (tok == NULL) {
-X fprintf(stderr, "no mem for tok_setups\n");
-X return E_NOMEM;
-X }
-X ret = parsetok(tok, g, start, n_ret);
-X if (ret == E_TOKEN || ret == E_SYNTAX) {
-X fprintf(stderr, "String parsing error at line %d\n",
-X tok->lineno);
-X }
-X tok_free(tok);
-X return ret;
+X	struct tok_state *tok = tok_setups(s);
+X	int ret;
+X	
+X	if (tok == NULL) {
+X		fprintf(stderr, "no mem for tok_setups\n");
+X		return E_NOMEM;
+X	}
+X	ret = parsetok(tok, g, start, n_ret);
+X	if (ret == E_TOKEN || ret == E_SYNTAX) {
+X		fprintf(stderr, "String parsing error at line %d\n",
+X			tok->lineno);
+X	}
+X	tok_free(tok);
+X	return ret;
 X}
 X
 X
-X/* Parse input coming from a file. Return error code, print some errors. */
+X/* Parse input coming from a file.  Return error code, print some errors. */
 X
 Xint
 Xparsefile(fp, filename, g, start, ps1, ps2, n_ret)
-X FILE *fp;
-X char *filename;
-X grammar *g;
-X int start;
-X char *ps1, *ps2;
-X node **n_ret;
+X	FILE *fp;
+X	char *filename;
+X	grammar *g;
+X	int start;
+X	char *ps1, *ps2;
+X	node **n_ret;
 X{
-X struct tok_state *tok = tok_setupf(fp, ps1, ps2);
-X int ret;
-X
-X if (tok == NULL) {
-X fprintf(stderr, "no mem for tok_setupf\n");
-X return E_NOMEM;
-X }
-X ret = parsetok(tok, g, start, n_ret);
-X if (ret == E_TOKEN || ret == E_SYNTAX) {
-X char *p;
-X fprintf(stderr, "Parsing error: file %s, line %d:\n",
-X filename, tok->lineno);
-X *tok->inp = '\0';
-X if (tok->inp > tok->buf && tok->inp[-1] == '\n')
-X tok->inp[-1] = '\0';
-X fprintf(stderr, "%s\n", tok->buf);
-X for (p = tok->buf; p < tok->cur; p++) {
-X if (*p == '\t')
-X putc('\t', stderr);
-X else
-X putc(' ', stderr);
-X }
-X fprintf(stderr, "^\n");
-X }
-X tok_free(tok);
-X return ret;
+X	struct tok_state *tok = tok_setupf(fp, ps1, ps2);
+X	int ret;
+X	
+X	if (tok == NULL) {
+X		fprintf(stderr, "no mem for tok_setupf\n");
+X		return E_NOMEM;
+X	}
+X	ret = parsetok(tok, g, start, n_ret);
+X	if (ret == E_TOKEN || ret == E_SYNTAX) {
+X		char *p;
+X		fprintf(stderr, "Parsing error: file %s, line %d:\n",
+X						filename, tok->lineno);
+X		*tok->inp = '\0';
+X		if (tok->inp > tok->buf && tok->inp[-1] == '\n')
+X			tok->inp[-1] = '\0';
+X		fprintf(stderr, "%s\n", tok->buf);
+X		for (p = tok->buf; p < tok->cur; p++) {
+X			if (*p == '\t')
+X				putc('\t', stderr);
+X			else
+X				putc(' ', stderr);
+X		}
+X		fprintf(stderr, "^\n");
+X	}
+X	tok_free(tok);
+X	return ret;
 X}
 X
 X
 X/* Parse input coming from the given tokenizer structure.
-X Return error code. */
+X   Return error code. */
 X
 Xstatic int
 Xparsetok(tok, g, start, n_ret)
-X struct tok_state *tok;
-X grammar *g;
-X int start;
-X node **n_ret;
+X	struct tok_state *tok;
+X	grammar *g;
+X	int start;
+X	node **n_ret;
 X{
-X parser_state *ps;
-X int ret;
-X
-X if ((ps = newparser(g, start)) == NULL) {
-X fprintf(stderr, "no mem for new parser\n");
-X return E_NOMEM;
-X }
-X
-X for (;;) {
-X char *a, *b;
-X int type;
-X int len;
-X char *str;
-X
-X type = tok_get(tok, &a, &b);
-X if (type == ERRORTOKEN) {
-X ret = tok->done;
-X break;
-X }
-X len = b - a;
-X str = NEW(char, len + 1);
-X if (str == NULL) {
-X fprintf(stderr, "no mem for next token\n");
-X ret = E_NOMEM;
-X break;
-X }
-X strncpy(str, a, len);
-X str[len] = '\0';
-X ret = addtoken(ps, (int)type, str, tok->lineno);
-X if (ret != E_OK) {
-X if (ret == E_DONE) {
-X *n_ret = ps->p_tree;
-X ps->p_tree = NULL;
-X }
-X else if (tok->lineno <= 1 && tok->done == E_EOF)
-X ret = E_EOF;
-X break;
-X }
-X }
-X
-X delparser(ps);
-X return ret;
+X	parser_state *ps;
+X	int ret;
+X	
+X	if ((ps = newparser(g, start)) == NULL) {
+X		fprintf(stderr, "no mem for new parser\n");
+X		return E_NOMEM;
+X	}
+X	
+X	for (;;) {
+X		char *a, *b;
+X		int type;
+X		int len;
+X		char *str;
+X		
+X		type = tok_get(tok, &a, &b);
+X		if (type == ERRORTOKEN) {
+X			ret = tok->done;
+X			break;
+X		}
+X		len = b - a;
+X		str = NEW(char, len + 1);
+X		if (str == NULL) {
+X			fprintf(stderr, "no mem for next token\n");
+X			ret = E_NOMEM;
+X			break;
+X		}
+X		strncpy(str, a, len);
+X		str[len] = '\0';
+X		ret = addtoken(ps, (int)type, str, tok->lineno);
+X		if (ret != E_OK) {
+X			if (ret == E_DONE) {
+X				*n_ret = ps->p_tree;
+X				ps->p_tree = NULL;
+X			}
+X			else if (tok->lineno <= 1 && tok->done == E_EOF)
+X				ret = E_EOF;
+X			break;
+X		}
+X	}
+X	
+X	delparser(ps);
+X	return ret;
 X}
 EOF
 fi
@@ -1309,12 +1309,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1332,12 +1332,12 @@ X
 X/* Parser generator main program */
 X
 X/* This expects a filename containing the grammar as argv[1] (UNIX)
-X or asks the console for such a file name (THINK C).
-X It writes its output on two files in the current directory:
-X - "graminit.c" gets the grammar as a bunch of initialized data
-X - "graminit.h" gets the grammar's non-terminals as #defines.
-X Error messages and status info during the generation process are
-X written to stdout, or sometimes to stderr. */
+X   or asks the console for such a file name (THINK C).
+X   It writes its output on two files in the current directory:
+X   - "graminit.c" gets the grammar as a bunch of initialized data
+X   - "graminit.h" gets the grammar's non-terminals as #defines.
+X   Error messages and status info during the generation process are
+X   written to stdout, or sometimes to stderr. */
 X
 X#include "pgenheaders.h"
 X#include "grammar.h"
@@ -1356,102 +1356,102 @@ X#endif
 X
 Xint
 Xmain(argc, argv)
-X int argc;
-X char **argv;
+X	int argc;
+X	char **argv;
 X{
-X grammar *g;
-X node *n;
-X FILE *fp;
-X char *filename;
-X
+X	grammar *g;
+X	node *n;
+X	FILE *fp;
+X	char *filename;
+X	
 X#ifdef THINK_C
-X filename = askfile();
+X	filename = askfile();
 X#else
-X if (argc != 2) {
-X fprintf(stderr, "usage: %s grammar\n", argv[0]);
-X exit(2);
-X }
-X filename = argv[1];
+X	if (argc != 2) {
+X		fprintf(stderr, "usage: %s grammar\n", argv[0]);
+X		exit(2);
+X	}
+X	filename = argv[1];
 X#endif
-X g = getgrammar(filename);
-X fp = fopen("graminit.c", "w");
-X if (fp == NULL) {
-X perror("graminit.c");
-X exit(1);
-X }
-X printf("Writing graminit.c ...\n");
-X printgrammar(g, fp);
-X fclose(fp);
-X fp = fopen("graminit.h", "w");
-X if (fp == NULL) {
-X perror("graminit.h");
-X exit(1);
-X }
-X printf("Writing graminit.h ...\n");
-X printnonterminals(g, fp);
-X fclose(fp);
-X exit(0);
+X	g = getgrammar(filename);
+X	fp = fopen("graminit.c", "w");
+X	if (fp == NULL) {
+X		perror("graminit.c");
+X		exit(1);
+X	}
+X	printf("Writing graminit.c ...\n");
+X	printgrammar(g, fp);
+X	fclose(fp);
+X	fp = fopen("graminit.h", "w");
+X	if (fp == NULL) {
+X		perror("graminit.h");
+X		exit(1);
+X	}
+X	printf("Writing graminit.h ...\n");
+X	printnonterminals(g, fp);
+X	fclose(fp);
+X	exit(0);
 X}
 X
 Xgrammar *
 Xgetgrammar(filename)
-X char *filename;
+X	char *filename;
 X{
-X FILE *fp;
-X node *n;
-X grammar *g0, *g;
-X
-X fp = fopen(filename, "r");
-X if (fp == NULL) {
-X perror(filename);
-X exit(1);
-X }
-X g0 = meta_grammar();
-X n = NULL;
-X parsefile(fp, filename, g0, g0->g_start, (char *)NULL, (char *)NULL, &n);
-X fclose(fp);
-X if (n == NULL) {
-X fprintf(stderr, "Parsing error.\n");
-X exit(1);
-X }
-X g = pgen(n);
-X if (g == NULL) {
-X printf("Bad grammar.\n");
-X exit(1);
-X }
-X return g;
+X	FILE *fp;
+X	node *n;
+X	grammar *g0, *g;
+X	
+X	fp = fopen(filename, "r");
+X	if (fp == NULL) {
+X		perror(filename);
+X		exit(1);
+X	}
+X	g0 = meta_grammar();
+X	n = NULL;
+X	parsefile(fp, filename, g0, g0->g_start, (char *)NULL, (char *)NULL, &n);
+X	fclose(fp);
+X	if (n == NULL) {
+X		fprintf(stderr, "Parsing error.\n");
+X		exit(1);
+X	}
+X	g = pgen(n);
+X	if (g == NULL) {
+X		printf("Bad grammar.\n");
+X		exit(1);
+X	}
+X	return g;
 X}
 X
 X#ifdef THINK_C
 Xchar *
 Xaskfile()
 X{
-X char buf[256];
-X static char name[256];
-X printf("Input file name: ");
-X if (fgets(buf, sizeof buf, stdin) == NULL) {
-X printf("EOF\n");
-X exit(1);
-X }
-X /* XXX The (unsigned char *) case is needed by THINK C 3.0 */
-X if (sscanf(/*(unsigned char *)*/buf, " %s ", name) != 1) {
-X printf("No file\n");
-X exit(1);
-X }
-X return name;
+X	char buf[256];
+X	static char name[256];
+X	printf("Input file name: ");
+X	if (fgets(buf, sizeof buf, stdin) == NULL) {
+X		printf("EOF\n");
+X		exit(1);
+X	}
+X	/* XXX The (unsigned char *) case is needed by THINK C 3.0 */
+X	if (sscanf(/*(unsigned char *)*/buf, " %s ", name) != 1) {
+X		printf("No file\n");
+X		exit(1);
+X	}
+X	return name;
 X}
 X#endif
 X
 Xvoid
 Xfatal(msg)
-X char *msg;
+X	char *msg;
 X{
-X fprintf(stderr, "pgen: FATAL ERROR: %s\n", msg);
-X exit(1);
+X	fprintf(stderr, "pgen: FATAL ERROR: %s\n", msg);
+X	exit(1);
 X}
 X
 X/* XXX TO DO:
-X - check for duplicate definitions of names (instead of fatal err)
+X   - check for duplicate definitions of names (instead of fatal err)
 X*/
 EOF
 fi
@@ -1464,12 +1464,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1497,117 +1497,117 @@ Xstatic void printlabels PROTO((grammar *, FILE *));
 X
 Xvoid
 Xprintgrammar(g, fp)
-X grammar *g;
-X FILE *fp;
+X	grammar *g;
+X	FILE *fp;
 X{
-X fprintf(fp, "#include \"pgenheaders.h\"\n");
-X fprintf(fp, "#include \"grammar.h\"\n");
-X printdfas(g, fp);
-X printlabels(g, fp);
-X fprintf(fp, "grammar gram = {\n");
-X fprintf(fp, "\t%d,\n", g->g_ndfas);
-X fprintf(fp, "\tdfas,\n");
-X fprintf(fp, "\t{%d, labels},\n", g->g_ll.ll_nlabels);
-X fprintf(fp, "\t%d\n", g->g_start);
-X fprintf(fp, "};\n");
+X	fprintf(fp, "#include \"pgenheaders.h\"\n");
+X	fprintf(fp, "#include \"grammar.h\"\n");
+X	printdfas(g, fp);
+X	printlabels(g, fp);
+X	fprintf(fp, "grammar gram = {\n");
+X	fprintf(fp, "\t%d,\n", g->g_ndfas);
+X	fprintf(fp, "\tdfas,\n");
+X	fprintf(fp, "\t{%d, labels},\n", g->g_ll.ll_nlabels);
+X	fprintf(fp, "\t%d\n", g->g_start);
+X	fprintf(fp, "};\n");
 X}
 X
 Xvoid
 Xprintnonterminals(g, fp)
-X grammar *g;
-X FILE *fp;
+X	grammar *g;
+X	FILE *fp;
 X{
-X dfa *d;
-X int i;
-X
-X d = g->g_dfa;
-X for (i = g->g_ndfas; --i >= 0; d++)
-X fprintf(fp, "#define %s %d\n", d->d_name, d->d_type);
+X	dfa *d;
+X	int i;
+X	
+X	d = g->g_dfa;
+X	for (i = g->g_ndfas; --i >= 0; d++)
+X		fprintf(fp, "#define %s %d\n", d->d_name, d->d_type);
 X}
 X
 Xstatic void
 Xprintarcs(i, d, fp)
-X int i;
-X dfa *d;
-X FILE *fp;
+X	int i;
+X	dfa *d;
+X	FILE *fp;
 X{
-X arc *a;
-X state *s;
-X int j, k;
-X
-X s = d->d_state;
-X for (j = 0; j < d->d_nstates; j++, s++) {
-X fprintf(fp, "static arc arcs_%d_%d[%d] = {\n",
-X i, j, s->s_narcs);
-X a = s->s_arc;
-X for (k = 0; k < s->s_narcs; k++, a++)
-X fprintf(fp, "\t{%d, %d},\n", a->a_lbl, a->a_arrow);
-X fprintf(fp, "};\n");
-X }
+X	arc *a;
+X	state *s;
+X	int j, k;
+X	
+X	s = d->d_state;
+X	for (j = 0; j < d->d_nstates; j++, s++) {
+X		fprintf(fp, "static arc arcs_%d_%d[%d] = {\n",
+X			i, j, s->s_narcs);
+X		a = s->s_arc;
+X		for (k = 0; k < s->s_narcs; k++, a++)
+X			fprintf(fp, "\t{%d, %d},\n", a->a_lbl, a->a_arrow);
+X		fprintf(fp, "};\n");
+X	}
 X}
 X
 Xstatic void
 Xprintstates(g, fp)
-X grammar *g;
-X FILE *fp;
+X	grammar *g;
+X	FILE *fp;
 X{
-X state *s;
-X dfa *d;
-X int i, j;
-X
-X d = g->g_dfa;
-X for (i = 0; i < g->g_ndfas; i++, d++) {
-X printarcs(i, d, fp);
-X fprintf(fp, "static state states_%d[%d] = {\n",
-X i, d->d_nstates);
-X s = d->d_state;
-X for (j = 0; j < d->d_nstates; j++, s++)
-X fprintf(fp, "\t{%d, arcs_%d_%d},\n",
-X s->s_narcs, i, j);
-X fprintf(fp, "};\n");
-X }
+X	state *s;
+X	dfa *d;
+X	int i, j;
+X	
+X	d = g->g_dfa;
+X	for (i = 0; i < g->g_ndfas; i++, d++) {
+X		printarcs(i, d, fp);
+X		fprintf(fp, "static state states_%d[%d] = {\n",
+X			i, d->d_nstates);
+X		s = d->d_state;
+X		for (j = 0; j < d->d_nstates; j++, s++)
+X			fprintf(fp, "\t{%d, arcs_%d_%d},\n",
+X				s->s_narcs, i, j);
+X		fprintf(fp, "};\n");
+X	}
 X}
 X
 Xstatic void
 Xprintdfas(g, fp)
-X grammar *g;
-X FILE *fp;
+X	grammar *g;
+X	FILE *fp;
 X{
-X dfa *d;
-X int i, j;
-X
-X printstates(g, fp);
-X fprintf(fp, "static dfa dfas[%d] = {\n", g->g_ndfas);
-X d = g->g_dfa;
-X for (i = 0; i < g->g_ndfas; i++, d++) {
-X fprintf(fp, "\t{%d, \"%s\", %d, %d, states_%d,\n",
-X d->d_type, d->d_name, d->d_initial, d->d_nstates, i);
-X fprintf(fp, "\t \"");
-X for (j = 0; j < NBYTES(g->g_ll.ll_nlabels); j++)
-X fprintf(fp, "\\%03o", d->d_first[j] & 0xff);
-X fprintf(fp, "\"},\n");
-X }
-X fprintf(fp, "};\n");
+X	dfa *d;
+X	int i, j;
+X	
+X	printstates(g, fp);
+X	fprintf(fp, "static dfa dfas[%d] = {\n", g->g_ndfas);
+X	d = g->g_dfa;
+X	for (i = 0; i < g->g_ndfas; i++, d++) {
+X		fprintf(fp, "\t{%d, \"%s\", %d, %d, states_%d,\n",
+X			d->d_type, d->d_name, d->d_initial, d->d_nstates, i);
+X		fprintf(fp, "\t \"");
+X		for (j = 0; j < NBYTES(g->g_ll.ll_nlabels); j++)
+X			fprintf(fp, "\\%03o", d->d_first[j] & 0xff);
+X		fprintf(fp, "\"},\n");
+X	}
+X	fprintf(fp, "};\n");
 X}
 X
 Xstatic void
 Xprintlabels(g, fp)
-X grammar *g;
-X FILE *fp;
+X	grammar *g;
+X	FILE *fp;
 X{
-X label *l;
-X int i;
-X
-X fprintf(fp, "static label labels[%d] = {\n", g->g_ll.ll_nlabels);
-X l = g->g_ll.ll_label;
-X for (i = g->g_ll.ll_nlabels; --i >= 0; l++) {
-X if (l->lb_str == NULL)
-X fprintf(fp, "\t{%d, 0},\n", l->lb_type);
-X else
-X fprintf(fp, "\t{%d, \"%s\"},\n",
-X l->lb_type, l->lb_str);
-X }
-X fprintf(fp, "};\n");
+X	label *l;
+X	int i;
+X	
+X	fprintf(fp, "static label labels[%d] = {\n", g->g_ll.ll_nlabels);
+X	l = g->g_ll.ll_label;
+X	for (i = g->g_ll.ll_nlabels; --i >= 0; l++) {
+X		if (l->lb_str == NULL)
+X			fprintf(fp, "\t{%d, 0},\n", l->lb_type);
+X		else
+X			fprintf(fp, "\t{%d, \"%s\"},\n",
+X				l->lb_type, l->lb_str);
+X	}
+X	fprintf(fp, "};\n");
 X}
 EOF
 fi
@@ -1620,12 +1620,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1643,35 +1643,35 @@ X
 X/*
 X * regsub
 X *
-X * Copyright (c) 1986 by University of Toronto.
-X * Written by Henry Spencer. Not derived from licensed software.
+X *	Copyright (c) 1986 by University of Toronto.
+X *	Written by Henry Spencer.  Not derived from licensed software.
 X#ifdef MULTILINE
-X * Changed by Guido van Rossum, CWI, Amsterdam
-X * for multi-line support.
+X *	Changed by Guido van Rossum, CWI, Amsterdam
+X *	for multi-line support.
 X#endif
 X *
-X * Permission is granted to anyone to use this software for any
-X * purpose on any computer system, and to redistribute it freely,
-X * subject to the following restrictions:
+X *	Permission is granted to anyone to use this software for any
+X *	purpose on any computer system, and to redistribute it freely,
+X *	subject to the following restrictions:
 X *
-X * 1. The author is not responsible for the consequences of use of
-X * this software, no matter how awful, even if they arise
-X * from defects in it.
+X *	1. The author is not responsible for the consequences of use of
+X *		this software, no matter how awful, even if they arise
+X *		from defects in it.
 X *
-X * 2. The origin of this software must not be misrepresented, either
-X * by explicit claim or by omission.
+X *	2. The origin of this software must not be misrepresented, either
+X *		by explicit claim or by omission.
 X *
-X * 3. Altered versions must be plainly marked as such, and must not
-X * be misrepresented as being the original software.
+X *	3. Altered versions must be plainly marked as such, and must not
+X *		be misrepresented as being the original software.
 X */
 X#include <stdio.h>
 X#include "regexp.h"
 X#include "regmagic.h"
 X
 X#ifndef CHARBITS
-X#define UCHARAT(p) ((int)*(unsigned char *)(p))
+X#define	UCHARAT(p)	((int)*(unsigned char *)(p))
 X#else
-X#define UCHARAT(p) ((int)*(p)&CHARBITS)
+X#define	UCHARAT(p)	((int)*(p)&CHARBITS)
 X#endif
 X
 X/*
@@ -1683,53 +1683,53 @@ Xregexp *prog;
 Xchar *source;
 Xchar *dest;
 X{
-X register char *src;
-X register char *dst;
-X register char c;
-X register int no;
-X register int len;
-X extern char *strncpy();
+X	register char *src;
+X	register char *dst;
+X	register char c;
+X	register int no;
+X	register int len;
+X	extern char *strncpy();
 X
-X if (prog == NULL || source == NULL || dest == NULL) {
-X regerror("NULL parm to regsub");
-X return;
-X }
-X if (UCHARAT(prog->program) != MAGIC) {
-X regerror("damaged regexp fed to regsub");
-X return;
-X }
+X	if (prog == NULL || source == NULL || dest == NULL) {
+X		regerror("NULL parm to regsub");
+X		return;
+X	}
+X	if (UCHARAT(prog->program) != MAGIC) {
+X		regerror("damaged regexp fed to regsub");
+X		return;
+X	}
 X
-X src = source;
-X dst = dest;
-X while ((c = *src++) != '\0') {
-X if (c == '&')
-X no = 0;
-X else if (c == '\\' && '0' <= *src && *src <= '9')
-X no = *src++ - '0';
-X else
-X no = -1;
+X	src = source;
+X	dst = dest;
+X	while ((c = *src++) != '\0') {
+X		if (c == '&')
+X			no = 0;
+X		else if (c == '\\' && '0' <= *src && *src <= '9')
+X			no = *src++ - '0';
+X		else
+X			no = -1;
 X
-X if (no < 0) { /* Ordinary character. */
-X if (c == '\\' && (*src == '\\' || *src == '&'))
-X c = *src++;
+X		if (no < 0) {	/* Ordinary character. */
+X			if (c == '\\' && (*src == '\\' || *src == '&'))
+X				c = *src++;
 X#ifdef MULTILINE
-X else if (c == '\\' && *src == 'n') {
-X c = '\n';
-X src++;
-X }
+X			else if (c == '\\' && *src == 'n') {
+X				c = '\n';
+X				src++;
+X			}
 X#endif
-X *dst++ = c;
-X } else if (prog->startp[no] != NULL && prog->endp[no] != NULL) {
-X len = prog->endp[no] - prog->startp[no];
-X (void) strncpy(dst, prog->startp[no], len);
-X dst += len;
-X if (len != 0 && *(dst-1) == '\0') { /* strncpy hit NUL. */
-X regerror("damaged match string");
-X return;
-X }
-X }
-X }
-X *dst++ = '\0';
+X			*dst++ = c;
+X		} else if (prog->startp[no] != NULL && prog->endp[no] != NULL) {
+X			len = prog->endp[no] - prog->startp[no];
+X			(void) strncpy(dst, prog->startp[no], len);
+X			dst += len;
+X			if (len != 0 && *(dst-1) == '\0') {	/* strncpy hit NUL. */
+X				regerror("damaged match string");
+X				return;
+X			}
+X		}
+X	}
+X	*dst++ = '\0';
 X}
 EOF
 fi
@@ -1742,12 +1742,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1774,114 +1774,114 @@ X#include "tupleobject.h"
 X
 Xobject *
 Xerr_scerr(sc_errno)
-X int sc_errno;
+X	int sc_errno;
 X{
-X switch(sc_errno) {
+X	switch(sc_errno) {
+X	
+X	case NoBufSize:
+X		err_setstr(StubcodeError, "Stubcode didn't start with BufSize");
+X		break;
+X	
+X	case TwoBufSize:
+X		err_setstr(StubcodeError, "Stubcode can't have more then one BufSize");
+X		break;
 X
-X case NoBufSize:
-X err_setstr(StubcodeError, "Stubcode didn't start with BufSize");
-X break;
-X
-X case TwoBufSize:
-X err_setstr(StubcodeError, "Stubcode can't have more then one BufSize");
-X break;
-X
-X case ElementIsNull:
-X err_setstr(StubcodeError, "Trying to access an NIL object");
-X break;
-X
-X case StackOverflow:
-X err_setstr(StubcodeError, "Stack overflow");
-X return NULL;
-X
-X case StackUnderflow:
-X err_setstr(StubcodeError, "Stack underflow");
-X return NULL;
-X
-X case NoEndLoop:
-X err_setstr(StubcodeError, "LoopXXX with no EndLoop");
-X return NULL;
-X
-X case BufferOverflow:
-X err_setstr(StubcodeError, "Buffer overflow");
-X return NULL;
-X
-X }
-X return NULL;
+X	case ElementIsNull:
+X		err_setstr(StubcodeError, "Trying to access an NIL object");
+X		break;
+X	
+X	case StackOverflow:
+X		err_setstr(StubcodeError, "Stack overflow");
+X		return NULL;
+X	
+X	case StackUnderflow:
+X		err_setstr(StubcodeError, "Stack underflow");
+X		return NULL;
+X	
+X	case NoEndLoop:
+X		err_setstr(StubcodeError, "LoopXXX with no EndLoop");
+X		return NULL;
+X	
+X	case BufferOverflow:
+X		err_setstr(StubcodeError, "Buffer overflow");
+X		return NULL;
+X	
+X	}
+X	return NULL;
 X}
 X
 Xerr_scerrset(sc_errno, value, instr)
-X int sc_errno;
-X object *value;
-X char *instr;
+X	int sc_errno;
+X	object *value;
+X	char *instr;
 X{
-X object *str, *str1, *t;
+X	object *str, *str1, *t;
 X
-X if ((t = newtupleobject(3)) == NULL) {
-X return -1;
-X }
-X if ((str = newstringobject(instr)) == NULL) {
-X return -1;
-X }
-X if (settupleitem(t, 2, str) != 0) {
-X return -1;
-X }
-X INCREF(value);
-X if (settupleitem(t, 1, value) != 0) {
-X DECREF(t);
-X return -1;
-X }
-X switch(sc_errno) {
+X	if ((t = newtupleobject(3)) == NULL) {
+X		return -1;
+X	}
+X	if ((str = newstringobject(instr)) == NULL) {
+X		return -1;
+X	}
+X	if (settupleitem(t, 2, str) != 0) {
+X		return -1;
+X	}
+X	INCREF(value);
+X	if (settupleitem(t, 1, value) != 0) {
+X		DECREF(t);
+X		return -1;
+X	}
+X	switch(sc_errno) {
+X	
+X	case TypeFailure:
+X		if ((str1 = newstringobject("Unexpected type")) == NULL) {
+X			DECREF(t);
+X			return -1;
+X		}
+X		break;
+X	
+X	case RangeError:
+X		if ((str1 = newstringobject("Value out of range")) == NULL) {
+X			DECREF(t);
+X			return -1;
+X		}
+X		break;
+X	
+X	case SizeError:
+X		if ((str1 = newstringobject("Value doesn't have the right size")) == NULL) {
+X			DECREF(t);
+X			return -1;
+X		}
+X		break;
+X	
+X	case FlagError:
+X		if ((str1 = newstringobject("Illegal flag value")) == NULL) {
+X			DECREF(t);
+X			return -1;
+X		}
+X		break;
 X
-X case TypeFailure:
-X if ((str1 = newstringobject("Unexpected type")) == NULL) {
-X DECREF(t);
-X return -1;
-X }
-X break;
+X	case TransError:
+X		if ((str1 = newstringobject("hdr.h_status != 0")) == NULL) {
+X			DECREF(t);
+X			return -1;
+X		}
+X		break;
 X
-X case RangeError:
-X if ((str1 = newstringobject("Value out of range")) == NULL) {
-X DECREF(t);
-X return -1;
-X }
-X break;
-X
-X case SizeError:
-X if ((str1 = newstringobject("Value doesn't have the right size")) == NULL) {
-X DECREF(t);
-X return -1;
-X }
-X break;
-X
-X case FlagError:
-X if ((str1 = newstringobject("Illegal flag value")) == NULL) {
-X DECREF(t);
-X return -1;
-X }
-X break;
-X
-X case TransError:
-X if ((str1 = newstringobject("hdr.h_status != 0")) == NULL) {
-X DECREF(t);
-X return -1;
-X }
-X break;
-X
-X default:
-X if ((str1 = newstringobject("sc_errno not found")) == NULL) {
-X DECREF(t);
-X return -1;
-X }
-X break;
-X }
-X if (settupleitem(t, 0, str1) != 0) {
-X DECREF(t);
-X return -1;
-X }
-X err_setval(StubcodeError, t);
-X DECREF(t);
-X return -1;
+X	default:
+X		if ((str1 = newstringobject("sc_errno not found")) == NULL) {
+X			DECREF(t);
+X			return -1;
+X		}
+X		break;
+X	}
+X	if (settupleitem(t, 0, str1) != 0) {
+X		DECREF(t);
+X		return -1;
+X	}
+X	err_setval(StubcodeError, t);
+X	DECREF(t);
+X	return -1;
 X}
 EOF
 fi
@@ -1894,12 +1894,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1916,116 +1916,116 @@ X******************************************************************/
 X
 X
 X/*
-X** This file contains the data used in Ail, Python and sc2txt.
+X**	This file contains the data used in Ail, Python and sc2txt.
 X**
-X** If you want to add an instuction to the instructions just define
-X** it here and add the instruction in the function sc_interpreter in
-X** the file sc_interpreter.c in the switch. You also have to make a
-X** new function with the name x{instruction_name} in the file
-X** sc_interpreter.
+X**	If you want to add an instuction to the instructions just define
+X**	it here and add the instruction in the function sc_interpreter in
+X**	the file sc_interpreter.c in the switch. You also have to make a
+X**	new function with the name x{instruction_name} in the file
+X**	sc_interpreter.
 X*/
 X
 X/*
-X** When you want to change the types of the opcode or the operand
-X** you maybe need to adjust the options to mypf. And the defines :
-X** SwapOpcode, SwapOperand.
+X**	When you want to change the types of the opcode or the operand
+X**	you maybe need to adjust the options to mypf. And the defines :
+X**	SwapOpcode, SwapOperand.
 X*/
 X
 Xtypedef unsigned char TscOpcode;
 Xtypedef long TscOperand;
 X
-X#define SC_MAGIC 0x19901991
+X#define SC_MAGIC	0x19901991
 X
-X#define SwapOpcode(x) x = x
-X#define SwapOperand(l) ((l))=(((((l))>>24)&0xFF)|((((l))>>8)&0xFF00)|((((l))<<8)&0xFF0000)|((((l))<<24)&0xFF000000))
+X#define SwapOpcode(x)	x = x
+X#define SwapOperand(l)	((l))=(((((l))>>24)&0xFF)|((((l))>>8)&0xFF00)|((((l))<<8)&0xFF0000)|((((l))<<24)&0xFF000000))
 X
-X#define STKSIZE 256
+X#define STKSIZE		256
 X
-X#define OPERAND 0x80
-X#define FLAGS 0x40
+X#define OPERAND		0x80
+X#define FLAGS		0x40
 X
 X/*
-X** The headerfields. The value of the flag is the index of the fields
-X** array from the file mhdr.c plus one
+X**	The headerfields. The value of the flag is the index of the fields 
+X**	array from the file mhdr.c plus one
 X*/
 X
-X#define H_EXTRA 0x00000001
-X#define H_SIZE 0x00000002
-X#define H_OFFSET 0x00000003
-X#define H_PORT 0x00000004
-X#define H_PRIV 0x00000005
-X#define PSEUDOFIELD 0x00000006
-X#define ALL_FIELDS 0x000000ff
+X#define H_EXTRA		0x00000001
+X#define H_SIZE		0x00000002
+X#define H_OFFSET	0x00000003
+X#define H_PORT		0x00000004
+X#define H_PRIV		0x00000005
+X#define PSEUDOFIELD	0x00000006
+X#define ALL_FIELDS	0x000000ff
 X
 X/*
-X** The specefiers for the integers
+X**	The specefiers for the integers
 X*/
 X
-X#define NOSIGN 0x00000100
-X#define INT32 0x00000200
-X#define ALLTYPES 0xffffff00
+X#define NOSIGN		0x00000100
+X#define INT32		0x00000200
+X#define ALLTYPES	0xffffff00
 X
 X/*
-X** The opcode with no operand
+X**	The opcode with no operand	
 X*/
 X
-X#define ListS 0x00
-X#define PutVS 0x01
-X#define GetVS 0x02
-X#define StringS 0x03
-X#define Equal 0x04
-X#define NoArgs 0x05
+X#define ListS		0x00
+X#define PutVS		0x01
+X#define GetVS		0x02
+X#define StringS		0x03
+X#define	Equal		0x04
+X#define NoArgs		0x05
 X
 X/*
-X * Between 0x10 and 0x3f there is space for predefined marshal
-X * and unmarshal functions or macros that do not have an operand
+X *    Between 0x10 and 0x3f there is space for predefined marshal
+X *    and unmarshal functions or macros that do not have an operand
 X */
 X
-X#define MarshTC 0x10
-X#define UnMarshTC 0x11
+X#define MarshTC		0x10
+X#define UnMarshTC	0x11
 X
 X/*
-X** The opcode with a number as operand
+X**	The opcode with a number as operand
 X*/
 X
-X#define BufSize 0x80
-X#define Trans 0x81
-X#define TTupleS 0x82
-X#define Unpack 0x83
-X#define PutFS 0x84
-X#define TStringSeq 0x85
-X#define TStringSlt 0x86
-X#define TListSeq 0x87
-X#define TListSlt 0x88
-X#define LoopPut 0x89
-X#define EndLoop 0x8a
-X#define Dup 0x8b
-X#define Pop 0x8c
-X#define Align 0x8d
-X#define Pack 0x8e
-X#define LoopGet 0x8f
-X#define GetFS 0x90
-X#define PushI 0x91
+X#define BufSize		0x80
+X#define Trans		0x81
+X#define TTupleS		0x82
+X#define Unpack		0x83
+X#define PutFS		0x84
+X#define TStringSeq	0x85
+X#define TStringSlt	0x86
+X#define TListSeq	0x87
+X#define TListSlt	0x88
+X#define LoopPut		0x89
+X#define EndLoop		0x8a
+X#define Dup		0x8b
+X#define Pop		0x8c
+X#define Align		0x8d
+X#define Pack		0x8e
+X#define LoopGet		0x8f
+X#define GetFS		0x90
+X#define PushI		0x91
 X
 X/*
-X** Between 0xa0 and 0xbf there is space for predefined marshal
-X** and unmarshal functions or macros with a numberas operand
+X**      Between 0xa0 and 0xbf there is space for predefined marshal
+X**      and unmarshal functions or macros with a numberas operand
 X*/
 X
 X
 X/*
-X** The opcodes with flags as operand
+X**	The opcodes with flags as operand
 X*/
 X
-X#define AilWord 0xc0
-X#define PutI 0xc1
-X#define PutC 0xc2
-X#define GetI 0xc3
-X#define GetC 0xc4
+X#define AilWord		0xc0
+X#define PutI		0xc1
+X#define PutC		0xc2
+X#define GetI		0xc3
+X#define GetC		0xc4
 X
 X/*
-X** Between 0xe0 and 0xff there is space for predefined marshal
-X** and unmarshal functions or macros with flags as operand
+X**	Between 0xe0 and 0xff there is space for predefined marshal
+X**	and unmarshal functions or macros with flags as operand
 X*/
 EOF
 fi
@@ -2038,12 +2038,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -2065,7 +2065,7 @@ Xvoid xPrintNum(Num)
 XTscOperand Num;
 X{
 X
-X printf(" %ld",(long)Num);
+X    printf(" %ld",(long)Num);
 X}
 X
 Xvoid xPrintFlags(Flags)
@@ -2073,118 +2073,118 @@ XTscOperand Flags;
 X{
 Xlong x;
 X
-X x = (long)Flags;
-X x = x & 0x0000000F;
-X if (x == H_EXTRA) printf(" h_extra");
-X if (x == H_SIZE) printf(" h_size");
-X if (x == H_OFFSET) printf(" h_offset");
-X if (x == H_PORT) printf(" h_port");
-X if (x == H_PRIV) printf(" h_priv");
-X if (x == PSEUDOFIELD) printf(" h_port and h_priv");
-X x = (long)Flags;
-X if (x & NOSIGN) printf(" unsigned");
-X if (x & INT32) printf(" int32");
+X    x = (long)Flags;
+X    x = x & 0x0000000F;
+X    if (x == H_EXTRA) printf(" h_extra");
+X    if (x == H_SIZE) printf(" h_size");
+X    if (x == H_OFFSET) printf(" h_offset");
+X    if (x == H_PORT) printf(" h_port");
+X    if (x == H_PRIV) printf(" h_priv");
+X    if (x == PSEUDOFIELD) printf(" h_port and h_priv");
+X    x = (long)Flags;
+X    if (x & NOSIGN) printf(" unsigned");
+X    if (x & INT32) printf(" int32");
 X}
 X
 Xvoid xPrintCode(Opcode)
 XTscOpcode Opcode;
 X{
 X
-X switch (Opcode) {
+X    switch (Opcode) {
+X    
+X    case BufSize:	printf("BufSize");
+X    			break;
 X
-X case BufSize: printf("BufSize");
-X break;
+X    case Trans:		printf("Trans");
+X    			break;
 X
-X case Trans: printf("Trans");
-X break;
+X    case TTupleS:	printf("TTupleS");
+X    			break;
 X
-X case TTupleS: printf("TTupleS");
-X break;
+X    case Unpack:	printf("Unpack");
+X    			break;
 X
-X case Unpack: printf("Unpack");
-X break;
+X    case AilWord:	printf("AilWord");
+X    			break;
 X
-X case AilWord: printf("AilWord");
-X break;
+X    case ListS:		printf("ListS");
+X    			break;
 X
-X case ListS: printf("ListS");
-X break;
+X    case StringS:	printf("StringS");
+X    			break;
 X
-X case StringS: printf("StringS");
-X break;
+X    case PutFS:		printf("PutFS");
+X    			break;
 X
-X case PutFS: printf("PutFS");
-X break;
+X    case TStringSeq:	printf("TStringSeq");
+X    			break;
 X
-X case TStringSeq: printf("TStringSeq");
-X break;
+X    case TStringSlt:	printf("TStringSlt");
+X    			break;
 X
-X case TStringSlt: printf("TStringSlt");
-X break;
+X    case PutVS:		printf("PutVS");
+X    			break;
 X
-X case PutVS: printf("PutVS");
-X break;
+X    case TListSeq:	printf("TListSeq");
+X    			break;
 X
-X case TListSeq: printf("TListSeq");
-X break;
+X    case TListSlt:	printf("TListSlt");
+X    			break;
 X
-X case TListSlt: printf("TListSlt");
-X break;
+X    case LoopPut:	printf("LoopPut");
+X    			break;
 X
-X case LoopPut: printf("LoopPut");
-X break;
+X    case EndLoop:	printf("EndLoop");
+X    			break;
 X
-X case EndLoop: printf("EndLoop");
-X break;
+X    case PutI:		printf("PutI");
+X    			break;
 X
-X case PutI: printf("PutI");
-X break;
+X    case PutC:		printf("PutC");
+X    			break;
 X
-X case PutC: printf("PutC");
-X break;
+X    case Dup:		printf("Dup");
+X    			break;
 X
-X case Dup: printf("Dup");
-X break;
+X    case Pop:		printf("Pop");
+X    			break;
 X
-X case Pop: printf("Pop");
-X break;
+X    case Align:		printf("Align");
+X    			break;
+X    
+X    case Pack:		printf("Pack");
+X    			break;
 X
-X case Align: printf("Align");
-X break;
+X    case GetVS:		printf("GetVS");
+X    			break;
+X    
+X    case LoopGet:	printf("LoopGet");
+X    			break;
+X    
+X    case GetFS:		printf("GetFS");
+X    			break;
+X    
+X    case GetI:		printf("GetI");
+X    			break;
+X    
+X    case GetC:		printf("GetC");
+X    			break;
+X    
+X    case PushI:		printf("PushI");
+X    			break;
+X    
+X    case MarshTC:	printf("MarshTC");
+X    			break;
+X    
+X    case UnMarshTC:	printf("UnMarshTC");
+X    			break;
 X
-X case Pack: printf("Pack");
-X break;
+X    case Equal:		printf("Equal");
+X    			break;
 X
-X case GetVS: printf("GetVS");
-X break;
-X
-X case LoopGet: printf("LoopGet");
-X break;
-X
-X case GetFS: printf("GetFS");
-X break;
-X
-X case GetI: printf("GetI");
-X break;
-X
-X case GetC: printf("GetC");
-X break;
-X
-X case PushI: printf("PushI");
-X break;
-X
-X case MarshTC: printf("MarshTC");
-X break;
-X
-X case UnMarshTC: printf("UnMarshTC");
-X break;
-X
-X case Equal: printf("Equal");
-X break;
-X
-X default: printf("Unknown opcode %04x",(int)Opcode);
-X break;
-X }
+X    default:		printf("Unknown opcode %04x",(int)Opcode);
+X    			break;
+X    }
 X}
 EOF
 fi
@@ -2197,12 +2197,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -2225,131 +2225,131 @@ X#include "structmember.h"
 X
 Xobject *
 Xgetmember(addr, mlist, name)
-X char *addr;
-X struct memberlist *mlist;
-X char *name;
+X	char *addr;
+X	struct memberlist *mlist;
+X	char *name;
 X{
-X struct memberlist *l;
-X
-X for (l = mlist; l->name != NULL; l++) {
-X if (strcmp(l->name, name) == 0) {
-X object *v;
-X addr += l->offset;
-X switch (l->type) {
-X case T_SHORT:
-X v = newintobject((long) *(short*)addr);
-X break;
-X case T_INT:
-X v = newintobject((long) *(int*)addr);
-X break;
-X case T_LONG:
-X v = newintobject(*(long*)addr);
-X break;
-X case T_FLOAT:
-X v = newfloatobject((double)*(float*)addr);
-X break;
-X case T_DOUBLE:
-X v = newfloatobject(*(double*)addr);
-X break;
-X case T_STRING:
-X if (*(char**)addr == NULL) {
-X INCREF(None);
-X v = None;
-X }
-X else
-X v = newstringobject(*(char**)addr);
-X break;
-X case T_OBJECT:
-X v = *(object **)addr;
-X if (v == NULL)
-X v = None;
-X INCREF(v);
-X break;
-X default:
-X err_setstr(SystemError, "bad memberlist type");
-X v = NULL;
-X }
-X return v;
-X }
-X }
-X
-X err_setstr(NameError, name);
-X return NULL;
+X	struct memberlist *l;
+X	
+X	for (l = mlist; l->name != NULL; l++) {
+X		if (strcmp(l->name, name) == 0) {
+X			object *v;
+X			addr += l->offset;
+X			switch (l->type) {
+X			case T_SHORT:
+X				v = newintobject((long) *(short*)addr);
+X				break;
+X			case T_INT:
+X				v = newintobject((long) *(int*)addr);
+X				break;
+X			case T_LONG:
+X				v = newintobject(*(long*)addr);
+X				break;
+X			case T_FLOAT:
+X				v = newfloatobject((double)*(float*)addr);
+X				break;
+X			case T_DOUBLE:
+X				v = newfloatobject(*(double*)addr);
+X				break;
+X			case T_STRING:
+X				if (*(char**)addr == NULL) {
+X					INCREF(None);
+X					v = None;
+X				}
+X				else
+X					v = newstringobject(*(char**)addr);
+X				break;
+X			case T_OBJECT:
+X				v = *(object **)addr;
+X				if (v == NULL)
+X					v = None;
+X				INCREF(v);
+X				break;
+X			default:
+X				err_setstr(SystemError, "bad memberlist type");
+X				v = NULL;
+X			}
+X			return v;
+X		}
+X	}
+X	
+X	err_setstr(NameError, name);
+X	return NULL;
 X}
 X
 Xint
 Xsetmember(addr, mlist, name, v)
-X char *addr;
-X struct memberlist *mlist;
-X char *name;
-X object *v;
+X	char *addr;
+X	struct memberlist *mlist;
+X	char *name;
+X	object *v;
 X{
-X struct memberlist *l;
-X
-X for (l = mlist; l->name != NULL; l++) {
-X if (strcmp(l->name, name) == 0) {
-X if (l->readonly || l->type == T_STRING) {
-X err_setstr(RuntimeError, "readonly attribute");
-X return -1;
-X }
-X addr += l->offset;
-X switch (l->type) {
-X case T_SHORT:
-X if (!is_intobject(v)) {
-X err_badarg();
-X return -1;
-X }
-X *(short*)addr = getintvalue(v);
-X break;
-X case T_INT:
-X if (!is_intobject(v)) {
-X err_badarg();
-X return -1;
-X }
-X *(int*)addr = getintvalue(v);
-X break;
-X case T_LONG:
-X if (!is_intobject(v)) {
-X err_badarg();
-X return -1;
-X }
-X *(long*)addr = getintvalue(v);
-X break;
-X case T_FLOAT:
-X if (is_intobject(v))
-X *(float*)addr = getintvalue(v);
-X else if (is_floatobject(v))
-X *(float*)addr = getfloatvalue(v);
-X else {
-X err_badarg();
-X return -1;
-X }
-X break;
-X case T_DOUBLE:
-X if (is_intobject(v))
-X *(double*)addr = getintvalue(v);
-X else if (is_floatobject(v))
-X *(double*)addr = getfloatvalue(v);
-X else {
-X err_badarg();
-X return -1;
-X }
-X break;
-X case T_OBJECT:
-X XDECREF(*(object **)addr);
-X XINCREF(v);
-X *(object **)addr = v;
-X break;
-X default:
-X err_setstr(SystemError, "bad memberlist type");
-X return -1;
-X }
-X return 0;
-X }
-X }
-X
-X err_setstr(NameError, name);
-X return -1;
+X	struct memberlist *l;
+X	
+X	for (l = mlist; l->name != NULL; l++) {
+X		if (strcmp(l->name, name) == 0) {
+X			if (l->readonly || l->type == T_STRING) {
+X				err_setstr(RuntimeError, "readonly attribute");
+X				return -1;
+X			}
+X			addr += l->offset;
+X			switch (l->type) {
+X			case T_SHORT:
+X				if (!is_intobject(v)) {
+X					err_badarg();
+X					return -1;
+X				}
+X				*(short*)addr = getintvalue(v);
+X				break;
+X			case T_INT:
+X				if (!is_intobject(v)) {
+X					err_badarg();
+X					return -1;
+X				}
+X				*(int*)addr = getintvalue(v);
+X				break;
+X			case T_LONG:
+X				if (!is_intobject(v)) {
+X					err_badarg();
+X					return -1;
+X				}
+X				*(long*)addr = getintvalue(v);
+X				break;
+X			case T_FLOAT:
+X				if (is_intobject(v))
+X					*(float*)addr = getintvalue(v);
+X				else if (is_floatobject(v))
+X					*(float*)addr = getfloatvalue(v);
+X				else {
+X					err_badarg();
+X					return -1;
+X				}
+X				break;
+X			case T_DOUBLE:
+X				if (is_intobject(v))
+X					*(double*)addr = getintvalue(v);
+X				else if (is_floatobject(v))
+X					*(double*)addr = getfloatvalue(v);
+X				else {
+X					err_badarg();
+X					return -1;
+X				}
+X				break;
+X			case T_OBJECT:
+X				XDECREF(*(object **)addr);
+X				XINCREF(v);
+X				*(object **)addr = v;
+X				break;
+X			default:
+X				err_setstr(SystemError, "bad memberlist type");
+X				return -1;
+X			}
+X			return 0;
+X		}
+X	}
+X	
+X	err_setstr(NameError, name);
+X	return -1;
 X}
 EOF
 fi
@@ -2362,12 +2362,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -2383,13 +2383,13 @@ X
 X******************************************************************/
 X
 X/* Use this file as a template to start implementing a new object type.
-X If your objects will be called foobar, start by copying this file to
-X foobarobject.c, changing all occurrences of xx to foobar and all
-X occurrences of Xx by Foobar. You will probably want to delete all
-X references to 'x_attr' and add your own types of attributes
-X instead. Maybe you want to name your local variables other than
-X 'xp'. If your object type is needed in other files, you'll have to
-X create a file "foobarobject.h"; see intobject.h for an example. */
+X   If your objects will be called foobar, start by copying this file to
+X   foobarobject.c, changing all occurrences of xx to foobar and all
+X   occurrences of Xx by Foobar.  You will probably want to delete all
+X   references to 'x_attr' and add your own types of attributes
+X   instead.  Maybe you want to name your local variables other than
+X   'xp'.  If your object type is needed in other files, you'll have to
+X   create a file "foobarobject.h"; see intobject.h for an example. */
 X
 X
 X/* Xx objects */
@@ -2397,97 +2397,97 @@ X
 X#include "allobjects.h"
 X
 Xtypedef struct {
-X OB_HEAD
-X object *x_attr; /* Attributes dictionary */
+X	OB_HEAD
+X	object	*x_attr;	/* Attributes dictionary */
 X} xxobject;
 X
-Xextern typeobject Xxtype; /* Really static, forward */
+Xextern typeobject Xxtype;	/* Really static, forward */
 X
-X#define is_xxobject(v) ((v)->ob_type == &Xxtype)
+X#define is_xxobject(v)		((v)->ob_type == &Xxtype)
 X
 Xstatic xxobject *
 Xnewxxobject(arg)
-X object *arg;
+X	object *arg;
 X{
-X xxobject *xp;
-X xp = NEWOBJ(xxobject, &Xxtype);
-X if (xp == NULL)
-X return NULL;
-X xp->x_attr = NULL;
-X return xp;
+X	xxobject *xp;
+X	xp = NEWOBJ(xxobject, &Xxtype);
+X	if (xp == NULL)
+X		return NULL;
+X	xp->x_attr = NULL;
+X	return xp;
 X}
 X
 X/* Xx methods */
 X
 Xstatic void
 Xxx_dealloc(xp)
-X xxobject *xp;
+X	xxobject *xp;
 X{
-X XDECREF(xp->x_attr);
-X DEL(xp);
+X	XDECREF(xp->x_attr);
+X	DEL(xp);
 X}
 X
 Xstatic object *
 Xxx_demo(self, args)
-X xxobject *self;
-X object *args;
+X	xxobject *self;
+X	object *args;
 X{
-X if (!getnoarg(args))
-X return NULL;
-X INCREF(None);
-X return None;
+X	if (!getnoarg(args))
+X		return NULL;
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic struct methodlist xx_methods[] = {
-X "demo", xx_demo,
-X {NULL, NULL} /* sentinel */
+X	"demo",		xx_demo,
+X	{NULL,		NULL}		/* sentinel */
 X};
 X
 Xstatic object *
 Xxx_getattr(xp, name)
-X xxobject *xp;
-X char *name;
+X	xxobject *xp;
+X	char *name;
 X{
-X if (xp->x_attr != NULL) {
-X object *v = dictlookup(xp->x_attr, name);
-X if (v != NULL) {
-X INCREF(v);
-X return v;
-X }
-X }
-X return findmethod(xx_methods, (object *)xp, name);
+X	if (xp->x_attr != NULL) {
+X		object *v = dictlookup(xp->x_attr, name);
+X		if (v != NULL) {
+X			INCREF(v);
+X			return v;
+X		}
+X	}
+X	return findmethod(xx_methods, (object *)xp, name);
 X}
 X
 Xstatic int
 Xxx_setattr(xp, name, v)
-X xxobject *xp;
-X char *name;
-X object *v;
+X	xxobject *xp;
+X	char *name;
+X	object *v;
 X{
-X if (xp->x_attr == NULL) {
-X xp->x_attr = newdictobject();
-X if (xp->x_attr == NULL)
-X return -1;
-X }
-X if (v == NULL)
-X return dictremove(xp->x_attr, name);
-X else
-X return dictinsert(xp->x_attr, name, v);
+X	if (xp->x_attr == NULL) {
+X		xp->x_attr = newdictobject();
+X		if (xp->x_attr == NULL)
+X			return -1;
+X	}
+X	if (v == NULL)
+X		return dictremove(xp->x_attr, name);
+X	else
+X		return dictinsert(xp->x_attr, name, v);
 X}
 X
 Xstatic typeobject Xxtype = {
-X OB_HEAD_INIT(&Typetype)
-X 0, /*ob_size*/
-X "xx", /*tp_name*/
-X sizeof(xxobject), /*tp_size*/
-X 0, /*tp_itemsize*/
-X /* methods */
-X xx_dealloc, /*tp_dealloc*/
-X 0, /*tp_print*/
-X xx_getattr, /*tp_getattr*/
-X xx_setattr, /*tp_setattr*/
-X 0, /*tp_compare*/
-X 0, /*tp_repr*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,			/*ob_size*/
+X	"xx",			/*tp_name*/
+X	sizeof(xxobject),	/*tp_size*/
+X	0,			/*tp_itemsize*/
+X	/* methods */
+X	xx_dealloc,	/*tp_dealloc*/
+X	0,		/*tp_print*/
+X	xx_getattr,	/*tp_getattr*/
+X	xx_setattr,	/*tp_setattr*/
+X	0,		/*tp_compare*/
+X	0,		/*tp_repr*/
 X};
 EOF
 fi

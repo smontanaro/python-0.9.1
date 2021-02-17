@@ -57,20 +57,20 @@ X
 X<returntype> can be: void, short, long (XXX maybe others?)
 X
 X<type> can be: char, string, short, float, long, or double
-X string indicates a null terminated string;
-X if <type> is char and <arg> begins with a *, the * is stripped
-X and <type> is changed into string
+X	string indicates a null terminated string;
+X	if <type> is char and <arg> begins with a *, the * is stripped
+X	and <type> is changed into string
 X
 X<arg> has the form <mode> or <mode>[<subscript>]
-X where <mode> can be
-X s: arg is sent
-X r: arg is received (arg is a pointer)
-X and <subscript> can be (N and I are numbers):
-X N
-X argI
-X retval
-X N*argI
-X N*retval
+X	where <mode> can be
+X		s: arg is sent
+X		r: arg is received		(arg is a pointer)
+X	and <subscript> can be (N and I are numbers):
+X		N
+X		argI
+X		retval
+X		N*argI
+X		N*retval
 X*/
 X
 X#include <gl.h>
@@ -93,7 +93,7 @@ Xvarray -- an array of v.. calls.
 XThe argument is an array (maybe list or tuple) of points.
 XEach point must be a tuple or list of coordinates (x, y, z).
 XThe points may be 2- or 3-dimensional but must all have the
-Xsame dimension. Float and int values may be mixed however.
+Xsame dimension.  Float and int values may be mixed however.
 XThe points are always converted to 3D double precision points
 Xby assuming z=0.0 if necessary (as indicated in the man page),
 Xand for each point v3d() is called.
@@ -103,67 +103,67 @@ X% varray
 X
 Xstatic object *
 Xgl_varray(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *v, *w;
-X int i, n, width;
-X double vec[3];
-X object * (*getitem) FPROTO((object *, int));
-X
-X if (!getiobjectarg(args, 1, 0, &v))
-X return NULL;
-X
-X if (is_listobject(v)) {
-X n = getlistsize(v);
-X getitem = getlistitem;
-X }
-X else if (is_tupleobject(v)) {
-X n = gettuplesize(v);
-X getitem = gettupleitem;
-X }
-X else {
-X err_badarg();
-X return NULL;
-X }
-X
-X if (n == 0) {
-X INCREF(None);
-X return None;
-X }
-X if (n > 0)
-X w = (*getitem)(v, 0);
-X
-X width = 0;
-X if (w == NULL) {
-X }
-X else if (is_listobject(w)) {
-X width = getlistsize(w);
-X }
-X else if (is_tupleobject(w)) {
-X width = gettuplesize(w);
-X }
-X
-X switch (width) {
-X case 2:
-X vec[2] = 0.0;
-X /* Fall through */
-X case 3:
-X break;
-X default:
-X err_badarg();
-X return NULL;
-X }
-X
-X for (i = 0; i < n; i++) {
-X w = (*getitem)(v, i);
-X if (!getidoublearray(w, 1, 0, width, vec))
-X return NULL;
-X v3d(vec);
-X }
-X
-X INCREF(None);
-X return None;
+X	object *v, *w;
+X	int i, n, width;
+X	double vec[3];
+X	object * (*getitem) FPROTO((object *, int));
+X	
+X	if (!getiobjectarg(args, 1, 0, &v))
+X		return NULL;
+X	
+X	if (is_listobject(v)) {
+X		n = getlistsize(v);
+X		getitem = getlistitem;
+X	}
+X	else if (is_tupleobject(v)) {
+X		n = gettuplesize(v);
+X		getitem = gettupleitem;
+X	}
+X	else {
+X		err_badarg();
+X		return NULL;
+X	}
+X	
+X	if (n == 0) {
+X		INCREF(None);
+X		return None;
+X	}
+X	if (n > 0)
+X		w = (*getitem)(v, 0);
+X	
+X	width = 0;
+X	if (w == NULL) {
+X	}
+X	else if (is_listobject(w)) {
+X		width = getlistsize(w);
+X	}
+X	else if (is_tupleobject(w)) {
+X		width = gettuplesize(w);
+X	}
+X	
+X	switch (width) {
+X	case 2:
+X		vec[2] = 0.0;
+X		/* Fall through */
+X	case 3:
+X		break;
+X	default:
+X		err_badarg();
+X		return NULL;
+X	}
+X	
+X	for (i = 0; i < n; i++) {
+X		w = (*getitem)(v, i);
+X		if (!getidoublearray(w, 1, 0, width, vec))
+X			return NULL;
+X		v3d(vec);
+X	}
+X	
+X	INCREF(None);
+X	return None;
 X}
 X
 X/*
@@ -171,7 +171,7 @@ Xvnarray, nvarray -- an array of n3f and v3f calls.
 XThe argument is an array (list or tuple) of pairs of points and normals.
 XEach pair is a tuple (NOT a list) of a point and a normal for that point.
 XEach point or normal must be a tuple (NOT a list) of coordinates (x, y, z).
-XThree coordinates must be given. Float and int values may be mixed.
+XThree coordinates must be given.  Float and int values may be mixed.
 XFor each pair, n3f() is called for the normal, and then v3f() is called
 Xfor the vector.
 X
@@ -185,267 +185,267 @@ X% nvarray
 X
 Xstatic object *
 Xgl_nvarray(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X return gen_nvarray(args, 0);
+X	return gen_nvarray(args, 0);
 X}
 X
 X% vnarray
 X
 Xstatic object *
 Xgl_vnarray(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X return gen_nvarray(args, 1);
+X	return gen_nvarray(args, 1);
 X}
 X
 X/* Generic, internal version of {nv,nv}array: inorm indicates the
-X argument order, 0: normal first, 1: vector first. */
+X   argument order, 0: normal first, 1: vector first. */
 X
 Xstatic object *
 Xgen_nvarray(args, inorm)
-X object *args;
-X int inorm;
+X	object *args;
+X	int inorm;
 X{
-X object *v, *w, *wnorm, *wvec;
-X int i, n;
-X float norm[3], vec[3];
-X object * (*getitem) FPROTO((object *, int));
-X
-X if (!getiobjectarg(args, 1, 0, &v))
-X return NULL;
-X
-X if (is_listobject(v)) {
-X n = getlistsize(v);
-X getitem = getlistitem;
-X }
-X else if (is_tupleobject(v)) {
-X n = gettuplesize(v);
-X getitem = gettupleitem;
-X }
-X else {
-X err_badarg();
-X return NULL;
-X }
-X
-X for (i = 0; i < n; i++) {
-X w = (*getitem)(v, i);
-X if (!is_tupleobject(w) || gettuplesize(w) != 2) {
-X err_badarg();
-X return NULL;
-X }
-X wnorm = gettupleitem(w, inorm);
-X wvec = gettupleitem(w, 1 - inorm);
-X if (!getifloatarray(wnorm, 1, 0, 3, norm) ||
-X !getifloatarray(wvec, 1, 0, 3, vec))
-X return NULL;
-X n3f(norm);
-X v3f(vec);
-X }
-X
-X INCREF(None);
-X return None;
+X	object *v, *w, *wnorm, *wvec;
+X	int i, n;
+X	float norm[3], vec[3];
+X	object * (*getitem) FPROTO((object *, int));
+X	
+X	if (!getiobjectarg(args, 1, 0, &v))
+X		return NULL;
+X	
+X	if (is_listobject(v)) {
+X		n = getlistsize(v);
+X		getitem = getlistitem;
+X	}
+X	else if (is_tupleobject(v)) {
+X		n = gettuplesize(v);
+X		getitem = gettupleitem;
+X	}
+X	else {
+X		err_badarg();
+X		return NULL;
+X	}
+X	
+X	for (i = 0; i < n; i++) {
+X		w = (*getitem)(v, i);
+X		if (!is_tupleobject(w) || gettuplesize(w) != 2) {
+X			err_badarg();
+X			return NULL;
+X		}
+X		wnorm = gettupleitem(w, inorm);
+X		wvec = gettupleitem(w, 1 - inorm);
+X		if (!getifloatarray(wnorm, 1, 0, 3, norm) ||
+X			!getifloatarray(wvec, 1, 0, 3, vec))
+X			return NULL;
+X		n3f(norm);
+X		v3f(vec);
+X	}
+X	
+X	INCREF(None);
+X	return None;
 X}
 X
 X/* nurbssurface(s_knots[], t_knots[], ctl[][], s_order, t_order, type).
-X The dimensions of ctl[] are computed as follows:
-X [len(s_knots) - s_order], [len(t_knots) - t_order]
+X   The dimensions of ctl[] are computed as follows:
+X   [len(s_knots) - s_order], [len(t_knots) - t_order]
 X*/
 X
 X% nurbssurface
 X
 Xstatic object *
 Xgl_nurbssurface(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X long arg1 ;
-X double * arg2 ;
-X long arg3 ;
-X double * arg4 ;
-X double *arg5 ;
-X long arg6 ;
-X long arg7 ;
-X long arg8 ;
-X long ncoords;
-X long s_byte_stride, t_byte_stride;
-X long s_nctl, t_nctl;
-X long s, t;
-X object *v, *w, *pt;
-X double *pnext;
-X if (!getilongarraysize(args, 6, 0, &arg1))
-X return NULL;
-X if ((arg2 = NEW(double, arg1 )) == NULL) {
-X return err_nomem();
-X }
-X if (!getidoublearray(args, 6, 0, arg1 , arg2))
-X return NULL;
-X if (!getilongarraysize(args, 6, 1, &arg3))
-X return NULL;
-X if ((arg4 = NEW(double, arg3 )) == NULL) {
-X return err_nomem();
-X }
-X if (!getidoublearray(args, 6, 1, arg3 , arg4))
-X return NULL;
-X if (!getilongarg(args, 6, 3, &arg6))
-X return NULL;
-X if (!getilongarg(args, 6, 4, &arg7))
-X return NULL;
-X if (!getilongarg(args, 6, 5, &arg8))
-X return NULL;
-X if (arg8 == N_XYZ)
-X ncoords = 3;
-X else if (arg8 == N_XYZW)
-X ncoords = 4;
-X else {
-X err_badarg();
-X return NULL;
-X }
-X s_nctl = arg1 - arg6;
-X t_nctl = arg3 - arg7;
-X if (!getiobjectarg(args, 6, 2, &v))
-X return NULL;
-X if (!is_listobject(v) || getlistsize(v) != s_nctl) {
-X err_badarg();
-X return NULL;
-X }
-X if ((arg5 = NEW(double, s_nctl*t_nctl*ncoords )) == NULL) {
-X return err_nomem();
-X }
-X pnext = arg5;
-X for (s = 0; s < s_nctl; s++) {
-X w = getlistitem(v, s);
-X if (w == NULL || !is_listobject(w) ||
-X getlistsize(w) != t_nctl) {
-X err_badarg();
-X return NULL;
-X }
-X for (t = 0; t < t_nctl; t++) {
-X pt = getlistitem(w, t);
-X if (!getidoublearray(pt, 1, 0, ncoords, pnext))
-X return NULL;
-X pnext += ncoords;
-X }
-X }
-X s_byte_stride = sizeof(double) * ncoords;
-X t_byte_stride = s_byte_stride * s_nctl;
-X nurbssurface( arg1 , arg2 , arg3 , arg4 ,
-X s_byte_stride , t_byte_stride , arg5 , arg6 , arg7 , arg8 );
-X DEL(arg2);
-X DEL(arg4);
-X DEL(arg5);
-X INCREF(None);
-X return None;
+X	long arg1 ;
+X	double * arg2 ;
+X	long arg3 ;
+X	double * arg4 ;
+X	double *arg5 ;
+X	long arg6 ;
+X	long arg7 ;
+X	long arg8 ;
+X	long ncoords;
+X	long s_byte_stride, t_byte_stride;
+X	long s_nctl, t_nctl;
+X	long s, t;
+X	object *v, *w, *pt;
+X	double *pnext;
+X	if (!getilongarraysize(args, 6, 0, &arg1))
+X		return NULL;
+X	if ((arg2 = NEW(double, arg1 )) == NULL) {
+X		return err_nomem();
+X	}
+X	if (!getidoublearray(args, 6, 0, arg1 , arg2))
+X		return NULL;
+X	if (!getilongarraysize(args, 6, 1, &arg3))
+X		return NULL;
+X	if ((arg4 = NEW(double, arg3 )) == NULL) {
+X		return err_nomem();
+X	}
+X	if (!getidoublearray(args, 6, 1, arg3 , arg4))
+X		return NULL;
+X	if (!getilongarg(args, 6, 3, &arg6))
+X		return NULL;
+X	if (!getilongarg(args, 6, 4, &arg7))
+X		return NULL;
+X	if (!getilongarg(args, 6, 5, &arg8))
+X		return NULL;
+X	if (arg8 == N_XYZ)
+X		ncoords = 3;
+X	else if (arg8 == N_XYZW)
+X		ncoords = 4;
+X	else {
+X		err_badarg();
+X		return NULL;
+X	}
+X	s_nctl = arg1 - arg6;
+X	t_nctl = arg3 - arg7;
+X	if (!getiobjectarg(args, 6, 2, &v))
+X		return NULL;
+X	if (!is_listobject(v) || getlistsize(v) != s_nctl) {
+X		err_badarg();
+X		return NULL;
+X	}
+X	if ((arg5 = NEW(double, s_nctl*t_nctl*ncoords )) == NULL) {
+X		return err_nomem();
+X	}
+X	pnext = arg5;
+X	for (s = 0; s < s_nctl; s++) {
+X		w = getlistitem(v, s);
+X		if (w == NULL || !is_listobject(w) ||
+X					getlistsize(w) != t_nctl) {
+X			err_badarg();
+X			return NULL;
+X		}
+X		for (t = 0; t < t_nctl; t++) {
+X			pt = getlistitem(w, t);
+X			if (!getidoublearray(pt, 1, 0, ncoords, pnext))
+X				return NULL;
+X			pnext += ncoords;
+X		}
+X	}
+X	s_byte_stride = sizeof(double) * ncoords;
+X	t_byte_stride = s_byte_stride * s_nctl;
+X	nurbssurface( arg1 , arg2 , arg3 , arg4 ,
+X		s_byte_stride , t_byte_stride , arg5 , arg6 , arg7 , arg8 );
+X	DEL(arg2);
+X	DEL(arg4);
+X	DEL(arg5);
+X	INCREF(None);
+X	return None;
 X}
 X
 X/* nurbscurve(knots, ctlpoints, order, type).
-X The length of ctlpoints is len(knots)-order. */
+X   The length of ctlpoints is len(knots)-order. */
 X
 X%nurbscurve
 X
 Xstatic object *
 Xgl_nurbscurve(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X long arg1 ;
-X double * arg2 ;
-X long arg3 ;
-X double * arg4 ;
-X long arg5 ;
-X long arg6 ;
-X int ncoords, npoints;
-X int i;
-X object *v;
-X double *pnext;
-X if (!getilongarraysize(args, 4, 0, &arg1))
-X return NULL;
-X if ((arg2 = NEW(double, arg1 )) == NULL) {
-X return err_nomem();
-X }
-X if (!getidoublearray(args, 4, 0, arg1 , arg2))
-X return NULL;
-X if (!getilongarg(args, 4, 2, &arg5))
-X return NULL;
-X if (!getilongarg(args, 4, 3, &arg6))
-X return NULL;
-X if (arg6 == N_ST)
-X ncoords = 2;
-X else if (arg6 == N_STW)
-X ncoords = 3;
-X else {
-X err_badarg();
-X return NULL;
-X }
-X npoints = arg1 - arg5;
-X if (!getiobjectarg(args, 4, 1, &v))
-X return NULL;
-X if (!is_listobject(v) || getlistsize(v) != npoints) {
-X err_badarg();
-X return NULL;
-X }
-X if ((arg4 = NEW(double, npoints*ncoords )) == NULL) {
-X return err_nomem();
-X }
-X pnext = arg4;
-X for (i = 0; i < npoints; i++) {
-X if (!getidoublearray(getlistitem(v, i), 1, 0, ncoords, pnext))
-X return NULL;
-X pnext += ncoords;
-X }
-X arg3 = (sizeof(double)) * ncoords;
-X nurbscurve( arg1 , arg2 , arg3 , arg4 , arg5 , arg6 );
-X DEL(arg2);
-X DEL(arg4);
-X INCREF(None);
-X return None;
+X	long arg1 ;
+X	double * arg2 ;
+X	long arg3 ;
+X	double * arg4 ;
+X	long arg5 ;
+X	long arg6 ;
+X	int ncoords, npoints;
+X	int i;
+X	object *v;
+X	double *pnext;
+X	if (!getilongarraysize(args, 4, 0, &arg1))
+X		return NULL;
+X	if ((arg2 = NEW(double, arg1 )) == NULL) {
+X		return err_nomem();
+X	}
+X	if (!getidoublearray(args, 4, 0, arg1 , arg2))
+X		return NULL;
+X	if (!getilongarg(args, 4, 2, &arg5))
+X		return NULL;
+X	if (!getilongarg(args, 4, 3, &arg6))
+X		return NULL;
+X	if (arg6 == N_ST)
+X		ncoords = 2;
+X	else if (arg6 == N_STW)
+X		ncoords = 3;
+X	else {
+X		err_badarg();
+X		return NULL;
+X	}
+X	npoints = arg1 - arg5;
+X	if (!getiobjectarg(args, 4, 1, &v))
+X		return NULL;
+X	if (!is_listobject(v) || getlistsize(v) != npoints) {
+X		err_badarg();
+X		return NULL;
+X	}
+X	if ((arg4 = NEW(double, npoints*ncoords )) == NULL) {
+X		return err_nomem();
+X	}
+X	pnext = arg4;
+X	for (i = 0; i < npoints; i++) {
+X		if (!getidoublearray(getlistitem(v, i), 1, 0, ncoords, pnext))
+X			return NULL;
+X		pnext += ncoords;
+X	}
+X	arg3 = (sizeof(double)) * ncoords;
+X	nurbscurve( arg1 , arg2 , arg3 , arg4 , arg5 , arg6 );
+X	DEL(arg2);
+X	DEL(arg4);
+X	INCREF(None);
+X	return None;
 X}
 X
 X/* pwlcurve(points, type).
-X Points is a list of points. Type must be N_ST. */
+X   Points is a list of points. Type must be N_ST. */
 X
 X%pwlcurve
 X
 Xstatic object *
 Xgl_pwlcurve(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *v;
-X long type;
-X double *data, *pnext;
-X long npoints, ncoords;
-X int i;
-X if (!getiobjectarg(args, 2, 0, &v))
-X return NULL;
-X if (!getilongarg(args, 2, 1, &type))
-X return NULL;
-X if (!is_listobject(v)) {
-X err_badarg();
-X return NULL;
-X }
-X npoints = getlistsize(v);
-X if (type == N_ST)
-X ncoords = 2;
-X else {
-X err_badarg();
-X return NULL;
-X }
-X if ((data = NEW(double, npoints*ncoords)) == NULL) {
-X return err_nomem();
-X }
-X pnext = data;
-X for (i = 0; i < npoints; i++) {
-X if (!getidoublearray(getlistitem(v, i), 1, 0, ncoords, pnext))
-X return NULL;
-X pnext += ncoords;
-X }
-X pwlcurve(npoints, data, sizeof(double)*ncoords, type);
-X DEL(data);
-X INCREF(None);
-X return None;
+X	object *v;
+X	long type;
+X	double *data, *pnext;
+X	long npoints, ncoords;
+X	int i;
+X	if (!getiobjectarg(args, 2, 0, &v))
+X		return NULL;
+X	if (!getilongarg(args, 2, 1, &type))
+X		return NULL;
+X	if (!is_listobject(v)) {
+X		err_badarg();
+X		return NULL;
+X	}
+X	npoints = getlistsize(v);
+X	if (type == N_ST)
+X		ncoords = 2;
+X	else {
+X		err_badarg();
+X		return NULL;
+X	}
+X	if ((data = NEW(double, npoints*ncoords)) == NULL) {
+X		return err_nomem();
+X	}
+X	pnext = data;
+X	for (i = 0; i < npoints; i++) {
+X		if (!getidoublearray(getlistitem(v, i), 1, 0, ncoords, pnext))
+X			return NULL;
+X		pnext += ncoords;
+X	}
+X	pwlcurve(npoints, data, sizeof(double)*ncoords, type);
+X	DEL(data);
+X	INCREF(None);
+X	return None;
 X}
 X
 X
@@ -456,63 +456,63 @@ Xstatic long pickbuffersize;
 X
 Xstatic object *
 Xpick_select(args, func)
-X object *args;
-X void (*func)();
+X	object *args;
+X	void (*func)();
 X{
-X if (!getilongarg(args, 1, 0, &pickbuffersize))
-X return NULL;
-X if (pickbuffer != NULL) {
-X err_setstr(RuntimeError,
-X "pick/gselect: already picking/selecting");
-X return NULL;
-X }
-X if ((pickbuffer = NEW(short, pickbuffersize)) == NULL) {
-X return err_nomem();
-X }
-X (*func)(pickbuffer, pickbuffersize);
-X INCREF(None);
-X return None;
+X	if (!getilongarg(args, 1, 0, &pickbuffersize))
+X		return NULL;
+X	if (pickbuffer != NULL) {
+X		err_setstr(RuntimeError,
+X			"pick/gselect: already picking/selecting");
+X		return NULL;
+X	}
+X	if ((pickbuffer = NEW(short, pickbuffersize)) == NULL) {
+X		return err_nomem();
+X	}
+X	(*func)(pickbuffer, pickbuffersize);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xendpick_select(args, func)
-X object *args;
-X long (*func)();
+X	object *args;
+X	long (*func)();
 X{
-X object *v, *w;
-X int i, nhits, n;
-X if (!getnoarg(args))
-X return NULL;
-X if (pickbuffer == NULL) {
-X err_setstr(RuntimeError,
-X "endpick/endselect: not in pick/select mode");
-X return NULL;
-X }
-X nhits = (*func)(pickbuffer);
-X if (nhits < 0) {
-X nhits = -nhits; /* How to report buffer overflow otherwise? */
-X }
-X /* Scan the buffer to see how many integers */
-X n = 0;
-X for (; nhits > 0; nhits--) {
-X n += 1 + pickbuffer[n];
-X }
-X v = newlistobject(n);
-X if (v == NULL)
-X return NULL;
-X /* XXX Could do it nicer and interpret the data structure here,
-X returning a list of lists. But this can be done in Python... */
-X for (i = 0; i < n; i++) {
-X w = newintobject((long)pickbuffer[i]);
-X if (w == NULL) {
-X DECREF(v);
-X return NULL;
-X }
-X setlistitem(v, i, w);
-X }
-X DEL(pickbuffer);
-X pickbuffer = NULL;
-X return v;
+X	object *v, *w;
+X	int i, nhits, n;
+X	if (!getnoarg(args))
+X		return NULL;
+X	if (pickbuffer == NULL) {
+X		err_setstr(RuntimeError,
+X			"endpick/endselect: not in pick/select mode");
+X		return NULL;
+X	}
+X	nhits = (*func)(pickbuffer);
+X	if (nhits < 0) {
+X		nhits = -nhits; /* How to report buffer overflow otherwise? */
+X	}
+X	/* Scan the buffer to see how many integers */
+X	n = 0;
+X	for (; nhits > 0; nhits--) {
+X		n += 1 + pickbuffer[n];
+X	}
+X	v = newlistobject(n);
+X	if (v == NULL)
+X		return NULL;
+X	/* XXX Could do it nicer and interpret the data structure here,
+X	   returning a list of lists. But this can be done in Python... */
+X	for (i = 0; i < n; i++) {
+X		w = newintobject((long)pickbuffer[i]);
+X		if (w == NULL) {
+X			DECREF(v);
+X			return NULL;
+X		}
+X		setlistitem(v, i, w);
+X	}
+X	DEL(pickbuffer);
+X	pickbuffer = NULL;
+X	return v;
 X}
 X
 Xextern void pick(), gselect();
@@ -520,370 +520,370 @@ Xextern long endpick(), endselect();
 X
 X%pick
 Xstatic object *gl_pick(self, args) object *self, *args; {
-X return pick_select(args, pick);
+X	return pick_select(args, pick);
 X}
 X
 X%endpick
 Xstatic object *gl_endpick(self, args) object *self, *args; {
-X return endpick_select(args, endpick);
+X	return endpick_select(args, endpick);
 X}
 X
 X%gselect
 Xstatic object *gl_gselect(self, args) object *self, *args; {
-X return pick_select(args, gselect);
+X	return pick_select(args, gselect);
 X}
 X
 X%endselect
 Xstatic object *gl_endselect(self, args) object *self, *args; {
-X return endpick_select(args, endselect);
+X	return endpick_select(args, endselect);
 X}
 X
 X
-X/* XXX The generator botches this one. Here's a quick hack to fix it. */
+X/* XXX The generator botches this one.  Here's a quick hack to fix it. */
 X
 X% getmatrix float r[16]
 X
 Xstatic object *
 Xgl_getmatrix(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X float arg1 [ 16 ] ;
-X object *v, *w;
-X int i;
-X getmatrix( arg1 );
-X v = newlistobject(16);
-X if (v == NULL) {
-X return err_nomem();
-X }
-X for (i = 0; i < 16; i++) {
-X w = mknewfloatobject(arg1[i]);
-X if (w == NULL) {
-X DECREF(v);
-X return NULL;
-X }
-X setlistitem(v, i, w);
-X }
-X return v;
+X	float arg1 [ 16 ] ;
+X	object *v, *w;
+X	int i;
+X	getmatrix( arg1 );
+X	v = newlistobject(16);
+X	if (v == NULL) {
+X		return err_nomem();
+X	}
+X	for (i = 0; i < 16; i++) {
+X		w = mknewfloatobject(arg1[i]);
+X		if (w == NULL) {
+X			DECREF(v);
+X			return NULL;
+X		}
+X		setlistitem(v, i, w);
+X	}
+X	return v;
 X}
 X
 X/* End of manually written stubs */
 X
 X%%
 X
-Xlong getshade
-Xvoid devport short s long s
-Xvoid rdr2i long s long s
-Xvoid rectfs short s short s short s short s
-Xvoid rects short s short s short s short s
-Xvoid rmv2i long s long s
-Xvoid noport
-Xvoid popviewport
-Xvoid clear
-Xvoid clearhitcode
-Xvoid closeobj
-Xvoid cursoff
-Xvoid curson
-Xvoid doublebuffer
-Xvoid finish
-Xvoid gconfig
-Xvoid ginit
-Xvoid greset
-Xvoid multimap
-Xvoid onemap
-Xvoid popattributes
-Xvoid popmatrix
-Xvoid pushattributes
-Xvoid pushmatrix
-Xvoid pushviewport
-Xvoid qreset
-Xvoid RGBmode
-Xvoid singlebuffer
-Xvoid swapbuffers
-Xvoid gsync
-Xvoid tpon
-Xvoid tpoff
-Xvoid clkon
-Xvoid clkoff
-Xvoid ringbell
-X#void callfunc
-Xvoid gbegin
-Xvoid textinit
-Xvoid initnames
-Xvoid pclos
-Xvoid popname
-Xvoid spclos
-Xvoid zclear
-Xvoid screenspace
-Xvoid reshapeviewport
-Xvoid winpush
-Xvoid winpop
-Xvoid foreground
-Xvoid endfullscrn
-Xvoid endpupmode
-Xvoid fullscrn
-Xvoid pupmode
-Xvoid winconstraints
-Xvoid pagecolor short s
-Xvoid textcolor short s
-Xvoid color short s
-Xvoid curveit short s
-Xvoid font short s
-Xvoid linewidth short s
-Xvoid setlinestyle short s
-Xvoid setmap short s
-Xvoid swapinterval short s
-Xvoid writemask short s
-Xvoid textwritemask short s
-Xvoid qdevice short s
-Xvoid unqdevice short s
-Xvoid curvebasis short s
-Xvoid curveprecision short s
-Xvoid loadname short s
-Xvoid passthrough short s
-Xvoid pushname short s
-Xvoid setmonitor short s
-Xvoid setshade short s
-Xvoid setpattern short s
-Xvoid pagewritemask short s
+Xlong 	getshade
+Xvoid 	devport 	short s long s
+Xvoid 	rdr2i 		long s long s
+Xvoid	rectfs 		short s short s short s short s
+Xvoid 	rects 		short s short s short s short s
+Xvoid 	rmv2i 		long s long s
+Xvoid	noport
+Xvoid	popviewport
+Xvoid	clear
+Xvoid	clearhitcode
+Xvoid	closeobj
+Xvoid	cursoff
+Xvoid	curson
+Xvoid	doublebuffer
+Xvoid 	finish
+Xvoid	gconfig
+Xvoid	ginit
+Xvoid	greset
+Xvoid	multimap
+Xvoid	onemap
+Xvoid	popattributes
+Xvoid	popmatrix
+Xvoid	pushattributes
+Xvoid	pushmatrix
+Xvoid	pushviewport
+Xvoid	qreset
+Xvoid	RGBmode
+Xvoid	singlebuffer
+Xvoid	swapbuffers
+Xvoid	gsync
+Xvoid	tpon
+Xvoid	tpoff
+Xvoid	clkon
+Xvoid	clkoff
+Xvoid	ringbell
+X#void	callfunc
+Xvoid	gbegin
+Xvoid	textinit
+Xvoid	initnames
+Xvoid	pclos
+Xvoid	popname
+Xvoid	spclos
+Xvoid	zclear
+Xvoid	screenspace
+Xvoid	reshapeviewport
+Xvoid	winpush
+Xvoid	winpop
+Xvoid	foreground
+Xvoid	endfullscrn
+Xvoid	endpupmode
+Xvoid	fullscrn
+Xvoid	pupmode
+Xvoid	winconstraints
+Xvoid	pagecolor 	short s
+Xvoid	textcolor 	short s
+Xvoid 	color 	  	short s
+Xvoid	curveit		short s
+Xvoid	font		short s
+Xvoid 	linewidth	short s
+Xvoid    setlinestyle	short s
+Xvoid	setmap		short s
+Xvoid	swapinterval	short s
+Xvoid	writemask	short s
+Xvoid	textwritemask	short s
+Xvoid	qdevice		short s
+Xvoid	unqdevice	short s
+Xvoid	curvebasis	short s
+Xvoid	curveprecision	short s
+Xvoid	loadname	short s
+Xvoid	passthrough	short s
+Xvoid	pushname	short s
+Xvoid	setmonitor	short s
+Xvoid	setshade	short s
+Xvoid	setpattern	short s
+Xvoid	pagewritemask	short s
 X#
-Xvoid callobj long s
-Xvoid delobj long s
-Xvoid editobj long s
-Xvoid makeobj long s
-Xvoid maketag long s
-Xvoid chunksize long s
-Xvoid compactify long s
-Xvoid deltag long s
-Xvoid lsrepeat long s
-Xvoid objinsert long s
-Xvoid objreplace long s
-Xvoid winclose long s
-Xvoid blanktime long s
-Xvoid freepup long s
+Xvoid	callobj		long s
+Xvoid	delobj		long s
+Xvoid 	editobj		long s
+Xvoid	makeobj		long s
+Xvoid	maketag		long s
+Xvoid	chunksize	long s
+Xvoid	compactify	long s
+Xvoid	deltag		long s
+Xvoid	lsrepeat	long s
+Xvoid	objinsert	long s
+Xvoid 	objreplace	long s
+Xvoid	winclose	long s
+Xvoid	blanktime	long s
+Xvoid 	freepup		long s
 X# This is not in the library!?
-X###void pupcolor long s
+X###void	pupcolor	long s
 X#
-Xvoid backbuffer long s
-Xvoid frontbuffer long s
-Xvoid lsbackup long s
-Xvoid resetls long s
-Xvoid lampon long s
-Xvoid lampoff long s
-Xvoid setbell long s
-Xvoid blankscreen long s
-Xvoid depthcue long s
-Xvoid zbuffer long s
-Xvoid backface long s
+Xvoid	backbuffer	long s
+Xvoid 	frontbuffer	long s
+Xvoid	lsbackup	long s
+Xvoid	resetls		long s
+Xvoid	lampon		long s
+Xvoid	lampoff		long s
+Xvoid	setbell		long s
+Xvoid	blankscreen	long s
+Xvoid 	depthcue	long s
+Xvoid	zbuffer		long s
+Xvoid	backface	long s
 X#
-Xvoid cmov2i long s long s
-Xvoid draw2i long s long s
-Xvoid move2i long s long s
-Xvoid pnt2i long s long s
-Xvoid patchbasis long s long s
-Xvoid patchprecision long s long s
-Xvoid pdr2i long s long s
-Xvoid pmv2i long s long s
-Xvoid rpdr2i long s long s
-Xvoid rpmv2i long s long s
-Xvoid xfpt2i long s long s
-Xvoid objdelete long s long s
-Xvoid patchcurves long s long s
-Xvoid minsize long s long s
-Xvoid maxsize long s long s
-Xvoid keepaspect long s long s
-Xvoid prefsize long s long s
-Xvoid stepunit long s long s
-Xvoid fudge long s long s
-Xvoid winmove long s long s
+Xvoid 	cmov2i		long s long s
+Xvoid 	draw2i		long s long s
+Xvoid	move2i		long s long s
+Xvoid	pnt2i		long s long s
+Xvoid 	patchbasis	long s long s
+Xvoid 	patchprecision	long s long s
+Xvoid	pdr2i		long s long s
+Xvoid	pmv2i		long s long s
+Xvoid	rpdr2i		long s long s
+Xvoid	rpmv2i		long s long s
+Xvoid	xfpt2i		long s long s
+Xvoid	objdelete	long s long s
+Xvoid	patchcurves	long s long s
+Xvoid	minsize		long s long s
+Xvoid 	maxsize		long s long s
+Xvoid	keepaspect	long s long s
+Xvoid	prefsize	long s long s
+Xvoid	stepunit	long s long s
+Xvoid 	fudge		long s long s
+Xvoid 	winmove		long s long s
 X#
-Xvoid attachcursor short s short s
-Xvoid deflinestyle short s short s
-Xvoid noise short s short s
-Xvoid picksize short s short s
-Xvoid qenter short s short s
-Xvoid setdepth short s short s
-Xvoid cmov2s short s short s
-Xvoid draw2s short s short s
-Xvoid move2s short s short s
-Xvoid pdr2s short s short s
-Xvoid pmv2s short s short s
-Xvoid pnt2s short s short s
-Xvoid rdr2s short s short s
-Xvoid rmv2s short s short s
-Xvoid rpdr2s short s short s
-Xvoid rpmv2s short s short s
-Xvoid xfpt2s short s short s
+Xvoid 	attachcursor	short s short s
+Xvoid 	deflinestyle	short s short s
+Xvoid 	noise		short s short s
+Xvoid 	picksize	short s short s
+Xvoid 	qenter		short s short s
+Xvoid 	setdepth	short s short s
+Xvoid 	cmov2s		short s short s
+Xvoid 	draw2s		short s	short s
+Xvoid 	move2s		short s short s
+Xvoid 	pdr2s		short s short s
+Xvoid 	pmv2s		short s short s
+Xvoid 	pnt2s		short s short s
+Xvoid 	rdr2s		short s short s
+Xvoid 	rmv2s		short s short s
+Xvoid 	rpdr2s		short s short s
+Xvoid 	rpmv2s		short s short s
+Xvoid 	xfpt2s		short s short s
 X#
-Xvoid cmov2 float s float s
-Xvoid draw2 float s float s
-Xvoid move2 float s float s
-Xvoid pnt2 float s float s
-Xvoid pdr2 float s float s
-Xvoid pmv2 float s float s
-Xvoid rdr2 float s float s
-Xvoid rmv2 float s float s
-Xvoid rpdr2 float s float s
-Xvoid rpmv2 float s float s
-Xvoid xfpt2 float s float s
+Xvoid cmov2		float s float s
+Xvoid draw2		float s float s
+Xvoid move2		float s float s
+Xvoid pnt2		float s float s
+Xvoid pdr2		float s float s
+Xvoid pmv2		float s float s
+Xvoid rdr2		float s float s
+Xvoid rmv2		float s float s
+Xvoid rpdr2		float s float s
+Xvoid rpmv2		float s float s
+Xvoid xfpt2		float s float s
 X#
-Xvoid loadmatrix float s[16]
-Xvoid multmatrix float s[16]
-Xvoid crv float s[16]
-Xvoid rcrv float s[16]
+Xvoid loadmatrix		float s[16]
+Xvoid multmatrix		float s[16]
+Xvoid crv			float s[16]
+Xvoid rcrv			float s[16]
 X#
-X# Methods that have strings.
+X# Methods that have strings.  
 X#
-Xvoid addtopup long s char *s long s
-Xvoid charstr char *s
-Xvoid getport char *s
-Xlong strwidth char *s
-Xlong winopen char *s
-Xvoid wintitle char *s
+Xvoid addtopup		long s char *s long s
+Xvoid charstr		char *s
+Xvoid getport	 	char *s
+Xlong strwidth		char *s
+Xlong winopen		char *s
+Xvoid wintitle		char *s
 X#
-X# Methods that have 1 long (# of elements) and an array
+X# Methods that have 1 long (# of elements) and an array 
 X#
-Xvoid polf long s float s[3*arg1]
-Xvoid polf2 long s float s[2*arg1]
-Xvoid poly long s float s[3*arg1]
-Xvoid poly2 long s float s[2*arg1]
-Xvoid crvn long s float s[3*arg1]
-Xvoid rcrvn long s float s[4*arg1]
+Xvoid polf		long s float s[3*arg1]
+Xvoid polf2		long s float s[2*arg1]
+Xvoid poly		long s float s[3*arg1]
+Xvoid poly2		long s float s[2*arg1]
+Xvoid crvn		long s float s[3*arg1]
+Xvoid rcrvn		long s float s[4*arg1]
 X#
-Xvoid polf2i long s long s[2*arg1]
-Xvoid polfi long s long s[3*arg1]
-Xvoid poly2i long s long s[2*arg1]
-Xvoid polyi long s long s[3*arg1]
+Xvoid polf2i		long s long s[2*arg1]
+Xvoid polfi		long s long s[3*arg1]
+Xvoid poly2i		long s long s[2*arg1]
+Xvoid polyi		long s long s[3*arg1]
 X#
-Xvoid polf2s long s short s[2*arg1]
-Xvoid polfs long s short s[3*arg1]
-Xvoid polys long s short s[3*arg1]
-Xvoid poly2s long s short s[2*arg1]
+Xvoid polf2s		long s short s[2*arg1]
+Xvoid polfs		long s short s[3*arg1]
+Xvoid polys		long s short s[3*arg1]
+Xvoid poly2s		long s short s[2*arg1]
 X#
-Xvoid defcursor short s short s[16]
-Xvoid writepixels short s short s[arg1]
-Xvoid defbasis long s float s[16]
-Xvoid gewrite short s short s[arg1]
+Xvoid defcursor		short s short s[16]
+Xvoid writepixels	short s short s[arg1]
+Xvoid defbasis		long s float s[16]
+Xvoid gewrite		short s short s[arg1]
 X#
-Xvoid rotate short s char s
+Xvoid rotate		short s char s
 X# This is not in the library!?
-X###void setbutton short s char s
-Xvoid rot float s char s
+X###void setbutton		short s char s
+Xvoid rot		float s char s
 X#
-Xvoid circfi long s long s long s
-Xvoid circi long s long s long s
-Xvoid cmovi long s long s long s
-Xvoid drawi long s long s long s
-Xvoid movei long s long s long s
-Xvoid pnti long s long s long s
-Xvoid newtag long s long s long s
-Xvoid pdri long s long s long s
-Xvoid pmvi long s long s long s
-Xvoid rdri long s long s long s
-Xvoid rmvi long s long s long s
-Xvoid rpdri long s long s long s
-Xvoid rpmvi long s long s long s
-Xvoid xfpti long s long s long s
+Xvoid circfi		long s long s long s
+Xvoid circi		long s long s long s
+Xvoid cmovi		long s long s long s
+Xvoid drawi		long s long s long s
+Xvoid movei		long s long s long s
+Xvoid pnti 		long s long s long s
+Xvoid newtag		long s long s long s
+Xvoid pdri  		long s long s long s
+Xvoid pmvi  		long s long s long s
+Xvoid rdri  		long s long s long s
+Xvoid rmvi  		long s long s long s
+Xvoid rpdri 		long s long s long s
+Xvoid rpmvi 		long s long s long s
+Xvoid xfpti 		long s long s long s
 X#
-Xvoid circ float s float s float s
-Xvoid circf float s float s float s
-Xvoid cmov float s float s float s
-Xvoid draw float s float s float s
-Xvoid move float s float s float s
-Xvoid pnt float s float s float s
-Xvoid scale float s float s float s
-Xvoid translate float s float s float s
-Xvoid pdr float s float s float s
-Xvoid pmv float s float s float s
-Xvoid rdr float s float s float s
-Xvoid rmv float s float s float s
-Xvoid rpdr float s float s float s
-Xvoid rpmv float s float s float s
-Xvoid xfpt float s float s float s
+Xvoid circ		float s float s float s
+Xvoid circf		float s float s float s
+Xvoid cmov		float s float s float s
+Xvoid draw		float s float s float s
+Xvoid move		float s float s float s
+Xvoid pnt		float s float s float s
+Xvoid scale		float s float s float s
+Xvoid translate		float s float s float s
+Xvoid pdr		float s float s float s
+Xvoid pmv		float s float s float s
+Xvoid rdr		float s float s float s
+Xvoid rmv		float s float s float s
+Xvoid rpdr		float s float s float s
+Xvoid rpmv		float s float s float s
+Xvoid xfpt		float s float s float s
 X#
-Xvoid RGBcolor short s short s short s
-Xvoid RGBwritemask short s short s short s
-Xvoid setcursor short s short s short s
-Xvoid tie short s short s short s
-Xvoid circfs short s short s short s
-Xvoid circs short s short s short s
-Xvoid cmovs short s short s short s
-Xvoid draws short s short s short s
-Xvoid moves short s short s short s
-Xvoid pdrs short s short s short s
-Xvoid pmvs short s short s short s
-Xvoid pnts short s short s short s
-Xvoid rdrs short s short s short s
-Xvoid rmvs short s short s short s
-Xvoid rpdrs short s short s short s
-Xvoid rpmvs short s short s short s
-Xvoid xfpts short s short s short s
-Xvoid curorigin short s short s short s
-Xvoid cyclemap short s short s short s
+Xvoid RGBcolor		short s short s short s
+Xvoid RGBwritemask	short s short s short s
+Xvoid setcursor		short s short s short s
+Xvoid tie		short s short s short s
+Xvoid circfs		short s short s short s
+Xvoid circs		short s short s short s
+Xvoid cmovs		short s short s short s
+Xvoid draws		short s short s short s
+Xvoid moves		short s short s short s
+Xvoid pdrs		short s short s short s
+Xvoid pmvs		short s short s short s
+Xvoid pnts		short s short s short s
+Xvoid rdrs		short s short s short s
+Xvoid rmvs		short s short s short s
+Xvoid rpdrs		short s short s short s
+Xvoid rpmvs		short s short s short s
+Xvoid xfpts		short s short s short s
+Xvoid curorigin		short s short s short s
+Xvoid cyclemap		short s short s short s
 X#
-Xvoid patch float s[16] float s[16] float s[16]
-Xvoid splf long s float s[3*arg1] short s[arg1]
-Xvoid splf2 long s float s[2*arg1] short s[arg1]
-Xvoid splfi long s long s[3*arg1] short s[arg1]
-Xvoid splf2i long s long s[2*arg1] short s[arg1]
-Xvoid splfs long s short s[3*arg1] short s[arg1]
-Xvoid splf2s long s short s[2*arg1] short s[arg1]
-Xvoid defpattern short s short s short s[arg2*arg2/16]
+Xvoid patch		float s[16] float s[16] float s[16]
+Xvoid splf		long s float s[3*arg1] short s[arg1]
+Xvoid splf2		long s float s[2*arg1] short s[arg1]
+Xvoid splfi		long s long s[3*arg1] short s[arg1]
+Xvoid splf2i		long s long s[2*arg1] short s[arg1]
+Xvoid splfs		long s short s[3*arg1] short s[arg1]
+Xvoid splf2s		long s short s[2*arg1] short s[arg1]
+Xvoid defpattern		short s short s short s[arg2*arg2/16]
 X#
-Xvoid rpatch float s[16] float s[16] float s[16] float s[16]
+Xvoid rpatch		float s[16] float s[16] float s[16] float s[16]
 X#
 X# routines that send 4 floats
 X#
-Xvoid ortho2 float s float s float s float s
-Xvoid rect float s float s float s float s
-Xvoid rectf float s float s float s float s
-Xvoid xfpt4 float s float s float s float s
+Xvoid ortho2		float s float s float s float s
+Xvoid rect		float s float s float s float s
+Xvoid rectf		float s float s float s float s
+Xvoid xfpt4		float s float s float s float s
 X#
-Xvoid textport short s short s short s short s
-Xvoid mapcolor short s short s short s short s
-Xvoid scrmask short s short s short s short s
-Xvoid setvaluator short s short s short s short s
-Xvoid viewport short s short s short s short s
-Xvoid shaderange short s short s short s short s
-Xvoid xfpt4s short s short s short s short s
-Xvoid rectfi long s long s long s long s
-Xvoid recti long s long s long s long s
-Xvoid xfpt4i long s long s long s long s
-Xvoid prefposition long s long s long s long s
+Xvoid textport		short s short s short s short s
+Xvoid mapcolor		short s short s short s short s
+Xvoid scrmask		short s short s short s short s
+Xvoid setvaluator	short s short s short s short s
+Xvoid viewport		short s short s short s short s
+Xvoid shaderange		short s short s short s short s
+Xvoid xfpt4s		short s short s short s short s
+Xvoid rectfi		long s long s long s long s
+Xvoid recti		long s long s long s long s
+Xvoid xfpt4i		long s long s long s long s
+Xvoid prefposition	long s long s long s long s
 X#
-Xvoid arc float s float s float s short s short s
-Xvoid arcf float s float s float s short s short s
-Xvoid arcfi long s long s long s short s short s
-Xvoid arci long s long s long s short s short s
+Xvoid arc		float s float s float s short s short s
+Xvoid arcf		float s float s float s short s short s
+Xvoid arcfi		long s long s long s short s short s
+Xvoid arci		long s long s long s short s short s
 X#
-Xvoid bbox2 short s short s float s float s float s float s
-Xvoid bbox2i short s short s long s long s long s long s
-Xvoid bbox2s short s short s short s short s short s short s
-Xvoid blink short s short s short s short s short s
-Xvoid ortho float s float s float s float s float s float s
-Xvoid window float s float s float s float s float s float s
-Xvoid lookat float s float s float s float s float s float s short s
+Xvoid bbox2		short s short s float s float s float s float s
+Xvoid bbox2i		short s short s long s long s long s long s
+Xvoid bbox2s		short s short s short s short s short s short s
+Xvoid blink		short s short s short s short s short s
+Xvoid ortho		float s float s float s float s float s float s
+Xvoid window		float s float s float s float s float s float s
+Xvoid lookat		float s float s float s float s float s float s short s
 X#
-Xvoid perspective short s float s float s float s
-Xvoid polarview float s short s short s short s
+Xvoid perspective	short s float s float s float s
+Xvoid polarview		float s short s short s short s
 X# XXX getichararray not supported
-X#void writeRGB short s char s[arg1] char s[arg1] char s[arg1]
+X#void writeRGB		short s char s[arg1] char s[arg1] char s[arg1]
 X#
-Xvoid arcfs short s short s short s short s short s
-Xvoid arcs short s short s short s short s short s
-Xvoid rectcopy short s short s short s short s short s short s
-Xvoid RGBcursor short s short s short s short s short s short s short s
+Xvoid arcfs		short s short s short s short s short s
+Xvoid arcs		short s short s short s short s short s
+Xvoid rectcopy		short s short s short s short s short s short s
+Xvoid RGBcursor		short s short s short s short s short s short s short s
 X#
-Xlong getbutton short s
+Xlong getbutton		short s
 Xlong getcmmode
 Xlong getlsbackup
 Xlong getresetls
 Xlong getdcm
 Xlong getzbuffer
 Xlong ismex
-Xlong isobj long s
-Xlong isqueued short s
-Xlong istag long s
+Xlong isobj		long s
+Xlong isqueued		short s
+Xlong istag		long s
 X#
 Xlong genobj
 Xlong gentag
@@ -908,60 +908,60 @@ Xlong winattach
 Xlong getothermonitor
 Xlong newpup
 X#
-Xlong getvaluator short s
-Xvoid winset long s
-Xlong dopup long s
-Xvoid getdepth short r short r
-Xvoid getcpos short r short r
-Xvoid getsize long r long r
-Xvoid getorigin long r long r
-Xvoid getviewport short r short r short r short r
-Xvoid gettp short r short r short r short r
-Xvoid getgpos float r float r float r float r
-Xvoid winposition long s long s long s long s
-Xvoid gRGBcolor short r short r short r
-Xvoid gRGBmask short r short r short r
-Xvoid getscrmask short r short r short r short r
-Xvoid gRGBcursor short r short r short r short r short r short r short r short r long *
-Xvoid getmcolor short s short r short r short r
-Xvoid mapw long s short s short s float r float r float r float r float r float r
-Xvoid mapw2 long s short s short s float r float r
-Xvoid defrasterfont short s short s short s Fontchar s[arg3] short s short s[4*arg5]
-Xlong qread short r
-Xvoid getcursor short r short r short r long r
+Xlong getvaluator	short s
+Xvoid winset		long s
+Xlong dopup		long s
+Xvoid getdepth		short r short r
+Xvoid getcpos		short r short r
+Xvoid getsize		long r long r
+Xvoid getorigin		long r long r
+Xvoid getviewport	short r short r short r short r
+Xvoid gettp		short r short r short r short r
+Xvoid getgpos		float r float r float r float r
+Xvoid winposition	long s long s long s long s
+Xvoid gRGBcolor		short r short r short r
+Xvoid gRGBmask		short r short r short r
+Xvoid getscrmask	short r short r short r short r
+Xvoid gRGBcursor	short r short r short r short r short r short r short r short r long *
+Xvoid getmcolor		short s short r short r short r
+Xvoid mapw		long s short s short s float r float r float r float r float r float r
+Xvoid mapw2		long s short s short s float r float r
+Xvoid defrasterfont	short s short s short s Fontchar s[arg3] short s short s[4*arg5]
+Xlong qread		short r
+Xvoid getcursor		short r short r short r long r
 X#
-X# For these we receive arrays of stuff
+X#   For these we receive arrays of stuff
 X#
-Xvoid getdev long s short s[arg1] short r[arg1]
+Xvoid getdev 		long s short s[arg1] short r[arg1]
 X#XXX not generated correctly yet
-X#void getmatrix float r[16]
-Xlong readpixels short s short r[retval]
-Xlong readRGB short s char r[retval] char r[retval] char r[retval]
-Xlong blkqread short s short r[arg1]
+X#void getmatrix		float r[16]
+Xlong readpixels		short s short r[retval]
+Xlong readRGB		short s char r[retval] char r[retval] char r[retval]
+Xlong blkqread		short s short r[arg1]
 X#
-X# New 4D routines
+X#   New 4D routines
 X#
 Xvoid cmode
-Xvoid concave long s
-Xvoid curstype long s
-Xvoid drawmode long s
-Xvoid gammaramp short s[256] short s[256] short s[256]
+Xvoid concave		long s
+Xvoid curstype		long s
+Xvoid drawmode		long s
+Xvoid gammaramp		short s[256] short s[256] short s[256]
 Xlong getbackface
 Xlong getdescender
 Xlong getdrawmode
 Xlong getmmode
 Xlong getsm
-Xlong getvideo long s
+Xlong getvideo		long s
 Xvoid imakebackground
-Xvoid lmbind short s short s
-Xvoid lmdef long s long s long s float s[arg3]
-Xvoid mmode long s
-Xvoid normal float s[3]
-Xvoid overlay long s
-Xvoid RGBrange short s short s short s short s short s short s short s short s
-Xvoid setvideo long s long s
-Xvoid shademodel long s
-Xvoid underlay long s
+Xvoid lmbind		short s short s
+Xvoid lmdef		long s long s long s float s[arg3]
+Xvoid mmode		long s
+Xvoid normal		float s[3]
+Xvoid overlay		long s
+Xvoid RGBrange		short s short s short s short s short s short s short s short s
+Xvoid setvideo 		long s long s
+Xvoid shademodel		long s
+Xvoid underlay		long s
 X#
 X# New Personal Iris/GT Routines
 X#
@@ -979,72 +979,72 @@ Xvoid endpolygon
 Xvoid endsurface
 Xvoid endtmesh
 Xvoid endtrim
-Xvoid blendfunction long s long s
-Xvoid c3f float s[3]
-Xvoid c3i long s[3]
-Xvoid c3s short s[3]
-Xvoid c4f float s[4]
-Xvoid c4i long s[4]
-Xvoid c4s short s[4]
-Xvoid colorf float s
-Xvoid cpack long s
-Xvoid czclear long s long s
-Xvoid dglclose long s
-Xlong dglopen char *s long s
-Xlong getgdesc long s
-Xvoid getnurbsproperty long s float r
-Xvoid glcompat long s long s
-Xvoid iconsize long s long s
-Xvoid icontitle char *s
-Xvoid lRGBrange short s short s short s short s short s short s long s long s
-Xvoid linesmooth long s
-Xvoid lmcolor long s
-Xvoid logicop long s
-Xlong lrectread short s short s short s short s long r[retval]
-Xvoid lrectwrite short s short s short s short s long s[(arg2-arg1+1)*(arg4-arg3+1)]
-Xlong rectread short s short s short s short s short r[retval]
-Xvoid rectwrite short s short s short s short s short s[(arg2-arg1+1)*(arg4-arg3+1)]
-Xvoid lsetdepth long s long s
-Xvoid lshaderange short s short s long s long s
-Xvoid n3f float s[3]
+Xvoid blendfunction	long s long s
+Xvoid c3f		float s[3]
+Xvoid c3i		long  s[3]
+Xvoid c3s		short s[3]
+Xvoid c4f		float s[4]
+Xvoid c4i		long  s[4]
+Xvoid c4s		short s[4]
+Xvoid colorf		float s
+Xvoid cpack		long s
+Xvoid czclear		long s long s
+Xvoid dglclose		long s
+Xlong dglopen		char *s long s
+Xlong getgdesc		long s
+Xvoid getnurbsproperty	long s float r
+Xvoid glcompat		long s long s
+Xvoid iconsize 		long s long s
+Xvoid icontitle		char *s
+Xvoid lRGBrange		short s short s short s short s short s short s long s long s
+Xvoid linesmooth		long s
+Xvoid lmcolor		long s
+Xvoid logicop		long s
+Xlong lrectread	 	short s short s short s short s long r[retval]
+Xvoid lrectwrite		short s short s short s short s long s[(arg2-arg1+1)*(arg4-arg3+1)]
+Xlong rectread	 	short s short s short s short s short r[retval]
+Xvoid rectwrite		short s short s short s short s short s[(arg2-arg1+1)*(arg4-arg3+1)]
+Xvoid lsetdepth		long s long s
+Xvoid lshaderange	short s short s long s long s
+Xvoid n3f		float s[3]
 Xvoid noborder
-Xvoid pntsmooth long s
-Xvoid readsource long s
-Xvoid rectzoom float s float s
-Xvoid sbox float s float s float s float s
-Xvoid sboxi long s long s long s long s
-Xvoid sboxs short s short s short s short s
-Xvoid sboxf float s float s float s float s
-Xvoid sboxfi long s long s long s long s
-Xvoid sboxfs short s short s short s short s
-Xvoid setnurbsproperty long s float s
-Xvoid setpup long s long s long s
-Xvoid smoothline long s
-Xvoid subpixel long s
+Xvoid pntsmooth		long s
+Xvoid readsource		long s
+Xvoid rectzoom		float s float s
+Xvoid sbox		float s float s float s float s
+Xvoid sboxi		long s long s long s long s
+Xvoid sboxs		short s short s short s short s
+Xvoid sboxf		float s float s float s float s
+Xvoid sboxfi		long s long s long s long s
+Xvoid sboxfs		short s short s short s short s
+Xvoid setnurbsproperty	long s float s
+Xvoid setpup 		long s long s long s
+Xvoid smoothline		long s
+Xvoid subpixel		long s
 Xvoid swaptmesh
-Xlong swinopen long s
-Xvoid v2f float s[2]
-Xvoid v2i long s[2]
-Xvoid v2s short s[2]
-Xvoid v3f float s[3]
-Xvoid v3i long s[3]
-Xvoid v3s short s[3]
-Xvoid v4f float s[4]
-Xvoid v4i long s[4]
-Xvoid v4s short s[4]
-Xvoid videocmd long s
-Xlong windepth long s
-Xvoid wmpack long s
-Xvoid zdraw long s
-Xvoid zfunction long s
-Xvoid zsource long s
-Xvoid zwritemask long s
+Xlong swinopen		long s
+Xvoid v2f		float s[2]
+Xvoid v2i		long  s[2]
+Xvoid v2s		short s[2]
+Xvoid v3f		float s[3]
+Xvoid v3i		long  s[3]
+Xvoid v3s		short s[3]
+Xvoid v4f		float s[4]
+Xvoid v4i		long  s[4]
+Xvoid v4s		short s[4]
+Xvoid videocmd		long s
+Xlong windepth		long s
+Xvoid wmpack		long s
+Xvoid zdraw		long s
+Xvoid zfunction		long s
+Xvoid zsource		long s
+Xvoid zwritemask		long s
 X#
-X# uses doubles
+X#   uses doubles
 X#
-Xvoid v2d double s[2]
-Xvoid v3d double s[3]
-Xvoid v4d double s[4]
+Xvoid v2d		double s[2]
+Xvoid v3d		double s[3]
+Xvoid v4d		double s[4]
 EOF
 fi
 if test -s 'src/stdwinmodule.c'
@@ -1056,12 +1056,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1079,41 +1079,41 @@ X
 X/* Stdwin module */
 X
 X/* Stdwin itself is a module, not a separate object type.
-X Object types defined here:
-X wp: a window
-X dp: a drawing structure (only one can exist at a time)
-X mp: a menu
-X tp: a textedit block
+X   Object types defined here:
+X	wp: a window
+X	dp: a drawing structure (only one can exist at a time)
+X	mp: a menu
+X	tp: a textedit block
 X*/
 X
 X/* Rules for translating C stdwin function calls into Python stwin:
-X - All names drop their initial letter 'w'
-X - Functions with a window as first parameter are methods of window objects
-X - There is no equivalent for wclose(); just delete the window object
-X (all references to it!) (XXX maybe this is a bad idea)
-X - w.begindrawing() returns a drawing object
-X - There is no equivalent for wenddrawing(win); just delete the drawing
-X object (all references to it!) (XXX maybe this is a bad idea)
-X - Functions that may only be used inside wbegindrawing / wendddrawing
-X are methods of the drawing object; this includes the text measurement
-X functions (which however have doubles as module functions).
-X - Methods of the drawing object drop an initial 'draw' from their name
-X if they have it, e.g., wdrawline() --> d.line()
-X - The obvious type conversions: int --> intobject; string --> stringobject
-X - A text parameter followed by a length parameter is only a text (string)
-X parameter in Python
-X - A point or other pair of horizontal and vertical coordinates is always
-X a pair of integers in Python
-X - Two points forming a rectangle or endpoints of a line segment are a
-X pair of points in Python
-X - The arguments to d.elarc() are three points.
-X - The functions wgetclip() and wsetclip() are translated into
-X stdwin.getcutbuffer() and stdwin.setcutbuffer(); 'clip' is really
-X a bad word for what these functions do (clipping has a different
-X meaning in the drawing world), while cutbuffer is standard X jargon.
-X XXX This must change again in the light of changes to stdwin!
-X - For textedit, similar rules hold, but they are less strict.
-X XXX more?
+X   - All names drop their initial letter 'w'
+X   - Functions with a window as first parameter are methods of window objects
+X   - There is no equivalent for wclose(); just delete the window object
+X     (all references to it!)  (XXX maybe this is a bad idea)
+X   - w.begindrawing() returns a drawing object
+X   - There is no equivalent for wenddrawing(win); just delete the drawing
+X      object (all references to it!)  (XXX maybe this is a bad idea)
+X   - Functions that may only be used inside wbegindrawing / wendddrawing
+X     are methods of the drawing object; this includes the text measurement
+X     functions (which however have doubles as module functions).
+X   - Methods of the drawing object drop an initial 'draw' from their name
+X     if they have it, e.g., wdrawline() --> d.line()
+X   - The obvious type conversions: int --> intobject; string --> stringobject
+X   - A text parameter followed by a length parameter is only a text (string)
+X     parameter in Python
+X   - A point or other pair of horizontal and vertical coordinates is always
+X     a pair of integers in Python
+X   - Two points forming a rectangle or endpoints of a line segment are a
+X     pair of points in Python
+X   - The arguments to d.elarc() are three points.
+X   - The functions wgetclip() and wsetclip() are translated into
+X     stdwin.getcutbuffer() and stdwin.setcutbuffer(); 'clip' is really
+X     a bad word for what these functions do (clipping has a different
+X     meaning in the drawing world), while cutbuffer is standard X jargon.
+X     XXX This must change again in the light of changes to stdwin!
+X   - For textedit, similar rules hold, but they are less strict.
+X   XXX more?
 X*/
 X
 X#include "allobjects.h"
@@ -1125,24 +1125,24 @@ X
 X/* Window and menu object types declared here because of forward references */
 X
 Xtypedef struct {
-X OB_HEAD
-X object *w_title;
-X WINDOW *w_win;
-X object *w_attr; /* Attributes dictionary */
+X	OB_HEAD
+X	object	*w_title;
+X	WINDOW	*w_win;
+X	object	*w_attr;	/* Attributes dictionary */
 X} windowobject;
 X
-Xextern typeobject Windowtype; /* Really static, forward */
+Xextern typeobject Windowtype;	/* Really static, forward */
 X
 X#define is_windowobject(wp) ((wp)->ob_type == &Windowtype)
 X
 Xtypedef struct {
-X OB_HEAD
-X MENU *m_menu;
-X int m_id;
-X object *m_attr; /* Attributes dictionary */
+X	OB_HEAD
+X	MENU	*m_menu;
+X	int	 m_id;
+X	object	*m_attr;	/* Attributes dictionary */
 X} menuobject;
 X
-Xextern typeobject Menutype; /* Really static, forward */
+Xextern typeobject Menutype;	/* Really static, forward */
 X
 X#define is_menuobject(mp) ((mp)->ob_type == &Menutype)
 X
@@ -1151,77 +1151,77 @@ X/* Strongly stdwin-specific argument handlers */
 X
 Xstatic int
 Xgetmousedetail(v, ep)
-X object *v;
-X EVENT *ep;
+X	object *v;
+X	EVENT *ep;
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 4)
-X return err_badarg();
-X return getintintarg(gettupleitem(v, 0),
-X &ep->u.where.h, &ep->u.where.v) &&
-X getintarg(gettupleitem(v, 1), &ep->u.where.clicks) &&
-X getintarg(gettupleitem(v, 2), &ep->u.where.button) &&
-X getintarg(gettupleitem(v, 3), &ep->u.where.mask);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 4)
+X		return err_badarg();
+X	return getintintarg(gettupleitem(v, 0),
+X					&ep->u.where.h, &ep->u.where.v) &&
+X		getintarg(gettupleitem(v, 1), &ep->u.where.clicks) &&
+X		getintarg(gettupleitem(v, 2), &ep->u.where.button) &&
+X		getintarg(gettupleitem(v, 3), &ep->u.where.mask);
 X}
 X
 Xstatic int
 Xgetmenudetail(v, ep)
-X object *v;
-X EVENT *ep;
+X	object *v;
+X	EVENT *ep;
 X{
-X object *mp;
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2)
-X return err_badarg();
-X mp = gettupleitem(v, 0);
-X if (mp == NULL || !is_menuobject(mp))
-X return err_badarg();
-X ep->u.m.id = ((menuobject *)mp) -> m_id;
-X return getintarg(gettupleitem(v, 1), &ep->u.m.item);
+X	object *mp;
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2)
+X		return err_badarg();
+X	mp = gettupleitem(v, 0);
+X	if (mp == NULL || !is_menuobject(mp))
+X		return err_badarg();
+X	ep->u.m.id = ((menuobject *)mp) -> m_id;
+X	return getintarg(gettupleitem(v, 1), &ep->u.m.item);
 X}
 X
 Xstatic int
 Xgeteventarg(v, ep)
-X object *v;
-X EVENT *ep;
+X	object *v;
+X	EVENT *ep;
 X{
-X object *wp, *detail;
-X int a[4];
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 3)
-X return err_badarg();
-X if (!getintarg(gettupleitem(v, 0), &ep->type))
-X return 0;
-X wp = gettupleitem(v, 1);
-X if (wp == None)
-X ep->window = NULL;
-X else if (wp == NULL || !is_windowobject(wp))
-X return err_badarg();
-X else
-X ep->window = ((windowobject *)wp) -> w_win;
-X detail = gettupleitem(v, 2);
-X switch (ep->type) {
-X case WE_CHAR:
-X if (!is_stringobject(detail) || getstringsize(detail) != 1)
-X return err_badarg();
-X ep->u.character = getstringvalue(detail)[0];
-X return 1;
-X case WE_COMMAND:
-X return getintarg(detail, &ep->u.command);
-X case WE_DRAW:
-X if (!getrectarg(detail, a))
-X return 0;
-X ep->u.area.left = a[0];
-X ep->u.area.top = a[1];
-X ep->u.area.right = a[2];
-X ep->u.area.bottom = a[3];
-X return 1;
-X case WE_MOUSE_DOWN:
-X case WE_MOUSE_UP:
-X case WE_MOUSE_MOVE:
-X return getmousedetail(detail, ep);
-X case WE_MENU:
-X return getmenudetail(detail, ep);
-X default:
-X return 1;
-X }
+X	object *wp, *detail;
+X	int a[4];
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 3)
+X		return err_badarg();
+X	if (!getintarg(gettupleitem(v, 0), &ep->type))
+X		return 0;
+X	wp = gettupleitem(v, 1);
+X	if (wp == None)
+X		ep->window = NULL;
+X	else if (wp == NULL || !is_windowobject(wp))
+X		return err_badarg();
+X	else
+X		ep->window = ((windowobject *)wp) -> w_win;
+X	detail = gettupleitem(v, 2);
+X	switch (ep->type) {
+X	case WE_CHAR:
+X		if (!is_stringobject(detail) || getstringsize(detail) != 1)
+X		return err_badarg();
+X		ep->u.character = getstringvalue(detail)[0];
+X		return 1;
+X	case WE_COMMAND:
+X		return getintarg(detail, &ep->u.command);
+X	case WE_DRAW:
+X		if (!getrectarg(detail, a))
+X			return 0;
+X		ep->u.area.left = a[0];
+X		ep->u.area.top = a[1];
+X		ep->u.area.right = a[2];
+X		ep->u.area.bottom = a[3];
+X		return 1;
+X	case WE_MOUSE_DOWN:
+X	case WE_MOUSE_UP:
+X	case WE_MOUSE_MOVE:
+X		return getmousedetail(detail, ep);
+X	case WE_MENU:
+X		return getmenudetail(detail, ep);
+X	default:
+X		return 1;
+X	}
 X}
 X
 X
@@ -1229,87 +1229,87 @@ X/* Return construction tools */
 X
 Xstatic object *
 Xmakepoint(a, b)
-X int a, b;
+X	int a, b;
 X{
-X object *v;
-X object *w;
-X if ((v = newtupleobject(2)) == NULL)
-X return NULL;
-X if ((w = newintobject((long)a)) == NULL ||
-X settupleitem(v, 0, w) != 0 ||
-X (w = newintobject((long)b)) == NULL ||
-X settupleitem(v, 1, w) != 0) {
-X DECREF(v);
-X return NULL;
-X }
-X return v;
+X	object *v;
+X	object *w;
+X	if ((v = newtupleobject(2)) == NULL)
+X		return NULL;
+X	if ((w = newintobject((long)a)) == NULL ||
+X		settupleitem(v, 0, w) != 0 ||
+X		(w = newintobject((long)b)) == NULL ||
+X		settupleitem(v, 1, w) != 0) {
+X		DECREF(v);
+X		return NULL;
+X	}
+X	return v;
 X}
 X
 Xstatic object *
 Xmakerect(a, b, c, d)
-X int a, b, c, d;
+X	int a, b, c, d;
 X{
-X object *v;
-X object *w;
-X if ((v = newtupleobject(2)) == NULL)
-X return NULL;
-X if ((w = makepoint(a, b)) == NULL ||
-X settupleitem(v, 0, w) != 0 ||
-X (w = makepoint(c, d)) == NULL ||
-X settupleitem(v, 1, w) != 0) {
-X DECREF(v);
-X return NULL;
-X }
-X return v;
+X	object *v;
+X	object *w;
+X	if ((v = newtupleobject(2)) == NULL)
+X		return NULL;
+X	if ((w = makepoint(a, b)) == NULL ||
+X		settupleitem(v, 0, w) != 0 ||
+X		(w = makepoint(c, d)) == NULL ||
+X		settupleitem(v, 1, w) != 0) {
+X		DECREF(v);
+X		return NULL;
+X	}
+X	return v;
 X}
 X
 Xstatic object *
 Xmakemouse(hor, ver, clicks, button, mask)
-X int hor, ver, clicks, button, mask;
+X	int hor, ver, clicks, button, mask;
 X{
-X object *v;
-X object *w;
-X if ((v = newtupleobject(4)) == NULL)
-X return NULL;
-X if ((w = makepoint(hor, ver)) == NULL ||
-X settupleitem(v, 0, w) != 0 ||
-X (w = newintobject((long)clicks)) == NULL ||
-X settupleitem(v, 1, w) != 0 ||
-X (w = newintobject((long)button)) == NULL ||
-X settupleitem(v, 2, w) != 0 ||
-X (w = newintobject((long)mask)) == NULL ||
-X settupleitem(v, 3, w) != 0) {
-X DECREF(v);
-X return NULL;
-X }
-X return v;
+X	object *v;
+X	object *w;
+X	if ((v = newtupleobject(4)) == NULL)
+X		return NULL;
+X	if ((w = makepoint(hor, ver)) == NULL ||
+X		settupleitem(v, 0, w) != 0 ||
+X		(w = newintobject((long)clicks)) == NULL ||
+X		settupleitem(v, 1, w) != 0 ||
+X		(w = newintobject((long)button)) == NULL ||
+X		settupleitem(v, 2, w) != 0 ||
+X		(w = newintobject((long)mask)) == NULL ||
+X		settupleitem(v, 3, w) != 0) {
+X		DECREF(v);
+X		return NULL;
+X	}
+X	return v;
 X}
 X
 Xstatic object *
 Xmakemenu(mp, item)
-X object *mp;
-X int item;
+X	object *mp;
+X	int item;
 X{
-X object *v;
-X object *w;
-X if ((v = newtupleobject(2)) == NULL)
-X return NULL;
-X INCREF(mp);
-X if (settupleitem(v, 0, mp) != 0 ||
-X (w = newintobject((long)item)) == NULL ||
-X settupleitem(v, 1, w) != 0) {
-X DECREF(v);
-X return NULL;
-X }
-X return v;
+X	object *v;
+X	object *w;
+X	if ((v = newtupleobject(2)) == NULL)
+X		return NULL;
+X	INCREF(mp);
+X	if (settupleitem(v, 0, mp) != 0 ||
+X		(w = newintobject((long)item)) == NULL ||
+X		settupleitem(v, 1, w) != 0) {
+X		DECREF(v);
+X		return NULL;
+X	}
+X	return v;
 X}
 X
 X
 X/* Drawing objects */
 X
 Xtypedef struct {
-X OB_HEAD
-X windowobject *d_ref;
+X	OB_HEAD
+X	windowobject	*d_ref;
 X} drawingobject;
 X
 Xstatic drawingobject *Drawing; /* Set to current drawing object, or NULL */
@@ -1318,688 +1318,688 @@ X/* Drawing methods */
 X
 Xstatic void
 Xdrawing_dealloc(dp)
-X drawingobject *dp;
+X	drawingobject *dp;
 X{
-X wenddrawing(dp->d_ref->w_win);
-X Drawing = NULL;
-X DECREF(dp->d_ref);
-X free((char *)dp);
+X	wenddrawing(dp->d_ref->w_win);
+X	Drawing = NULL;
+X	DECREF(dp->d_ref);
+X	free((char *)dp);
 X}
 X
 Xstatic object *
 Xdrawing_generic(dp, args, func)
-X drawingobject *dp;
-X object *args;
-X void (*func) FPROTO((int, int, int, int));
+X	drawingobject *dp;
+X	object *args;
+X	void (*func) FPROTO((int, int, int, int));
 X{
-X int a[4];
-X if (!getrectarg(args, a))
-X return NULL;
-X (*func)(a[0], a[1], a[2], a[3]);
-X INCREF(None);
-X return None;
+X	int a[4];
+X	if (!getrectarg(args, a))
+X		return NULL;
+X	(*func)(a[0], a[1], a[2], a[3]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xdrawing_line(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X drawing_generic(dp, args, wdrawline);
+X	drawing_generic(dp, args, wdrawline);
 X}
 X
 Xstatic object *
 Xdrawing_xorline(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X drawing_generic(dp, args, wxorline);
+X	drawing_generic(dp, args, wxorline);
 X}
 X
 Xstatic object *
 Xdrawing_circle(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X int a[3];
-X if (!getpointintarg(args, a))
-X return NULL;
-X wdrawcircle(a[0], a[1], a[2]);
-X INCREF(None);
-X return None;
+X	int a[3];
+X	if (!getpointintarg(args, a))
+X		return NULL;
+X	wdrawcircle(a[0], a[1], a[2]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xdrawing_elarc(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X int a[6];
-X if (!get3pointarg(args, a))
-X return NULL;
-X wdrawelarc(a[0], a[1], a[2], a[3], a[4], a[5]);
-X INCREF(None);
-X return None;
+X	int a[6];
+X	if (!get3pointarg(args, a))
+X		return NULL;
+X	wdrawelarc(a[0], a[1], a[2], a[3], a[4], a[5]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xdrawing_box(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X drawing_generic(dp, args, wdrawbox);
+X	drawing_generic(dp, args, wdrawbox);
 X}
 X
 Xstatic object *
 Xdrawing_erase(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X drawing_generic(dp, args, werase);
+X	drawing_generic(dp, args, werase);
 X}
 X
 Xstatic object *
 Xdrawing_paint(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X drawing_generic(dp, args, wpaint);
+X	drawing_generic(dp, args, wpaint);
 X}
 X
 Xstatic object *
 Xdrawing_invert(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X drawing_generic(dp, args, winvert);
+X	drawing_generic(dp, args, winvert);
 X}
 X
 Xstatic object *
 Xdrawing_cliprect(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X drawing_generic(dp, args, wcliprect);
+X	drawing_generic(dp, args, wcliprect);
 X}
 X
 Xstatic object *
 Xdrawing_noclip(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X if (!getnoarg(args))
-X return NULL;
-X wnoclip();
-X INCREF(None);
-X return None;
+X	if (!getnoarg(args))
+X		return NULL;
+X	wnoclip();
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xdrawing_shade(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X int a[5];
-X if (!getrectintarg(args, a))
-X return NULL;
-X wshade(a[0], a[1], a[2], a[3], a[4]);
-X INCREF(None);
-X return None;
+X	int a[5];
+X	if (!getrectintarg(args, a))
+X		return NULL;
+X	wshade(a[0], a[1], a[2], a[3], a[4]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xdrawing_text(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X int a[2];
-X object *s;
-X if (!getpointstrarg(args, a, &s))
-X return NULL;
-X wdrawtext(a[0], a[1], getstringvalue(s), (int)getstringsize(s));
-X INCREF(None);
-X return None;
+X	int a[2];
+X	object *s;
+X	if (!getpointstrarg(args, a, &s))
+X		return NULL;
+X	wdrawtext(a[0], a[1], getstringvalue(s), (int)getstringsize(s));
+X	INCREF(None);
+X	return None;
 X}
 X
 X/* The following four are also used as stdwin functions */
 X
 Xstatic object *
 Xdrawing_lineheight(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X if (!getnoarg(args))
-X return NULL;
-X return newintobject((long)wlineheight());
+X	if (!getnoarg(args))
+X		return NULL;
+X	return newintobject((long)wlineheight());
 X}
 X
 Xstatic object *
 Xdrawing_baseline(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X if (!getnoarg(args))
-X return NULL;
-X return newintobject((long)wbaseline());
+X	if (!getnoarg(args))
+X		return NULL;
+X	return newintobject((long)wbaseline());
 X}
 X
 Xstatic object *
 Xdrawing_textwidth(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X object *s;
-X if (!getstrarg(args, &s))
-X return NULL;
-X return newintobject(
-X (long)wtextwidth(getstringvalue(s), (int)getstringsize(s)));
+X	object *s;
+X	if (!getstrarg(args, &s))
+X		return NULL;
+X	return newintobject(
+X		(long)wtextwidth(getstringvalue(s), (int)getstringsize(s)));
 X}
 X
 Xstatic object *
 Xdrawing_textbreak(dp, args)
-X drawingobject *dp;
-X object *args;
+X	drawingobject *dp;
+X	object *args;
 X{
-X object *s;
-X int a;
-X if (!getstrintarg(args, &s, &a))
-X return NULL;
-X return newintobject(
-X (long)wtextbreak(getstringvalue(s), (int)getstringsize(s), a));
+X	object *s;
+X	int a;
+X	if (!getstrintarg(args, &s, &a))
+X		return NULL;
+X	return newintobject(
+X		(long)wtextbreak(getstringvalue(s), (int)getstringsize(s), a));
 X}
 X
 Xstatic struct methodlist drawing_methods[] = {
-X {"box", drawing_box},
-X {"circle", drawing_circle},
-X {"cliprect", drawing_cliprect},
-X {"elarc", drawing_elarc},
-X {"erase", drawing_erase},
-X {"invert", drawing_invert},
-X {"line", drawing_line},
-X {"noclip", drawing_noclip},
-X {"paint", drawing_paint},
-X {"shade", drawing_shade},
-X {"text", drawing_text},
-X {"xorline", drawing_xorline},
-X
-X /* Text measuring methods: */
-X {"baseline", drawing_baseline},
-X {"lineheight", drawing_lineheight},
-X {"textbreak", drawing_textbreak},
-X {"textwidth", drawing_textwidth},
-X {NULL, NULL} /* sentinel */
+X	{"box",		drawing_box},
+X	{"circle",	drawing_circle},
+X	{"cliprect",	drawing_cliprect},
+X	{"elarc",	drawing_elarc},
+X	{"erase",	drawing_erase},
+X	{"invert",	drawing_invert},
+X	{"line",	drawing_line},
+X	{"noclip",	drawing_noclip},
+X	{"paint",	drawing_paint},
+X	{"shade",	drawing_shade},
+X	{"text",	drawing_text},
+X	{"xorline",	drawing_xorline},
+X	
+X	/* Text measuring methods: */
+X	{"baseline",	drawing_baseline},
+X	{"lineheight",	drawing_lineheight},
+X	{"textbreak",	drawing_textbreak},
+X	{"textwidth",	drawing_textwidth},
+X	{NULL,		NULL}		/* sentinel */
 X};
 X
 Xstatic object *
 Xdrawing_getattr(wp, name)
-X drawingobject *wp;
-X char *name;
+X	drawingobject *wp;
+X	char *name;
 X{
-X return findmethod(drawing_methods, (object *)wp, name);
+X	return findmethod(drawing_methods, (object *)wp, name);
 X}
 X
 Xstatic typeobject Drawingtype = {
-X OB_HEAD_INIT(&Typetype)
-X 0, /*ob_size*/
-X "drawing", /*tp_name*/
-X sizeof(drawingobject), /*tp_size*/
-X 0, /*tp_itemsize*/
-X /* methods */
-X drawing_dealloc, /*tp_dealloc*/
-X 0, /*tp_print*/
-X drawing_getattr, /*tp_getattr*/
-X 0, /*tp_setattr*/
-X 0, /*tp_compare*/
-X 0, /*tp_repr*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,			/*ob_size*/
+X	"drawing",		/*tp_name*/
+X	sizeof(drawingobject),	/*tp_size*/
+X	0,			/*tp_itemsize*/
+X	/* methods */
+X	drawing_dealloc,	/*tp_dealloc*/
+X	0,			/*tp_print*/
+X	drawing_getattr,	/*tp_getattr*/
+X	0,			/*tp_setattr*/
+X	0,			/*tp_compare*/
+X	0,			/*tp_repr*/
 X};
 X
 X
 X/* Text(edit) objects */
 X
 Xtypedef struct {
-X OB_HEAD
-X TEXTEDIT *t_text;
-X windowobject *t_ref;
-X object *t_attr; /* Attributes dictionary */
+X	OB_HEAD
+X	TEXTEDIT	*t_text;
+X	windowobject	*t_ref;
+X	object		*t_attr;	/* Attributes dictionary */
 X} textobject;
 X
-Xextern typeobject Texttype; /* Really static, forward */
+Xextern typeobject Texttype;	/* Really static, forward */
 X
 Xstatic textobject *
 Xnewtextobject(wp, left, top, right, bottom)
-X windowobject *wp;
-X int left, top, right, bottom;
+X	windowobject *wp;
+X	int left, top, right, bottom;
 X{
-X textobject *tp;
-X tp = NEWOBJ(textobject, &Texttype);
-X if (tp == NULL)
-X return NULL;
-X tp->t_attr = NULL;
-X INCREF(wp);
-X tp->t_ref = wp;
-X tp->t_text = tecreate(wp->w_win, left, top, right, bottom);
-X if (tp->t_text == NULL) {
-X DECREF(tp);
-X return (textobject *) err_nomem();
-X }
-X return tp;
+X	textobject *tp;
+X	tp = NEWOBJ(textobject, &Texttype);
+X	if (tp == NULL)
+X		return NULL;
+X	tp->t_attr = NULL;
+X	INCREF(wp);
+X	tp->t_ref = wp;
+X	tp->t_text = tecreate(wp->w_win, left, top, right, bottom);
+X	if (tp->t_text == NULL) {
+X		DECREF(tp);
+X		return (textobject *) err_nomem();
+X	}
+X	return tp;
 X}
 X
 X/* Text(edit) methods */
 X
 Xstatic void
 Xtext_dealloc(tp)
-X textobject *tp;
+X	textobject *tp;
 X{
-X if (tp->t_text != NULL)
-X tefree(tp->t_text);
-X if (tp->t_attr != NULL)
-X DECREF(tp->t_attr);
-X DECREF(tp->t_ref);
-X DEL(tp);
+X	if (tp->t_text != NULL)
+X		tefree(tp->t_text);
+X	if (tp->t_attr != NULL)
+X		DECREF(tp->t_attr);
+X	DECREF(tp->t_ref);
+X	DEL(tp);
 X}
 X
 Xstatic object *
 Xtext_arrow(self, args)
-X textobject *self;
-X object *args;
+X	textobject *self;
+X	object *args;
 X{
-X int code;
-X if (!getintarg(args, &code))
-X return NULL;
-X tearrow(self->t_text, code);
-X INCREF(None);
-X return None;
+X	int code;
+X	if (!getintarg(args, &code))
+X		return NULL;
+X	tearrow(self->t_text, code);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xtext_draw(self, args)
-X textobject *self;
-X object *args;
+X	textobject *self;
+X	object *args;
 X{
-X register TEXTEDIT *tp = self->t_text;
-X int a[4];
-X int left, top, right, bottom;
-X if (!getrectarg(args, a))
-X return NULL;
-X if (Drawing != NULL) {
-X err_setstr(RuntimeError, "not drawing");
-X return NULL;
-X }
-X /* Clip to text area and ignore if area is empty */
-X left = tegetleft(tp);
-X top = tegettop(tp);
-X right = tegetright(tp);
-X bottom = tegetbottom(tp);
-X if (a[0] < left) a[0] = left;
-X if (a[1] < top) a[1] = top;
-X if (a[2] > right) a[2] = right;
-X if (a[3] > bottom) a[3] = bottom;
-X if (a[0] < a[2] && a[1] < a[3]) {
-X /* Hide/show focus around draw call; these are undocumented,
-X but required here to get the highlighting correct.
-X The call to werase is also required for this reason.
-X Finally, this forces us to require (above) that we are NOT
-X already drawing. */
-X tehidefocus(tp);
-X wbegindrawing(self->t_ref->w_win);
-X werase(a[0], a[1], a[2], a[3]);
-X tedrawnew(tp, a[0], a[1], a[2], a[3]);
-X wenddrawing(self->t_ref->w_win);
-X teshowfocus(tp);
-X }
-X INCREF(None);
-X return None;
+X	register TEXTEDIT *tp = self->t_text;
+X	int a[4];
+X	int left, top, right, bottom;
+X	if (!getrectarg(args, a))
+X		return NULL;
+X	if (Drawing != NULL) {
+X		err_setstr(RuntimeError, "not drawing");
+X		return NULL;
+X	}
+X	/* Clip to text area and ignore if area is empty */
+X	left = tegetleft(tp);
+X	top = tegettop(tp);
+X	right = tegetright(tp);
+X	bottom = tegetbottom(tp);
+X	if (a[0] < left) a[0] = left;
+X	if (a[1] < top) a[1] = top;
+X	if (a[2] > right) a[2] = right;
+X	if (a[3] > bottom) a[3] = bottom;
+X	if (a[0] < a[2] && a[1] < a[3]) {
+X		/* Hide/show focus around draw call; these are undocumented,
+X		   but required here to get the highlighting correct.
+X		   The call to werase is also required for this reason.
+X		   Finally, this forces us to require (above) that we are NOT
+X		   already drawing. */
+X		tehidefocus(tp);
+X		wbegindrawing(self->t_ref->w_win);
+X		werase(a[0], a[1], a[2], a[3]);
+X		tedrawnew(tp, a[0], a[1], a[2], a[3]);
+X		wenddrawing(self->t_ref->w_win);
+X		teshowfocus(tp);
+X	}
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xtext_event(self, args)
-X textobject *self;
-X object *args;
+X	textobject *self;
+X	object *args;
 X{
-X register TEXTEDIT *tp = self->t_text;
-X EVENT e;
-X if (!geteventarg(args, &e))
-X return NULL;
-X if (e.type == WE_MOUSE_DOWN) {
-X /* Cheat at the margins */
-X int width, height;
-X wgetdocsize(e.window, &width, &height);
-X if (e.u.where.h < 0 && tegetleft(tp) == 0)
-X e.u.where.h = 0;
-X else if (e.u.where.h > width && tegetright(tp) == width)
-X e.u.where.h = width;
-X if (e.u.where.v < 0 && tegettop(tp) == 0)
-X e.u.where.v = 0;
-X else if (e.u.where.v > height && tegetright(tp) == height)
-X e.u.where.v = height;
-X }
-X return newintobject((long) teevent(tp, &e));
+X	register TEXTEDIT *tp = self->t_text;
+X	EVENT e;
+X	if (!geteventarg(args, &e))
+X		return NULL;
+X	if (e.type == WE_MOUSE_DOWN) {
+X		/* Cheat at the margins */
+X		int width, height;
+X		wgetdocsize(e.window, &width, &height);
+X		if (e.u.where.h < 0 && tegetleft(tp) == 0)
+X			e.u.where.h = 0;
+X		else if (e.u.where.h > width && tegetright(tp) == width)
+X			e.u.where.h = width;
+X		if (e.u.where.v < 0 && tegettop(tp) == 0)
+X			e.u.where.v = 0;
+X		else if (e.u.where.v > height && tegetright(tp) == height)
+X			e.u.where.v = height;
+X	}
+X	return newintobject((long) teevent(tp, &e));
 X}
 X
 Xstatic object *
 Xtext_getfocus(self, args)
-X textobject *self;
-X object *args;
+X	textobject *self;
+X	object *args;
 X{
-X if (!getnoarg(args))
-X return NULL;
-X return makepoint(tegetfoc1(self->t_text), tegetfoc2(self->t_text));
+X	if (!getnoarg(args))
+X		return NULL;
+X	return makepoint(tegetfoc1(self->t_text), tegetfoc2(self->t_text));
 X}
 X
 Xstatic object *
 Xtext_getfocustext(self, args)
-X textobject *self;
-X object *args;
+X	textobject *self;
+X	object *args;
 X{
-X int f1, f2;
-X char *text;
-X if (!getnoarg(args))
-X return NULL;
-X f1 = tegetfoc1(self->t_text);
-X f2 = tegetfoc2(self->t_text);
-X text = tegettext(self->t_text);
-X return newsizedstringobject(text + f1, f2-f1);
+X	int f1, f2;
+X	char *text;
+X	if (!getnoarg(args))
+X		return NULL;
+X	f1 = tegetfoc1(self->t_text);
+X	f2 = tegetfoc2(self->t_text);
+X	text = tegettext(self->t_text);
+X	return newsizedstringobject(text + f1, f2-f1);
 X}
 X
 Xstatic object *
 Xtext_getrect(self, args)
-X textobject *self;
-X object *args;
+X	textobject *self;
+X	object *args;
 X{
-X if (!getnoarg(args))
-X return NULL;
-X return makerect(tegetleft(self->t_text),
-X tegettop(self->t_text),
-X tegetright(self->t_text),
-X tegetbottom(self->t_text));
+X	if (!getnoarg(args))
+X		return NULL;
+X	return makerect(tegetleft(self->t_text),
+X			tegettop(self->t_text),
+X			tegetright(self->t_text),
+X			tegetbottom(self->t_text));
 X}
 X
 Xstatic object *
 Xtext_gettext(self, args)
-X textobject *self;
-X object *args;
+X	textobject *self;
+X	object *args;
 X{
-X if (!getnoarg(args))
-X return NULL;
-X return newsizedstringobject(tegettext(self->t_text),
-X tegetlen(self->t_text));
+X	if (!getnoarg(args))
+X		return NULL;
+X	return newsizedstringobject(tegettext(self->t_text),
+X					tegetlen(self->t_text));
 X}
 X
 Xstatic object *
 Xtext_move(self, args)
-X textobject *self;
-X object *args;
+X	textobject *self;
+X	object *args;
 X{
-X int a[4];
-X if (!getrectarg(args, a))
-X return NULL;
-X temovenew(self->t_text, a[0], a[1], a[2], a[3]);
-X INCREF(None);
-X return None;
+X	int a[4];
+X	if (!getrectarg(args, a))
+X		return NULL;
+X	temovenew(self->t_text, a[0], a[1], a[2], a[3]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xtext_setfocus(self, args)
-X textobject *self;
-X object *args;
+X	textobject *self;
+X	object *args;
 X{
-X int a[2];
-X if (!getpointarg(args, a))
-X return NULL;
-X tesetfocus(self->t_text, a[0], a[1]);
-X INCREF(None);
-X return None;
+X	int a[2];
+X	if (!getpointarg(args, a))
+X		return NULL;
+X	tesetfocus(self->t_text, a[0], a[1]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xtext_replace(self, args)
-X textobject *self;
-X object *args;
+X	textobject *self;
+X	object *args;
 X{
-X object *text;
-X if (!getstrarg(args, &text))
-X return NULL;
-X tereplace(self->t_text, getstringvalue(text));
-X INCREF(None);
-X return None;
+X	object *text;
+X	if (!getstrarg(args, &text))
+X		return NULL;
+X	tereplace(self->t_text, getstringvalue(text));
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic struct methodlist text_methods[] = {
-X "arrow", text_arrow,
-X "draw", text_draw,
-X "event", text_event,
-X "getfocus", text_getfocus,
-X "getfocustext", text_getfocustext,
-X "getrect", text_getrect,
-X "gettext", text_gettext,
-X "move", text_move,
-X "replace", text_replace,
-X "setfocus", text_setfocus,
-X {NULL, NULL} /* sentinel */
+X	"arrow",	text_arrow,
+X	"draw",		text_draw,
+X	"event",	text_event,
+X	"getfocus",	text_getfocus,
+X	"getfocustext",	text_getfocustext,
+X	"getrect",	text_getrect,
+X	"gettext",	text_gettext,
+X	"move",		text_move,
+X	"replace",	text_replace,
+X	"setfocus",	text_setfocus,
+X	{NULL,		NULL}		/* sentinel */
 X};
 X
 Xstatic object *
 Xtext_getattr(tp, name)
-X textobject *tp;
-X char *name;
+X	textobject *tp;
+X	char *name;
 X{
-X if (tp->t_attr != NULL) {
-X object *v = dictlookup(tp->t_attr, name);
-X if (v != NULL) {
-X INCREF(v);
-X return v;
-X }
-X }
-X return findmethod(text_methods, (object *)tp, name);
+X	if (tp->t_attr != NULL) {
+X		object *v = dictlookup(tp->t_attr, name);
+X		if (v != NULL) {
+X			INCREF(v);
+X			return v;
+X		}
+X	}
+X	return findmethod(text_methods, (object *)tp, name);
 X}
 X
 Xstatic int
 Xtext_setattr(tp, name, v)
-X textobject *tp;
-X char *name;
-X object *v;
+X	textobject *tp;
+X	char *name;
+X	object *v;
 X{
-X if (tp->t_attr == NULL) {
-X tp->t_attr = newdictobject();
-X if (tp->t_attr == NULL)
-X return -1;
-X }
-X if (v == NULL)
-X return dictremove(tp->t_attr, name);
-X else
-X return dictinsert(tp->t_attr, name, v);
+X	if (tp->t_attr == NULL) {
+X		tp->t_attr = newdictobject();
+X		if (tp->t_attr == NULL)
+X			return -1;
+X	}
+X	if (v == NULL)
+X		return dictremove(tp->t_attr, name);
+X	else
+X		return dictinsert(tp->t_attr, name, v);
 X}
 X
 Xstatic typeobject Texttype = {
-X OB_HEAD_INIT(&Typetype)
-X 0, /*ob_size*/
-X "textedit", /*tp_name*/
-X sizeof(textobject), /*tp_size*/
-X 0, /*tp_itemsize*/
-X /* methods */
-X text_dealloc, /*tp_dealloc*/
-X 0, /*tp_print*/
-X text_getattr, /*tp_getattr*/
-X text_setattr, /*tp_setattr*/
-X 0, /*tp_compare*/
-X 0, /*tp_repr*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,			/*ob_size*/
+X	"textedit",		/*tp_name*/
+X	sizeof(textobject),	/*tp_size*/
+X	0,			/*tp_itemsize*/
+X	/* methods */
+X	text_dealloc,		/*tp_dealloc*/
+X	0,			/*tp_print*/
+X	text_getattr,		/*tp_getattr*/
+X	text_setattr,		/*tp_setattr*/
+X	0,			/*tp_compare*/
+X	0,			/*tp_repr*/
 X};
 X
 X
 X/* Menu objects */
 X
-X#define IDOFFSET 10 /* Menu IDs we use start here */
-X#define MAXNMENU 20 /* Max #menus we allow */
+X#define IDOFFSET 10		/* Menu IDs we use start here */
+X#define MAXNMENU 20		/* Max #menus we allow */
 Xstatic menuobject *menulist[MAXNMENU];
 X
 Xstatic menuobject *
 Xnewmenuobject(title)
-X object *title;
+X	object *title;
 X{
-X int id;
-X MENU *menu;
-X menuobject *mp;
-X for (id = 0; id < MAXNMENU; id++) {
-X if (menulist[id] == NULL)
-X break;
-X }
-X if (id >= MAXNMENU)
-X return (menuobject *) err_nomem();
-X menu = wmenucreate(id + IDOFFSET, getstringvalue(title));
-X if (menu == NULL)
-X return (menuobject *) err_nomem();
-X mp = NEWOBJ(menuobject, &Menutype);
-X if (mp != NULL) {
-X mp->m_menu = menu;
-X mp->m_id = id + IDOFFSET;
-X mp->m_attr = NULL;
-X menulist[id] = mp;
-X }
-X else
-X wmenudelete(menu);
-X return mp;
+X	int id;
+X	MENU *menu;
+X	menuobject *mp;
+X	for (id = 0; id < MAXNMENU; id++) {
+X		if (menulist[id] == NULL)
+X			break;
+X	}
+X	if (id >= MAXNMENU)
+X		return (menuobject *) err_nomem();
+X	menu = wmenucreate(id + IDOFFSET, getstringvalue(title));
+X	if (menu == NULL)
+X		return (menuobject *) err_nomem();
+X	mp = NEWOBJ(menuobject, &Menutype);
+X	if (mp != NULL) {
+X		mp->m_menu = menu;
+X		mp->m_id = id + IDOFFSET;
+X		mp->m_attr = NULL;
+X		menulist[id] = mp;
+X	}
+X	else
+X		wmenudelete(menu);
+X	return mp;
 X}
 X
 X/* Menu methods */
 X
 Xstatic void
 Xmenu_dealloc(mp)
-X menuobject *mp;
+X	menuobject *mp;
 X{
-X
-X int id = mp->m_id - IDOFFSET;
-X if (id >= 0 && id < MAXNMENU && menulist[id] == mp) {
-X menulist[id] = NULL;
-X }
-X wmenudelete(mp->m_menu);
-X if (mp->m_attr != NULL)
-X DECREF(mp->m_attr);
-X DEL(mp);
+X	
+X	int id = mp->m_id - IDOFFSET;
+X	if (id >= 0 && id < MAXNMENU && menulist[id] == mp) {
+X		menulist[id] = NULL;
+X	}
+X	wmenudelete(mp->m_menu);
+X	if (mp->m_attr != NULL)
+X		DECREF(mp->m_attr);
+X	DEL(mp);
 X}
 X
 Xstatic object *
 Xmenu_additem(self, args)
-X menuobject *self;
-X object *args;
+X	menuobject *self;
+X	object *args;
 X{
-X object *text;
-X int shortcut;
-X if (is_tupleobject(args)) {
-X object *v;
-X if (!getstrstrarg(args, &text, &v))
-X return NULL;
-X if (getstringsize(v) != 1) {
-X err_badarg();
-X return NULL;
-X }
-X shortcut = *getstringvalue(v) & 0xff;
-X }
-X else {
-X if (!getstrarg(args, &text))
-X return NULL;
-X shortcut = -1;
-X }
-X wmenuadditem(self->m_menu, getstringvalue(text), shortcut);
-X INCREF(None);
-X return None;
+X	object *text;
+X	int shortcut;
+X	if (is_tupleobject(args)) {
+X		object *v;
+X		if (!getstrstrarg(args, &text, &v))
+X			return NULL;
+X		if (getstringsize(v) != 1) {
+X			err_badarg();
+X			return NULL;
+X		}
+X		shortcut = *getstringvalue(v) & 0xff;
+X	}
+X	else {
+X		if (!getstrarg(args, &text))
+X			return NULL;
+X		shortcut = -1;
+X	}
+X	wmenuadditem(self->m_menu, getstringvalue(text), shortcut);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xmenu_setitem(self, args)
-X menuobject *self;
-X object *args;
+X	menuobject *self;
+X	object *args;
 X{
-X int index;
-X object *text;
-X if (!getintstrarg(args, &index, &text))
-X return NULL;
-X wmenusetitem(self->m_menu, index, getstringvalue(text));
-X INCREF(None);
-X return None;
+X	int index;
+X	object *text;
+X	if (!getintstrarg(args, &index, &text))
+X		return NULL;
+X	wmenusetitem(self->m_menu, index, getstringvalue(text));
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xmenu_enable(self, args)
-X menuobject *self;
-X object *args;
+X	menuobject *self;
+X	object *args;
 X{
-X int index;
-X int flag;
-X if (!getintintarg(args, &index, &flag))
-X return NULL;
-X wmenuenable(self->m_menu, index, flag);
-X INCREF(None);
-X return None;
+X	int index;
+X	int flag;
+X	if (!getintintarg(args, &index, &flag))
+X		return NULL;
+X	wmenuenable(self->m_menu, index, flag);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xmenu_check(self, args)
-X menuobject *self;
-X object *args;
+X	menuobject *self;
+X	object *args;
 X{
-X int index;
-X int flag;
-X if (!getintintarg(args, &index, &flag))
-X return NULL;
-X wmenucheck(self->m_menu, index, flag);
-X INCREF(None);
-X return None;
+X	int index;
+X	int flag;
+X	if (!getintintarg(args, &index, &flag))
+X		return NULL;
+X	wmenucheck(self->m_menu, index, flag);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic struct methodlist menu_methods[] = {
-X "additem", menu_additem,
-X "setitem", menu_setitem,
-X "enable", menu_enable,
-X "check", menu_check,
-X {NULL, NULL} /* sentinel */
+X	"additem",	menu_additem,
+X	"setitem",	menu_setitem,
+X	"enable",	menu_enable,
+X	"check",	menu_check,
+X	{NULL,		NULL}		/* sentinel */
 X};
 X
 Xstatic object *
 Xmenu_getattr(mp, name)
-X menuobject *mp;
-X char *name;
+X	menuobject *mp;
+X	char *name;
 X{
-X if (mp->m_attr != NULL) {
-X object *v = dictlookup(mp->m_attr, name);
-X if (v != NULL) {
-X INCREF(v);
-X return v;
-X }
-X }
-X return findmethod(menu_methods, (object *)mp, name);
+X	if (mp->m_attr != NULL) {
+X		object *v = dictlookup(mp->m_attr, name);
+X		if (v != NULL) {
+X			INCREF(v);
+X			return v;
+X		}
+X	}
+X	return findmethod(menu_methods, (object *)mp, name);
 X}
 X
 Xstatic int
 Xmenu_setattr(mp, name, v)
-X menuobject *mp;
-X char *name;
-X object *v;
+X	menuobject *mp;
+X	char *name;
+X	object *v;
 X{
-X if (mp->m_attr == NULL) {
-X mp->m_attr = newdictobject();
-X if (mp->m_attr == NULL)
-X return -1;
-X }
-X if (v == NULL)
-X return dictremove(mp->m_attr, name);
-X else
-X return dictinsert(mp->m_attr, name, v);
+X	if (mp->m_attr == NULL) {
+X		mp->m_attr = newdictobject();
+X		if (mp->m_attr == NULL)
+X			return -1;
+X	}
+X	if (v == NULL)
+X		return dictremove(mp->m_attr, name);
+X	else
+X		return dictinsert(mp->m_attr, name, v);
 X}
 X
 Xstatic typeobject Menutype = {
-X OB_HEAD_INIT(&Typetype)
-X 0, /*ob_size*/
-X "menu", /*tp_name*/
-X sizeof(menuobject), /*tp_size*/
-X 0, /*tp_itemsize*/
-X /* methods */
-X menu_dealloc, /*tp_dealloc*/
-X 0, /*tp_print*/
-X menu_getattr, /*tp_getattr*/
-X menu_setattr, /*tp_setattr*/
-X 0, /*tp_compare*/
-X 0, /*tp_repr*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,			/*ob_size*/
+X	"menu",			/*tp_name*/
+X	sizeof(menuobject),	/*tp_size*/
+X	0,			/*tp_itemsize*/
+X	/* methods */
+X	menu_dealloc,		/*tp_dealloc*/
+X	0,			/*tp_print*/
+X	menu_getattr,		/*tp_getattr*/
+X	menu_setattr,		/*tp_setattr*/
+X	0,			/*tp_compare*/
+X	0,			/*tp_repr*/
 X};
 X
 X
@@ -2012,742 +2012,742 @@ X/* Window methods */
 X
 Xstatic void
 Xwindow_dealloc(wp)
-X windowobject *wp;
+X	windowobject *wp;
 X{
-X if (wp->w_win != NULL) {
-X int tag = wgettag(wp->w_win);
-X if (tag >= 0 && tag < MAXNWIN)
-X windowlist[tag] = NULL;
-X else
-X fprintf(stderr, "XXX help! tag %d in window_dealloc\n",
-X tag);
-X wclose(wp->w_win);
-X }
-X DECREF(wp->w_title);
-X if (wp->w_attr != NULL)
-X DECREF(wp->w_attr);
-X free((char *)wp);
+X	if (wp->w_win != NULL) {
+X		int tag = wgettag(wp->w_win);
+X		if (tag >= 0 && tag < MAXNWIN)
+X			windowlist[tag] = NULL;
+X		else
+X			fprintf(stderr, "XXX help! tag %d in window_dealloc\n",
+X				tag);
+X		wclose(wp->w_win);
+X	}
+X	DECREF(wp->w_title);
+X	if (wp->w_attr != NULL)
+X		DECREF(wp->w_attr);
+X	free((char *)wp);
 X}
 X
 Xstatic void
 Xwindow_print(wp, fp, flags)
-X windowobject *wp;
-X FILE *fp;
-X int flags;
+X	windowobject *wp;
+X	FILE *fp;
+X	int flags;
 X{
-X fprintf(fp, "<window titled '%s'>", getstringvalue(wp->w_title));
+X	fprintf(fp, "<window titled '%s'>", getstringvalue(wp->w_title));
 X}
 X
 Xstatic object *
 Xwindow_begindrawing(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X drawingobject *dp;
-X if (!getnoarg(args))
-X return NULL;
-X if (Drawing != NULL) {
-X err_setstr(RuntimeError, "already drawing");
-X return NULL;
-X }
-X dp = NEWOBJ(drawingobject, &Drawingtype);
-X if (dp == NULL)
-X return NULL;
-X Drawing = dp;
-X INCREF(wp);
-X dp->d_ref = wp;
-X wbegindrawing(wp->w_win);
-X return (object *)dp;
+X	drawingobject *dp;
+X	if (!getnoarg(args))
+X		return NULL;
+X	if (Drawing != NULL) {
+X		err_setstr(RuntimeError, "already drawing");
+X		return NULL;
+X	}
+X	dp = NEWOBJ(drawingobject, &Drawingtype);
+X	if (dp == NULL)
+X		return NULL;
+X	Drawing = dp;
+X	INCREF(wp);
+X	dp->d_ref = wp;
+X	wbegindrawing(wp->w_win);
+X	return (object *)dp;
 X}
 X
 Xstatic object *
 Xwindow_change(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X int a[4];
-X if (!getrectarg(args, a))
-X return NULL;
-X wchange(wp->w_win, a[0], a[1], a[2], a[3]);
-X INCREF(None);
-X return None;
+X	int a[4];
+X	if (!getrectarg(args, a))
+X		return NULL;
+X	wchange(wp->w_win, a[0], a[1], a[2], a[3]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xwindow_gettitle(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X if (!getnoarg(args))
-X return NULL;
-X INCREF(wp->w_title);
-X return wp->w_title;
+X	if (!getnoarg(args))
+X		return NULL;
+X	INCREF(wp->w_title);
+X	return wp->w_title;
 X}
 X
 Xstatic object *
 Xwindow_getwinsize(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X int width, height;
-X if (!getnoarg(args))
-X return NULL;
-X wgetwinsize(wp->w_win, &width, &height);
-X return makepoint(width, height);
+X	int width, height;
+X	if (!getnoarg(args))
+X		return NULL;
+X	wgetwinsize(wp->w_win, &width, &height);
+X	return makepoint(width, height);
 X}
 X
 Xstatic object *
 Xwindow_getdocsize(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X int width, height;
-X if (!getnoarg(args))
-X return NULL;
-X wgetdocsize(wp->w_win, &width, &height);
-X return makepoint(width, height);
+X	int width, height;
+X	if (!getnoarg(args))
+X		return NULL;
+X	wgetdocsize(wp->w_win, &width, &height);
+X	return makepoint(width, height);
 X}
 X
 Xstatic object *
 Xwindow_getorigin(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X int width, height;
-X if (!getnoarg(args))
-X return NULL;
-X wgetorigin(wp->w_win, &width, &height);
-X return makepoint(width, height);
+X	int width, height;
+X	if (!getnoarg(args))
+X		return NULL;
+X	wgetorigin(wp->w_win, &width, &height);
+X	return makepoint(width, height);
 X}
 X
 Xstatic object *
 Xwindow_scroll(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X int a[6];
-X if (!getrectpointarg(args, a))
-X return NULL;
-X wscroll(wp->w_win, a[0], a[1], a[2], a[3], a[4], a[5]);
-X INCREF(None);
-X return None;
+X	int a[6];
+X	if (!getrectpointarg(args, a))
+X		return NULL;
+X	wscroll(wp->w_win, a[0], a[1], a[2], a[3], a[4], a[5]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xwindow_setdocsize(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X int a[2];
-X if (!getpointarg(args, a))
-X return NULL;
-X wsetdocsize(wp->w_win, a[0], a[1]);
-X INCREF(None);
-X return None;
+X	int a[2];
+X	if (!getpointarg(args, a))
+X		return NULL;
+X	wsetdocsize(wp->w_win, a[0], a[1]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xwindow_setorigin(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X int a[2];
-X if (!getpointarg(args, a))
-X return NULL;
-X wsetorigin(wp->w_win, a[0], a[1]);
-X INCREF(None);
-X return None;
+X	int a[2];
+X	if (!getpointarg(args, a))
+X		return NULL;
+X	wsetorigin(wp->w_win, a[0], a[1]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xwindow_settitle(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X object *title;
-X if (!getstrarg(args, &title))
-X return NULL;
-X DECREF(wp->w_title);
-X INCREF(title);
-X wp->w_title = title;
-X wsettitle(wp->w_win, getstringvalue(title));
-X INCREF(None);
-X return None;
+X	object *title;
+X	if (!getstrarg(args, &title))
+X		return NULL;
+X	DECREF(wp->w_title);
+X	INCREF(title);
+X	wp->w_title = title;
+X	wsettitle(wp->w_win, getstringvalue(title));
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xwindow_show(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X int a[4];
-X if (!getrectarg(args, a))
-X return NULL;
-X wshow(wp->w_win, a[0], a[1], a[2], a[3]);
-X INCREF(None);
-X return None;
+X	int a[4];
+X	if (!getrectarg(args, a))
+X		return NULL;
+X	wshow(wp->w_win, a[0], a[1], a[2], a[3]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xwindow_settimer(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X int a;
-X if (!getintarg(args, &a))
-X return NULL;
-X wsettimer(wp->w_win, a);
-X INCREF(None);
-X return None;
+X	int a;
+X	if (!getintarg(args, &a))
+X		return NULL;
+X	wsettimer(wp->w_win, a);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xwindow_menucreate(self, args)
-X windowobject *self;
-X object *args;
+X	windowobject *self;
+X	object *args;
 X{
-X menuobject *mp;
-X object *title;
-X if (!getstrarg(args, &title))
-X return NULL;
-X wmenusetdeflocal(1);
-X mp = newmenuobject(title);
-X if (mp == NULL)
-X return NULL;
-X wmenuattach(self->w_win, mp->m_menu);
-X return (object *)mp;
+X	menuobject *mp;
+X	object *title;
+X	if (!getstrarg(args, &title))
+X		return NULL;
+X	wmenusetdeflocal(1);
+X	mp = newmenuobject(title);
+X	if (mp == NULL)
+X		return NULL;
+X	wmenuattach(self->w_win, mp->m_menu);
+X	return (object *)mp;
 X}
 X
 Xstatic object *
 Xwindow_textcreate(self, args)
-X windowobject *self;
-X object *args;
+X	windowobject *self;
+X	object *args;
 X{
-X textobject *tp;
-X int a[4];
-X if (!getrectarg(args, a))
-X return NULL;
-X return (object *)
-X newtextobject(self, a[0], a[1], a[2], a[3]);
+X	textobject *tp;
+X	int a[4];
+X	if (!getrectarg(args, a))
+X		return NULL;
+X	return (object *)
+X		newtextobject(self, a[0], a[1], a[2], a[3]);
 X}
 X
 Xstatic object *
 Xwindow_setselection(self, args)
-X windowobject *self;
-X object *args;
+X	windowobject *self;
+X	object *args;
 X{
-X int sel;
-X object *str;
-X int ok;
-X if (!getintstrarg(args, &sel, &str))
-X return NULL;
-X ok = wsetselection(self->w_win, sel,
-X getstringvalue(str), (int)getstringsize(str));
-X return newintobject(ok);
+X	int sel;
+X	object *str;
+X	int ok;
+X	if (!getintstrarg(args, &sel, &str))
+X		return NULL;
+X	ok = wsetselection(self->w_win, sel,
+X		getstringvalue(str), (int)getstringsize(str));
+X	return newintobject(ok);
 X}
 X
 Xstatic object *
 Xwindow_setwincursor(self, args)
-X windowobject *self;
-X object *args;
+X	windowobject *self;
+X	object *args;
 X{
-X object *str;
-X CURSOR *c;
-X if (!getstrarg(args, &str))
-X return NULL;
-X c = wfetchcursor(getstringvalue(str));
-X if (c == NULL) {
-X err_setstr(RuntimeError, "no such cursor");
-X return NULL;
-X }
-X wsetwincursor(self->w_win, c);
-X INCREF(None);
-X return None;
+X	object *str;
+X	CURSOR *c;
+X	if (!getstrarg(args, &str))
+X		return NULL;
+X	c = wfetchcursor(getstringvalue(str));
+X	if (c == NULL) {
+X		err_setstr(RuntimeError, "no such cursor");
+X		return NULL;
+X	}
+X	wsetwincursor(self->w_win, c);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic struct methodlist window_methods[] = {
-X {"begindrawing",window_begindrawing},
-X {"change", window_change},
-X {"getdocsize", window_getdocsize},
-X {"getorigin", window_getorigin},
-X {"gettitle", window_gettitle},
-X {"getwinsize", window_getwinsize},
-X {"menucreate", window_menucreate},
-X {"scroll", window_scroll},
-X {"setwincursor",window_setwincursor},
-X {"setdocsize", window_setdocsize},
-X {"setorigin", window_setorigin},
-X {"setselection",window_setselection},
-X {"settimer", window_settimer},
-X {"settitle", window_settitle},
-X {"show", window_show},
-X {"textcreate", window_textcreate},
-X {NULL, NULL} /* sentinel */
+X	{"begindrawing",window_begindrawing},
+X	{"change",	window_change},
+X	{"getdocsize",	window_getdocsize},
+X	{"getorigin",	window_getorigin},
+X	{"gettitle",	window_gettitle},
+X	{"getwinsize",	window_getwinsize},
+X	{"menucreate",	window_menucreate},
+X	{"scroll",	window_scroll},
+X	{"setwincursor",window_setwincursor},
+X	{"setdocsize",	window_setdocsize},
+X	{"setorigin",	window_setorigin},
+X	{"setselection",window_setselection},
+X	{"settimer",	window_settimer},
+X	{"settitle",	window_settitle},
+X	{"show",	window_show},
+X	{"textcreate",	window_textcreate},
+X	{NULL,		NULL}		/* sentinel */
 X};
 X
 Xstatic object *
 Xwindow_getattr(wp, name)
-X windowobject *wp;
-X char *name;
+X	windowobject *wp;
+X	char *name;
 X{
-X if (wp->w_attr != NULL) {
-X object *v = dictlookup(wp->w_attr, name);
-X if (v != NULL) {
-X INCREF(v);
-X return v;
-X }
-X }
-X return findmethod(window_methods, (object *)wp, name);
+X	if (wp->w_attr != NULL) {
+X		object *v = dictlookup(wp->w_attr, name);
+X		if (v != NULL) {
+X			INCREF(v);
+X			return v;
+X		}
+X	}
+X	return findmethod(window_methods, (object *)wp, name);
 X}
 X
 Xstatic int
 Xwindow_setattr(wp, name, v)
-X windowobject *wp;
-X char *name;
-X object *v;
+X	windowobject *wp;
+X	char *name;
+X	object *v;
 X{
-X if (wp->w_attr == NULL) {
-X wp->w_attr = newdictobject();
-X if (wp->w_attr == NULL)
-X return -1;
-X }
-X if (v == NULL)
-X return dictremove(wp->w_attr, name);
-X else
-X return dictinsert(wp->w_attr, name, v);
+X	if (wp->w_attr == NULL) {
+X		wp->w_attr = newdictobject();
+X		if (wp->w_attr == NULL)
+X			return -1;
+X	}
+X	if (v == NULL)
+X		return dictremove(wp->w_attr, name);
+X	else
+X		return dictinsert(wp->w_attr, name, v);
 X}
 X
 Xstatic typeobject Windowtype = {
-X OB_HEAD_INIT(&Typetype)
-X 0, /*ob_size*/
-X "window", /*tp_name*/
-X sizeof(windowobject), /*tp_size*/
-X 0, /*tp_itemsize*/
-X /* methods */
-X window_dealloc, /*tp_dealloc*/
-X window_print, /*tp_print*/
-X window_getattr, /*tp_getattr*/
-X window_setattr, /*tp_setattr*/
-X 0, /*tp_compare*/
-X 0, /*tp_repr*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,			/*ob_size*/
+X	"window",		/*tp_name*/
+X	sizeof(windowobject),	/*tp_size*/
+X	0,			/*tp_itemsize*/
+X	/* methods */
+X	window_dealloc,		/*tp_dealloc*/
+X	window_print,		/*tp_print*/
+X	window_getattr,		/*tp_getattr*/
+X	window_setattr,		/*tp_setattr*/
+X	0,			/*tp_compare*/
+X	0,			/*tp_repr*/
 X};
 X
 X/* Stdwin methods */
 X
 Xstatic object *
 Xstdwin_open(sw, args)
-X object *sw;
-X object *args;
+X	object *sw;
+X	object *args;
 X{
-X int tag;
-X object *title;
-X windowobject *wp;
-X if (!getstrarg(args, &title))
-X return NULL;
-X for (tag = 0; tag < MAXNWIN; tag++) {
-X if (windowlist[tag] == NULL)
-X break;
-X }
-X if (tag >= MAXNWIN)
-X return err_nomem();
-X wp = NEWOBJ(windowobject, &Windowtype);
-X if (wp == NULL)
-X return NULL;
-X INCREF(title);
-X wp->w_title = title;
-X wp->w_win = wopen(getstringvalue(title), (void (*)()) NULL);
-X wp->w_attr = NULL;
-X if (wp->w_win == NULL) {
-X DECREF(wp);
-X return NULL;
-X }
-X windowlist[tag] = wp;
-X wsettag(wp->w_win, tag);
-X return (object *)wp;
+X	int tag;
+X	object *title;
+X	windowobject *wp;
+X	if (!getstrarg(args, &title))
+X		return NULL;
+X	for (tag = 0; tag < MAXNWIN; tag++) {
+X		if (windowlist[tag] == NULL)
+X			break;
+X	}
+X	if (tag >= MAXNWIN)
+X		return err_nomem();
+X	wp = NEWOBJ(windowobject, &Windowtype);
+X	if (wp == NULL)
+X		return NULL;
+X	INCREF(title);
+X	wp->w_title = title;
+X	wp->w_win = wopen(getstringvalue(title), (void (*)()) NULL);
+X	wp->w_attr = NULL;
+X	if (wp->w_win == NULL) {
+X		DECREF(wp);
+X		return NULL;
+X	}
+X	windowlist[tag] = wp;
+X	wsettag(wp->w_win, tag);
+X	return (object *)wp;
 X}
 X
 Xstatic object *
 Xstdwin_get_poll_event(poll, args)
-X int poll;
-X object *args;
+X	int poll;
+X	object *args;
 X{
-X EVENT e;
-X object *v, *w;
-X if (!getnoarg(args))
-X return NULL;
-X if (Drawing != NULL) {
-X err_setstr(RuntimeError, "cannot getevent() while drawing");
-X return NULL;
-X }
+X	EVENT e;
+X	object *v, *w;
+X	if (!getnoarg(args))
+X		return NULL;
+X	if (Drawing != NULL) {
+X		err_setstr(RuntimeError, "cannot getevent() while drawing");
+X		return NULL;
+X	}
 X/* again: */
-X if (poll) {
-X if (!wpollevent(&e)) {
-X INCREF(None);
-X return None;
-X }
-X }
-X else
-X wgetevent(&e);
-X if (e.type == WE_COMMAND && e.u.command == WC_CANCEL) {
-X /* Turn keyboard interrupts into exceptions */
-X err_set(KeyboardInterrupt);
-X return NULL;
-X }
+X	if (poll) {
+X		if (!wpollevent(&e)) {
+X			INCREF(None);
+X			return None;
+X		}
+X	}
+X	else
+X		wgetevent(&e);
+X	if (e.type == WE_COMMAND && e.u.command == WC_CANCEL) {
+X		/* Turn keyboard interrupts into exceptions */
+X		err_set(KeyboardInterrupt);
+X		return NULL;
+X	}
 X/*
-X if (e.window == NULL && (e.type == WE_COMMAND || e.type == WE_CHAR))
-X goto again;
+X	if (e.window == NULL && (e.type == WE_COMMAND || e.type == WE_CHAR))
+X		goto again;
 X*/
-X if (e.type == WE_COMMAND && e.u.command == WC_CLOSE) {
-X /* Turn WC_CLOSE commands into WE_CLOSE events */
-X e.type = WE_CLOSE;
-X }
-X v = newtupleobject(3);
-X if (v == NULL)
-X return NULL;
-X if ((w = newintobject((long)e.type)) == NULL) {
-X DECREF(v);
-X return NULL;
-X }
-X settupleitem(v, 0, w);
-X if (e.window == NULL)
-X w = None;
-X else {
-X int tag = wgettag(e.window);
-X if (tag < 0 || tag >= MAXNWIN || windowlist[tag] == NULL)
-X w = None;
-X else
-X w = (object *)windowlist[tag];
+X	if (e.type == WE_COMMAND && e.u.command == WC_CLOSE) {
+X		/* Turn WC_CLOSE commands into WE_CLOSE events */
+X		e.type = WE_CLOSE;
+X	}
+X	v = newtupleobject(3);
+X	if (v == NULL)
+X		return NULL;
+X	if ((w = newintobject((long)e.type)) == NULL) {
+X		DECREF(v);
+X		return NULL;
+X	}
+X	settupleitem(v, 0, w);
+X	if (e.window == NULL)
+X		w = None;
+X	else {
+X		int tag = wgettag(e.window);
+X		if (tag < 0 || tag >= MAXNWIN || windowlist[tag] == NULL)
+X			w = None;
+X		else
+X			w = (object *)windowlist[tag];
 X#ifdef sgi
-X /* XXX Trap for unexplained weird bug */
-X if ((long)w == (long)0x80000001) {
-X err_setstr(SystemError,
-X "bad pointer in stdwin.getevent()");
-X return NULL;
-X }
+X		/* XXX Trap for unexplained weird bug */
+X		if ((long)w == (long)0x80000001) {
+X			err_setstr(SystemError,
+X				"bad pointer in stdwin.getevent()");
+X			return NULL;
+X		}
 X#endif
-X }
-X INCREF(w);
-X settupleitem(v, 1, w);
-X switch (e.type) {
-X case WE_CHAR:
-X {
-X char c[1];
-X c[0] = e.u.character;
-X w = newsizedstringobject(c, 1);
-X }
-X break;
-X case WE_COMMAND:
-X w = newintobject((long)e.u.command);
-X break;
-X case WE_DRAW:
-X w = makerect(e.u.area.left, e.u.area.top,
-X e.u.area.right, e.u.area.bottom);
-X break;
-X case WE_MOUSE_DOWN:
-X case WE_MOUSE_MOVE:
-X case WE_MOUSE_UP:
-X w = makemouse(e.u.where.h, e.u.where.v,
-X e.u.where.clicks,
-X e.u.where.button,
-X e.u.where.mask);
-X break;
-X case WE_MENU:
-X if (e.u.m.id >= IDOFFSET && e.u.m.id < IDOFFSET+MAXNMENU &&
-X menulist[e.u.m.id - IDOFFSET] != NULL)
-X w = (object *)menulist[e.u.m.id - IDOFFSET];
-X else
-X w = None;
-X w = makemenu(w, e.u.m.item);
-X break;
-X case WE_LOST_SEL:
-X w = newintobject((long)e.u.sel);
-X break;
-X default:
-X w = None;
-X INCREF(w);
-X break;
-X }
-X if (w == NULL) {
-X DECREF(v);
-X return NULL;
-X }
-X settupleitem(v, 2, w);
-X return v;
+X	}
+X	INCREF(w);
+X	settupleitem(v, 1, w);
+X	switch (e.type) {
+X	case WE_CHAR:
+X		{
+X			char c[1];
+X			c[0] = e.u.character;
+X			w = newsizedstringobject(c, 1);
+X		}
+X		break;
+X	case WE_COMMAND:
+X		w = newintobject((long)e.u.command);
+X		break;
+X	case WE_DRAW:
+X		w = makerect(e.u.area.left, e.u.area.top,
+X				e.u.area.right, e.u.area.bottom);
+X		break;
+X	case WE_MOUSE_DOWN:
+X	case WE_MOUSE_MOVE:
+X	case WE_MOUSE_UP:
+X		w = makemouse(e.u.where.h, e.u.where.v,
+X				e.u.where.clicks,
+X				e.u.where.button,
+X				e.u.where.mask);
+X		break;
+X	case WE_MENU:
+X		if (e.u.m.id >= IDOFFSET && e.u.m.id < IDOFFSET+MAXNMENU &&
+X				menulist[e.u.m.id - IDOFFSET] != NULL)
+X			w = (object *)menulist[e.u.m.id - IDOFFSET];
+X		else
+X			w = None;
+X		w = makemenu(w, e.u.m.item);
+X		break;
+X	case WE_LOST_SEL:
+X		w = newintobject((long)e.u.sel);
+X		break;
+X	default:
+X		w = None;
+X		INCREF(w);
+X		break;
+X	}
+X	if (w == NULL) {
+X		DECREF(v);
+X		return NULL;
+X	}
+X	settupleitem(v, 2, w);
+X	return v;
 X}
 X
 Xstatic object *
 Xstdwin_getevent(sw, args)
-X object *sw;
-X object *args;
+X	object *sw;
+X	object *args;
 X{
-X return stdwin_get_poll_event(0, args);
+X	return stdwin_get_poll_event(0, args);
 X}
 X
 Xstatic object *
 Xstdwin_pollevent(sw, args)
-X object *sw;
-X object *args;
+X	object *sw;
+X	object *args;
 X{
-X return stdwin_get_poll_event(1, args);
+X	return stdwin_get_poll_event(1, args);
 X}
 X
 Xstatic object *
 Xstdwin_setdefwinpos(sw, args)
-X object *sw;
-X object *args;
+X	object *sw;
+X	object *args;
 X{
-X int a[2];
-X if (!getpointarg(args, a))
-X return NULL;
-X wsetdefwinpos(a[0], a[1]);
-X INCREF(None);
-X return None;
+X	int a[2];
+X	if (!getpointarg(args, a))
+X		return NULL;
+X	wsetdefwinpos(a[0], a[1]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xstdwin_setdefwinsize(sw, args)
-X object *sw;
-X object *args;
+X	object *sw;
+X	object *args;
 X{
-X int a[2];
-X if (!getpointarg(args, a))
-X return NULL;
-X wsetdefwinsize(a[0], a[1]);
-X INCREF(None);
-X return None;
+X	int a[2];
+X	if (!getpointarg(args, a))
+X		return NULL;
+X	wsetdefwinsize(a[0], a[1]);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xstdwin_getdefwinpos(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X int h, v;
-X if (!getnoarg(args))
-X return NULL;
-X wgetdefwinpos(&h, &v);
-X return makepoint(h, v);
+X	int h, v;
+X	if (!getnoarg(args))
+X		return NULL;
+X	wgetdefwinpos(&h, &v);
+X	return makepoint(h, v);
 X}
 X
 Xstatic object *
 Xstdwin_getdefwinsize(wp, args)
-X windowobject *wp;
-X object *args;
+X	windowobject *wp;
+X	object *args;
 X{
-X int width, height;
-X if (!getnoarg(args))
-X return NULL;
-X wgetdefwinsize(&width, &height);
-X return makepoint(width, height);
+X	int width, height;
+X	if (!getnoarg(args))
+X		return NULL;
+X	wgetdefwinsize(&width, &height);
+X	return makepoint(width, height);
 X}
 X
 Xstatic object *
 Xstdwin_menucreate(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *title;
-X if (!getstrarg(args, &title))
-X return NULL;
-X wmenusetdeflocal(0);
-X return (object *)newmenuobject(title);
+X	object *title;
+X	if (!getstrarg(args, &title))
+X		return NULL;
+X	wmenusetdeflocal(0);
+X	return (object *)newmenuobject(title);
 X}
 X
 Xstatic object *
 Xstdwin_askfile(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *prompt, *dflt;
-X int new, ret;
-X char buf[256];
-X if (!getstrstrintarg(args, &prompt, &dflt, &new))
-X return NULL;
-X strncpy(buf, getstringvalue(dflt), sizeof buf);
-X buf[sizeof buf - 1] = '\0';
-X ret = waskfile(getstringvalue(prompt), buf, sizeof buf, new);
-X if (!ret) {
-X err_set(KeyboardInterrupt);
-X return NULL;
-X }
-X return newstringobject(buf);
+X	object *prompt, *dflt;
+X	int new, ret;
+X	char buf[256];
+X	if (!getstrstrintarg(args, &prompt, &dflt, &new))
+X		return NULL;
+X	strncpy(buf, getstringvalue(dflt), sizeof buf);
+X	buf[sizeof buf - 1] = '\0';
+X	ret = waskfile(getstringvalue(prompt), buf, sizeof buf, new);
+X	if (!ret) {
+X		err_set(KeyboardInterrupt);
+X		return NULL;
+X	}
+X	return newstringobject(buf);
 X}
 X
 Xstatic object *
 Xstdwin_askync(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *prompt;
-X int new, ret;
-X if (!getstrintarg(args, &prompt, &new))
-X return NULL;
-X ret = waskync(getstringvalue(prompt), new);
-X if (ret < 0) {
-X err_set(KeyboardInterrupt);
-X return NULL;
-X }
-X return newintobject((long)ret);
+X	object *prompt;
+X	int new, ret;
+X	if (!getstrintarg(args, &prompt, &new))
+X		return NULL;
+X	ret = waskync(getstringvalue(prompt), new);
+X	if (ret < 0) {
+X		err_set(KeyboardInterrupt);
+X		return NULL;
+X	}
+X	return newintobject((long)ret);
 X}
 X
 Xstatic object *
 Xstdwin_askstr(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *prompt, *dflt;
-X int ret;
-X char buf[256];
-X if (!getstrstrarg(args, &prompt, &dflt))
-X return NULL;
-X strncpy(buf, getstringvalue(dflt), sizeof buf);
-X buf[sizeof buf - 1] = '\0';
-X ret = waskstr(getstringvalue(prompt), buf, sizeof buf);
-X if (!ret) {
-X err_set(KeyboardInterrupt);
-X return NULL;
-X }
-X return newstringobject(buf);
+X	object *prompt, *dflt;
+X	int ret;
+X	char buf[256];
+X	if (!getstrstrarg(args, &prompt, &dflt))
+X		return NULL;
+X	strncpy(buf, getstringvalue(dflt), sizeof buf);
+X	buf[sizeof buf - 1] = '\0';
+X	ret = waskstr(getstringvalue(prompt), buf, sizeof buf);
+X	if (!ret) {
+X		err_set(KeyboardInterrupt);
+X		return NULL;
+X	}
+X	return newstringobject(buf);
 X}
 X
 Xstatic object *
 Xstdwin_message(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *msg;
-X if (!getstrarg(args, &msg))
-X return NULL;
-X wmessage(getstringvalue(msg));
-X INCREF(None);
-X return None;
+X	object *msg;
+X	if (!getstrarg(args, &msg))
+X		return NULL;
+X	wmessage(getstringvalue(msg));
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xstdwin_fleep(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X if (!getnoarg(args))
-X return NULL;
-X wfleep();
-X INCREF(None);
-X return None;
+X	if (!getnoarg(args))
+X		return NULL;
+X	wfleep();
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xstdwin_setcutbuffer(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int i;
-X object *str;
-X if (!getintstrarg(args, &i, &str))
-X return NULL;
-X wsetcutbuffer(i, getstringvalue(str), getstringsize(str));
-X INCREF(None);
-X return None;
+X	int i;
+X	object *str;
+X	if (!getintstrarg(args, &i, &str))
+X		return NULL;
+X	wsetcutbuffer(i, getstringvalue(str), getstringsize(str));
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xstdwin_getcutbuffer(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int i;
-X char *str;
-X int len;
-X if (!getintarg(args, &i))
-X return NULL;
-X str = wgetcutbuffer(i, &len);
-X if (str == NULL) {
-X str = "";
-X len = 0;
-X }
-X return newsizedstringobject(str, len);
+X	int i;
+X	char *str;
+X	int len;
+X	if (!getintarg(args, &i))
+X		return NULL;
+X	str = wgetcutbuffer(i, &len);
+X	if (str == NULL) {
+X		str = "";
+X		len = 0;
+X	}
+X	return newsizedstringobject(str, len);
 X}
 X
 Xstatic object *
 Xstdwin_rotatecutbuffers(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int i;
-X if (!getintarg(args, &i))
-X return NULL;
-X wrotatecutbuffers(i);
-X INCREF(None);
-X return None;
+X	int i;
+X	if (!getintarg(args, &i))
+X		return NULL;
+X	wrotatecutbuffers(i);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xstdwin_getselection(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int sel;
-X char *data;
-X int len;
-X if (!getintarg(args, &sel))
-X return NULL;
-X data = wgetselection(sel, &len);
-X if (data == NULL) {
-X data = "";
-X len = 0;
-X }
-X return newsizedstringobject(data, len);
+X	int sel;
+X	char *data;
+X	int len;
+X	if (!getintarg(args, &sel))
+X		return NULL;
+X	data = wgetselection(sel, &len);
+X	if (data == NULL) {
+X		data = "";
+X		len = 0;
+X	}
+X	return newsizedstringobject(data, len);
 X}
 X
 Xstatic object *
 Xstdwin_resetselection(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int sel;
-X if (!getintarg(args, &sel))
-X return NULL;
-X wresetselection(sel);
-X INCREF(None);
-X return None;
+X	int sel;
+X	if (!getintarg(args, &sel))
+X		return NULL;
+X	wresetselection(sel);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic struct methodlist stdwin_methods[] = {
-X {"askfile", stdwin_askfile},
-X {"askstr", stdwin_askstr},
-X {"askync", stdwin_askync},
-X {"fleep", stdwin_fleep},
-X {"getselection", stdwin_getselection},
-X {"getcutbuffer", stdwin_getcutbuffer},
-X {"getdefwinpos", stdwin_getdefwinpos},
-X {"getdefwinsize", stdwin_getdefwinsize},
-X {"getevent", stdwin_getevent},
-X {"menucreate", stdwin_menucreate},
-X {"message", stdwin_message},
-X {"open", stdwin_open},
-X {"pollevent", stdwin_pollevent},
-X {"resetselection", stdwin_resetselection},
-X {"rotatecutbuffers", stdwin_rotatecutbuffers},
-X {"setcutbuffer", stdwin_setcutbuffer},
-X {"setdefwinpos", stdwin_setdefwinpos},
-X {"setdefwinsize", stdwin_setdefwinsize},
-X
-X /* Text measuring methods borrow code from drawing objects: */
-X {"baseline", drawing_baseline},
-X {"lineheight", drawing_lineheight},
-X {"textbreak", drawing_textbreak},
-X {"textwidth", drawing_textwidth},
-X {NULL, NULL} /* sentinel */
+X	{"askfile",		stdwin_askfile},
+X	{"askstr",		stdwin_askstr},
+X	{"askync",		stdwin_askync},
+X	{"fleep",		stdwin_fleep},
+X	{"getselection",	stdwin_getselection},
+X	{"getcutbuffer",	stdwin_getcutbuffer},
+X	{"getdefwinpos",	stdwin_getdefwinpos},
+X	{"getdefwinsize",	stdwin_getdefwinsize},
+X	{"getevent",		stdwin_getevent},
+X	{"menucreate",		stdwin_menucreate},
+X	{"message",		stdwin_message},
+X	{"open",		stdwin_open},
+X	{"pollevent",		stdwin_pollevent},
+X	{"resetselection",	stdwin_resetselection},
+X	{"rotatecutbuffers",	stdwin_rotatecutbuffers},
+X	{"setcutbuffer",	stdwin_setcutbuffer},
+X	{"setdefwinpos",	stdwin_setdefwinpos},
+X	{"setdefwinsize",	stdwin_setdefwinsize},
+X	
+X	/* Text measuring methods borrow code from drawing objects: */
+X	{"baseline",		drawing_baseline},
+X	{"lineheight",		drawing_lineheight},
+X	{"textbreak",		drawing_textbreak},
+X	{"textwidth",		drawing_textwidth},
+X	{NULL,			NULL}		/* sentinel */
 X};
 X
 Xvoid
 Xinitstdwin()
 X{
-X static int inited;
-X if (!inited) {
-X winit();
-X inited = 1;
-X }
-X initmodule("stdwin", stdwin_methods);
+X	static int inited;
+X	if (!inited) {
+X		winit();
+X		inited = 1;
+X	}
+X	initmodule("stdwin", stdwin_methods);
 X}
 EOF
 fi

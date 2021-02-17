@@ -111,15 +111,15 @@ X{\tt len}({\em s}) & length of {\em s} & \\
 X{\tt min}({\em s}) & smallest item of {\em s} & \\
 X{\tt max}({\em s}) & largest item of {\em s} & \\
 X{\em x} {\tt in} {\em s} &
-X true if an item of {\em s} is equal to {\em x} & \\
+X	true if an item of {\em s} is equal to {\em x} & \\
 X{\em x} {\tt not} {\tt in} {\em s} &
-X false if an item of {\em s} is equal to {\em x} & \\
+X	false if an item of {\em s} is equal to {\em x} & \\
 X{\em s}{\tt +}{\em t} & the concatenation of {\em s} and {\em t} & \\
 X{\em s}{\tt *}{\em n}, {\em n}*{\em s} &
-X {\em n} copies of {\em s} concatenated & (1) \\
+X	{\em n} copies of {\em s} concatenated & (1) \\
 X{\em s}[{\em i}] & {\em i}'th item of {\em s} & \\
 X{\em s}[{\em i}:{\em j}] &
-X slice of {\em s} from {\em i} to {\em j} & (2) \\
+X	slice of {\em s} from {\em i} to {\em j} & (2) \\
 X\hline
 X\end{tabular}
 X\end{center}
@@ -153,19 +153,19 @@ X\hline
 XOperation & Result \\
 X\hline
 X{\em s}[{\em i}] = {\em x} &
-X item {\em i} of {\em s} is replaced by {\em x} \\
+X	item {\em i} of {\em s} is replaced by {\em x} \\
 X{\em s}[{\em i}:{\em j}] = {\em t} &
-X slice of {\em s} from {\em i} to {\em j} is replaced by {\em t} \\
+X	slice of {\em s} from {\em i} to {\em j} is replaced by {\em t} \\
 X{\tt del} {\em s}[{\em i}:{\em j}] &
-X same as {\em s}[{\em i}:{\em j}] = [] \\
+X	same as {\em s}[{\em i}:{\em j}] = [] \\
 X{\em s}.{\tt append}({\em x}) &
-X same as {\em s}[{\tt len}({\em x}):{\tt len}({\em x})] = [{\em x}] \\
+X	same as {\em s}[{\tt len}({\em x}):{\tt len}({\em x})] = [{\em x}] \\
 X{\em s}.{\tt insert}({\em i}, {\em x}) &
-X same as {\em s}[{\em i}:{\em i}] = [{\em x}] \\
+X	same as {\em s}[{\em i}:{\em i}] = [{\em x}] \\
 X{\em s}.{\tt sort}() &
-X the items of {\em s} are permuted to satisfy \\
-X &
-X $s[i] \leq s[j]$ for $i < j$\\
+X	the items of {\em s} are permuted to satisfy \\
+X	&
+X	$s[i] \leq s[j]$ for $i < j$\\
 X\hline
 X\end{tabular}
 X\end{center}
@@ -226,7 +226,7 @@ X>>> tel.keys()
 X['guido', 'irv', 'jack']
 X>>> tel.has_key('guido')
 X1
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X\subsubsection{Other Built-in Types}
 X
@@ -382,7 +382,7 @@ X>>> dir()
 X['sys']
 X>>> dir(sys)
 X['argv', 'exit', 'modules', 'path', 'stderr', 'stdin', 'stdout']
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X\funcitem{divmod}{a, b}
 X%.br
@@ -408,7 +408,7 @@ X>>> divmod(100, -7)
 X(-15, -5)
 X>>> divmod(-100, -7)
 X(14, -2)
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X\funcitem{eval}{s}
 XTakes a string as argument and parses and evaluates it as a {\Python}
@@ -421,7 +421,7 @@ X\bcode\begin{verbatim}
 X>>> x = 1
 X>>> eval('x+1')
 X2
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X\funcitem{exec}{s}
 XTakes a string as argument and parses and evaluates it as a sequence of
@@ -436,7 +436,7 @@ X>>> x = 1
 X>>> exec('x = x+1\n')
 X>>> x
 X2
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X\funcitem{float}{x}
 XConverts a number to floating point.
@@ -504,7 +504,7 @@ X>>> range(0)
 X[]
 X>>> range(1, 0)
 X[]
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X\funcitem{raw\_input}{s}
 X%.br
@@ -518,7 +518,7 @@ X\bcode\begin{verbatim}
 X>>> raw_input('Type anything: ')
 XType anything: Mutant Teenage Ninja Turtles
 X'Mutant Teenage Ninja Turtles'
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X\funcitem{reload}{module}
 XCauses an already imported module to be re-parsed and re-initialized.
@@ -539,17 +539,17 @@ sed 's/^X//' > 'src/Makefile' << 'EOF'
 X# /***********************************************************
 X# Copyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 X# Netherlands.
-X#
-X# All Rights Reserved
-X#
-X# Permission to use, copy, modify, and distribute this software and its
-X# documentation for any purpose and without fee is hereby granted,
+X# 
+X#                         All Rights Reserved
+X# 
+X# Permission to use, copy, modify, and distribute this software and its 
+X# documentation for any purpose and without fee is hereby granted, 
 X# provided that the above copyright notice appear in all copies and that
-X# both that copyright notice and this permission notice appear in
+X# both that copyright notice and this permission notice appear in 
 X# supporting documentation, and that the names of Stichting Mathematisch
 X# Centrum or CWI not be used in advertising or publicity pertaining to
 X# distribution of the software without specific, written prior permission.
-X#
+X# 
 X# STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
 X# THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
 X# FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
@@ -557,7 +557,7 @@ X# FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
 X# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 X# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 X# OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-X#
+X# 
 X# ******************************************************************/
 X
 X# Makefile for Python
@@ -565,17 +565,17 @@ X# ===================
 X#
 X# If you are in a hurry, you can just edit this Makefile to choose the
 X# correct settings for SYSV and RANLIB below, and type "make" in this
-X# directory. If you are using a recent version of SunOS (or Ultrix?)
+X# directory.  If you are using a recent version of SunOS (or Ultrix?)
 X# you don't even have to edit: the Makefile comes pre-configured for
 X# such systems with all configurable options turned off, building the
 X# minimal portable version of the Python interpreter.
 X#
 X# If have more time, read the section on configurable options below.
 X# It may still be wise to begin building the minimal portable Python,
-X# to see if it works at all, and select options later. You don't have
+X# to see if it works at all, and select options later.  You don't have
 X# to rebuild all objects when you turn on options; all dependencies
 X# are concentrated in the file "config.c" which is rebuilt whenever
-X# the Makefile changes. (Except if you turn on the GNU Readline option
+X# the Makefile changes.  (Except if you turn on the GNU Readline option
 X# you may have to toss out the tokenizer.o object.)
 X
 X
@@ -583,21 +583,21 @@ X# Operating System Defines (ALWAYS READ THIS)
 X# ===========================================
 X
 X# Uncomment the following line if you are using a System V derivative.
-X# This must be used, for instance, on an SGI IRIS. Don't use it for
-X# SunOS. (This is only needed by posixmodule.c...)
+X# This must be used, for instance, on an SGI IRIS.  Don't use it for
+X# SunOS.  (This is only needed by posixmodule.c...)
 X
-X#SYSVDEF= -DSYSV
+X#SYSVDEF=	-DSYSV
 X
 X# Choose one of the following two lines depending on whether your system
 X# requires the use of 'ranlib' after creating a library, or not.
 X
-X#RANLIB = true # For System V
-XRANLIB = ranlib # For BSD
+X#RANLIB =	true	# For System V
+XRANLIB =	ranlib	# For BSD
 X
 X# If your system doesn't have symbolic links, uncomment the following
 X# line.
 X
-X#NOSYMLINKDEF= -DNO_LSTAT
+X#NOSYMLINKDEF=	-DNO_LSTAT
 X
 X
 X# Installation Options
@@ -606,49 +606,49 @@ X
 X# You may want to change PYTHONPATH to reflect where you install the
 X# Python module library.
 X
-XPYTHONPATH= .:/usr/local/lib/python:/ufs/guido/lib/python
+XPYTHONPATH=	.:/usr/local/lib/python:/ufs/guido/lib/python
 X
 X
 X# For "Pure" BSD Systems
 X# ======================
 X#
 X# "Pure" BSD systems (as opposed to enhanced BSD derivatives like SunOS)
-X# often miss certain standard library functions. Source for
-X# these is provided, you just have to turn it on. This may work for
+X# often miss certain standard library functions.  Source for
+X# these is provided, you just have to turn it on.  This may work for
 X# other systems as well, where these things are needed.
 X
 X# If your system does not have a strerror() function in the library,
-X# uncomment the following two lines to use one I wrote. (Actually, this
+X# uncomment the following two lines to use one I wrote.  (Actually, this
 X# is missing in most systems I have encountered, so it is turned on
-X# in the Makefile. Turn it off if your system doesn't have sys_errlist.)
+X# in the Makefile.  Turn it off if your system doesn't have sys_errlist.)
 X
-XSTRERROR_SRC= strerror.c
-XSTRERROR_OBJ= strerror.o
+XSTRERROR_SRC=  strerror.c
+XSTRERROR_OBJ=  strerror.o
 X
 X# If your BSD system does not have a fmod() function in the library,
 X# uncomment the following two lines to use one I wrote.
 X
-X#FMOD_SRC= fmod.c
-X#FMOD_OBJ= fmod.o
+X#FMOD_SRC=  fmod.c
+X#FMOD_OBJ=  fmod.o
 X
 X# If your BSD system does not have a strtol() function in the library,
 X# uncomment the following two lines to use one I wrote.
 X
-X#STRTOL_SRC= strtol.c
-X#STRTOL_OBJ= strtol.o
+X#STRTOL_SRC=  strtol.c
+X#STRTOL_OBJ=  strtol.o
 X
 X# If your BSD system does not have a getcwd() function in the library,
 X# but it does have a getwd() function, uncomment the following two lines
-X# to use one I wrote. (If you don't have getwd() either, turn on the
+X# to use one I wrote.  (If you don't have getwd() either, turn on the
 X# NO_GETWD #define in getcwd.c.)
 X
-X#GETCWD_SRC= getcwd.c
-X#GETCWD_OBJ= getcwd.o
+X#GETCWD_SRC=  getcwd.c
+X#GETCWD_OBJ=  getcwd.o
 X
 X# If your signal() function believes signal handlers return int,
 X# uncomment the following line.
 X
-X#SIGTYPEDEF= -DSIGTYPE=int
+X#SIGTYPEDEF=	-DSIGTYPE=int
 X
 X
 X# Further porting hints
@@ -658,7 +658,7 @@ X# If you don't have the header file <string.h>, but you do have
 X# <strings.h>, create a file "string.h" in this directory which contains
 X# the single line "#include <strings.h>", and add "-I." to CFLAGS.
 X# If you don't have the functions strchr and strrchr, add definitions
-X# "-Dstrchr=index -Dstrrchr=rindex" to CFLAGS. (NB: CFLAGS is not
+X# "-Dstrchr=index -Dstrrchr=rindex" to CFLAGS.  (NB: CFLAGS is not
 X# defined in this Makefile.)
 X
 X
@@ -666,14 +666,14 @@ X# Configurable Options
 X# ====================
 X#
 X# Python can be configured to interface to various system libraries that
-X# are not available on all systems. It is also possible to configure
+X# are not available on all systems.  It is also possible to configure
 X# the input module to use the GNU Readline library for interactive
-X# input. For each configuration choice you must uncomment the relevant
-X# section of the Makefile below. Note: you may also have to change a
+X# input.  For each configuration choice you must uncomment the relevant
+X# section of the Makefile below.  Note: you may also have to change a
 X# pathname and/or an architecture identifier that is hardcoded in the
 X# Makefile.
 X#
-X# Read the comments to determine if you can use the option. (You can
+X# Read the comments to determine if you can use the option.  (You can
 X# always leave all options off and build a minimal portable version of
 X# Python.)
 X
@@ -689,7 +689,7 @@ X# using the BSD system calls select() and gettimeofday().
 X#
 X# Uncomment the following line to select this option.
 X
-X#BSDTIMEDEF= -DBSD_TIME
+X#BSDTIMEDEF=	-DBSD_TIME
 X
 X
 X# GNU Readline Option
@@ -698,7 +698,7 @@ X#
 X# If you have the sources of the GNU Readline library you can have
 X# full interactive command line editing and history in Python.
 X# The GNU Readline library is distributed with the BASH shell
-X# (I only know of version 1.05). You must build the GNU Readline
+X# (I only know of version 1.05).  You must build the GNU Readline
 X# library and the alloca routine it needs in their own source
 X# directories (which are subdirectories of the basg source directory),
 X# and plant a pointer to the BASH source directory in this Makefile.
@@ -708,13 +708,13 @@ X# - Edit the definition of BASHDIR to point to the bash source tree.
 X# You may have to fix the definition of LIBTERMCAP; leave the LIBALLOCA
 X# definition commented if alloca() is in your C library.
 X
-X#BASHDIR= ../../bash-1.05
-X#LIBREADLINE= $(BASHDIR)/readline/libreadline.a
-X#LIBALLOCA= $(BASHDIR)/alloc-files/alloca.o
-X#LIBTERMCAP= -ltermcap
-X#RL_USE = -DUSE_READLINE
-X#RL_LIBS= $(LIBREADLINE) $(LIBALLOCA) $(LIBTERMCAP)
-X#RL_LIBDEPS= $(LIBREADLINE) $(LIBALLOCA)
+X#BASHDIR=	../../bash-1.05
+X#LIBREADLINE=	$(BASHDIR)/readline/libreadline.a
+X#LIBALLOCA=	$(BASHDIR)/alloc-files/alloca.o
+X#LIBTERMCAP=	-ltermcap
+X#RL_USE =	-DUSE_READLINE
+X#RL_LIBS=	$(LIBREADLINE) $(LIBALLOCA) $(LIBTERMCAP)
+X#RL_LIBDEPS=	$(LIBREADLINE) $(LIBALLOCA)
 X
 X
 X# STDWIN Option
@@ -726,22 +726,22 @@ X# This requires a fairly recent version of STDWIN (dated late 1990).
 X#
 X# Uncomment and edit the following block to use the STDWIN option.
 X# - Edit the STDWINDIR defition to reflect the top of the STDWIN source
-X# tree.
+X#   tree.
 X# - Edit the ARCH definition to reflect your system's architecture
-X# (usually the program 'arch' or 'machine' returns this).
+X#   (usually the program 'arch' or 'machine' returns this).
 X# You may have to edit the LIBX11 defition to reflect the location of
 X# the X11 runtime library if it is non-standard.
 X
-X#STDWINDIR= ../../stdwin
-X#ARCH= sgi
-X#LIBSTDWIN= $(STDWINDIR)/Build/$(ARCH)/x11/lib/lib.a
-X#LIBX11 = -lX11
-X#STDW_INCL= -I$(STDWINDIR)/H
-X#STDW_USE= -DUSE_STDWIN
-X#STDW_LIBS= $(LIBSTDWIN) $(LIBX11)
-X#STDW_LIBDEPS= $(LIBSTDWIN)
-X#STDW_SRC= stdwinmodule.c
-X#STDW_OBJ= stdwinmodule.o
+X#STDWINDIR=	../../stdwin
+X#ARCH=		sgi
+X#LIBSTDWIN=	$(STDWINDIR)/Build/$(ARCH)/x11/lib/lib.a
+X#LIBX11 =	-lX11
+X#STDW_INCL=	-I$(STDWINDIR)/H
+X#STDW_USE=	-DUSE_STDWIN
+X#STDW_LIBS=	$(LIBSTDWIN) $(LIBX11)
+X#STDW_LIBDEPS=	$(LIBSTDWIN)
+X#STDW_SRC=	stdwinmodule.c
+X#STDW_OBJ=	stdwinmodule.o
 X
 X
 X# Amoeba Option
@@ -750,31 +750,31 @@ X#
 X# If you have the Amoeba 4.0 distribution (Beta or otherwise) you can
 X# configure Python to incorporate the built-in module 'amoeba'.
 X# (Python can also be built for native Amoeba, but it requires more
-X# work and thought. Contact the author.)
+X# work and thought.  Contact the author.)
 X#
 X# Uncomment and edit the following block to use the Amoeba option.
 X# - Edit the AMOEBADIR defition to reflect the top of the Amoeba source
-X# tree.
+X#   tree.
 X# - Edit the AM_CONF definition to reflect the machine/operating system
-X# configuration needed by Amoeba (this is the name of a subdirectory
-X# of $(AMOEBADIR)/conf/unix, e.g., vax.ultrix).
+X#   configuration needed by Amoeba (this is the name of a subdirectory
+X#   of $(AMOEBADIR)/conf/unix, e.g., vax.ultrix).
 X
-X#AMOEBADIR= /usr/amoeba
-X#AM_CONF= mipseb.irix
-X#LIBAMUNIX= $(AMOEBADIR)/conf/unix/$(AM_CONF)/lib/amunix/libamunix.a
-X#AM_INCL= -I$(AMOEBADIR)/src/h
-X#AM_USE = -DUSE_AMOEBA
-X#AM_LIBDEPS= $(LIBAMUNIX)
-X#AM_LIBS= $(LIBAMUNIX)
-X#AM_SRC = amoebamodule.c sc_interpr.c sc_errors.c
-X#AM_OBJ = amoebamodule.o sc_interpr.o sc_errors.o
+X#AMOEBADIR=	/usr/amoeba
+X#AM_CONF=	mipseb.irix
+X#LIBAMUNIX=	$(AMOEBADIR)/conf/unix/$(AM_CONF)/lib/amunix/libamunix.a
+X#AM_INCL=	-I$(AMOEBADIR)/src/h
+X#AM_USE =	-DUSE_AMOEBA
+X#AM_LIBDEPS=	$(LIBAMUNIX)
+X#AM_LIBS=	$(LIBAMUNIX)
+X#AM_SRC =	amoebamodule.c sc_interpr.c sc_errors.c
+X#AM_OBJ =	amoebamodule.o sc_interpr.o sc_errors.o
 X
 X
 X# Silicon Graphics IRIS Options
 X# =============================
 X#
 X# The following three options are only relevant if you are using a
-X# Silicon Graphics IRIS machine. These have been tested with IRIX 3.3.1
+X# Silicon Graphics IRIS machine.  These have been tested with IRIX 3.3.1
 X# on a 4D/25.
 X
 X
@@ -782,22 +782,22 @@ X# GL Option
 X# =========
 X#
 X# This option incorporates the built-in module 'gl', which provides a
-X# complete interface to the Silicon Graphics GL library. It adds
+X# complete interface to the Silicon Graphics GL library.  It adds
 X# about 70K to the Python text size and about 260K to the unstripped
 X# binary size.
 X#
-X# Note: the file 'glmodule.c' is created by a Python script. If you
+X# Note: the file 'glmodule.c' is created by a Python script.  If you
 X# lost the file and have no working Python interpreter, turn off the GL
 X# and Panel options, rebuild the Python interpreter, use it to create
 X# glmodule.c, and then turn the options back on.
 X#
 X# Uncomment the following block to use the GL option.
 X
-X#GL_USE = -DUSE_GL
-X#GL_LIBDEPS=
-X#GL_LIBS= -lgl_s
-X#GL_SRC = glmodule.c cgensupport.c
-X#GL_OBJ = glmodule.o cgensupport.o
+X#GL_USE =	-DUSE_GL
+X#GL_LIBDEPS=	
+X#GL_LIBS=	-lgl_s
+X#GL_SRC =	glmodule.c cgensupport.c
+X#GL_OBJ =	glmodule.o cgensupport.o
 X
 X
 X# Panel Option
@@ -806,23 +806,23 @@ X#
 X# If you have source to the NASA Ames Panel Library, you can configure
 X# Python to incorporate the built-in module 'pnl', which is used byu
 X# the standard module 'panel' to provide an interface to most features
-X# of the Panel Library. This option requires that you also turn on the
-X# GL option. It adds about 100K to the Python text size and about 160K
+X# of the Panel Library.  This option requires that you also turn on the
+X# GL option.  It adds about 100K to the Python text size and about 160K
 X# to the unstripped binary size.
 X#
 X# Uncomment and edit the following block to use the Panel option.
 X# - Edit the PANELDIR definition to point to the top-level directory
-X# of the Panel distribution tree.
+X#   of the Panel distribution tree.
 X
-X#PANELDIR= /usr/people/guido/src/pl
-X#PANELLIBDIR= $(PANELDIR)/library
-X#LIBPANEL= $(PANELLIBDIR)/lib/libpanel.a
-X#PANEL_USE= -DUSE_PANEL
-X#PANEL_INCL= -I$(PANELLIBDIR)/include
-X#PANEL_LIBDEPS= $(LIBPANEL)
-X#PANEL_LIBS= $(LIBPANEL)
-X#PANEL_SRC= panelmodule.c
-X#PANEL_OBJ= panelmodule.o
+X#PANELDIR=	/usr/people/guido/src/pl
+X#PANELLIBDIR=	$(PANELDIR)/library
+X#LIBPANEL=	$(PANELLIBDIR)/lib/libpanel.a
+X#PANEL_USE=	-DUSE_PANEL
+X#PANEL_INCL=	-I$(PANELLIBDIR)/include
+X#PANEL_LIBDEPS=	$(LIBPANEL)
+X#PANEL_LIBS=	$(LIBPANEL)
+X#PANEL_SRC=	panelmodule.c
+X#PANEL_OBJ=	panelmodule.o
 X
 X
 X# Audio Option
@@ -832,140 +832,140 @@ X# This option lets you play with /dev/audio on the IRIS 4D/25.
 X# It incorporates the built-in module 'audio'.
 X# Warning: using the asynchronous I/O facilities of this module can
 X# create a second 'thread', which looks in the listings of 'ps' like a
-X# forked child. However, it shares its address space with the parent.
+X# forked child.  However, it shares its address space with the parent.
 X#
 X# Uncomment the following block to use the Audio option.
 X
-X#AUDIO_USE= -DUSE_AUDIO
-X#AUDIO_SRC= audiomodule.c asa.c
-X#AUDIO_OBJ= audiomodule.o asa.o
+X#AUDIO_USE=	-DUSE_AUDIO
+X#AUDIO_SRC=	audiomodule.c asa.c
+X#AUDIO_OBJ=	audiomodule.o asa.o
 X
 X
 X# Major Definitions
 X# =================
 X
-XSTANDARD_OBJ= acceler.o bltinmodule.o ceval.o classobject.o \
-X compile.o dictobject.o errors.o fgetsintr.o \
-X fileobject.o floatobject.o $(FMOD_OBJ) frameobject.o \
-X funcobject.o $(GETCWD_OBJ) \
-X graminit.o grammar1.o import.o \
-X intobject.o intrcheck.o listnode.o listobject.o \
-X mathmodule.o methodobject.o modsupport.o \
-X moduleobject.o node.o object.o parser.o \
-X parsetok.o posixmodule.o regexp.o regexpmodule.o \
-X strdup.o $(STRERROR_OBJ) \
-X stringobject.o $(STRTOL_OBJ) structmember.o \
-X sysmodule.o timemodule.o tokenizer.o traceback.o \
-X tupleobject.o typeobject.o
+XSTANDARD_OBJ=	acceler.o bltinmodule.o ceval.o classobject.o \
+X		compile.o dictobject.o errors.o fgetsintr.o \
+X		fileobject.o floatobject.o $(FMOD_OBJ) frameobject.o \
+X		funcobject.o $(GETCWD_OBJ) \
+X		graminit.o grammar1.o import.o \
+X		intobject.o intrcheck.o listnode.o listobject.o \
+X		mathmodule.o methodobject.o modsupport.o \
+X		moduleobject.o node.o object.o parser.o \
+X		parsetok.o posixmodule.o regexp.o regexpmodule.o \
+X		strdup.o $(STRERROR_OBJ) \
+X		stringobject.o $(STRTOL_OBJ) structmember.o \
+X		sysmodule.o timemodule.o tokenizer.o traceback.o \
+X		tupleobject.o typeobject.o
 X
-XSTANDARD_SRC= acceler.c bltinmodule.c ceval.c classobject.c \
-X compile.c dictobject.c errors.c fgetsintr.c \
-X fileobject.c floatobject.c $(FMOD_SRC) frameobject.c \
-X funcobject.c $(GETCWD_SRC) \
-X graminit.c grammar1.c import.c \
-X intobject.c intrcheck.c listnode.c listobject.c \
-X mathmodule.c methodobject.c modsupport.c \
-X moduleobject.c node.c object.c parser.c \
-X parsetok.c posixmodule.c regexp.c regexpmodule.c \
-X strdup.c $(STRERROR_SRC) \
-X stringobject.c $(STRTOL_SRC) structmember.c \
-X sysmodule.c timemodule.c tokenizer.c traceback.c \
-X tupleobject.c typeobject.c
+XSTANDARD_SRC=	acceler.c bltinmodule.c ceval.c classobject.c \
+X		compile.c dictobject.c errors.c fgetsintr.c \
+X		fileobject.c floatobject.c $(FMOD_SRC) frameobject.c \
+X		funcobject.c $(GETCWD_SRC) \
+X		graminit.c grammar1.c import.c \
+X		intobject.c intrcheck.c listnode.c listobject.c \
+X		mathmodule.c methodobject.c modsupport.c \
+X		moduleobject.c node.c object.c parser.c \
+X		parsetok.c posixmodule.c regexp.c regexpmodule.c \
+X		strdup.c $(STRERROR_SRC) \
+X		stringobject.c $(STRTOL_SRC) structmember.c \
+X		sysmodule.c timemodule.c tokenizer.c traceback.c \
+X		tupleobject.c typeobject.c
 X
-XCONFIGDEFS= $(STDW_USE) $(AM_USE) $(AUDIO_USE) $(GL_USE) $(PANEL_USE) \
-X '-DPYTHONPATH="$(PYTHONPATH)"'
+XCONFIGDEFS=	$(STDW_USE) $(AM_USE) $(AUDIO_USE) $(GL_USE) $(PANEL_USE) \
+X		'-DPYTHONPATH="$(PYTHONPATH)"'
 X
-XCONFIGINCLS= $(STDW_INCL)
+XCONFIGINCLS=	$(STDW_INCL)
 X
-XLIBDEPS= libpython.a $(STDW_LIBDEPS) $(AM_LIBDEPS) \
-X $(GL_LIBDEPS) $(PANEL_LIBSDEP) $(RL_LIBDEPS)
+XLIBDEPS=	libpython.a $(STDW_LIBDEPS) $(AM_LIBDEPS) \
+X		$(GL_LIBDEPS) $(PANEL_LIBSDEP) $(RL_LIBDEPS)
 X
 X# NB: the ordering of items in LIBS is significant!
-XLIBS= libpython.a $(STDW_LIBS) $(AM_LIBS) \
-X $(PANEL_LIBS) $(GL_LIBS) $(RL_LIBS) -lm
+XLIBS=		libpython.a $(STDW_LIBS) $(AM_LIBS) \
+X		$(PANEL_LIBS) $(GL_LIBS) $(RL_LIBS) -lm
 X
-XLIBOBJECTS= $(STANDARD_OBJ) $(STDW_OBJ) $(AM_OBJ) $(AUDIO_OBJ) \
-X $(GL_OBJ) $(PANEL_OBJ)
+XLIBOBJECTS=	$(STANDARD_OBJ) $(STDW_OBJ) $(AM_OBJ) $(AUDIO_OBJ) \
+X		$(GL_OBJ) $(PANEL_OBJ)
 X
-XLIBSOURCES= $(STANDARD_SRC) $(STDW_SRC) $(AM_SRC) $(AUDIO_SRC) \
-X $(GL_SRC) $(PANEL_SRC)
+XLIBSOURCES=	$(STANDARD_SRC) $(STDW_SRC) $(AM_SRC) $(AUDIO_SRC) \
+X		$(GL_SRC) $(PANEL_SRC)
 X
-XOBJECTS= pythonmain.o config.o
+XOBJECTS=	pythonmain.o config.o
 X
-XSOURCES= $(LIBSOURCES) pythonmain.c config.c
+XSOURCES=	$(LIBSOURCES) pythonmain.c config.c
 X
-XGENOBJECTS= acceler.o fgetsintr.o grammar1.o \
-X intrcheck.o listnode.o node.o parser.o \
-X parsetok.o strdup.o tokenizer.o bitset.o \
-X firstsets.o grammar.o metagrammar.o pgen.o \
-X pgenmain.o printgrammar.o
+XGENOBJECTS=	acceler.o fgetsintr.o grammar1.o \
+X		intrcheck.o listnode.o node.o parser.o \
+X		parsetok.o strdup.o tokenizer.o bitset.o \
+X		firstsets.o grammar.o metagrammar.o pgen.o \
+X		pgenmain.o printgrammar.o
 X
-XGENSOURCES= acceler.c fgetsintr.c grammar1.c \
-X intrcheck.c listnode.c node.c parser.c \
-X parsetok.c strdup.c tokenizer.c bitset.c \
-X firstsets.c grammar.c metagrammar.c pgen.c \
-X pgenmain.c printgrammar.c
+XGENSOURCES=	acceler.c fgetsintr.c grammar1.c \
+X		intrcheck.c listnode.c node.c parser.c \
+X		parsetok.c strdup.c tokenizer.c bitset.c \
+X		firstsets.c grammar.c metagrammar.c pgen.c \
+X		pgenmain.c printgrammar.c
 X
 X
 X# Main Targets
 X# ============
 X
-Xpython: libpython.a $(OBJECTS) $(LIBDEPS) Makefile
-X $(CC) $(CFLAGS) $(OBJECTS) $(LIBS) -o @python
-X mv @python python
+Xpython:		libpython.a $(OBJECTS) $(LIBDEPS) Makefile
+X		$(CC) $(CFLAGS) $(OBJECTS) $(LIBS) -o @python
+X		mv @python python
 X
-Xlibpython.a: $(LIBOBJECTS)
-X -rm -f @lib
-X ar cr @lib $(LIBOBJECTS)
-X $(RANLIB) @lib
-X mv @lib libpython.a
+Xlibpython.a:	$(LIBOBJECTS)
+X		-rm -f @lib
+X		ar cr @lib $(LIBOBJECTS)
+X		$(RANLIB) @lib
+X		mv @lib libpython.a
 X
-Xpython_gen: $(GENOBJECTS) $(RL_LIBDEPS)
-X $(CC) $(CFLAGS) $(GENOBJECTS) $(RL_LIBS) -o python_gen
+Xpython_gen:	$(GENOBJECTS) $(RL_LIBDEPS)
+X		$(CC) $(CFLAGS) $(GENOBJECTS) $(RL_LIBS) -o python_gen
 X
 X
 X# Utility Targets
 X# ===============
 X
-X# Don't take the output from lint too seriously. I have not attempted
-X# to make Python lint-free. But I use function prototypes.
+X# Don't take the output from lint too seriously.  I have not attempted
+X# to make Python lint-free.  But I use function prototypes.
 X
-XLINTFLAGS= -h
+XLINTFLAGS=	-h
 X
-XLINTCPPFLAGS= $(CONFIGDEFS) $(CONFIGINCLS) $(SYSVDEF) \
-X $(AM_INCL) $(PANEL_INCL)
+XLINTCPPFLAGS=	$(CONFIGDEFS) $(CONFIGINCLS) $(SYSVDEF) \
+X		$(AM_INCL) $(PANEL_INCL)
 X
-XLINT= lint
+XLINT=		lint
 X
-Xlint:: $(SOURCES)
-X $(LINT) $(LINTFLAGS) $(LINTCPPFLAGS) $(SOURCES)
+Xlint::		$(SOURCES)
+X		$(LINT) $(LINTFLAGS) $(LINTCPPFLAGS) $(SOURCES)
 X
-Xlint:: $(GENSOURCES)
-X $(LINT) $(LINTFLAGS) $(GENSOURCES)
+Xlint::		$(GENSOURCES)
+X		$(LINT) $(LINTFLAGS) $(GENSOURCES)
 X
 X# Generating dependencies is only necessary if you intend to hack Python.
 X# You may change $(MKDEP) to your favorite dependency generator (it should
 X# edit the Makefile in place).
 X
-XMKDEP= mkdep
+XMKDEP=		mkdep
 X
 Xdepend::
-X $(MKDEP) $(LINTCPPFLAGS) $(SOURCES) $(GENSOURCES)
+X		$(MKDEP) $(LINTCPPFLAGS) $(SOURCES) $(GENSOURCES)
 X
 X# You may change $(CTAGS) to suit your taste...
 X
-XCTAGS= ctags -t -w
+XCTAGS=		ctags -t -w
 X
-XHEADERS= *.h
+XHEADERS=	*.h
 X
-Xtags: $(SOURCES) $(GENSOURCES) $(HEADERS)
-X $(CTAGS) $(SOURCES) $(GENSOURCES) $(HEADERS)
+Xtags:		$(SOURCES) $(GENSOURCES) $(HEADERS)
+X		$(CTAGS) $(SOURCES) $(GENSOURCES) $(HEADERS)
 X
 Xclean::
-X -rm -f *.o core [,#@]*
+X		-rm -f *.o core [,#@]*
 X
-Xclobber:: clean
-X -rm -f python python_gen libpython.a tags
+Xclobber::	clean
+X		-rm -f python python_gen libpython.a tags
 X
 X
 X# Build Special Objects
@@ -973,42 +973,42 @@ X# =====================
 X
 X# You may change $(COMPILE) to reflect the default .c.o rule...
 X
-XCOMPILE= $(CC) -c $(CFLAGS)
+XCOMPILE=	$(CC) -c $(CFLAGS)
 X
-Xamoebamodule.o: amoebamodule.c
-X $(COMPILE) $(AM_INCL) $*.c
+Xamoebamodule.o:	amoebamodule.c
+X		$(COMPILE) $(AM_INCL) $*.c
 X
-Xconfig.o: config.c Makefile
-X $(COMPILE) $(CONFIGDEFS) $(CONFIGINCLS) $*.c
+Xconfig.o:	config.c Makefile
+X		$(COMPILE) $(CONFIGDEFS) $(CONFIGINCLS) $*.c
 X
-Xfgetsintr.o: fgetsintr.c
-X $(COMPILE) $(SIGTYPEDEF) $*.c
+Xfgetsintr.o:	fgetsintr.c
+X		$(COMPILE) $(SIGTYPEDEF) $*.c
 X
-Xintrcheck.o: intrcheck.c
-X $(COMPILE) $(SIGTYPEDEF) $*.c
+Xintrcheck.o:	intrcheck.c
+X		$(COMPILE) $(SIGTYPEDEF) $*.c
 X
-Xpanelmodule.o: panelmodule.c
-X $(COMPILE) $(PANEL_INCL) $*.c
+Xpanelmodule.o:	panelmodule.c
+X		$(COMPILE) $(PANEL_INCL) $*.c
 X
-Xposixmodule.o: posixmodule.c
-X $(COMPILE) $(SYSVDEF) $(NOSYMLINKDEF) $*.c
+Xposixmodule.o:	posixmodule.c
+X		$(COMPILE) $(SYSVDEF) $(NOSYMLINKDEF) $*.c
 X
-Xsc_interpr.o: sc_interpr.c
-X $(COMPILE) $(AM_INCL) $*.c
+Xsc_interpr.o:	sc_interpr.c
+X		$(COMPILE) $(AM_INCL) $*.c
 X
-Xsc_error.o: sc_error.c
-X $(COMPILE) $(AM_INCL) $*.c
+Xsc_error.o:	sc_error.c
+X		$(COMPILE) $(AM_INCL) $*.c
 X
-Xstdwinmodule.o: stdwinmodule.c
-X $(COMPILE) $(STDW_INCL) $*.c
+Xstdwinmodule.o:	stdwinmodule.c
+X		$(COMPILE) $(STDW_INCL) $*.c
 X
-Xtimemodule.o: timemodule.c
-X $(COMPILE) $(SIGTYPEDEF) $(BSDTIMEDEF) $*.c
+Xtimemodule.o:	timemodule.c
+X		$(COMPILE) $(SIGTYPEDEF) $(BSDTIMEDEF) $*.c
 X
-Xtokenizer.o: tokenizer.c
-X $(COMPILE) $(RL_USE) $*.c
+Xtokenizer.o:	tokenizer.c
+X		$(COMPILE) $(RL_USE) $*.c
 X
-X.PRECIOUS: python libpython.a glmodule.c graminit.c graminit.h
+X.PRECIOUS:	python libpython.a glmodule.c graminit.c graminit.h
 X
 X
 X# Generated Sources
@@ -1021,16 +1021,16 @@ X# Build "glmodule.c", the GL interface.
 X# Ignore the messages emitted by the cgen script.
 X# Also ignore the warnings emitted while compiling glmodule.c; it works.
 X
-Xglmodule.c: cstubs cgen
-X python cgen <cstubs >@glmodule.c
-X mv @glmodule.c glmodule.c
+Xglmodule.c:	cstubs cgen
+X		python cgen <cstubs >@glmodule.c
+X		mv @glmodule.c glmodule.c
 X
 X# The dependencies for graminit.[ch] are not turned on in the
 X# distributed Makefile because the files themselves are distributed.
 X# Turn them on if you want to hack the grammar.
 X
-X#graminit.c graminit.h: Grammar python_gen
-X# python_gen Grammar
+X#graminit.c graminit.h:	Grammar python_gen
+X#		python_gen Grammar
 X
 EOF
 fi
@@ -1043,12 +1043,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1097,7 +1097,7 @@ X
 Xextern char *err_why();
 Xextern char *ar_cap();
 X
-X#define STUBCODE "+stubcode"
+X#define STUBCODE	"+stubcode"
 X
 Xstatic object *AmoebaError;
 Xobject *StubcodeError;
@@ -1111,36 +1111,36 @@ Xextern object *convertcapv(); /* Forward */
 X
 Xstatic void
 Xins(d, name, v)
-X object *d;
-X char *name;
-X object *v;
+X	object *d;
+X	char *name;
+X	object *v;
 X{
-X if (v == NULL || dictinsert(d, name, v) != 0)
-X fatal("can't initialize amoeba module");
+X	if (v == NULL || dictinsert(d, name, v) != 0)
+X		fatal("can't initialize amoeba module");
 X}
 X
 Xvoid
 Xinitamoeba()
 X{
-X object *m, *d, *v;
-X
-X m = initmodule("amoeba", amoeba_methods);
-X d = getmoduledict(m);
-X
-X /* Define capv */
-X v = convertcapv();
-X ins(d, "capv", v);
-X DECREF(v);
-X
-X /* Set timeout */
-X timeout((interval)2000);
-X
-X /* Initialize amoeba.error exception */
-X AmoebaError = newstringobject("amoeba.error");
-X ins(d, "error", AmoebaError);
-X StubcodeError = newstringobject("amoeba.stubcode_error");
-X ins(d, "stubcode_error", StubcodeError);
-X sc_dict = newdictobject();
+X	object *m, *d, *v;
+X	
+X	m = initmodule("amoeba", amoeba_methods);
+X	d = getmoduledict(m);
+X	
+X	/* Define capv */
+X	v = convertcapv();
+X	ins(d, "capv", v);
+X	DECREF(v);
+X	
+X	/* Set timeout */
+X	timeout((interval)2000);
+X	
+X	/* Initialize amoeba.error exception */
+X	AmoebaError = newstringobject("amoeba.error");
+X	ins(d, "error", AmoebaError);
+X	StubcodeError = newstringobject("amoeba.stubcode_error");
+X	ins(d, "stubcode_error", StubcodeError);
+X	sc_dict = newdictobject();
 X}
 X
 X
@@ -1148,17 +1148,17 @@ X/* Set an Amoeba-specific error, and return NULL */
 X
 Xobject *
 Xamoeba_error(err)
-X errstat err;
+X	errstat err;
 X{
-X object *v = newtupleobject(2);
-X if (v != NULL) {
-X settupleitem(v, 0, newintobject((long)err));
-X settupleitem(v, 1, newstringobject(err_why(err)));
-X }
-X err_setval(AmoebaError, v);
-X if (v != NULL)
-X DECREF(v);
-X return NULL;
+X	object *v = newtupleobject(2);
+X	if (v != NULL) {
+X		settupleitem(v, 0, newintobject((long)err));
+X		settupleitem(v, 1, newstringobject(err_why(err)));
+X	}
+X	err_setval(AmoebaError, v);
+X	if (v != NULL)
+X		DECREF(v);
+X	return NULL;
 X}
 X
 X
@@ -1169,62 +1169,62 @@ X
 X#define is_capobject(v) ((v)->ob_type == &Captype)
 X
 Xtypedef struct {
-X OB_HEAD
-X capability ob_cap;
+X	OB_HEAD
+X	capability ob_cap;
 X} capobject;
 X
 Xobject *
 Xnewcapobject(cap)
-X capability *cap;
+X	capability *cap;
 X{
-X capobject *v = NEWOBJ(capobject, &Captype);
-X if (v == NULL)
-X return NULL;
-X v->ob_cap = *cap;
-X return (object *)v;
+X	capobject *v = NEWOBJ(capobject, &Captype);
+X	if (v == NULL)
+X		return NULL;
+X	v->ob_cap = *cap;
+X	return (object *)v;
 X}
 X
 Xgetcapability(v, cap)
-X object *v;
-X capability *cap;
+X	object *v;
+X	capability *cap;
 X{
 X
-X if (!is_capobject(v))
-X return err_badarg();
-X *cap = ((capobject *)v)->ob_cap;
-X return 0;
+X	if (!is_capobject(v))
+X		return err_badarg();
+X	*cap = ((capobject *)v)->ob_cap;
+X	return 0;
 X}
 X
 X/*
-X * is_capobj exports the is_capobject macro to the stubcode modules
+X *	is_capobj exports the is_capobject macro to the stubcode modules
 X */
 X
 Xint
 Xis_capobj(v)
-X object *v;
+X	object *v;
 X{
 X
-X return is_capobject(v);
+X	return is_capobject(v);
 X}
 X
 X/* Methods */
 X
 Xstatic void
 Xcapprint(v, fp, flags)
-X capobject *v;
-X FILE *fp;
-X int flags;
+X	capobject *v;
+X	FILE *fp;
+X	int flags;
 X{
-X /* XXX needs lock when multi-threading */
-X fputs(ar_cap(&v->ob_cap), fp);
+X	/* XXX needs lock when multi-threading */
+X	fputs(ar_cap(&v->ob_cap), fp);
 X}
 X
 Xstatic object *
 Xcaprepr(v)
-X capobject *v;
+X	capobject *v;
 X{
-X /* XXX needs lock when multi-threading */
-X return newstringobject(ar_cap(&v->ob_cap));
+X	/* XXX needs lock when multi-threading */
+X	return newstringobject(ar_cap(&v->ob_cap));
 X}
 X
 Xextern object *sc_interpreter();
@@ -1233,216 +1233,216 @@ Xextern struct methodlist cap_methods[]; /* Forward */
 X
 Xobject *
 Xsc_makeself(cap, stubcode, name)
-X object *cap, *stubcode;
-X char *name;
+X	object *cap, *stubcode;
+X	char *name;
 X{
-X object *sc_name, *sc_self;
+X	object *sc_name, *sc_self;
 X
-X sc_name = newstringobject(name);
-X if (sc_name == NULL)
-X return NULL;
-X sc_self = newtupleobject(3);
-X if (sc_self == NULL) {
-X DECREF(sc_name);
-X return NULL;
-X }
-X if (settupleitem(sc_self, NAME, sc_name) != 0) {
-X DECREF(sc_self);
-X return NULL;
-X }
-X INCREF(cap);
-X if (settupleitem(sc_self, CAP, cap) != 0) {
-X DECREF(sc_self);
-X return NULL;
-X }
-X INCREF(stubcode);
-X if (settupleitem(sc_self, STUBC, stubcode) != 0) {
-X DECREF(sc_self);
-X return NULL;
-X }
-X return sc_self;
+X	sc_name = newstringobject(name);
+X	if (sc_name == NULL)
+X		return NULL;
+X	sc_self = newtupleobject(3);
+X	if (sc_self == NULL) {
+X		DECREF(sc_name);
+X		return NULL;
+X	}
+X	if (settupleitem(sc_self, NAME, sc_name) != 0) {
+X		DECREF(sc_self);
+X		return NULL;
+X	}
+X	INCREF(cap);
+X	if (settupleitem(sc_self, CAP, cap) != 0) {
+X		DECREF(sc_self);
+X		return NULL;
+X	}
+X	INCREF(stubcode);
+X	if (settupleitem(sc_self, STUBC, stubcode) != 0) {
+X		DECREF(sc_self);
+X		return NULL;
+X	}
+X	return sc_self;
 X}
 X
 X
 Xstatic void
 Xswapcode(code, len)
-X char *code;
-X int len;
+X	char *code;
+X	int len;
 X{
-X int i = sizeof(TscOperand);
-X TscOpcode opcode;
-X TscOperand operand;
+X	int i = sizeof(TscOperand);
+X	TscOpcode opcode;
+X	TscOperand operand;
 X
-X while (i < len) {
-X memcpy(&opcode, &code[i], sizeof(TscOpcode));
-X SwapOpcode(opcode);
-X memcpy(&code[i], &opcode, sizeof(TscOpcode));
-X i += sizeof(TscOpcode);
-X if (opcode & OPERAND) {
-X memcpy(&operand, &code[i], sizeof(TscOperand));
-X SwapOperand(operand);
-X memcpy(&code[i], &operand, sizeof(TscOperand));
-X i += sizeof(TscOperand);
-X }
-X }
+X	while (i < len) {
+X		memcpy(&opcode, &code[i], sizeof(TscOpcode));
+X		SwapOpcode(opcode);
+X		memcpy(&code[i], &opcode, sizeof(TscOpcode));
+X		i += sizeof(TscOpcode);
+X		if (opcode & OPERAND) {
+X			memcpy(&operand, &code[i], sizeof(TscOperand));
+X			SwapOperand(operand);
+X			memcpy(&code[i], &operand, sizeof(TscOperand));
+X			i += sizeof(TscOperand);
+X		}
+X	}
 X}
 X
 Xobject *
 Xsc_findstubcode(v, name)
-X object *v;
-X char *name;
+X	object *v;
+X	char *name;
 X{
-X int fd, fsize;
-X char *fname, *buffer;
-X struct stat statbuf;
-X object *sc_stubcode, *ret;
-X TscOperand sc_magic;
+X	int fd, fsize;
+X	char *fname, *buffer;
+X	struct stat statbuf;
+X	object *sc_stubcode, *ret;
+X	TscOperand sc_magic;
 X
-X /*
-X * Only look in the current directory for now.
-X */
-X fname = malloc(strlen(name) + 4);
-X if (fname == NULL) {
-X return err_nomem();
-X }
-X sprintf(fname, "%s.sc", name);
-X if ((fd = open(fname, O_RDONLY)) == -1) {
-X extern int errno;
+X	/*
+X	 *   Only look in the current directory for now.
+X	 */
+X	fname = malloc(strlen(name) + 4);
+X	if (fname == NULL) {
+X		return err_nomem();
+X	}
+X	sprintf(fname, "%s.sc", name);
+X	if ((fd = open(fname, O_RDONLY)) == -1) {
+X		extern int errno;
 X
-X if (errno == 2) {
-X /*
-X ** errno == 2 is file not found.
-X */
-X err_setstr(NameError, fname);
-X return NULL;
-X }
-X free(fname);
-X return err_errno(newstringobject(name));
-X }
-X fstat(fd, &statbuf);
-X fsize = (int)statbuf.st_size;
-X buffer = malloc(fsize);
-X if (buffer == NULL) {
-X free(fname);
-X close(fd);
-X return err_nomem();
-X }
-X if (read(fd, buffer, fsize) != fsize) {
-X close(fd);
-X free(fname);
-X return err_errno(newstringobject(name));
-X }
-X close(fd);
-X free(fname);
-X memcpy(&sc_magic, buffer, sizeof(TscOperand));
-X if (sc_magic != SC_MAGIC) {
-X SwapOperand(sc_magic);
-X if (sc_magic != SC_MAGIC) {
-X free(buffer);
-X return NULL;
-X } else {
-X swapcode(buffer, fsize);
-X }
-X }
-X sc_stubcode = newsizedstringobject( &buffer[sizeof(TscOperand)],
-X fsize - sizeof(TscOperand));
-X free(buffer);
-X if (sc_stubcode == NULL) {
-X return NULL;
-X }
-X if (dictinsert(sc_dict, name, sc_stubcode) != 0) {
-X DECREF(sc_stubcode);
-X return NULL;
-X }
-X DECREF(sc_stubcode); /* XXXX */
-X sc_stubcode = sc_makeself(v, sc_stubcode, name);
-X if (sc_stubcode == NULL) {
-X return NULL;
-X }
-X return sc_stubcode;
+X		if (errno == 2) {
+X			/*
+X			**	errno == 2 is file not found.
+X			*/
+X			err_setstr(NameError, fname);
+X			return NULL;
+X		}
+X		free(fname);
+X		return err_errno(newstringobject(name));
+X	}
+X	fstat(fd, &statbuf);
+X	fsize = (int)statbuf.st_size;
+X	buffer = malloc(fsize);
+X	if (buffer == NULL) {
+X		free(fname);
+X		close(fd);
+X		return err_nomem();
+X	}
+X	if (read(fd, buffer, fsize) != fsize) {
+X		close(fd);
+X		free(fname);
+X		return err_errno(newstringobject(name));
+X	}
+X	close(fd);
+X	free(fname);
+X	memcpy(&sc_magic, buffer, sizeof(TscOperand));
+X	if (sc_magic != SC_MAGIC) {
+X		SwapOperand(sc_magic);
+X		if (sc_magic != SC_MAGIC) {
+X			free(buffer);
+X			return NULL;
+X		} else {
+X			swapcode(buffer, fsize);
+X		}
+X	}
+X	sc_stubcode = newsizedstringobject(	&buffer[sizeof(TscOperand)], 
+X						fsize - sizeof(TscOperand));
+X	free(buffer);
+X	if (sc_stubcode == NULL) {
+X		return NULL;
+X	}
+X	if (dictinsert(sc_dict, name, sc_stubcode) != 0) {
+X		DECREF(sc_stubcode);
+X		return NULL;
+X	}
+X	DECREF(sc_stubcode); /* XXXX */
+X	sc_stubcode = sc_makeself(v, sc_stubcode, name);
+X	if (sc_stubcode == NULL) {
+X		return NULL;
+X	}
+X	return sc_stubcode;
 X}
 X
 Xobject *
 Xcapgetattr(v, name)
-X capobject *v;
-X char *name;
+X	capobject *v;
+X	char *name;
 X{
-X object *sc_method, *sc_stubcodemethod;
+X	object *sc_method, *sc_stubcodemethod;
 X
-X if (sc_dict == NULL) {
-X /*
-X ** For some reason the dictionary has not been
-X ** initialized. Try to find one of the built in
-X ** methods.
-X */
-X return findmethod(cap_methods, (object *)v, name);
-X }
-X sc_stubcodemethod = dictlookup(sc_dict, name);
-X if (sc_stubcodemethod != NULL) {
-X /*
-X ** There is a stubcode method in the dictionary.
-X ** Execute the stubcode interpreter with the right
-X ** arguments.
-X */
-X object *self, *ret;
+X	if (sc_dict == NULL) {
+X		/*
+X		**	For some reason the dictionary has not been
+X		**	initialized.  Try to find one of the built in
+X		**	methods.
+X		*/
+X		return findmethod(cap_methods, (object *)v, name);
+X	}
+X	sc_stubcodemethod = dictlookup(sc_dict, name);
+X	if (sc_stubcodemethod != NULL) {
+X		/*
+X		**	There is a stubcode method in the dictionary.
+X		**	Execute the stubcode interpreter with the right
+X		**	arguments.
+X		*/
+X		object *self, *ret;
 X
-X self = sc_makeself((object *)v, sc_stubcodemethod, name);
-X if (self == NULL) {
-X return NULL;
-X }
-X ret = findmethod(cap_methods, self, STUBCODE);
-X DECREF(self);
-X return ret;
-X }
-X err_clear();
-X sc_method = findmethod(cap_methods, (object *)v, name);
-X if (sc_method == NULL) {
-X /*
-X ** The method is not built in and not in the
-X ** dictionary. Try to find it as a stubcode file.
-X */
-X object *self, *ret;
+X		self = sc_makeself((object *)v, sc_stubcodemethod, name);
+X		if (self == NULL) {
+X			return NULL;
+X		}
+X		ret = findmethod(cap_methods, self, STUBCODE);
+X		DECREF(self);
+X		return ret;
+X	}
+X	err_clear();
+X	sc_method = findmethod(cap_methods, (object *)v, name);
+X	if (sc_method == NULL) {
+X		/*
+X		**	The method is not built in and not in the
+X		**	dictionary. Try to find it as a stubcode file.
+X		*/
+X		object *self, *ret;
 X
-X err_clear();
-X self = sc_findstubcode((object *)v, name);
-X if (self == NULL) {
-X return NULL;
-X }
-X ret = findmethod(cap_methods, self, STUBCODE);
-X DECREF(self);
-X return ret;
-X }
-X return sc_method;
+X		err_clear();
+X		self = sc_findstubcode((object *)v, name);
+X		if (self == NULL) {
+X			return NULL;
+X		}
+X		ret = findmethod(cap_methods, self, STUBCODE);
+X		DECREF(self);
+X		return ret;
+X	}
+X	return sc_method;
 X}
 X
 Xint
 Xcapcompare(v, w)
-X capobject *v, *w;
+X	capobject *v, *w;
 X{
-X int cmp = bcmp((char *)&v->ob_cap.cap_port,
-X (char *)&w->ob_cap, PORTSIZE);
-X if (cmp != 0)
-X return cmp;
-X return prv_number(&v->ob_cap.cap_priv) -
-X prv_number(&w->ob_cap.cap_priv);
+X	int cmp = bcmp((char *)&v->ob_cap.cap_port,
+X					(char *)&w->ob_cap, PORTSIZE);
+X	if (cmp != 0)
+X		return cmp;
+X	return prv_number(&v->ob_cap.cap_priv) -
+X					prv_number(&w->ob_cap.cap_priv);
 X}
 X
 Xstatic typeobject Captype = {
-X OB_HEAD_INIT(&Typetype)
-X 0,
-X "capability",
-X sizeof(capobject),
-X 0,
-X free, /*tp_dealloc*/
-X capprint, /*tp_print*/
-X capgetattr, /*tp_getattr*/
-X 0, /*tp_setattr*/
-X capcompare, /*tp_comp
+X	OB_HEAD_INIT(&Typetype)
+X	0,
+X	"capability",
+X	sizeof(capobject),
+X	0,
+X	free,		/*tp_dealloc*/
+X	capprint,	/*tp_print*/
+X	capgetattr,	/*tp_getattr*/
+X	0,		/*tp_setattr*/
+X	capcompare,	/*tp_comp
 are*/
-X caprepr, /*tp_repr*/
-X 0, /*tp_as_number*/
-X 0, /*tp_as_sequence*/
-X 0, /*tp_as_mapping*/
+X	caprepr,	/*tp_repr*/
+X	0,		/*tp_as_number*/
+X	0,		/*tp_as_sequence*/
+X	0,		/*tp_as_mapping*/
 X};
 X
 X
@@ -1453,22 +1453,22 @@ X
 Xstatic object *
 Xconvertcapv()
 X{
-X object *d;
-X struct caplist *c;
-X d = newdictobject();
-X if (d == NULL)
-X return NULL;
-X if (capv == NULL)
-X return d;
-X for (c = capv; c->cl_name != NULL; c++) {
-X object *v = newcapobject(c->cl_cap);
-X if (v == NULL || dictinsert(d, c->cl_name, v) != 0) {
-X DECREF(d);
-X return NULL;
-X }
-X DECREF(v);
-X }
-X return d;
+X	object *d;
+X	struct caplist *c;
+X	d = newdictobject();
+X	if (d == NULL)
+X		return NULL;
+X	if (capv == NULL)
+X		return d;
+X	for (c = capv; c->cl_name != NULL; c++) {
+X		object *v = newcapobject(c->cl_cap);
+X		if (v == NULL || dictinsert(d, c->cl_name, v) != 0) {
+X			DECREF(d);
+X			return NULL;
+X		}
+X		DECREF(v);
+X	}
+X	return d;
 X}
 X
 X
@@ -1476,25 +1476,25 @@ X/* Strongly Amoeba-specific argument handlers */
 X
 Xstatic int
 Xgetcaparg(v, a)
-X object *v;
-X capability *a;
+X	object *v;
+X	capability *a;
 X{
-X if (v == NULL || !is_capobject(v))
-X return err_badarg();
-X *a = ((capobject *)v) -> ob_cap;
-X return 1;
+X	if (v == NULL || !is_capobject(v))
+X		return err_badarg();
+X	*a = ((capobject *)v) -> ob_cap;
+X	return 1;
 X}
 X
 Xstatic int
 Xgetstrcapargs(v, a, b)
-X object *v;
-X object **a;
-X capability *b;
+X	object *v;
+X	object **a;
+X	capability *b;
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2)
-X return err_badarg();
-X return getstrarg(gettupleitem(v, 0), a) &&
-X getcaparg(gettupleitem(v, 1), b);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2)
+X		return err_badarg();
+X	return getstrarg(gettupleitem(v, 0), a) &&
+X		getcaparg(gettupleitem(v, 1), b);
 X}
 X
 X
@@ -1502,316 +1502,316 @@ X/* Amoeba methods */
 X
 Xstatic object *
 Xamoeba_name_lookup(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *name;
-X capability cap;
-X errstat err;
-X if (!getstrarg(args, &name))
-X return NULL;
-X err = name_lookup(getstringvalue(name), &cap);
-X if (err != STD_OK)
-X return amoeba_error(err);
-X return newcapobject(&cap);
+X	object *name;
+X	capability cap;
+X	errstat err;
+X	if (!getstrarg(args, &name))
+X		return NULL;
+X	err = name_lookup(getstringvalue(name), &cap);
+X	if (err != STD_OK)
+X		return amoeba_error(err);
+X	return newcapobject(&cap);
 X}
 X
 Xstatic object *
 Xamoeba_name_append(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *name;
-X capability cap;
-X errstat err;
-X if (!getstrcapargs(args, &name, &cap))
-X return NULL;
-X err = name_append(getstringvalue(name), &cap);
-X if (err != STD_OK)
-X return amoeba_error(err);
-X INCREF(None);
-X return None;
+X	object *name;
+X	capability cap;
+X	errstat err;
+X	if (!getstrcapargs(args, &name, &cap))
+X		return NULL;
+X	err = name_append(getstringvalue(name), &cap);
+X	if (err != STD_OK)
+X		return amoeba_error(err);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xamoeba_name_replace(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *name;
-X capability cap;
-X errstat err;
-X if (!getstrcapargs(args, &name, &cap))
-X return NULL;
-X err = name_replace(getstringvalue(name), &cap);
-X if (err != STD_OK)
-X return amoeba_error(err);
-X INCREF(None);
-X return None;
+X	object *name;
+X	capability cap;
+X	errstat err;
+X	if (!getstrcapargs(args, &name, &cap))
+X		return NULL;
+X	err = name_replace(getstringvalue(name), &cap);
+X	if (err != STD_OK)
+X		return amoeba_error(err);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xamoeba_name_delete(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *name;
-X errstat err;
-X if (!getstrarg(args, &name))
-X return NULL;
-X err = name_delete(getstringvalue(name));
-X if (err != STD_OK)
-X return amoeba_error(err);
-X INCREF(None);
-X return None;
+X	object *name;
+X	errstat err;
+X	if (!getstrarg(args, &name))
+X		return NULL;
+X	err = name_delete(getstringvalue(name));
+X	if (err != STD_OK)
+X		return amoeba_error(err);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xamoeba_timeout(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int i;
-X object *v;
-X interval tout;
-X if (!getintarg(args, &i))
-X return NULL;
-X tout = timeout((interval)i);
-X v = newintobject((long)tout);
-X if (v == NULL)
-X timeout(tout);
-X return v;
+X	int i;
+X	object *v;
+X	interval tout;
+X	if (!getintarg(args, &i))
+X		return NULL;
+X	tout = timeout((interval)i);
+X	v = newintobject((long)tout);
+X	if (v == NULL)
+X		timeout(tout);
+X	return v;
 X}
 X
 Xstatic struct methodlist amoeba_methods[] = {
-X {"name_append", amoeba_name_append},
-X {"name_delete", amoeba_name_delete},
-X {"name_lookup", amoeba_name_lookup},
-X {"name_replace", amoeba_name_replace},
-X {"timeout", amoeba_timeout},
-X {NULL, NULL} /* Sentinel */
+X	{"name_append",		amoeba_name_append},
+X	{"name_delete",		amoeba_name_delete},
+X	{"name_lookup",		amoeba_name_lookup},
+X	{"name_replace",	amoeba_name_replace},
+X	{"timeout",		amoeba_timeout},
+X	{NULL,			NULL}		 	/* Sentinel */
 X};
 X
 X/* Capability methods */
 X
 Xstatic object *
 Xcap_b_size(self, args)
-X capobject *self;
-X object *args;
+X	capobject *self;
+X	object *args;
 X{
-X errstat err;
-X b_fsize size;
-X if (!getnoarg(args))
-X return NULL;
-X err = b_size(&self->ob_cap, &size);
-X if (err != STD_OK)
-X return amoeba_error(err);
-X return newintobject((long)size);
+X	errstat err;
+X	b_fsize size;
+X	if (!getnoarg(args))
+X		return NULL;
+X	err = b_size(&self->ob_cap, &size);
+X	if (err != STD_OK)
+X		return amoeba_error(err);
+X	return newintobject((long)size);
 X}
 X
 Xstatic object *
 Xcap_b_read(self, args)
-X capobject *self;
-X object *args;
+X	capobject *self;
+X	object *args;
 X{
-X errstat err;
-X char *buf;
-X object *v;
-X long offset, size;
-X b_fsize nread;
-X if (!getlonglongargs(args, &offset, &size))
-X return NULL;
-X buf = malloc((unsigned int)size);
-X if (buf == NULL) {
-X return err_nomem();
-X }
-X err = b_read(&self->ob_cap, (b_fsize)offset, buf, (b_fsize)size,
-X &nread);
-X if (err != STD_OK) {
-X free(buf);
-X return amoeba_error(err);
-X }
-X v = newsizedstringobject(buf, (int)nread);
-X free(buf);
-X return v;
+X	errstat err;
+X	char *buf;
+X	object *v;
+X	long offset, size;
+X	b_fsize nread;
+X	if (!getlonglongargs(args, &offset, &size))
+X		return NULL;
+X	buf = malloc((unsigned int)size);
+X	if (buf == NULL) {
+X		return err_nomem();
+X	}
+X	err = b_read(&self->ob_cap, (b_fsize)offset, buf, (b_fsize)size,
+X								&nread);
+X	if (err != STD_OK) {
+X		free(buf);
+X		return amoeba_error(err);
+X	}
+X	v = newsizedstringobject(buf, (int)nread);
+X	free(buf);
+X	return v;
 X}
 X
 Xstatic object *
 Xcap_dir_lookup(self, args)
-X capobject *self;
-X object *args;
+X	capobject *self;
+X	object *args;
 X{
-X object *name;
-X capability cap;
-X errstat err;
-X if (!getstrarg(args, &name))
-X return NULL;
-X err = dir_lookup(&self->ob_cap, getstringvalue(name), &cap);
-X if (err != STD_OK)
-X return amoeba_error(err);
-X return newcapobject(&cap);
+X	object *name;
+X	capability cap;
+X	errstat err;
+X	if (!getstrarg(args, &name))
+X		return NULL;
+X	err = dir_lookup(&self->ob_cap, getstringvalue(name), &cap);
+X	if (err != STD_OK)
+X		return amoeba_error(err);
+X	return newcapobject(&cap);
 X}
 X
 Xstatic object *
 Xcap_dir_append(self, args)
-X capobject *self;
-X object *args;
+X	capobject *self;
+X	object *args;
 X{
-X object *name;
-X capability cap;
-X errstat err;
-X if (!getstrcapargs(args, &name, &cap))
-X return NULL;
-X err = dir_append(&self->ob_cap, getstringvalue(name), &cap);
-X if (err != STD_OK)
-X return amoeba_error(err);
-X INCREF(None);
-X return None;
+X	object *name;
+X	capability cap;
+X	errstat err;
+X	if (!getstrcapargs(args, &name, &cap))
+X		return NULL;
+X	err = dir_append(&self->ob_cap, getstringvalue(name), &cap);
+X	if (err != STD_OK)
+X		return amoeba_error(err);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xcap_dir_delete(self, args)
-X capobject *self;
-X object *args;
+X	capobject *self;
+X	object *args;
 X{
-X object *name;
-X errstat err;
-X if (!getstrarg(args, &name))
-X return NULL;
-X err = dir_delete(&self->ob_cap, getstringvalue(name));
-X if (err != STD_OK)
-X return amoeba_error(err);
-X INCREF(None);
-X return None;
+X	object *name;
+X	errstat err;
+X	if (!getstrarg(args, &name))
+X		return NULL;
+X	err = dir_delete(&self->ob_cap, getstringvalue(name));
+X	if (err != STD_OK)
+X		return amoeba_error(err);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xcap_dir_replace(self, args)
-X capobject *self;
-X object *args;
+X	capobject *self;
+X	object *args;
 X{
-X object *name;
-X capability cap;
-X errstat err;
-X if (!getstrcapargs(args, &name, &cap))
-X return NULL;
-X err = dir_replace(&self->ob_cap, getstringvalue(name), &cap);
-X if (err != STD_OK)
-X return amoeba_error(err);
-X INCREF(None);
-X return None;
+X	object *name;
+X	capability cap;
+X	errstat err;
+X	if (!getstrcapargs(args, &name, &cap))
+X		return NULL;
+X	err = dir_replace(&self->ob_cap, getstringvalue(name), &cap);
+X	if (err != STD_OK)
+X		return amoeba_error(err);
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xcap_dir_list(self, args)
-X capobject *self;
-X object *args;
+X	capobject *self;
+X	object *args;
 X{
-X errstat err;
-X struct dir_open *dd;
-X object *d;
-X char *name;
-X if (!getnoarg(args))
-X return NULL;
-X if ((dd = dir_open(&self->ob_cap)) == NULL)
-X return amoeba_error(STD_COMBAD);
-X if ((d = newlistobject(0)) == NULL) {
-X dir_close(dd);
-X return NULL;
-X }
-X while ((name = dir_next(dd)) != NULL) {
-X object *v;
-X v = newstringobject(name);
-X if (v == NULL) {
-X DECREF(d);
-X d = NULL;
-X break;
-X }
-X if (addlistitem(d, v) != 0) {
-X DECREF(v);
-X DECREF(d);
-X d = NULL;
-X break;
-X }
-X DECREF(v);
-X }
-X dir_close(dd);
-X return d;
+X	errstat err;
+X	struct dir_open *dd;
+X	object *d;
+X	char *name;
+X	if (!getnoarg(args))
+X		return NULL;
+X	if ((dd = dir_open(&self->ob_cap)) == NULL)
+X		return amoeba_error(STD_COMBAD);
+X	if ((d = newlistobject(0)) == NULL) {
+X		dir_close(dd);
+X		return NULL;
+X	}
+X	while ((name = dir_next(dd)) != NULL) {
+X		object *v;
+X		v = newstringobject(name);
+X		if (v == NULL) {
+X			DECREF(d);
+X			d = NULL;
+X			break;
+X		}
+X		if (addlistitem(d, v) != 0) {
+X			DECREF(v);
+X			DECREF(d);
+X			d = NULL;
+X			break;
+X		}
+X		DECREF(v);
+X	}
+X	dir_close(dd);
+X	return d;
 X}
 X
 Xobject *
 Xcap_std_info(self, args)
-X capobject *self;
-X object *args;
+X	capobject *self;
+X	object *args;
 X{
-X char buf[256];
-X errstat err;
-X int n;
-X if (!getnoarg(args))
-X return NULL;
-X err = std_info(&self->ob_cap, buf, sizeof buf, &n);
-X if (err != STD_OK)
-X return amoeba_error(err);
-X return newsizedstringobject(buf, n);
+X	char buf[256];
+X	errstat err;
+X	int n;
+X	if (!getnoarg(args))
+X		return NULL;
+X	err = std_info(&self->ob_cap, buf, sizeof buf, &n);
+X	if (err != STD_OK)
+X		return amoeba_error(err);
+X	return newsizedstringobject(buf, n);
 X}
 X
 Xobject *
 Xcap_tod_gettime(self, args)
-X capobject *self;
-X object *args;
+X	capobject *self;
+X	object *args;
 X{
-X header h;
-X errstat err;
-X bufsize n;
-X long sec;
-X int msec, tz, dst;
-X if (!getnoarg(args))
-X return NULL;
-X h.h_port = self->ob_cap.cap_port;
-X h.h_priv = self->ob_cap.cap_priv;
-X h.h_command = TOD_GETTIME;
-X n = trans(&h, NILBUF, 0, &h, NILBUF, 0);
-X if (ERR_STATUS(n))
-X return amoeba_error(ERR_CONVERT(n));
-X tod_decode(&h, &sec, &msec, &tz, &dst);
-X return newintobject(sec);
+X	header h;
+X	errstat err;
+X	bufsize n;
+X	long sec;
+X	int msec, tz, dst;
+X	if (!getnoarg(args))
+X		return NULL;
+X	h.h_port = self->ob_cap.cap_port;
+X	h.h_priv = self->ob_cap.cap_priv;
+X	h.h_command = TOD_GETTIME;
+X	n = trans(&h, NILBUF, 0, &h, NILBUF, 0);
+X	if (ERR_STATUS(n))
+X		return amoeba_error(ERR_CONVERT(n));
+X	tod_decode(&h, &sec, &msec, &tz, &dst);
+X	return newintobject(sec);
 X}
 X
 Xobject *
 Xcap_tod_settime(self, args)
-X capobject *self;
-X object *args;
+X	capobject *self;
+X	object *args;
 X{
-X header h;
-X errstat err;
-X bufsize n;
-X long sec;
-X if (!getlongarg(args, &sec))
-X return NULL;
-X h.h_port = self->ob_cap.cap_port;
-X h.h_priv = self->ob_cap.cap_priv;
-X h.h_command = TOD_SETTIME;
-X tod_encode(&h, sec, 0, 0, 0);
-X n = trans(&h, NILBUF, 0, &h, NILBUF, 0);
-X if (ERR_STATUS(n))
-X return amoeba_error(ERR_CONVERT(n));
-X INCREF(None);
-X return None;
+X	header h;
+X	errstat err;
+X	bufsize n;
+X	long sec;
+X	if (!getlongarg(args, &sec))
+X		return NULL;
+X	h.h_port = self->ob_cap.cap_port;
+X	h.h_priv = self->ob_cap.cap_priv;
+X	h.h_command = TOD_SETTIME;
+X	tod_encode(&h, sec, 0, 0, 0);
+X	n = trans(&h, NILBUF, 0, &h, NILBUF, 0);
+X	if (ERR_STATUS(n))
+X		return amoeba_error(ERR_CONVERT(n));
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic struct methodlist cap_methods[] = {
-X { STUBCODE, sc_interpreter},
-X {"b_read", cap_b_read},
-X {"b_size", cap_b_size},
-X {"dir_append", cap_dir_append},
-X {"dir_delete", cap_dir_delete},
-X {"dir_list", cap_dir_list},
-X {"dir_lookup", cap_dir_lookup},
-X {"dir_replace", cap_dir_replace},
-X {"std_info", cap_std_info},
-X {"tod_gettime", cap_tod_gettime},
-X {"tod_settime", cap_tod_settime},
-X {NULL, NULL} /* Sentinel */
+X	{ STUBCODE,		sc_interpreter},
+X	{"b_read",		cap_b_read},
+X	{"b_size",		cap_b_size},
+X	{"dir_append",		cap_dir_append},
+X	{"dir_delete",		cap_dir_delete},
+X	{"dir_list",		cap_dir_list},
+X	{"dir_lookup",		cap_dir_lookup},
+X	{"dir_replace",		cap_dir_replace},
+X	{"std_info",		cap_std_info},
+X	{"tod_gettime",		cap_tod_gettime},
+X	{"tod_settime",		cap_tod_settime},
+X	{NULL,			NULL} 			/* Sentinel */
 X};
 EOF
 fi
@@ -1824,12 +1824,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1875,37 +1875,37 @@ X
 X/* Token names */
 X
 Xchar *tok_name[] = {
-X "ENDMARKER",
-X "NAME",
-X "NUMBER",
-X "STRING",
-X "NEWLINE",
-X "INDENT",
-X "DEDENT",
-X "LPAR",
-X "RPAR",
-X "LSQB",
-X "RSQB",
-X "COLON",
-X "COMMA",
-X "SEMI",
-X "PLUS",
-X "MINUS",
-X "STAR",
-X "SLASH",
-X "VBAR",
-X "AMPER",
-X "LESS",
-X "GREATER",
-X "EQUAL",
-X "DOT",
-X "PERCENT",
-X "BACKQUOTE",
-X "LBRACE",
-X "RBRACE",
-X "OP",
-X "<ERRORTOKEN>",
-X "<N_TOKENS>"
+X	"ENDMARKER",
+X	"NAME",
+X	"NUMBER",
+X	"STRING",
+X	"NEWLINE",
+X	"INDENT",
+X	"DEDENT",
+X	"LPAR",
+X	"RPAR",
+X	"LSQB",
+X	"RSQB",
+X	"COLON",
+X	"COMMA",
+X	"SEMI",
+X	"PLUS",
+X	"MINUS",
+X	"STAR",
+X	"SLASH",
+X	"VBAR",
+X	"AMPER",
+X	"LESS",
+X	"GREATER",
+X	"EQUAL",
+X	"DOT",
+X	"PERCENT",
+X	"BACKQUOTE",
+X	"LBRACE",
+X	"RBRACE",
+X	"OP",
+X	"<ERRORTOKEN>",
+X	"<N_TOKENS>"
 X};
 X
 X
@@ -1914,20 +1914,20 @@ X
 Xstatic struct tok_state *
 Xtok_new()
 X{
-X struct tok_state *tok = NEW(struct tok_state, 1);
-X if (tok == NULL)
-X return NULL;
-X tok->buf = tok->cur = tok->end = tok->inp = NULL;
-X tok->done = E_OK;
-X tok->fp = NULL;
-X tok->tabsize = TABSIZE;
-X tok->indent = 0;
-X tok->indstack[0] = 0;
-X tok->atbol = 1;
-X tok->pendin = 0;
-X tok->prompt = tok->nextprompt = NULL;
-X tok->lineno = 0;
-X return tok;
+X	struct tok_state *tok = NEW(struct tok_state, 1);
+X	if (tok == NULL)
+X		return NULL;
+X	tok->buf = tok->cur = tok->end = tok->inp = NULL;
+X	tok->done = E_OK;
+X	tok->fp = NULL;
+X	tok->tabsize = TABSIZE;
+X	tok->indent = 0;
+X	tok->indstack[0] = 0;
+X	tok->atbol = 1;
+X	tok->pendin = 0;
+X	tok->prompt = tok->nextprompt = NULL;
+X	tok->lineno = 0;
+X	return tok;
 X}
 X
 X
@@ -1935,14 +1935,14 @@ X/* Set up tokenizer for string */
 X
 Xstruct tok_state *
 Xtok_setups(str)
-X char *str;
+X	char *str;
 X{
-X struct tok_state *tok = tok_new();
-X if (tok == NULL)
-X return NULL;
-X tok->buf = tok->cur = str;
-X tok->end = tok->inp = strchr(str, '\0');
-X return tok;
+X	struct tok_state *tok = tok_new();
+X	if (tok == NULL)
+X		return NULL;
+X	tok->buf = tok->cur = str;
+X	tok->end = tok->inp = strchr(str, '\0');
+X	return tok;
 X}
 X
 X
@@ -1950,22 +1950,22 @@ X/* Set up tokenizer for string */
 X
 Xstruct tok_state *
 Xtok_setupf(fp, ps1, ps2)
-X FILE *fp;
-X char *ps1, *ps2;
+X	FILE *fp;
+X	char *ps1, *ps2;
 X{
-X struct tok_state *tok = tok_new();
-X if (tok == NULL)
-X return NULL;
-X if ((tok->buf = NEW(char, BUFSIZ)) == NULL) {
-X DEL(tok);
-X return NULL;
-X }
-X tok->cur = tok->inp = tok->buf;
-X tok->end = tok->buf + BUFSIZ;
-X tok->fp = fp;
-X tok->prompt = ps1;
-X tok->nextprompt = ps2;
-X return tok;
+X	struct tok_state *tok = tok_new();
+X	if (tok == NULL)
+X		return NULL;
+X	if ((tok->buf = NEW(char, BUFSIZ)) == NULL) {
+X		DEL(tok);
+X		return NULL;
+X	}
+X	tok->cur = tok->inp = tok->buf;
+X	tok->end = tok->buf + BUFSIZ;
+X	tok->fp = fp;
+X	tok->prompt = ps1;
+X	tok->nextprompt = ps2;
+X	return tok;
 X}
 X
 X
@@ -1973,12 +1973,12 @@ X/* Free a tok_state structure */
 X
 Xvoid
 Xtok_free(tok)
-X struct tok_state *tok;
+X	struct tok_state *tok;
 X{
-X /* XXX really need a separate flag to say 'my buffer' */
-X if (tok->fp != NULL && tok->buf != NULL)
-X DEL(tok->buf);
-X DEL(tok);
+X	/* XXX really need a separate flag to say 'my buffer' */
+X	if (tok->fp != NULL && tok->buf != NULL)
+X		DEL(tok->buf);
+X	DEL(tok);
 X}
 X
 X
@@ -1986,89 +1986,89 @@ X/* Get next char, updating state; error code goes into tok->done */
 X
 Xstatic int
 Xtok_nextc(tok)
-X register struct tok_state *tok;
+X	register struct tok_state *tok;
 X{
-X if (tok->done != E_OK)
-X return EOF;
-X
-X for (;;) {
-X if (tok->cur < tok->inp)
-X return *tok->cur++;
-X if (tok->fp == NULL) {
-X tok->done = E_EOF;
-X return EOF;
-X }
-X if (tok->inp > tok->buf && tok->inp[-1] == '\n')
-X tok->inp = tok->buf;
-X if (tok->inp == tok->end) {
-X int n = tok->end - tok->buf;
-X char *new = tok->buf;
-X RESIZE(new, char, n+n);
-X if (new == NULL) {
-X fprintf(stderr, "tokenizer out of mem\n");
-X tok->done = E_NOMEM;
-X return EOF;
-X }
-X tok->buf = new;
-X tok->inp = tok->buf + n;
-X tok->end = tok->inp + n;
-X }
+X	if (tok->done != E_OK)
+X		return EOF;
+X	
+X	for (;;) {
+X		if (tok->cur < tok->inp)
+X			return *tok->cur++;
+X		if (tok->fp == NULL) {
+X			tok->done = E_EOF;
+X			return EOF;
+X		}
+X		if (tok->inp > tok->buf && tok->inp[-1] == '\n')
+X			tok->inp = tok->buf;
+X		if (tok->inp == tok->end) {
+X			int n = tok->end - tok->buf;
+X			char *new = tok->buf;
+X			RESIZE(new, char, n+n);
+X			if (new == NULL) {
+X				fprintf(stderr, "tokenizer out of mem\n");
+X				tok->done = E_NOMEM;
+X				return EOF;
+X			}
+X			tok->buf = new;
+X			tok->inp = tok->buf + n;
+X			tok->end = tok->inp + n;
+X		}
 X#ifdef USE_READLINE
-X if (tok->prompt != NULL) {
-X extern char *readline PROTO((char *prompt));
-X static int been_here;
-X if (!been_here) {
-X /* Force rebind of TAB to insert-tab */
-X extern int rl_insert();
-X rl_bind_key('\t', rl_insert);
-X been_here++;
-X }
-X if (tok->buf != NULL)
-X free(tok->buf);
-X tok->buf = readline(tok->prompt);
-X (void) intrcheck(); /* Clear pending interrupt */
-X if (tok->nextprompt != NULL)
-X tok->prompt = tok->nextprompt;
-X /* XXX different semantics w/o readline()! */
-X if (tok->buf == NULL) {
-X tok->done = E_EOF;
-X }
-X else {
-X unsigned int n = strlen(tok->buf);
-X if (n > 0)
-X add_history(tok->buf);
-X /* Append the '\n' that readline()
-X doesn't give us, for the tokenizer... */
-X tok->buf = realloc(tok->buf, n+2);
-X if (tok->buf == NULL)
-X tok->done = E_NOMEM;
-X else {
-X tok->end = tok->buf + n;
-X *tok->end++ = '\n';
-X *tok->end = '\0';
-X tok->inp = tok->end;
-X tok->cur = tok->buf;
-X }
-X }
-X }
-X else
+X		if (tok->prompt != NULL) {
+X			extern char *readline PROTO((char *prompt));
+X			static int been_here;
+X			if (!been_here) {
+X				/* Force rebind of TAB to insert-tab */
+X				extern int rl_insert();
+X				rl_bind_key('\t', rl_insert);
+X				been_here++;
+X			}
+X			if (tok->buf != NULL)
+X				free(tok->buf);
+X			tok->buf = readline(tok->prompt);
+X			(void) intrcheck(); /* Clear pending interrupt */
+X			if (tok->nextprompt != NULL)
+X				tok->prompt = tok->nextprompt;
+X				/* XXX different semantics w/o readline()! */
+X			if (tok->buf == NULL) {
+X				tok->done = E_EOF;
+X			}
+X			else {
+X				unsigned int n = strlen(tok->buf);
+X				if (n > 0)
+X					add_history(tok->buf);
+X				/* Append the '\n' that readline()
+X				   doesn't give us, for the tokenizer... */
+X				tok->buf = realloc(tok->buf, n+2);
+X				if (tok->buf == NULL)
+X					tok->done = E_NOMEM;
+X				else {
+X					tok->end = tok->buf + n;
+X					*tok->end++ = '\n';
+X					*tok->end = '\0';
+X					tok->inp = tok->end;
+X					tok->cur = tok->buf;
+X				}
+X			}
+X		}
+X		else
 X#endif
-X {
-X tok->cur = tok->inp;
-X if (tok->prompt != NULL && tok->inp == tok->buf) {
-X fprintf(stderr, "%s", tok->prompt);
-X tok->prompt = tok->nextprompt;
-X }
-X tok->done = fgets_intr(tok->inp,
-X (int)(tok->end - tok->inp), tok->fp);
-X }
-X if (tok->done != E_OK) {
-X if (tok->prompt != NULL)
-X fprintf(stderr, "\n");
-X return EOF;
-X }
-X tok->inp = strchr(tok->inp, '\0');
-X }
+X		{
+X			tok->cur = tok->inp;
+X			if (tok->prompt != NULL && tok->inp == tok->buf) {
+X				fprintf(stderr, "%s", tok->prompt);
+X				tok->prompt = tok->nextprompt;
+X			}
+X			tok->done = fgets_intr(tok->inp,
+X				(int)(tok->end - tok->inp), tok->fp);
+X		}
+X		if (tok->done != E_OK) {
+X			if (tok->prompt != NULL)
+X				fprintf(stderr, "\n");
+X			return EOF;
+X		}
+X		tok->inp = strchr(tok->inp, '\0');
+X	}
 X}
 X
 X
@@ -2076,17 +2076,17 @@ X/* Back-up one character */
 X
 Xstatic void
 Xtok_backup(tok, c)
-X register struct tok_state *tok;
-X register int c;
+X	register struct tok_state *tok;
+X	register int c;
 X{
-X if (c != EOF) {
-X if (--tok->cur < tok->buf) {
-X fprintf(stderr, "tok_backup: begin of buffer\n");
-X abort();
-X }
-X if (*tok->cur != c)
-X *tok->cur = c;
-X }
+X	if (c != EOF) {
+X		if (--tok->cur < tok->buf) {
+X			fprintf(stderr, "tok_backup: begin of buffer\n");
+X			abort();
+X		}
+X		if (*tok->cur != c)
+X			*tok->cur = c;
+X	}
 X}
 X
 X
@@ -2094,32 +2094,32 @@ X/* Return the token corresponding to a single character */
 X
 Xint
 Xtok_1char(c)
-X int c;
+X	int c;
 X{
-X switch (c) {
-X case '(': return LPAR;
-X case ')': return RPAR;
-X case '[': return LSQB;
-X case ']': return RSQB;
-X case ':': return COLON;
-X case ',': return COMMA;
-X case ';': return SEMI;
-X case '+': return PLUS;
-X case '-': return MINUS;
-X case '*': return STAR;
-X case '/': return SLASH;
-X case '|': return VBAR;
-X case '&': return AMPER;
-X case '<': return LESS;
-X case '>': return GREATER;
-X case '=': return EQUAL;
-X case '.': return DOT;
-X case '%': return PERCENT;
-X case '`': return BACKQUOTE;
-X case '{': return LBRACE;
-X case '}': return RBRACE;
-X default: return OP;
-X }
+X	switch (c) {
+X	case '(':	return LPAR;
+X	case ')':	return RPAR;
+X	case '[':	return LSQB;
+X	case ']':	return RSQB;
+X	case ':':	return COLON;
+X	case ',':	return COMMA;
+X	case ';':	return SEMI;
+X	case '+':	return PLUS;
+X	case '-':	return MINUS;
+X	case '*':	return STAR;
+X	case '/':	return SLASH;
+X	case '|':	return VBAR;
+X	case '&':	return AMPER;
+X	case '<':	return LESS;
+X	case '>':	return GREATER;
+X	case '=':	return EQUAL;
+X	case '.':	return DOT;
+X	case '%':	return PERCENT;
+X	case '`':	return BACKQUOTE;
+X	case '{':	return LBRACE;
+X	case '}':	return RBRACE;
+X	default:	return OP;
+X	}
 X}
 X
 X
@@ -2127,206 +2127,206 @@ X/* Get next token, after space stripping etc. */
 X
 Xint
 Xtok_get(tok, p_start, p_end)
-X register struct tok_state *tok; /* In/out: tokenizer state */
-X char **p_start, **p_end; /* Out: point to start/end of token */
+X	register struct tok_state *tok; /* In/out: tokenizer state */
+X	char **p_start, **p_end; /* Out: point to start/end of token */
 X{
-X register int c;
-X
-X /* Get indentation level */
-X if (tok->atbol) {
-X register int col = 0;
-X tok->atbol = 0;
-X tok->lineno++;
-X for (;;) {
-X c = tok_nextc(tok);
-X if (c == ' ')
-X col++;
-X else if (c == '\t')
-X col = (col/tok->tabsize + 1) * tok->tabsize;
-X else
-X break;
-X }
-X tok_backup(tok, c);
-X if (col == tok->indstack[tok->indent]) {
-X /* No change */
-X }
-X else if (col > tok->indstack[tok->indent]) {
-X /* Indent -- always one */
-X if (tok->indent+1 >= MAXINDENT) {
-X fprintf(stderr, "excessive indent\n");
-X tok->done = E_TOKEN;
-X return ERRORTOKEN;
-X }
-X tok->pendin++;
-X tok->indstack[++tok->indent] = col;
-X }
-X else /* col < tok->indstack[tok->indent] */ {
-X /* Dedent -- any number, must be consistent */
-X while (tok->indent > 0 &&
-X col < tok->indstack[tok->indent]) {
-X tok->indent--;
-X tok->pendin--;
-X }
-X if (col != tok->indstack[tok->indent]) {
-X fprintf(stderr, "inconsistent dedent\n");
-X tok->done = E_TOKEN;
-X return ERRORTOKEN;
-X }
-X }
-X }
-X
-X *p_start = *p_end = tok->cur;
-X
-X /* Return pending indents/dedents */
-X if (tok->pendin != 0) {
-X if (tok->pendin < 0) {
-X tok->pendin++;
-X return DEDENT;
-X }
-X else {
-X tok->pendin--;
-X return INDENT;
-X }
-X }
-X
+X	register int c;
+X	
+X	/* Get indentation level */
+X	if (tok->atbol) {
+X		register int col = 0;
+X		tok->atbol = 0;
+X		tok->lineno++;
+X		for (;;) {
+X			c = tok_nextc(tok);
+X			if (c == ' ')
+X				col++;
+X			else if (c == '\t')
+X				col = (col/tok->tabsize + 1) * tok->tabsize;
+X			else
+X				break;
+X		}
+X		tok_backup(tok, c);
+X		if (col == tok->indstack[tok->indent]) {
+X			/* No change */
+X		}
+X		else if (col > tok->indstack[tok->indent]) {
+X			/* Indent -- always one */
+X			if (tok->indent+1 >= MAXINDENT) {
+X				fprintf(stderr, "excessive indent\n");
+X				tok->done = E_TOKEN;
+X				return ERRORTOKEN;
+X			}
+X			tok->pendin++;
+X			tok->indstack[++tok->indent] = col;
+X		}
+X		else /* col < tok->indstack[tok->indent] */ {
+X			/* Dedent -- any number, must be consistent */
+X			while (tok->indent > 0 &&
+X				col < tok->indstack[tok->indent]) {
+X				tok->indent--;
+X				tok->pendin--;
+X			}
+X			if (col != tok->indstack[tok->indent]) {
+X				fprintf(stderr, "inconsistent dedent\n");
+X				tok->done = E_TOKEN;
+X				return ERRORTOKEN;
+X			}
+X		}
+X	}
+X	
+X	*p_start = *p_end = tok->cur;
+X	
+X	/* Return pending indents/dedents */
+X	if (tok->pendin != 0) {
+X		if (tok->pendin < 0) {
+X			tok->pendin++;
+X			return DEDENT;
+X		}
+X		else {
+X			tok->pendin--;
+X			return INDENT;
+X		}
+X	}
+X	
 X again:
-X /* Skip spaces */
-X do {
-X c = tok_nextc(tok);
-X } while (c == ' ' || c == '\t');
-X
-X /* Set start of current token */
-X *p_start = tok->cur - 1;
-X
-X /* Skip comment */
-X if (c == '#') {
-X /* Hack to allow overriding the tabsize in the file.
-X This is also recognized by vi, when it occurs near the
-X beginning or end of the file. (Will vi never die...?) */
-X int x;
-X /* XXX The case to (unsigned char *) is needed by THINK C 3.0 */
-X if (sscanf(/*(unsigned char *)*/tok->cur,
-X " vi:set tabsize=%d:", &x) == 1 &&
-X x >= 1 && x <= 40) {
-X fprintf(stderr, "# vi:set tabsize=%d:\n", x);
-X tok->tabsize = x;
-X }
-X do {
-X c = tok_nextc(tok);
-X } while (c != EOF && c != '\n');
-X }
-X
-X /* Check for EOF and errors now */
-X if (c == EOF)
-X return tok->done == E_EOF ? ENDMARKER : ERRORTOKEN;
-X
-X /* Identifier (most frequent token!) */
-X if (isalpha(c) || c == '_') {
-X do {
-X c = tok_nextc(tok);
-X } while (isalnum(c) || c == '_');
-X tok_backup(tok, c);
-X *p_end = tok->cur;
-X return NAME;
-X }
-X
-X /* Newline */
-X if (c == '\n') {
-X tok->atbol = 1;
-X *p_end = tok->cur - 1; /* Leave '\n' out of the string */
-X return NEWLINE;
-X }
-X
-X /* Number */
-X if (isdigit(c)) {
-X if (c == '0') {
-X /* Hex or octal */
-X c = tok_nextc(tok);
-X if (c == '.')
-X goto fraction;
-X if (c == 'x' || c == 'X') {
-X /* Hex */
-X do {
-X c = tok_nextc(tok);
-X } while (isxdigit(c));
-X }
-X else {
-X /* Octal; c is first char of it */
-X /* There's no 'isoctdigit' macro, sigh */
-X while ('0' <= c && c < '8') {
-X c = tok_nextc(tok);
-X }
-X }
-X }
-X else {
-X /* Decimal */
-X do {
-X c = tok_nextc(tok);
-X } while (isdigit(c));
-X /* Accept floating point numbers.
-X XXX This accepts incomplete things like 12e or 1e+;
-X worry about that at run-time.
-X XXX Doesn't accept numbers starting with a dot */
-X if (c == '.') {
-X fraction:
-X /* Fraction */
-X do {
-X c = tok_nextc(tok);
-X } while (isdigit(c));
-X }
-X if (c == 'e' || c == 'E') {
-X /* Exponent part */
-X c = tok_nextc(tok);
-X if (c == '+' || c == '-')
-X c = tok_nextc(tok);
-X while (isdigit(c)) {
-X c = tok_nextc(tok);
-X }
-X }
-X }
-X tok_backup(tok, c);
-X *p_end = tok->cur;
-X return NUMBER;
-X }
-X
-X /* String */
-X if (c == '\'') {
-X for (;;) {
-X c = tok_nextc(tok);
-X if (c == '\n' || c == EOF) {
-X tok->done = E_TOKEN;
-X return ERRORTOKEN;
-X }
-X if (c == '\\') {
-X c = tok_nextc(tok);
-X *p_end = tok->cur;
-X if (c == '\n' || c == EOF) {
-X tok->done = E_TOKEN;
-X return ERRORTOKEN;
-X }
-X continue;
-X }
-X if (c == '\'')
-X break;
-X }
-X *p_end = tok->cur;
-X return STRING;
-X }
-X
-X /* Line continuation */
-X if (c == '\\') {
-X c = tok_nextc(tok);
-X if (c != '\n') {
-X tok->done = E_TOKEN;
-X return ERRORTOKEN;
-X }
-X tok->lineno++;
-X goto again; /* Read next line */
-X }
-X
-X /* Punctuation character */
-X *p_end = tok->cur;
-X return tok_1char(c);
+X	/* Skip spaces */
+X	do {
+X		c = tok_nextc(tok);
+X	} while (c == ' ' || c == '\t');
+X	
+X	/* Set start of current token */
+X	*p_start = tok->cur - 1;
+X	
+X	/* Skip comment */
+X	if (c == '#') {
+X		/* Hack to allow overriding the tabsize in the file.
+X		   This is also recognized by vi, when it occurs near the
+X		   beginning or end of the file.  (Will vi never die...?) */
+X		int x;
+X		/* XXX The case to (unsigned char *) is needed by THINK C 3.0 */
+X		if (sscanf(/*(unsigned char *)*/tok->cur,
+X				" vi:set tabsize=%d:", &x) == 1 &&
+X						x >= 1 && x <= 40) {
+X			fprintf(stderr, "# vi:set tabsize=%d:\n", x);
+X			tok->tabsize = x;
+X		}
+X		do {
+X			c = tok_nextc(tok);
+X		} while (c != EOF && c != '\n');
+X	}
+X	
+X	/* Check for EOF and errors now */
+X	if (c == EOF)
+X		return tok->done == E_EOF ? ENDMARKER : ERRORTOKEN;
+X	
+X	/* Identifier (most frequent token!) */
+X	if (isalpha(c) || c == '_') {
+X		do {
+X			c = tok_nextc(tok);
+X		} while (isalnum(c) || c == '_');
+X		tok_backup(tok, c);
+X		*p_end = tok->cur;
+X		return NAME;
+X	}
+X	
+X	/* Newline */
+X	if (c == '\n') {
+X		tok->atbol = 1;
+X		*p_end = tok->cur - 1; /* Leave '\n' out of the string */
+X		return NEWLINE;
+X	}
+X	
+X	/* Number */
+X	if (isdigit(c)) {
+X		if (c == '0') {
+X			/* Hex or octal */
+X			c = tok_nextc(tok);
+X			if (c == '.')
+X				goto fraction;
+X			if (c == 'x' || c == 'X') {
+X				/* Hex */
+X				do {
+X					c = tok_nextc(tok);
+X				} while (isxdigit(c));
+X			}
+X			else {
+X				/* Octal; c is first char of it */
+X				/* There's no 'isoctdigit' macro, sigh */
+X				while ('0' <= c && c < '8') {
+X					c = tok_nextc(tok);
+X				}
+X			}
+X		}
+X		else {
+X			/* Decimal */
+X			do {
+X				c = tok_nextc(tok);
+X			} while (isdigit(c));
+X			/* Accept floating point numbers.
+X			   XXX This accepts incomplete things like 12e or 1e+;
+X			       worry about that at run-time.
+X			   XXX Doesn't accept numbers starting with a dot */
+X			if (c == '.') {
+X	fraction:
+X				/* Fraction */
+X				do {
+X					c = tok_nextc(tok);
+X				} while (isdigit(c));
+X			}
+X			if (c == 'e' || c == 'E') {
+X				/* Exponent part */
+X				c = tok_nextc(tok);
+X				if (c == '+' || c == '-')
+X					c = tok_nextc(tok);
+X				while (isdigit(c)) {
+X					c = tok_nextc(tok);
+X				}
+X			}
+X		}
+X		tok_backup(tok, c);
+X		*p_end = tok->cur;
+X		return NUMBER;
+X	}
+X	
+X	/* String */
+X	if (c == '\'') {
+X		for (;;) {
+X			c = tok_nextc(tok);
+X			if (c == '\n' || c == EOF) {
+X				tok->done = E_TOKEN;
+X				return ERRORTOKEN;
+X			}
+X			if (c == '\\') {
+X				c = tok_nextc(tok);
+X				*p_end = tok->cur;
+X				if (c == '\n' || c == EOF) {
+X					tok->done = E_TOKEN;
+X					return ERRORTOKEN;
+X				}
+X				continue;
+X			}
+X			if (c == '\'')
+X				break;
+X		}
+X		*p_end = tok->cur;
+X		return STRING;
+X	}
+X	
+X	/* Line continuation */
+X	if (c == '\\') {
+X		c = tok_nextc(tok);
+X		if (c != '\n') {
+X			tok->done = E_TOKEN;
+X			return ERRORTOKEN;
+X		}
+X		tok->lineno++;
+X		goto again; /* Read next line */
+X	}
+X	
+X	/* Punctuation character */
+X	*p_end = tok->cur;
+X	return tok_1char(c);
 X}
 X
 X
@@ -2334,12 +2334,12 @@ X#ifdef DEBUG
 X
 Xvoid
 Xtok_dump(type, start, end)
-X int type;
-X char *start, *end;
+X	int type;
+X	char *start, *end;
 X{
-X printf("%s", tok_name[type]);
-X if (type == NAME || type == NUMBER || type == STRING || type == OP)
-X printf("(%.*s)", (int)(end - start), start);
+X	printf("%s", tok_name[type]);
+X	if (type == NAME || type == NUMBER || type == STRING || type == OP)
+X		printf("(%.*s)", (int)(end - start), start);
 X}
 X
 X#endif

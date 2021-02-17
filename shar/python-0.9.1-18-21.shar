@@ -10,10 +10,10 @@ echo 'x - demo/sgi/gl/backface.py'
 sed 's/^X//' > 'demo/sgi/gl/backface.py' << 'EOF'
 X#! /ufs/guido/bin/sgi/python
 X
-X# backface
+X#   backface
 X#
-X# draw a cube that can run with backface() turned on or off.
-X# cube is moved when LEFTMOUSE is pressed and mouse itself is moved.
+X#   draw a cube that can run with backface() turned on or off.
+X#   cube is moved when LEFTMOUSE is pressed and mouse itself is moved.
 X
 Xfrom gl import *
 Xfrom DEVICE import *
@@ -23,128 +23,128 @@ XCUBE_SIZE = 200.0
 XCUBE_OBJ = 1
 X
 Xdef main () :
-X #
-X x = 0
-X y = 0
-X moveit = 0
-X #
-X initialize()
-X #
-X while (1) :
-X #
-X while (qtest()) :
-X dev, val = qread()
-X #
-X if dev = ESCKEY :
-X backface(0)
-X return
-X #
-X elif dev = REDRAW :
-X reshapeviewport()
-X drawcube(x,y)
-X #
-X elif dev = LEFTMOUSE :
-X #
-X # LEFTMOUSE down
-X moveit = val
-X #
-X elif dev = BKEY :
-X backface(1)
-X drawcube(x,y)
-X #
-X elif dev = FKEY :
-X backface(0)
-X drawcube(x,y)
-X #
-X if moveit :
-X x = getvaluator(MOUSEX)
-X y = getvaluator(MOUSEY)
-X drawcube(x,y)
+X	#
+X	x = 0
+X	y = 0
+X	moveit = 0
+X	#
+X	initialize()
+X	#
+X	while (1) :
+X		#
+X		while (qtest()) :
+X			dev, val = qread()
+X			#
+X			if dev = ESCKEY :
+X				backface(0)
+X				return
+X				#
+X			elif dev = REDRAW :
+X				reshapeviewport()
+X				drawcube(x,y)
+X				#
+X			elif dev = LEFTMOUSE :
+X				#
+X				# LEFTMOUSE down
+X				moveit = val
+X				#
+X			elif dev = BKEY :
+X				backface(1)
+X				drawcube(x,y)
+X				#
+X			elif dev = FKEY :
+X				backface(0)
+X				drawcube(x,y)
+X				#
+X		if moveit :
+X			x = getvaluator(MOUSEX)
+X			y = getvaluator(MOUSEY)
+X			drawcube(x,y)
 X
 X
 Xdef initialize () :
-X foreground ()
-X keepaspect (1, 1)
-X gid = winopen('backface')
-X winset(gid)
-X winconstraints()
-X #
-X doublebuffer()
-X gconfig()
-X shademodel(FLAT)
-X #
-X ortho(-1024.0, 1024.0, -1024.0, 1024.0, -1024.0, 1024.0)
-X #
-X qdevice(ESCKEY)
-X qdevice(REDRAW)
-X qdevice(LEFTMOUSE)
-X qdevice(BKEY)
-X qdevice(FKEY)
-X qenter(REDRAW,gid)
-X #
-X backface(1)
+X	foreground ()
+X	keepaspect (1, 1)
+X	gid = winopen('backface')
+X	winset(gid)
+X	winconstraints()
+X	#
+X	doublebuffer()
+X	gconfig()
+X	shademodel(FLAT)
+X	#
+X	ortho(-1024.0, 1024.0, -1024.0, 1024.0, -1024.0, 1024.0)
+X	#
+X	qdevice(ESCKEY)
+X	qdevice(REDRAW)
+X	qdevice(LEFTMOUSE)
+X	qdevice(BKEY)
+X	qdevice(FKEY)
+X	qenter(REDRAW,gid)
+X	#
+X	backface(1)
 X
 X#
 X# define a cube
 Xdef cube () :
-X #
-X # front face
-X pushmatrix()
-X translate(0.0,0.0,CUBE_SIZE)
-X color(RED)
-X rectf(-CUBE_SIZE,-CUBE_SIZE,CUBE_SIZE,CUBE_SIZE)
-X popmatrix()
-X #
-X # right face
-X pushmatrix()
-X translate(CUBE_SIZE, 0.0, 0.0)
-X rotate(900, 'y')
-X color(GREEN)
-X rectf(-CUBE_SIZE,-CUBE_SIZE,CUBE_SIZE,CUBE_SIZE)
-X popmatrix()
-X #
-X # back face
-X pushmatrix()
-X translate(0.0, 0.0, -CUBE_SIZE)
-X rotate(1800, 'y')
-X color(BLUE)
-X rectf(-CUBE_SIZE,-CUBE_SIZE,CUBE_SIZE,CUBE_SIZE)
-X popmatrix()
-X #
-X # left face
-X pushmatrix()
-X translate(-CUBE_SIZE, 0.0, 0.0)
-X rotate(-900, 'y')
-X color(CYAN)
-X rectf(-CUBE_SIZE,-CUBE_SIZE,CUBE_SIZE,CUBE_SIZE)
-X popmatrix()
-X #
-X # top face
-X pushmatrix()
-X translate(0.0, CUBE_SIZE, 0.0)
-X rotate(-900, 'x')
-X color(MAGENTA)
-X rectf(-CUBE_SIZE,-CUBE_SIZE,CUBE_SIZE,CUBE_SIZE)
-X popmatrix()
-X #
-X # bottom face
-X pushmatrix()
-X translate(0.0, -CUBE_SIZE, 0.0)
-X rotate(900, 'x')
-X color(YELLOW)
-X rectf(-CUBE_SIZE,-CUBE_SIZE,CUBE_SIZE,CUBE_SIZE)
-X popmatrix()
+X	#
+X	# front face
+X	pushmatrix()
+X	translate(0.0,0.0,CUBE_SIZE)
+X	color(RED)
+X	rectf(-CUBE_SIZE,-CUBE_SIZE,CUBE_SIZE,CUBE_SIZE)
+X	popmatrix()
+X	#
+X	# right face
+X	pushmatrix()
+X	translate(CUBE_SIZE, 0.0, 0.0)
+X	rotate(900, 'y')
+X	color(GREEN)
+X	rectf(-CUBE_SIZE,-CUBE_SIZE,CUBE_SIZE,CUBE_SIZE)
+X	popmatrix()
+X	#
+X	# back face
+X	pushmatrix()
+X	translate(0.0, 0.0, -CUBE_SIZE)
+X	rotate(1800, 'y')
+X	color(BLUE)
+X	rectf(-CUBE_SIZE,-CUBE_SIZE,CUBE_SIZE,CUBE_SIZE)
+X	popmatrix()
+X	#
+X	# left face
+X	pushmatrix()
+X	translate(-CUBE_SIZE, 0.0, 0.0)
+X	rotate(-900, 'y')
+X	color(CYAN)
+X	rectf(-CUBE_SIZE,-CUBE_SIZE,CUBE_SIZE,CUBE_SIZE)
+X	popmatrix()
+X	#
+X	# top face
+X	pushmatrix()
+X	translate(0.0, CUBE_SIZE, 0.0)
+X	rotate(-900, 'x')
+X	color(MAGENTA)
+X	rectf(-CUBE_SIZE,-CUBE_SIZE,CUBE_SIZE,CUBE_SIZE)
+X	popmatrix()
+X	#
+X	# bottom face
+X	pushmatrix()
+X	translate(0.0, -CUBE_SIZE, 0.0)
+X	rotate(900, 'x')
+X	color(YELLOW)
+X	rectf(-CUBE_SIZE,-CUBE_SIZE,CUBE_SIZE,CUBE_SIZE)
+X	popmatrix()
 X
 Xdef drawcube(x,y) :
-X #
-X pushmatrix()
-X rotate(2*x, 'x')
-X rotate(2*y, 'y')
-X color(BLACK)
-X clear()
-X cube()
-X popmatrix()
-X swapbuffers()
+X	#
+X	pushmatrix()
+X	rotate(2*x, 'x')
+X	rotate(2*y, 'y')
+X	color(BLACK)
+X	clear()
+X	cube()        
+X	popmatrix()
+X	swapbuffers()
 X
 X
 Xmain ()
@@ -166,7 +166,7 @@ X
 X>For your enjoyment I have implemented a colorful clock.
 X
 XThe clock has now been extended with some new facilities: a menu, an
-Xalarm and a gong. These may require some explanation beyond what's in
+Xalarm and a gong.  These may require some explanation beyond what's in
 Xthe usage message.
 X
 XMenu
@@ -177,37 +177,37 @@ X
 XAlarm
 X-----
 X
-XThe left and middle buttons set the alarm. When it is on, the alarm
+XThe left and middle buttons set the alarm.  When it is on, the alarm
 Xtime is displayed as a time on a 24 hour clock in the bottom left
-Xcorner. It is also indicated by two red triangles, corresponding to the
-Xlittle (hours) and big (minutes) hand. These hands can be moved around:
+Xcorner.  It is also indicated by two red triangles, corresponding to the
+Xlittle (hours) and big (minutes) hand.  These hands can be moved around:
 Xthe left mouse button moves the minutes hand, the middle button moves
-Xthe hourds hand. Watch out for differences of twelve hours (always
+Xthe hourds hand.  Watch out for differences of twelve hours (always
 Xcheck the digital display); these can be corrected by dragging the hours
 Xhand once around the dial.
 X
 XWhen the alarm goes off, two things happen: a shell command specified on
 Xthe command line with the -a option is executed (in the background), and
-Xthe clock's colors change every two seconds, for five minutes. You can
+Xthe clock's colors change every two seconds, for five minutes.  You can
 Xalso turn the alarm off by using the menu accessible through the right
 Xmouse button.
 X
 XThere is no default command for the -a option; if it is not specified,
-Xonly the changing of the colors happens. If you have an 8 ohm speaker
+Xonly the changing of the colors happens.  If you have an 8 ohm speaker
 Xconnected to the audio output of your Personal Iris, a suitable command
 Xwould be:
 X
-X mclock -a '/ufs/guido/bin/sgi/play /ufs/guido/lib/sounds/alarm'
+X	mclock -a '/ufs/guido/bin/sgi/play /ufs/guido/lib/sounds/alarm'
 X
 XGong
 X----
 X
 XSome people like a clock that makes noises every hour, or even more
-Xoften. This is supported by the -g and -G options. With -g you specify
+Xoften.  This is supported by the -g and -G options.  With -g you specify
 Xa shell command to be executed to sound the gong; with -G you can
 Xspecify the interval between gong calls, in seconds (default is one hour).
-XThe shell command is executed in the background. It is given two
-Xarguments: the hours (on a 24 hour clock!) and the minutes. The
+XThe shell command is executed in the background.  It is given two
+Xarguments: the hours (on a 24 hour clock!) and the minutes.  The
 Xexecutable Python script /ufs/guido/bin/sgi/chime is a suitable example.
 XAgain, this only works if you have installed a speaker (I bet 8 ohm
 Xspeakers are going to be in demand!)
@@ -225,9 +225,9 @@ echo 'x - demo/sgi/gl/mixing.py'
 sed 's/^X//' > 'demo/sgi/gl/mixing.py' << 'EOF'
 X#! /ufs/guido/bin/sgi/python
 X
-X# Use Gouraud shading to mix colors. Requires Z-buffer.
+X# Use Gouraud shading to mix colors.  Requires Z-buffer.
 X# It changes the color assignments so fast that you see white.
-X# Left button pauses, middle rotates the square. ESC to quit.
+X# Left button pauses, middle rotates the square.  ESC to quit.
 X# Experiment with a larger window (too slow) or smaller window (really white).
 X
 Xfrom GL import *
@@ -236,57 +236,57 @@ Ximport DEVICE
 Xfrom math import *
 X
 X#
-X# tekenvlak : draw a square. with bgnpolygon
+X#  tekenvlak : draw a square. with bgnpolygon
 X#
 Xdef tekenvlak (vc) :
-X bgnpolygon()
-X #vcarray (vc)
-X for i in vc :
-X c3f (i[1])
-X v3f (i[0])
-X endpolygon()
+X	bgnpolygon()
+X	#vcarray (vc)
+X	for i in vc :
+X		c3f (i[1])
+X		v3f (i[0])
+X	endpolygon()
 X
 X#
 X# tekendoos : draw a box
 X#
 Xdef tekendoos (col) :
-X v = [(-5.0,0.0,0.0),(0.0,5.0,0.0),(5.0,0.0,0.0),(0.0,-5.0,0.0)]
-X vc = [(v[0],col[0]),(v[1],col[1]),(v[2],col[2]),(v[3],col[1])]
-X tekenvlak (vc)
+X	v = [(-5.0,0.0,0.0),(0.0,5.0,0.0),(5.0,0.0,0.0),(0.0,-5.0,0.0)]
+X	vc = [(v[0],col[0]),(v[1],col[1]),(v[2],col[2]),(v[3],col[1])]
+X	tekenvlak (vc)
 X
 X#
 X# initialize gl
 X#
 Xdef initgl () :
-X #
-X # open window
-X #
-X foreground ()
-X keepaspect (1, 1)
-X prefposition (100, 500, 100, 500)
-X w = winopen ('PYTHON RGB')
-X keepaspect (1, 1)
-X winconstraints()
-X #
-X # configure pipeline (2buf, GOURAUD and RGBmode)
-X #
-X doublebuffer ()
-X zbuffer (1)
-X shademodel (GOURAUD)
-X RGBmode ()
-X gconfig ()
-X #
-X # set viewing
-X #
-X perspective (900, 1, 1.0, 10.0)
-X polarview (10.0, 0, 0, 0)
-X #
-X # ask for the REDRAW and ESCKEY events
-X #
-X qdevice(DEVICE.MOUSE2)
-X qdevice(DEVICE.MOUSE3)
-X qdevice(DEVICE.REDRAW)
-X qdevice(DEVICE.ESCKEY)
+X	#
+X	# open window
+X	#
+X	foreground ()
+X	keepaspect (1, 1)
+X	prefposition (100, 500, 100, 500)
+X	w = winopen ('PYTHON RGB')
+X	keepaspect (1, 1)
+X	winconstraints()
+X	#
+X	# configure pipeline (2buf, GOURAUD and RGBmode)
+X	#
+X	doublebuffer ()
+X	zbuffer (1)
+X	shademodel (GOURAUD)
+X	RGBmode ()
+X	gconfig ()
+X	#
+X	# set viewing
+X	#
+X	perspective (900, 1, 1.0, 10.0)
+X	polarview (10.0, 0, 0, 0)
+X	#
+X	# ask for the REDRAW and ESCKEY events
+X	#
+X	qdevice(DEVICE.MOUSE2)
+X	qdevice(DEVICE.MOUSE3)
+X	qdevice(DEVICE.REDRAW)
+X	qdevice(DEVICE.ESCKEY)
 X
 X
 X#
@@ -294,51 +294,51 @@ X# the color black
 X#
 Xblack = 0
 X#
-X# GoForIT : use 2buf to redraw the object 2n times. index i is used as
+X# GoForIT : use 2buf to redraw the object 2n times. index i is used as 
 X# the (smoothly changing) rotation angle
 X#
 Xdef GoForIt(i) :
-X col = [(255.0,0.0,0.0), (0.0,255.0,0.0), (0.0,0.0,255.0)]
-X twist = 0
-X freeze = 1
-X while 1 :
-X if freeze <> 0 :
-X col[0],col[1],col[2] = col[1],col[2],col[0]
-X #
-X # clear z-buffer and clear background to light-blue
-X #
-X zclear()
-X cpack (black)
-X clear()
-X #
-X tekendoos (col)
-X #
-X swapbuffers()
-X #
-X if qtest() <> 0 :
-X dev, val = qread()
-X if dev = DEVICE.ESCKEY :
-X break
-X elif dev = DEVICE.REDRAW :
-X reshapeviewport ()
-X elif dev = DEVICE.MOUSE2 and val <> 0 :
-X twist = twist + 30
-X perspective (900, 1, 1.0, 10.0)
-X polarview (10.0, 0, 0, twist)
-X elif dev = DEVICE.MOUSE3 and val <> 0 :
-X freeze = 1 - freeze
+X	col = [(255.0,0.0,0.0), (0.0,255.0,0.0), (0.0,0.0,255.0)]
+X	twist = 0
+X	freeze = 1
+X	while 1 :
+X		if freeze <> 0 :
+X			col[0],col[1],col[2] = col[1],col[2],col[0]
+X		#
+X		# clear z-buffer and clear background to light-blue
+X		#
+X		zclear()
+X		cpack (black)
+X		clear()
+X		#
+X		tekendoos (col)
+X		#
+X		swapbuffers()
+X		#
+X		if qtest() <> 0 :
+X			dev, val = qread()
+X			if dev = DEVICE.ESCKEY :
+X				break
+X			elif dev = DEVICE.REDRAW :
+X				reshapeviewport ()
+X			elif dev = DEVICE.MOUSE2 and val <> 0 :
+X				twist = twist + 30
+X				perspective (900, 1, 1.0, 10.0)
+X				polarview (10.0, 0, 0, twist)
+X			elif dev = DEVICE.MOUSE3 and val <> 0 :
+X				freeze = 1 - freeze
 X
 X
 X# the main program
 X#
 Xdef main () :
-X initgl ()
-X GoForIt (0)
+X	initgl ()
+X	GoForIt (0)
 X
 X#
 X# exec main
 X#
-Xmain ()
+Xmain  ()
 EOF
 chmod +x 'demo/sgi/gl/mixing.py'
 fi
@@ -454,74 +454,74 @@ echo 'x - lib/CSplit.py'
 sed 's/^X//' > 'lib/CSplit.py' << 'EOF'
 X# A CSplit is a Clock-shaped split: the children are grouped in a circle.
 X# The numbering is a little different from a real clock: the 12 o'clock
-X# position is called 0, not 12. This is a little easier since Python
-X# usually counts from zero. (BTW, there needn't be exactly 12 children.)
+X# position is called 0, not 12.  This is a little easier since Python
+X# usually counts from zero.  (BTW, there needn't be exactly 12 children.)
 X
 X
 Xfrom math import pi, sin, cos
 Xfrom Split import Split
 X
 Xclass CSplit() = Split():
-X #
-X def minsize(self, m):
-X # Since things look best if the children are spaced evenly
-X # along the circle (and often all children have the same
-X # size anyway) we compute the max child size and assume
-X # this is each child's size.
-X width, height = 0, 0
-X for child in self.children:
-X wi, he = child.minsize(m)
-X width = max(width, wi)
-X height = max(height, he)
-X # In approximation, the diameter of the circle we need is
-X # (diameter of box) * (#children) / pi.
-X # We approximate pi by 3 (so we slightly overestimate
-X # our minimal size requirements -- not so bad).
-X # Because the boxes stick out of the circle we add the
-X # box size to each dimension.
-X # Because we really deal with ellipses, do everything
-X # separate in each dimension.
-X n = len(self.children)
-X return width + (width*n + 2)/3, height + (height*n + 2)/3
-X #
-X def getbounds(self):
-X return self.bounds
-X #
-X def setbounds(self, bounds):
-X self.bounds = bounds
-X # Place the children. This involves some math.
-X # Compute center positions for children as if they were
-X # ellipses with a diameter about 1/N times the
-X # circumference of the big ellipse.
-X # (There is some rounding involved to make it look
-X # reasonable for small and large N alike.)
-X # XXX One day Python will have automatic conversions...
-X n = len(self.children)
-X fn = float(n)
-X if n = 0: return
-X (left, top), (right, bottom) = bounds
-X width, height = right-left, bottom-top
-X child_width, child_height = width*3/(n+4), height*3/(n+4)
-X half_width, half_height = \
-X float(width-child_width)/2.0, \
-X float(height-child_height)/2.0
-X center_h, center_v = center = (left+right)/2, (top+bottom)/2
-X fch, fcv = float(center_h), float(center_v)
-X alpha = 2.0 * pi / fn
-X for i in range(n):
-X child = self.children[i]
-X fi = float(i)
-X fh, fv = \
-X fch + half_width*sin(fi*alpha), \
-X fcv - half_height*cos(fi*alpha)
-X left, top = \
-X int(fh) - child_width/2, \
-X int(fv) - child_height/2
-X right, bottom = \
-X left + child_width, \
-X top + child_height
-X child.setbounds((left, top), (right, bottom))
-X #
+X	#
+X	def minsize(self, m):
+X		# Since things look best if the children are spaced evenly
+X		# along the circle (and often all children have the same
+X		# size anyway) we compute the max child size and assume
+X		# this is each child's size.
+X		width, height = 0, 0
+X		for child in self.children:
+X			wi, he = child.minsize(m)
+X			width = max(width, wi)
+X			height = max(height, he)
+X		# In approximation, the diameter of the circle we need is
+X		# (diameter of box) * (#children) / pi.
+X		# We approximate pi by 3 (so we slightly overestimate
+X		# our minimal size requirements -- not so bad).
+X		# Because the boxes stick out of the circle we add the
+X		# box size to each dimension.
+X		# Because we really deal with ellipses, do everything
+X		# separate in each dimension.
+X		n = len(self.children)
+X		return width + (width*n + 2)/3, height + (height*n + 2)/3
+X	#
+X	def getbounds(self):
+X		return self.bounds
+X	#
+X	def setbounds(self, bounds):
+X		self.bounds = bounds
+X		# Place the children.  This involves some math.
+X		# Compute center positions for children as if they were
+X		# ellipses with a diameter about 1/N times the
+X		# circumference of the big ellipse.
+X		# (There is some rounding involved to make it look
+X		# reasonable for small and large N alike.)
+X		# XXX One day Python will have automatic conversions...
+X		n = len(self.children)
+X		fn = float(n)
+X		if n = 0: return
+X		(left, top), (right, bottom) = bounds
+X		width, height = right-left, bottom-top
+X		child_width, child_height = width*3/(n+4), height*3/(n+4)
+X		half_width, half_height = \
+X			float(width-child_width)/2.0, \
+X			float(height-child_height)/2.0
+X		center_h, center_v = center = (left+right)/2, (top+bottom)/2
+X		fch, fcv = float(center_h), float(center_v)
+X		alpha = 2.0 * pi / fn
+X		for i in range(n):
+X			child = self.children[i]
+X			fi = float(i)
+X			fh, fv = \
+X				fch + half_width*sin(fi*alpha), \
+X				fcv - half_height*cos(fi*alpha)
+X			left, top = \
+X				int(fh) - child_width/2, \
+X				int(fv) - child_height/2
+X			right, bottom = \
+X				left + child_width, \
+X				top + child_height
+X			child.setbounds((left, top), (right, bottom))
+X	#
 EOF
 fi
 if test -s 'lib/TransParent.py'
@@ -534,97 +534,97 @@ X# First create the parent, then this thing, then the child.
 X# Use this as a base class for objects that are almost transparent.
 X# Don't use as a base class for parents with multiple children.
 X
-XError = 'TransParent.Error' # Exception
+XError = 'TransParent.Error'	# Exception
 X
 Xclass ManageOneChild():
-X #
-X # Upcalls shared with other single-child parents
-X #
-X def addchild(self, child):
-X if self.child:
-X raise Error, 'addchild: one child only'
-X if not child:
-X raise Error, 'addchild: bad child'
-X self.child = child
-X #
-X def delchild(self, child):
-X if not self.child:
-X raise Error, 'delchild: no child'
-X if child <> self.child:
-X raise Error, 'delchild: not my child'
-X self.child = 0
+X	#
+X	# Upcalls shared with other single-child parents
+X	#
+X	def addchild(self, child):
+X		if self.child:
+X			raise Error, 'addchild: one child only'
+X		if not child:
+X			raise Error, 'addchild: bad child'
+X		self.child = child
+X	#
+X	def delchild(self, child):
+X		if not self.child:
+X			raise Error, 'delchild: no child'
+X		if child <> self.child:
+X			raise Error, 'delchild: not my child'
+X		self.child = 0
 X
 Xclass TransParent() = ManageOneChild():
-X #
-X # Calls from creator
-X # NB derived classes may add parameters to create()
-X #
-X def create(self, parent):
-X parent.addchild(self)
-X self.parent = parent
-X self.child = 0 # No child yet
-X #
-X # Downcalls from parent to child
-X #
-X def destroy(self):
-X del self.parent
-X if self.child: self.child.destroy()
-X del self.child
-X #
-X def minsize(self, m):
-X if not self.child:
-X return 0, 0
-X else:
-X return self.child.minsize(m)
-X def getbounds(self, bounds):
-X if not self.child:
-X raise Error, 'getbounds w/o child'
-X else:
-X return self.child.getbounds()
-X def setbounds(self, bounds):
-X if not self.child:
-X raise Error, 'setbounds w/o child'
-X else:
-X self.child.setbounds(bounds)
-X def draw(self, args):
-X if self.child:
-X self.child.draw(args)
-X #
-X # Downcalls only made after certain upcalls
-X #
-X def mouse_down(self, detail):
-X if self.child: self.child.mouse_down(detail)
-X def mouse_move(self, detail):
-X if self.child: self.child.mouse_move(detail)
-X def mouse_up(self, detail):
-X if self.child: self.child.mouse_up(detail)
-X #
-X def timer(self):
-X if self.child: self.child.timer()
-X #
-X # Upcalls from child to parent
-X #
-X def need_mouse(self, child):
-X self.parent.need_mouse(self)
-X def no_mouse(self, child):
-X self.parent.no_mouse(self)
-X #
-X def need_timer(self, child):
-X self.parent.need_timer(self)
-X def no_timer(self, child):
-X self.parent.no_timer(self)
-X #
-X def begindrawing(self):
-X return self.parent.begindrawing()
-X def beginmeasuring(self):
-X return self.parent.beginmeasuring()
-X #
-X def change(self, area):
-X self.parent.change(area)
-X def scroll(self, args):
-X self.parent.scroll(args)
-X def settimer(self, itimer):
-X self.parent.settimer(itimer)
+X	#
+X	# Calls from creator
+X	# NB derived classes may add parameters to create()
+X	#
+X	def create(self, parent):
+X		parent.addchild(self)
+X		self.parent = parent
+X		self.child = 0 # No child yet
+X	#
+X	# Downcalls from parent to child
+X	#
+X	def destroy(self):
+X		del self.parent
+X		if self.child: self.child.destroy()
+X		del self.child
+X	#
+X	def minsize(self, m):
+X		if not self.child:
+X			return 0, 0
+X		else:
+X			return self.child.minsize(m)
+X	def getbounds(self, bounds):
+X		if not self.child:
+X			raise Error, 'getbounds w/o child'
+X		else:
+X			return self.child.getbounds()
+X	def setbounds(self, bounds):
+X		if not self.child:
+X			raise Error, 'setbounds w/o child'
+X		else:
+X			self.child.setbounds(bounds)
+X	def draw(self, args):
+X		if self.child:
+X			self.child.draw(args)
+X	#
+X	# Downcalls only made after certain upcalls
+X	#
+X	def mouse_down(self, detail):
+X		if self.child: self.child.mouse_down(detail)
+X	def mouse_move(self, detail):
+X		if self.child: self.child.mouse_move(detail)
+X	def mouse_up(self, detail):
+X		if self.child: self.child.mouse_up(detail)
+X	#
+X	def timer(self):
+X		if self.child: self.child.timer()
+X	#
+X	# Upcalls from child to parent
+X	#
+X	def need_mouse(self, child):
+X		self.parent.need_mouse(self)
+X	def no_mouse(self, child):
+X		self.parent.no_mouse(self)
+X	#
+X	def need_timer(self, child):
+X		self.parent.need_timer(self)
+X	def no_timer(self, child):
+X		self.parent.no_timer(self)
+X	#
+X	def begindrawing(self):
+X		return self.parent.begindrawing()
+X	def beginmeasuring(self):
+X		return self.parent.beginmeasuring()
+X	#
+X	def change(self, area):
+X		self.parent.change(area)
+X	def scroll(self, args):
+X		self.parent.scroll(args)
+X	def settimer(self, itimer):
+X		self.parent.settimer(itimer)
 EOF
 fi
 if test -s 'lib/auds.py'
@@ -638,106 +638,106 @@ XRATE = 8192
 X
 X# Initialize the audio stuff
 Xaudio.setrate(3)
-Xaudio.setoutgain(100) # for speaker
+Xaudio.setoutgain(100)	# for speaker
 X
 Xplay = audio.write
 X
 Xdef samp(n):
-X savegain = audio.getoutgain()
-X try:
-X audio.setoutgain(0)
-X x = raw_input('Hit Enter to sample ' + `n` + ' seconds: ')
-X return audio.read(n*RATE)
-X finally:
-X audio.setoutgain(savegain)
+X	savegain = audio.getoutgain()
+X	try:
+X		audio.setoutgain(0)
+X		x = raw_input('Hit Enter to sample ' + `n` + ' seconds: ')
+X		return audio.read(n*RATE)
+X	finally:
+X		audio.setoutgain(savegain)
 X
 Xdef echo(s, delay, gain):
-X return s[:delay] + audio.add(s[delay:], audio.amplify(s, gain, gain))
+X	return s[:delay] + audio.add(s[delay:], audio.amplify(s, gain, gain))
 X
 Xdef save(s, file):
-X f = open(file, 'w')
-X f.write(s)
+X	f = open(file, 'w')
+X	f.write(s)
 X
 Xdef load(file):
-X return loadfp(open(file, 'r'))
+X	return loadfp(open(file, 'r'))
 X
 Xdef loadfp(fp):
-X s = ''
-X while 1:
-X buf = fp.read(16*1024)
-X if not buf: break
-X s = s + buf
-X return s
+X	s = ''
+X	while 1:
+X		buf = fp.read(16*1024)
+X		if not buf: break
+X		s = s + buf
+X	return s
 X
 Xdef unbias(s):
-X if not s: return s
-X a = audio.chr2num(s)
-X sum = 0
-X for i in a: sum = sum + i
-X bias = (sum + len(a)/2) / len(a)
-X print 'Bias value:', bias
-X if bias:
-X for i in range(len(a)):
-X a[i] = a[i] - bias
-X s = audio.num2chr(a)
-X return s
+X	if not s: return s
+X	a = audio.chr2num(s)
+X	sum = 0
+X	for i in a: sum = sum + i
+X	bias = (sum + len(a)/2) / len(a)
+X	print 'Bias value:', bias
+X	if bias:
+X		for i in range(len(a)):
+X			a[i] = a[i] - bias
+X		s = audio.num2chr(a)
+X	return s
 X
 X# Stretch by a/b.
 X# Think of this as converting the sampling rate from a samples/sec
-X# to b samples/sec. Or, if the input is a bytes long, the output
+X# to b samples/sec.  Or, if the input is a bytes long, the output
 X# will be b bytes long.
 X#
 Xdef stretch(s, a, b):
-X y = audio.chr2num(s)
-X m = len(y)
-X out = []
-X n = m * b / a
-X # i, j will walk through y and out (step 1)
-X # ib, ja are i*b, j*a and are kept as close together as possible
-X i, ib = 0, 0
-X j, ja = 0, 0
-X for j in range(n):
-X ja = ja+a
-X while ib < ja:
-X i = i+1
-X ib = ib+b
-X if i >= m:
-X break
-X if ib = ja:
-X out.append(y[i])
-X else:
-X out.append((y[i]*(ja-(ib-b)) + y[i-1]*(ib-ja)) / b)
-X return audio.num2chr(out)
+X	y = audio.chr2num(s)
+X	m = len(y)
+X	out = []
+X	n = m * b / a
+X	# i, j will walk through y and out (step 1)
+X	# ib, ja are i*b, j*a and are kept as close together as possible
+X	i, ib = 0, 0
+X	j, ja = 0, 0
+X	for j in range(n):
+X		ja = ja+a
+X		while ib < ja:
+X			i = i+1
+X			ib = ib+b
+X		if i >= m:
+X			break
+X		if ib = ja:
+X			out.append(y[i])
+X		else:
+X			out.append((y[i]*(ja-(ib-b)) + y[i-1]*(ib-ja)) / b)
+X	return audio.num2chr(out)
 X
 Xdef sinus(freq): # return a 1-second sine wave
-X from math import sin, pi
-X factor = 2.0*pi*float(freq)/float(RATE)
-X list = range(RATE)
-X for i in list:
-X list[i] = int(sin(float(i) * factor) * 127.0)
-X return audio.num2chr(list)
+X	from math import sin, pi
+X	factor = 2.0*pi*float(freq)/float(RATE)
+X	list = range(RATE)
+X	for i in list:
+X		list[i] = int(sin(float(i) * factor) * 127.0)
+X	return audio.num2chr(list)
 X
 Xdef softclip(s):
-X if '\177' not in s and '\200' not in s:
-X return s
-X num = audio.chr2num(s)
-X extremes = (-128, 127)
-X for i in range(1, len(num)-1):
-X if num[i] in extremes:
-X num[i] = (num[i-1] + num[i+1]) / 2
-X return audio.num2chr(num)
+X	if '\177' not in s and '\200' not in s:
+X		return s
+X	num = audio.chr2num(s)
+X	extremes = (-128, 127)
+X	for i in range(1, len(num)-1):
+X		if num[i] in extremes:
+X			num[i] = (num[i-1] + num[i+1]) / 2
+X	return audio.num2chr(num)
 X
 Xdef demo():
-X gday = load('gday')[1000:6000]
-X save(gday, 'gday0')
-X gg = [gday]
-X for i in range(1, 10):
-X for g in gg: play(g)
-X g = stretch(gday, 10, 10-i)
-X save(g, 'gday' + `i`)
-X gg.append(g)
-X while 1:
-X for g in gg: play(g)
+X	gday = load('gday')[1000:6000]
+X	save(gday, 'gday0')
+X	gg = [gday]
+X	for i in range(1, 10):
+X		for g in gg: play(g)
+X		g = stretch(gday, 10, 10-i)
+X		save(g, 'gday' + `i`)
+X		gg.append(g)
+X	while 1:
+X		for g in gg: play(g)
 EOF
 fi
 if test -s 'lib/listwin.py'
@@ -752,46 +752,46 @@ Ximport gwin
 Ximport stdwin
 X
 Xdef maxlinewidth(a): # Compute maximum textwidth of lines in a sequence
-X max = 0
-X for line in a:
-X width = stdwin.textwidth(line)
-X if width > max: max = width
-X return max
+X	max = 0
+X	for line in a:
+X		width = stdwin.textwidth(line)
+X		if width > max: max = width
+X	return max
 X
 Xdef action(w, string, i, detail): # Default item selection method
-X pass
+X	pass
 X
 Xdef mup(w, detail): # Mouse up method
-X (h, v), clicks, button, mask = detail
-X i = divmod(v, w.lineheight)[0]
-X if 0 <= i < len(w.data):
-X w.action(w, w.data[i], i, detail)
+X	(h, v), clicks, button, mask = detail
+X	i = divmod(v, w.lineheight)[0]
+X	if 0 <= i < len(w.data):
+X		w.action(w, w.data[i], i, detail)
 X
 Xdef draw(w, ((left, top), (right, bottom))): # Text window draw method
-X data = w.data
-X d = w.begindrawing()
-X lh = w.lineheight
-X itop = top/lh
-X ibot = (bottom-1)/lh + 1
-X if itop < 0: itop = 0
-X if ibot > len(data): ibot = len(data)
-X for i in range(itop, ibot): d.text((0, i*lh), data[i])
+X	data = w.data
+X	d = w.begindrawing()
+X	lh = w.lineheight
+X	itop = top/lh
+X	ibot = (bottom-1)/lh + 1
+X	if itop < 0: itop = 0
+X	if ibot > len(data): ibot = len(data)
+X	for i in range(itop, ibot): d.text((0, i*lh), data[i])
 X
 Xdef open(title, data): # Display a list of texts in a window
-X lineheight = stdwin.lineheight()
-X h, v = maxlinewidth(data), len(data)*lineheight
-X h0, v0 = h + stdwin.textwidth(' '), v + lineheight
-X if h0 > stdwin.textwidth(' ')*80: h0 = 0
-X if v0 > stdwin.lineheight()*24: v0 = 0
-X stdwin.setdefwinsize(h0, v0)
-X w = gwin.open(title)
-X w.setdocsize(h, v)
-X w.lineheight = lineheight
-X w.data = data
-X w.draw = draw
-X w.action = action
-X w.mup = mup
-X return w
+X	lineheight = stdwin.lineheight()
+X	h, v = maxlinewidth(data), len(data)*lineheight
+X	h0, v0 = h + stdwin.textwidth(' '), v + lineheight
+X	if h0 > stdwin.textwidth(' ')*80: h0 = 0
+X	if v0 > stdwin.lineheight()*24: v0 = 0
+X	stdwin.setdefwinsize(h0, v0)
+X	w = gwin.open(title)
+X	w.setdocsize(h, v)
+X	w.lineheight = lineheight
+X	w.data = data
+X	w.draw = draw
+X	w.action = action
+X	w.mup = mup
+X	return w
 EOF
 fi
 if test -s 'lib/macpath.py'
@@ -813,7 +813,7 @@ X# Anything else is absolute (the string up to the first colon is the
 X# volume name).
 X
 Xdef isabs(s):
-X return ':' in s and s[0] <> ':'
+X	return ':' in s and s[0] <> ':'
 X
 X
 X# Concatenate two pathnames.
@@ -821,13 +821,13 @@ X# The result is equivalent to what the second pathname would refer to
 X# if the first pathname were the current directory.
 X
 Xdef cat(s, t):
-X if (not s) or isabs(t): return t
-X if t[:1] = ':': t = t[1:]
-X if ':' not in s:
-X s = ':' + s
-X if s[-1:] <> ':':
-X s = s + ':'
-X return s + t
+X	if (not s) or isabs(t): return t
+X	if t[:1] = ':': t = t[1:]
+X	if ':' not in s:
+X		s = ':' + s
+X	if s[-1:] <> ':':
+X		s = s + ':'
+X	return s + t
 X
 X
 X# Split a pathname in two parts: the directory leading up to the final bit,
@@ -835,11 +835,11 @@ X# and the basename (the filename, without colons, in that directory).
 X# The result (s, t) is such that cat(s, t) yields the original argument.
 X
 Xdef split(s):
-X if ':' not in s: return '', s
-X colon = 0
-X for i in range(len(s)):
-X if s[i] = ':': colon = i+1
-X return s[:colon], s[colon:]
+X	if ':' not in s: return '', s
+X	colon = 0
+X	for i in range(len(s)):
+X		if s[i] = ':': colon = i+1
+X	return s[:colon], s[colon:]
 X
 X
 X# Normalize a pathname: get rid of '::' sequences by backing up,
@@ -850,63 +850,63 @@ X
 Xnorm_error = 'macpath.norm_error: path cannot be normalized'
 X
 Xdef norm(s):
-X import string
-X if ':' not in s:
-X return ':' + s
-X f = string.splitfields(s, ':')
-X pre = []
-X post = []
-X if not f[0]:
-X pre = f[:1]
-X f = f[1:]
-X if not f[len(f)-1]:
-X post = f[-1:]
-X f = f[:-1]
-X res = []
-X for seg in f:
-X if seg:
-X res.append(seg)
-X else:
-X if not res: raise norm_error, 'path starts with ::'
-X del res[len(res)-1]
-X if not (pre or res):
-X raise norm_error, 'path starts with volume::'
-X if pre: res = pre + res
-X if post: res = res + post
-X s = res[0]
-X for seg in res[1:]:
-X s = s + ':' + seg
-X return s
+X	import string
+X	if ':' not in s:
+X		return ':' + s
+X	f = string.splitfields(s, ':')
+X	pre = []
+X	post = []
+X	if not f[0]:
+X		pre = f[:1]
+X		f = f[1:]
+X	if not f[len(f)-1]:
+X		post = f[-1:]
+X		f = f[:-1]
+X	res = []
+X	for seg in f:
+X		if seg:
+X			res.append(seg)
+X		else:
+X			if not res: raise norm_error, 'path starts with ::'
+X			del res[len(res)-1]
+X			if not (pre or res):
+X				raise norm_error, 'path starts with volume::'
+X	if pre: res = pre + res
+X	if post: res = res + post
+X	s = res[0]
+X	for seg in res[1:]:
+X		s = s + ':' + seg
+X	return s
 X
 X
 X# Return true if the pathname refers to an existing directory.
 X
 Xdef isdir(s):
-X try:
-X st = mac.stat(s)
-X except mac.error:
-X return 0
-X return S_ISDIR(st[ST_MODE])
+X	try:
+X		st = mac.stat(s)
+X	except mac.error:
+X		return 0
+X	return S_ISDIR(st[ST_MODE])
 X
 X
 X# Return true if the pathname refers to an existing regular file.
 X
 Xdef isfile(s):
-X try:
-X st = mac.stat(s)
-X except mac.error:
-X return 0
-X return S_ISREG(st[ST_MODE])
+X	try:
+X		st = mac.stat(s)
+X	except mac.error:
+X		return 0
+X	return S_ISREG(st[ST_MODE])
 X
 X
 X# Return true if the pathname refers to an existing file or directory.
 X
 Xdef exists(s):
-X try:
-X st = mac.stat(s)
-X except mac.error:
-X return 0
-X return 1
+X	try:
+X		st = mac.stat(s)
+X	except mac.error:
+X		return 0
+X	return 1
 EOF
 fi
 if test -s 'lib/textwin.py'
@@ -922,117 +922,117 @@ Ximport stdwin
 Ximport stdwinsupport
 Ximport gwin
 X
-XS = stdwinsupport # Shorthand
+XS = stdwinsupport			# Shorthand
 X
 X
 Xdef fixsize(w):
-X docwidth, docheight = w.text.getrect()[1]
-X winheight = w.getwinsize()[1]
-X if winheight > docheight: docheight = winheight
-X w.setdocsize(0, docheight)
-X fixeditmenu(w)
+X	docwidth, docheight = w.text.getrect()[1]
+X	winheight = w.getwinsize()[1]
+X	if winheight > docheight: docheight = winheight
+X	w.setdocsize(0, docheight)
+X	fixeditmenu(w)
 X
 Xdef cut(w, m, id):
-X s = w.text.getfocustext()
-X if s:
-X stdwin.setcutbuffer(0, s)
-X w.text.replace('')
-X fixsize(w)
+X	s = w.text.getfocustext()
+X	if s:
+X		stdwin.setcutbuffer(0, s)
+X		w.text.replace('')
+X		fixsize(w)
 X
 Xdef copy(w, m, id):
-X s = w.text.getfocustext()
-X if s:
-X stdwin.setcutbuffer(0, s)
-X fixeditmenu(w)
+X	s = w.text.getfocustext()
+X	if s:
+X		stdwin.setcutbuffer(0, s)
+X		fixeditmenu(w)
 X
 Xdef paste(w, m, id):
-X w.text.replace(stdwin.getcutbuffer(0))
-X fixsize(w)
+X	w.text.replace(stdwin.getcutbuffer(0))
+X	fixsize(w)
 X
 Xdef addeditmenu(w):
-X m = w.editmenu = w.menucreate('Edit')
-X m.action = []
-X m.additem('Cut', 'X')
-X m.action.append(cut)
-X m.additem('Copy', 'C')
-X m.action.append(copy)
-X m.additem('Paste', 'V')
-X m.action.append(paste)
+X	m = w.editmenu = w.menucreate('Edit')
+X	m.action = []
+X	m.additem('Cut', 'X')
+X	m.action.append(cut)
+X	m.additem('Copy', 'C')
+X	m.action.append(copy)
+X	m.additem('Paste', 'V')
+X	m.action.append(paste)
 X
 Xdef fixeditmenu(w):
-X m = w.editmenu
-X f = w.text.getfocus()
-X can_copy = (f[0] < f[1])
-X m.enable(1, can_copy)
-X if not w.readonly:
-X m.enable(0, can_copy)
-X m.enable(2, (stdwin.getcutbuffer(0) <> ''))
+X	m = w.editmenu
+X	f = w.text.getfocus()
+X	can_copy = (f[0] < f[1])
+X	m.enable(1, can_copy)
+X	if not w.readonly:
+X		m.enable(0, can_copy)
+X		m.enable(2, (stdwin.getcutbuffer(0) <> ''))
 X
-Xdef draw(w, area): # Draw method
-X w.text.draw(area)
+Xdef draw(w, area):			# Draw method
+X	w.text.draw(area)
 X
-Xdef size(w, newsize): # Size method
-X w.text.move((0, 0), newsize)
-X fixsize(w)
+Xdef size(w, newsize):			# Size method
+X	w.text.move((0, 0), newsize)
+X	fixsize(w)
 X
-Xdef close(w): # Close method
-X del w.text # Break circular ref
-X gwin.close(w)
+Xdef close(w):				# Close method
+X	del w.text  # Break circular ref
+X	gwin.close(w)
 X
-Xdef char(w, c): # Char method
-X w.text.replace(c)
-X fixsize(w)
+Xdef char(w, c):				# Char method
+X	w.text.replace(c)
+X	fixsize(w)
 X
-Xdef backspace(w): # Backspace method
-X void = w.text.event(S.we_command, w, S.wc_backspace)
-X fixsize(w)
+Xdef backspace(w):			# Backspace method
+X	void = w.text.event(S.we_command, w, S.wc_backspace)
+X	fixsize(w)
 X
-Xdef arrow(w, detail): # Arrow method
-X w.text.arrow(detail)
-X fixeditmenu(w)
+Xdef arrow(w, detail):			# Arrow method
+X	w.text.arrow(detail)
+X	fixeditmenu(w)
 X
-Xdef mdown(w, detail): # Mouse down method
-X void = w.text.event(S.we_mouse_down, w, detail)
-X fixeditmenu(w)
+Xdef mdown(w, detail):			# Mouse down method
+X	void = w.text.event(S.we_mouse_down, w, detail)
+X	fixeditmenu(w)
 X
-Xdef mmove(w, detail): # Mouse move method
-X void = w.text.event(S.we_mouse_move, w, detail)
+Xdef mmove(w, detail):			# Mouse move method
+X	void = w.text.event(S.we_mouse_move, w, detail)
 X
-Xdef mup(w, detail): # Mouse up method
-X void = w.text.event(S.we_mouse_up, w, detail)
-X fixeditmenu(w)
+Xdef mup(w, detail):			# Mouse up method
+X	void = w.text.event(S.we_mouse_up, w, detail)
+X	fixeditmenu(w)
 X
-Xdef activate(w): # Activate method
-X fixeditmenu(w)
+Xdef activate(w):			# Activate method
+X	fixeditmenu(w)
 X
-Xdef open(title, str): # Display a string in a window
-X w = gwin.open(title)
-X w.readonly = 0
-X w.text = w.textcreate((0, 0), w.getwinsize())
-X w.text.replace(str)
-X w.text.setfocus(0, 0)
-X addeditmenu(w)
-X fixsize(w)
-X w.draw = draw
-X w.size = size
-X w.close = close
-X w.mdown = mdown
-X w.mmove = mmove
-X w.mup = mup
-X w.char = char
-X w.backspace = backspace
-X w.arrow = arrow
-X w.activate = activate
-X return w
+Xdef open(title, str):			# Display a string in a window
+X	w = gwin.open(title)
+X	w.readonly = 0
+X	w.text = w.textcreate((0, 0), w.getwinsize())
+X	w.text.replace(str)
+X	w.text.setfocus(0, 0)
+X	addeditmenu(w)
+X	fixsize(w)
+X	w.draw = draw
+X	w.size = size
+X	w.close = close
+X	w.mdown = mdown
+X	w.mmove = mmove
+X	w.mup = mup
+X	w.char = char
+X	w.backspace = backspace
+X	w.arrow = arrow
+X	w.activate = activate
+X	return w
 X
-Xdef open_readonly(title, str): # Same with char input disabled
-X w = open(title, str)
-X w.readonly = 1
-X w.char = w.backspace = gwin.nop
-X # Disable Cut and Paste menu item; leave Copy alone
-X w.editmenu.enable(0, 0)
-X w.editmenu.enable(2, 0)
-X return w
+Xdef open_readonly(title, str):		# Same with char input disabled
+X	w = open(title, str)
+X	w.readonly = 1
+X	w.char = w.backspace = gwin.nop
+X	# Disable Cut and Paste menu item; leave Copy alone
+X	w.editmenu.enable(0, 0)
+X	w.editmenu.enable(2, 0)
+X	return w
 EOF
 fi
 if test -s 'lib/zmod.py'
@@ -1043,7 +1043,7 @@ sed 's/^X//' > 'lib/zmod.py' << 'EOF'
 X# module 'zmod'
 X
 X# Compute properties of mathematical "fields" formed by taking
-X# Z/n (the whole numbers modulo some whole number n) and an
+X# Z/n (the whole numbers modulo some whole number n) and an 
 X# irreducible polynomial (i.e., a polynomial with only complex zeros),
 X# e.g., Z/5 and X**2 + 2.
 X#
@@ -1052,11 +1052,11 @@ X# a set of d base vectors (where d is the degree of the polynomial).
 X#
 X# Note that this procedure doesn't yield a field for all combinations
 X# of n and p: it may well be that some numbers have more than one
-X# inverse and others have none. This is what we check.
+X# inverse and others have none.  This is what we check.
 X#
 X# Remember that a field is a ring where each element has an inverse.
 X# A ring has commutative addition and multiplication, a zero and a one:
-X# 0*x = x*0 = 0, 0+x = x+0 = x, 1*x = x*1 = x. Also, the distributive
+X# 0*x = x*0 = 0, 0+x = x+0 = x, 1*x = x*1 = x.  Also, the distributive
 X# property holds: a*(b+c) = a*b + b*c.
 X# (XXX I forget if this is an axiom or follows from the rules.)
 X
@@ -1069,71 +1069,71 @@ XN = 5
 XP = poly.plus(poly.one(0, 2), poly.one(2, 1)) # 2 + x**2
 X
 X
-X# Return x modulo y. Returns >= 0 even if x < 0.
+X# Return x modulo y.  Returns >= 0 even if x < 0.
 X
 Xdef mod(x, y):
-X return divmod(x, y)[1]
+X	return divmod(x, y)[1]
 X
 X
 X# Normalize a polynomial modulo n and modulo p.
 X
 Xdef norm(a, n, p):
-X a = poly.modulo(a, p)
-X a = a[:]
-X for i in range(len(a)): a[i] = mod(a[i], n)
-X a = poly.normalize(a)
-X return a
+X	a = poly.modulo(a, p)
+X	a = a[:]
+X	for i in range(len(a)): a[i] = mod(a[i], n)
+X	a = poly.normalize(a)
+X	return a
 X
 X
 X# Make a list of all n^d elements of the proposed field.
 X
 Xdef make_all(mat):
-X all = []
-X for row in mat:
-X for a in row:
-X all.append(a)
-X return all
+X	all = []
+X	for row in mat:
+X		for a in row:
+X			all.append(a)
+X	return all
 X
 Xdef make_elements(n, d):
-X if d = 0: return [poly.one(0, 0)]
-X sub = make_elements(n, d-1)
-X all = []
-X for a in sub:
-X for i in range(n):
-X all.append(poly.plus(a, poly.one(d-1, i)))
-X return all
+X	if d = 0: return [poly.one(0, 0)]
+X	sub = make_elements(n, d-1)
+X	all = []
+X	for a in sub:
+X		for i in range(n):
+X			all.append(poly.plus(a, poly.one(d-1, i)))
+X	return all
 X
 Xdef make_inv(all, n, p):
-X x = poly.one(1, 1)
-X inv = []
-X for a in all:
-X inv.append(norm(poly.times(a, x), n, p))
-X return inv
+X	x = poly.one(1, 1)
+X	inv = []
+X	for a in all:
+X		inv.append(norm(poly.times(a, x), n, p))
+X	return inv
 X
 Xdef checkfield(n, p):
-X all = make_elements(n, len(p)-1)
-X inv = make_inv(all, n, p)
-X all1 = all[:]
-X inv1 = inv[:]
-X all1.sort()
-X inv1.sort()
-X if all1 = inv1: print 'BINGO!'
-X else:
-X print 'Sorry:', n, p
-X print all
-X print inv
+X	all = make_elements(n, len(p)-1)
+X	inv = make_inv(all, n, p)
+X	all1 = all[:]
+X	inv1 = inv[:]
+X	all1.sort()
+X	inv1.sort()
+X	if all1 = inv1: print 'BINGO!'
+X	else:
+X		print 'Sorry:', n, p
+X		print all
+X		print inv
 X
 Xdef rj(s, width):
-X if type(s) <> type(''): s = `s`
-X n = len(s)
-X if n >= width: return s
-X return ' '*(width - n) + s
+X	if type(s) <> type(''): s = `s`
+X	n = len(s)
+X	if n >= width: return s
+X	return ' '*(width - n) + s
 X
 Xdef lj(s, width):
-X if type(s) <> type(''): s = `s`
-X n = len(s)
-X if n >= width: return s
-X return s + ' '*(width - n)
+X	if type(s) <> type(''): s = `s`
+X	n = len(s)
+X	if n >= width: return s
+X	return s + ' '*(width - n)
 EOF
 fi
 if test -s 'src/PROTO.h'
@@ -1145,12 +1145,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1168,13 +1168,13 @@ X
 X/*
 XThe macro PROTO(x) is used to put function prototypes in the source.
 XThis is defined differently for compilers that support prototypes than
-Xfor compilers that don't. It should be used as follows:
-X int some_function PROTO((int arg1, char *arg2));
+Xfor compilers that don't.  It should be used as follows:
+X	int some_function PROTO((int arg1, char *arg2));
 XA variant FPROTO(x) is used for cases where Standard C allows prototypes
 Xbut Think C doesn't (mostly function pointers).
 X
 XThis file also defines the macro HAVE_PROTOTYPES if and only if
-Xthe PROTO() macro expands the prototype. It is also allowed to predefine
+Xthe PROTO() macro expands the prototype.  It is also allowed to predefine
 XHAVE_PROTOTYPES to force prototypes on.
 X*/
 X
@@ -1231,12 +1231,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1258,73 +1258,73 @@ X#include "bitset.h"
 X
 Xbitset
 Xnewbitset(nbits)
-X int nbits;
+X	int nbits;
 X{
-X int nbytes = NBYTES(nbits);
-X bitset ss = NEW(BYTE, nbytes);
-X
-X if (ss == NULL)
-X fatal("no mem for bitset");
-X
-X ss += nbytes;
-X while (--nbytes >= 0)
-X *--ss = 0;
-X return ss;
+X	int nbytes = NBYTES(nbits);
+X	bitset ss = NEW(BYTE, nbytes);
+X	
+X	if (ss == NULL)
+X		fatal("no mem for bitset");
+X	
+X	ss += nbytes;
+X	while (--nbytes >= 0)
+X		*--ss = 0;
+X	return ss;
 X}
 X
 Xvoid
 Xdelbitset(ss)
-X bitset ss;
+X	bitset ss;
 X{
-X DEL(ss);
+X	DEL(ss);
 X}
 X
 Xint
 Xaddbit(ss, ibit)
-X bitset ss;
-X int ibit;
+X	bitset ss;
+X	int ibit;
 X{
-X int ibyte = BIT2BYTE(ibit);
-X BYTE mask = BIT2MASK(ibit);
-X
-X if (ss[ibyte] & mask)
-X return 0; /* Bit already set */
-X ss[ibyte] |= mask;
-X return 1;
+X	int ibyte = BIT2BYTE(ibit);
+X	BYTE mask = BIT2MASK(ibit);
+X	
+X	if (ss[ibyte] & mask)
+X		return 0; /* Bit already set */
+X	ss[ibyte] |= mask;
+X	return 1;
 X}
 X
 X#if 0 /* Now a macro */
 Xint
 Xtestbit(ss, ibit)
-X bitset ss;
-X int ibit;
+X	bitset ss;
+X	int ibit;
 X{
-X return (ss[BIT2BYTE(ibit)] & BIT2MASK(ibit)) != 0;
+X	return (ss[BIT2BYTE(ibit)] & BIT2MASK(ibit)) != 0;
 X}
 X#endif
 X
 Xint
 Xsamebitset(ss1, ss2, nbits)
-X bitset ss1, ss2;
-X int nbits;
+X	bitset ss1, ss2;
+X	int nbits;
 X{
-X int i;
-X
-X for (i = NBYTES(nbits); --i >= 0; )
-X if (*ss1++ != *ss2++)
-X return 0;
-X return 1;
+X	int i;
+X	
+X	for (i = NBYTES(nbits); --i >= 0; )
+X		if (*ss1++ != *ss2++)
+X			return 0;
+X	return 1;
 X}
 X
 Xvoid
 Xmergebitset(ss1, ss2, nbits)
-X bitset ss1, ss2;
-X int nbits;
+X	bitset ss1, ss2;
+X	int nbits;
 X{
-X int i;
-X
-X for (i = NBYTES(nbits); --i >= 0; )
-X *ss1++ |= *ss2++;
+X	int i;
+X	
+X	for (i = NBYTES(nbits); --i >= 0; )
+X		*ss1++ |= *ss2++;
 X}
 EOF
 fi
@@ -1337,12 +1337,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1369,21 +1369,21 @@ X#endif
 X
 Xvoid
 Xinitargs(p_argc, p_argv)
-X int *p_argc;
-X char ***p_argv;
+X	int *p_argc;
+X	char ***p_argv;
 X{
 X#ifdef USE_STDWIN
 X
 X#ifdef THINK_C_3_0
-X wsetstdio(1);
+X	wsetstdio(1);
 X#else
-X /* This printf() statement is really needed only
-X to initialize THINK C 4.0's stdio: */
-X printf(
+X	/* This printf() statement is really needed only
+X	   to initialize THINK C 4.0's stdio: */
+X	printf(
 X"Python 4.0, Copyright 1990 Stichting Mathematisch Centrum, Amsterdam\n");
 X#endif
 X
-X wargs(p_argc, p_argv);
+X	wargs(p_argc, p_argv);
 X#endif
 X}
 X
@@ -1396,7 +1396,7 @@ Xvoid
 Xdonecalls()
 X{
 X#ifdef USE_STDWIN
-X wdone();
+X	wdone();
 X#endif
 X}
 X
@@ -1408,18 +1408,18 @@ X
 Xchar *
 Xgetpythonpath()
 X{
-X return PYTHONPATH;
+X	return PYTHONPATH;
 X}
 X
 X
 X/* Table of built-in modules.
-X These are initialized when first imported. */
+X   These are initialized when first imported. */
 X
 X/* Standard modules */
 Xextern void inittime();
 Xextern void initmath();
 Xextern void initregexp();
-X
+X	
 X/* Mac-specific modules */
 Xextern void initmac();
 X#ifdef USE_STDWIN
@@ -1427,20 +1427,20 @@ Xextern void initstdwin();
 X#endif
 X
 Xstruct {
-X char *name;
-X void (*initfunc)();
+X	char *name;
+X	void (*initfunc)();
 X} inittab[] = {
-X /* Standard modules */
-X {"time", inittime},
-X {"math", initmath},
-X {"regexp", initregexp},
-X
-X /* Mac-specific modules */
-X {"mac", initmac},
+X	/* Standard modules */
+X	{"time",	inittime},
+X	{"math",	initmath},
+X	{"regexp",	initregexp},
+X	
+X	/* Mac-specific modules */
+X	{"mac",		initmac},
 X#ifdef USE_STDWIN
-X {"stdwin", initstdwin},
+X	{"stdwin",	initstdwin},
 X#endif
-X {0, 0} /* Sentinel */
+X	{0,		0}		/* Sentinel */
 X};
 EOF
 fi
@@ -1453,12 +1453,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1474,10 +1474,10 @@ X
 X******************************************************************/
 X
 X/* Interruptable version of fgets().
-X Return < 0 for interrupted, 1 for EOF, 0 for valid input. */
+X   Return < 0 for interrupted, 1 for EOF, 0 for valid input. */
 X
 X/* XXX This uses longjmp() from a signal out of fgets().
-X Should use read() instead?! */
+X   Should use read() instead?! */
 X
 X#include "pgenheaders.h"
 X
@@ -1489,8 +1489,8 @@ X#include "sigtype.h"
 X#include "fgetsintr.h"
 X
 X#ifndef AMOEBA
-X#define sig_block() /*empty*/
-X#define sig_unblock() /*empty*/
+X#define sig_block()	/*empty*/
+X#define sig_unblock()	/*empty*/
 X#endif
 X
 Xstatic jmp_buf jback;
@@ -1499,49 +1499,49 @@ Xstatic void catcher PROTO((int));
 X
 Xstatic void
 Xcatcher(sig)
-X int sig;
+X	int sig;
 X{
-X longjmp(jback, 1);
+X	longjmp(jback, 1);
 X}
 X
 Xint
 Xfgets_intr(buf, size, fp)
-X char *buf;
-X int size;
-X FILE *fp;
+X	char *buf;
+X	int size;
+X	FILE *fp;
 X{
-X int ret;
-X SIGTYPE (*sigsave)();
-X
-X if (setjmp(jback)) {
-X clearerr(fp);
-X signal(SIGINT, sigsave);
+X	int ret;
+X	SIGTYPE (*sigsave)();
+X	
+X	if (setjmp(jback)) {
+X		clearerr(fp);
+X		signal(SIGINT, sigsave);
 X#ifdef THINK_C_3_0
-X Set_Echo(1);
+X		Set_Echo(1);
 X#endif
-X return E_INTR;
-X }
-X
-X /* The casts to (SIGTYPE(*)()) are needed by THINK_C only */
-X
-X sigsave = signal(SIGINT, (SIGTYPE(*)()) SIG_IGN);
-X if (sigsave != (SIGTYPE(*)()) SIG_IGN)
-X signal(SIGINT, (SIGTYPE(*)()) catcher);
-X
+X		return E_INTR;
+X	}
+X	
+X	/* The casts to (SIGTYPE(*)()) are needed by THINK_C only */
+X	
+X	sigsave = signal(SIGINT, (SIGTYPE(*)()) SIG_IGN);
+X	if (sigsave != (SIGTYPE(*)()) SIG_IGN)
+X		signal(SIGINT, (SIGTYPE(*)()) catcher);
+X	
 X#ifndef THINK_C
-X if (intrcheck())
-X ret = E_INTR;
-X else
+X	if (intrcheck())
+X		ret = E_INTR;
+X	else
 X#endif
-X {
-X sig_block();
-X ret = (fgets(buf, size, fp) == NULL) ? E_EOF : E_OK;
-X sig_unblock();
-X }
-X
-X if (sigsave != (SIGTYPE(*)()) SIG_IGN)
-X signal(SIGINT, (SIGTYPE(*)()) sigsave);
-X return ret;
+X	{
+X		sig_block();
+X		ret = (fgets(buf, size, fp) == NULL) ? E_EOF : E_OK;
+X		sig_unblock();
+X	}
+X	
+X	if (sigsave != (SIGTYPE(*)()) SIG_IGN)
+X		signal(SIGINT, (SIGTYPE(*)()) sigsave);
+X	return ret;
 X}
 EOF
 fi
@@ -1554,12 +1554,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1575,7 +1575,7 @@ X
 X******************************************************************/
 X
 X/* Two PD getcwd() implementations.
-X Author: Guido van Rossum, CWI Amsterdam, Jan 1991, <gu...@cwi.nl>. */
+X   Author: Guido van Rossum, CWI Amsterdam, Jan 1991, <gu...@cwi.nl>. */
 X
 X/* #define NO_GETWD /* Turn this on to popen pwd instead of calling getwd() */
 X
@@ -1594,27 +1594,27 @@ Xextern char *getwd();
 X
 Xchar *
 Xgetcwd(buf, size)
-X char *buf;
-X int size;
+X	char *buf;
+X	int size;
 X{
-X char localbuf[MAXPATHLEN+1];
-X char *ret;
-X
-X if (size <= 0) {
-X errno = EINVAL;
-X return NULL;
-X }
-X ret = getwd(localbuf);
-X if (ret != NULL && strlen(localbuf) >= size) {
-X errno = ERANGE;
-X return NULL;
-X }
-X if (ret == NULL) {
-X errno = EACCES; /* Most likely error */
-X return NULL;
-X }
-X strncpy(buf, localbuf, size);
-X return buf;
+X	char localbuf[MAXPATHLEN+1];
+X	char *ret;
+X	
+X	if (size <= 0) {
+X		errno = EINVAL;
+X		return NULL;
+X	}
+X	ret = getwd(localbuf);
+X	if (ret != NULL && strlen(localbuf) >= size) {
+X		errno = ERANGE;
+X		return NULL;
+X	}
+X	if (ret == NULL) {
+X		errno = EACCES; /* Most likely error */
+X		return NULL;
+X	}
+X	strncpy(buf, localbuf, size);
+X	return buf;
 X}
 X
 X#else
@@ -1625,30 +1625,30 @@ X#define PWD_CMD "/bin/pwd"
 X
 Xchar *
 Xgetcwd(buf, size)
-X char *buf;
-X int size;
+X	char *buf;
+X	int size;
 X{
-X FILE *fp;
-X char *p;
-X int sts;
-X if (size <= 0) {
-X errno = EINVAL;
-X return NULL;
-X }
-X if ((fp = popen(PWD_CMD, "r")) == NULL)
-X return NULL;
-X if (fgets(buf, size, fp) == NULL || (sts = pclose(fp)) != 0) {
-X errno = EACCES; /* Most likely error */
-X return NULL;
-X }
-X for (p = buf; *p != '\n'; p++) {
-X if (*p == '\0') {
-X errno = ERANGE;
-X return NULL;
-X }
-X }
-X *p = '\0';
-X return buf;
+X	FILE *fp;
+X	char *p;
+X	int sts;
+X	if (size <= 0) {
+X		errno = EINVAL;
+X		return NULL;
+X	}
+X	if ((fp = popen(PWD_CMD, "r")) == NULL)
+X		return NULL;
+X	if (fgets(buf, size, fp) == NULL || (sts = pclose(fp)) != 0) {
+X		errno = EACCES; /* Most likely error */
+X		return NULL;
+X	}
+X	for (p = buf; *p != '\n'; p++) {
+X		if (*p == '\0') {
+X			errno = ERANGE;
+X			return NULL;
+X		}
+X	}
+X	*p = '\0';
+X	return buf;
 X}
 X
 X#endif
@@ -1663,12 +1663,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1736,12 +1736,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1767,63 +1767,63 @@ Xstatic void list1node PROTO((FILE *, node *));
 X
 Xvoid
 Xlisttree(n)
-X node *n;
+X	node *n;
 X{
-X listnode(stdout, n);
+X	listnode(stdout, n);
 X}
 X
 Xstatic int level, atbol;
 X
 Xvoid
 Xlistnode(fp, n)
-X FILE *fp;
-X node *n;
+X	FILE *fp;
+X	node *n;
 X{
-X level = 0;
-X atbol = 1;
-X list1node(fp, n);
+X	level = 0;
+X	atbol = 1;
+X	list1node(fp, n);
 X}
 X
 Xstatic void
 Xlist1node(fp, n)
-X FILE *fp;
-X node *n;
+X	FILE *fp;
+X	node *n;
 X{
-X if (n == 0)
-X return;
-X if (ISNONTERMINAL(TYPE(n))) {
-X int i;
-X for (i = 0; i < NCH(n); i++)
-X list1node(fp, CHILD(n, i));
-X }
-X else if (ISTERMINAL(TYPE(n))) {
-X switch (TYPE(n)) {
-X case INDENT:
-X ++level;
-X break;
-X case DEDENT:
-X --level;
-X break;
-X default:
-X if (atbol) {
-X int i;
-X for (i = 0; i < level; ++i)
-X fprintf(fp, "\t");
-X atbol = 0;
-X }
-X if (TYPE(n) == NEWLINE) {
-X if (STR(n) != NULL)
-X fprintf(fp, "%s", STR(n));
-X fprintf(fp, "\n");
-X atbol = 1;
-X }
-X else
-X fprintf(fp, "%s ", STR(n));
-X break;
-X }
-X }
-X else
-X fprintf(fp, "? ");
+X	if (n == 0)
+X		return;
+X	if (ISNONTERMINAL(TYPE(n))) {
+X		int i;
+X		for (i = 0; i < NCH(n); i++)
+X			list1node(fp, CHILD(n, i));
+X	}
+X	else if (ISTERMINAL(TYPE(n))) {
+X		switch (TYPE(n)) {
+X		case INDENT:
+X			++level;
+X			break;
+X		case DEDENT:
+X			--level;
+X			break;
+X		default:
+X			if (atbol) {
+X				int i;
+X				for (i = 0; i < level; ++i)
+X					fprintf(fp, "\t");
+X				atbol = 0;
+X			}
+X			if (TYPE(n) == NEWLINE) {
+X				if (STR(n) != NULL)
+X					fprintf(fp, "%s", STR(n));
+X				fprintf(fp, "\n");
+X				atbol = 1;
+X			}
+X			else
+X				fprintf(fp, "%s ", STR(n));
+X			break;
+X		}
+X	}
+X	else
+X		fprintf(fp, "? ");
 X}
 EOF
 fi
@@ -1836,12 +1836,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1863,18 +1863,18 @@ X123456789-123456789-123456789-123456789-123456789-123456789-123456789-12
 X
 XAnother generally useful object type is an list of object pointers.
 XThis is a mutable type: the list items can be changed, and items can be
-Xadded or removed. Out-of-range indices or non-list objects are ignored.
+Xadded or removed.  Out-of-range indices or non-list objects are ignored.
 X
 X*** WARNING *** setlistitem does not increment the new item's reference
 Xcount, but does decrement the reference count of the item it replaces,
-Xif not nil. It does *decrement* the reference count if it is *not*
-Xinserted in the list. Similarly, getlistitem does not increment the
+Xif not nil.  It does *decrement* the reference count if it is *not*
+Xinserted in the list.  Similarly, getlistitem does not increment the
 Xreturned item's reference count.
 X*/
 X
 Xtypedef struct {
-X OB_VARHEAD
-X object **ob_item;
+X	OB_VARHEAD
+X	object **ob_item;
 X} listobject;
 X
 Xextern typeobject Listtype;
@@ -1902,12 +1902,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1929,17 +1929,17 @@ X#include "node.h"
 X
 Xnode *
 Xnewtree(type)
-X int type;
+X	int type;
 X{
-X node *n = NEW(node, 1);
-X if (n == NULL)
-X return NULL;
-X n->n_type = type;
-X n->n_str = NULL;
-X n->n_lineno = 0;
-X n->n_nchildren = 0;
-X n->n_child = NULL;
-X return n;
+X	node *n = NEW(node, 1);
+X	if (n == NULL)
+X		return NULL;
+X	n->n_type = type;
+X	n->n_str = NULL;
+X	n->n_lineno = 0;
+X	n->n_nchildren = 0;
+X	n->n_child = NULL;
+X	return n;
 X}
 X
 X#define XXX 3 /* Node alignment factor to speed up realloc */
@@ -1947,29 +1947,29 @@ X#define XXXROUNDUP(n) ((n) == 1 ? 1 : ((n) + XXX - 1) / XXX * XXX)
 X
 Xnode *
 Xaddchild(n1, type, str, lineno)
-X register node *n1;
-X int type;
-X char *str;
-X int lineno;
+X	register node *n1;
+X	int type;
+X	char *str;
+X	int lineno;
 X{
-X register int nch = n1->n_nchildren;
-X register int nch1 = nch+1;
-X register node *n;
-X if (XXXROUNDUP(nch) < nch1) {
-X n = n1->n_child;
-X nch1 = XXXROUNDUP(nch1);
-X RESIZE(n, node, nch1);
-X if (n == NULL)
-X return NULL;
-X n1->n_child = n;
-X }
-X n = &n1->n_child[n1->n_nchildren++];
-X n->n_type = type;
-X n->n_str = str;
-X n->n_lineno = lineno;
-X n->n_nchildren = 0;
-X n->n_child = NULL;
-X return n;
+X	register int nch = n1->n_nchildren;
+X	register int nch1 = nch+1;
+X	register node *n;
+X	if (XXXROUNDUP(nch) < nch1) {
+X		n = n1->n_child;
+X		nch1 = XXXROUNDUP(nch1);
+X		RESIZE(n, node, nch1);
+X		if (n == NULL)
+X			return NULL;
+X		n1->n_child = n;
+X	}
+X	n = &n1->n_child[n1->n_nchildren++];
+X	n->n_type = type;
+X	n->n_str = str;
+X	n->n_lineno = lineno;
+X	n->n_nchildren = 0;
+X	n->n_child = NULL;
+X	return n;
 X}
 X
 X/* Forward */
@@ -1978,25 +1978,25 @@ X
 X
 Xvoid
 Xfreetree(n)
-X node *n;
+X	node *n;
 X{
-X if (n != NULL) {
-X freechildren(n);
-X DEL(n);
-X }
+X	if (n != NULL) {
+X		freechildren(n);
+X		DEL(n);
+X	}
 X}
 X
 Xstatic void
 Xfreechildren(n)
-X node *n;
+X	node *n;
 X{
-X int i;
-X for (i = NCH(n); --i >= 0; )
-X freechildren(CHILD(n, i));
-X if (n->n_child != NULL)
-X DEL(n->n_child);
-X if (STR(n) != NULL)
-X DEL(STR(n));
+X	int i;
+X	for (i = NCH(n); --i >= 0; )
+X		freechildren(CHILD(n, i));
+X	if (n->n_child != NULL)
+X		DEL(n->n_child);
+X	if (STR(n) != NULL)
+X		DEL(STR(n));
 X}
 EOF
 fi
@@ -2009,12 +2009,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -2034,25 +2034,25 @@ X
 X/*
 X123456789-123456789-123456789-123456789-123456789-123456789-123456789-12
 X
-XType stringobject represents a character string. An extra zero byte is
+XType stringobject represents a character string.  An extra zero byte is
 Xreserved at the end to ensure it is zero-terminated, but a size is
-Xpresent so strings with null bytes in them can be represented. This
+Xpresent so strings with null bytes in them can be represented.  This
 Xis an immutable object type.
 X
 XThere are functions to create new string objects, to test
 Xan object for string-ness, and to get the
-Xstring value. The latter function returns a null pointer
+Xstring value.  The latter function returns a null pointer
 Xif the object is not of the proper type.
 XThere is a variant that takes an explicit size as well as a
-Xvariant that assumes a zero-terminated string. Note that none of the
+Xvariant that assumes a zero-terminated string.  Note that none of the
 Xfunctions should be applied to nil objects.
 X*/
 X
 X/* NB The type is revealed here only because it is used in dictobject.c */
 X
 Xtypedef struct {
-X OB_VARHEAD
-X char ob_sval[1];
+X	OB_VARHEAD
+X	char ob_sval[1];
 X} stringobject;
 X
 Xextern typeobject Stringtype;
@@ -2079,12 +2079,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -2102,40 +2102,40 @@ X
 X/* Interface to map C struct members to Python object attributes */
 X
 X/* The offsetof() macro calculates the offset of a structure member
-X in its structure. Unfortunately this cannot be written down
-X portably, hence it is provided by a Standard C header file.
-X For pre-Standard C compilers, here is a version that usually works
-X (but watch out!): */
+X   in its structure.  Unfortunately this cannot be written down
+X   portably, hence it is provided by a Standard C header file.
+X   For pre-Standard C compilers, here is a version that usually works
+X   (but watch out!): */
 X
 X#ifndef offsetof
 X#define offsetof(type, member) ( (int) & ((type*)0) -> member )
 X#endif
 X
 X/* An array of memberlist structures defines the name, type and offset
-X of selected members of a C structure. These can be read by
-X getmember() and set by setmember() (except if their READONLY flag
-X is set). The array must be terminated with an entry whose name
-X pointer is NULL. */
+X   of selected members of a C structure.  These can be read by
+X   getmember() and set by setmember() (except if their READONLY flag
+X   is set).  The array must be terminated with an entry whose name
+X   pointer is NULL. */
 X
 Xstruct memberlist {
-X char *name;
-X int type;
-X int offset;
-X int readonly;
+X	char *name;
+X	int type;
+X	int offset;
+X	int readonly;
 X};
 X
 X/* Types */
-X#define T_SHORT 0
-X#define T_INT 1
-X#define T_LONG 2
-X#define T_FLOAT 3
-X#define T_DOUBLE 4
-X#define T_STRING 5
-X#define T_OBJECT 6
+X#define T_SHORT		0
+X#define T_INT		1
+X#define T_LONG		2
+X#define T_FLOAT		3
+X#define T_DOUBLE	4
+X#define T_STRING	5
+X#define T_OBJECT	6
 X
 X/* Readonly flag */
-X#define READONLY 1
-X#define RO READONLY /* Shorthand */
+X#define READONLY	1
+X#define RO		READONLY		/* Shorthand */
 X
 Xobject *getmember PROTO((char *, struct memberlist *, char *));
 Xint setmember PROTO((char *, struct memberlist *, char *, object *));
@@ -2150,12 +2150,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -2172,27 +2172,27 @@ X******************************************************************/
 X
 X/* Tokenizer interface */
 X
-X#include "token.h" /* For token types */
+X#include "token.h"	/* For token types */
 X
-X#define MAXINDENT 100 /* Max indentation level */
+X#define MAXINDENT 100	/* Max indentation level */
 X
 X/* Tokenizer state */
 Xstruct tok_state {
-X /* Input state; buf <= cur <= inp <= end */
-X /* NB an entire token must fit in the buffer */
-X char *buf; /* Input buffer */
-X char *cur; /* Next character in buffer */
-X char *inp; /* End of data in buffer */
-X char *end; /* End of input buffer */
-X int done; /* 0 normally, 1 at EOF, -1 after error */
-X FILE *fp; /* Rest of input; NULL if tokenizing a string */
-X int tabsize; /* Tab spacing */
-X int indent; /* Current indentation index */
-X int indstack[MAXINDENT]; /* Stack of indents */
-X int atbol; /* Nonzero if at begin of new line */
-X int pendin; /* Pending indents (if > 0) or dedents (if < 0) */
-X char *prompt, *nextprompt; /* For interactive prompting */
-X int lineno; /* Current line number */
+X	/* Input state; buf <= cur <= inp <= end */
+X	/* NB an entire token must fit in the buffer */
+X	char *buf;	/* Input buffer */
+X	char *cur;	/* Next character in buffer */
+X	char *inp;	/* End of data in buffer */
+X	char *end;	/* End of input buffer */
+X	int done;	/* 0 normally, 1 at EOF, -1 after error */
+X	FILE *fp;	/* Rest of input; NULL if tokenizing a string */
+X	int tabsize;	/* Tab spacing */
+X	int indent;	/* Current indentation index */
+X	int indstack[MAXINDENT];	/* Stack of indents */
+X	int atbol;	/* Nonzero if at begin of new line */
+X	int pendin;	/* Pending indents (if > 0) or dedents (if < 0) */
+X	char *prompt, *nextprompt;	/* For interactive prompting */
+X	int lineno;	/* Current line number */
 X};
 X
 Xextern struct tok_state *tok_setups PROTO((char *));
@@ -2210,12 +2210,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -2237,18 +2237,18 @@ X123456789-123456789-123456789-123456789-123456789-123456789-123456789-12
 X
 XAnother generally useful object type is an tuple of object pointers.
 XThis is a mutable type: the tuple items can be changed (but not their
-Xnumber). Out-of-range indices or non-tuple objects are ignored.
+Xnumber).  Out-of-range indices or non-tuple objects are ignored.
 X
 X*** WARNING *** settupleitem does not increment the new item's reference
 Xcount, but does decrement the reference count of the item it replaces,
-Xif not nil. It does *decrement* the reference count if it is *not*
-Xinserted in the tuple. Similarly, gettupleitem does not increment the
+Xif not nil.  It does *decrement* the reference count if it is *not*
+Xinserted in the tuple.  Similarly, gettupleitem does not increment the
 Xreturned item's reference count.
 X*/
 X
 Xtypedef struct {
-X OB_VARHEAD
-X object *ob_item[1];
+X	OB_VARHEAD
+X	object *ob_item[1];
 X} tupleobject;
 X
 Xextern typeobject Tupletype;

@@ -35,43 +35,43 @@ XThis is version 0.9 (the first beta release), patchlevel 1.
 X
 XPython can be used instead of shell, Awk or Perl scripts, to write
 Xprototypes of real applications, or as an extension language of large
-Xsystems, you name it. There are built-in modules that interface to
+Xsystems, you name it.  There are built-in modules that interface to
 Xthe operating system and to various window systems: X11, the Mac
 Xwindow system (you need STDWIN for these two), and Silicon Graphics'
-XGL library. It runs on most modern versions of UNIX, on the Mac, and
-XI wouldn't be surprised if it ran on MS-DOS unchanged. I developed it
+XGL library.  It runs on most modern versions of UNIX, on the Mac, and
+XI wouldn't be surprised if it ran on MS-DOS unchanged.  I developed it
 Xmostly on an SGI IRIS workstation (using IRIX 3.1 and 3.2) and on the
 XMac, but have tested it also on SunOS (4.1) and BSD 4.3 (tahoe).
 X
 XBuilding and installing Python is easy (but do read the Makefile).
 XA UNIX style manual page and extensive documentation (in LaTeX format)
-Xare provided. (In the beta release, the documentation is still under
+Xare provided.  (In the beta release, the documentation is still under
 Xdevelopment.)
 X
 XPlease try it out and send me your comments (on anything -- the
 Xlanguage design, implementation, portability, installation,
 Xdocumentation) and the modules you wrote for it, to make the first
-Xreal release better. If you needed to hack the source to get it to
+Xreal release better.  If you needed to hack the source to get it to
 Xcompile and run on a particular machine, send me the fixes -- I'll try
-Xto incorporate them into the next patch. If you can't get it to work
+Xto incorporate them into the next patch.  If you can't get it to work
 Xat all, send me a *detailed* description of the problem and I may look
 Xinto it.
 X
 XIf you want to profit of the X11 or Mac window interface, you'll need
-XSTDWIN. This is a portable window system interface by the same
-Xauthor. The versions of STDWIN floating around on some archives are
-Xnot sufficiently up-to-date for use with Python. I will distribute
+XSTDWIN.  This is a portable window system interface by the same
+Xauthor.  The versions of STDWIN floating around on some archives are
+Xnot sufficiently up-to-date for use with Python.  I will distribute
 Xthe latest and greatest STDWIN version at about the same time as Python.
 X
 XI am the author of Python:
 X
-X Guido van Rossum
-X CWI, dept. CST
-X Kruislaan 413
-X 1098 SJ Amsterdam
-X The Netherlands
+X	Guido van Rossum
+X	CWI, dept. CST
+X	Kruislaan 413
+X	1098 SJ  Amsterdam
+X	The Netherlands
 X
-X E-mail: gu...@cwi.nl
+X	E-mail: gu...@cwi.nl
 X
 XThe Python source is copyrighted, but you can freely use and copy it
 Xas long as you don't change or remove the copyright:
@@ -80,7 +80,7 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
 XPermission to use, copy, modify, and distribute this software and its
 Xdocumentation for any purpose and without fee is hereby granted,
@@ -159,7 +159,7 @@ X.nf
 XGuido van Rossum
 XCWI, dept. CST
 XKruislaan 413
-X1098 SJ Amsterdam
+X1098 SJ  Amsterdam
 XThe Netherlands
 X.PP
 XE-mail: gu...@cwi.nl
@@ -194,7 +194,7 @@ echo 'x - demo/sgi/gl_panel/nurbs/nurbs.py'
 sed 's/^X//' > 'demo/sgi/gl_panel/nurbs/nurbs.py' << 'EOF'
 X#! /ufs/guido/bin/sgi/python
 X
-X# Fancy NURBS demo. Require Z buffer and Panel Library.
+X# Fancy NURBS demo.  Require Z buffer and Panel Library.
 X
 Xfrom gl import *
 Xfrom GL import *
@@ -205,187 +205,187 @@ X
 X#
 X# flags = trim_f, invis_f, cpvis_f, tpvis_f, axvis_f, freeze_f
 X#
-XTRIM = 0
-XVIS = 1
-XCPVIS = 2
-XTPVIS = 3
-XAXVIS = 4
-XFREEZE = 5
+XTRIM	= 0
+XVIS	= 1
+XCPVIS	= 2
+XTPVIS	= 3
+XAXVIS	= 4
+XFREEZE	= 5
 Xflags = [0, 1, 0, 0, 0, 0]
 X
 Xdef draw_axis () :
-X cpack (0x0)
-X zero = (0.0, 0.0, 0.0)
-X #
-X one = (1.0, 0.0, 0.0)
-X smallline (zero, one)
-X cmov (1.0, 0.0, 0.0)
-X charstr ('x')
-X #
-X one = (0.0, 1.0, 0.0)
-X smallline (zero, one)
-X cmov (0.0, 1.0, 0.0)
-X charstr ('y')
-X #
-X one = (0.0, 0.0, 1.0)
-X smallline (zero, one)
-X cmov (0.0, 0.0, 1.0)
-X charstr ('z')
+X	cpack (0x0)
+X	zero = (0.0, 0.0, 0.0)
+X	#
+X	one = (1.0, 0.0, 0.0)
+X	smallline (zero, one)
+X	cmov (1.0, 0.0, 0.0)
+X	charstr ('x')
+X	#
+X	one = (0.0, 1.0, 0.0)
+X	smallline (zero, one)
+X	cmov (0.0, 1.0, 0.0)
+X	charstr ('y')
+X	#
+X	one = (0.0, 0.0, 1.0)
+X	smallline (zero, one)
+X	cmov (0.0, 0.0, 1.0)
+X	charstr ('z')
 X
 XDELTA = 0.1
 X
 Xdef cross (p) :
-X p0 = [p[0], p[1], p[2]]
-X p1 = [p[0], p[1], p[2]]
-X for i in range (0, 3) :
-X p0[i] = p0[i] + DELTA
-X p1[i] = p1[i] - DELTA
-X smallline (p0, p1)
-X p0[i] = p0[i] - DELTA
-X p1[i] = p1[i] + DELTA
+X	p0 = [p[0], p[1], p[2]]
+X	p1 = [p[0], p[1], p[2]]
+X	for i in range (0, 3) :
+X		p0[i] = p0[i] + DELTA
+X		p1[i] = p1[i] - DELTA
+X		smallline (p0, p1)
+X		p0[i] = p0[i] - DELTA
+X		p1[i] = p1[i] + DELTA
 X
 Xdef smallline (p0, p1) :
-X bgnline ()
-X v3f (p0)
-X v3f (p1)
-X endline ()
+X	bgnline ()
+X	v3f (p0)
+X	v3f (p1)
+X	endline ()
 X
 Xdef draw_pts (pnts, color) :
-X linewidth (2)
-X cpack (color)
-X for i in pnts :
-X cross (i)
+X	linewidth (2)
+X	cpack (color)
+X	for i in pnts :
+X		cross (i)
 X
 Xdef init_windows():
-X foreground()
-X wid = winopen('nurbs')
-X wintitle('NURBS Surface')
-X doublebuffer()
-X RGBmode()
-X gconfig()
-X lsetdepth(0x000, 0x7fffff)
-X zbuffer( TRUE )
+X	foreground()
+X	wid = winopen('nurbs')
+X	wintitle('NURBS Surface')
+X	doublebuffer()
+X	RGBmode()
+X	gconfig()
+X	lsetdepth(0x000, 0x7fffff)
+X	zbuffer( TRUE )
 X
 Xdef init_view():
-X mmode(MPROJECTION)
-X ortho( -5., 5., -5., 5., -5., 5. )
-X #
-X mmode(MVIEWING)
-X loadmatrix(idmat)
-X #
-X lmbind(MATERIAL, 1)
+X	mmode(MPROJECTION)
+X	ortho( -5., 5., -5., 5., -5., 5. )
+X	#
+X	mmode(MVIEWING)
+X	loadmatrix(idmat)
+X	#
+X	lmbind(MATERIAL, 1)
 X
 Xdef set_scene(flags):
-X #
-X lmbind(MATERIAL, 0)
-X RGBcolor(150,150,150)
-X lmbind(MATERIAL, 1)
-X clear()
-X zclear()
-X #
-X if not flags[FREEZE] :
-X rotate( 100, 'y' )
-X rotate( 100, 'z' )
+X	#
+X	lmbind(MATERIAL, 0)
+X	RGBcolor(150,150,150)
+X	lmbind(MATERIAL, 1)
+X	clear()
+X	zclear()
+X	#
+X	if not flags[FREEZE] :
+X		rotate( 100, 'y' )
+X		rotate( 100, 'z' )
 X
 Xdef draw_trim_surface(flags):
-X pnts = ctlpoints
-X if flags[VIS] :
-X bgnsurface()
-X nurbssurface(surfknots,surfknots,pnts,ORDER,ORDER,N_XYZ)
-X if flags[TRIM]:
-X bgntrim()
-X nurbscurve(trimknots,trimpoints,ORDER-1,N_STW)
-X endtrim()
-X endsurface()
-X #
-X if flags[CPVIS] :
-X for i in pnts :
-X draw_pts (i, RED)
-X #
-X if flags[TPVIS] :
-X tpts = trimpoints
-X draw_pts (tpts, YELLOW)
-X #
-X if flags[AXVIS] :
-X draw_axis ()
-X #
-X swapbuffers()
+X	pnts = ctlpoints
+X	if flags[VIS] :
+X		bgnsurface()
+X		nurbssurface(surfknots,surfknots,pnts,ORDER,ORDER,N_XYZ)
+X		if flags[TRIM]:
+X			bgntrim()
+X			nurbscurve(trimknots,trimpoints,ORDER-1,N_STW)
+X			endtrim()
+X		endsurface()
+X	#
+X	if flags[CPVIS] :
+X		for i in pnts :
+X			draw_pts (i, RED)
+X	#
+X	if flags[TPVIS] :
+X		tpts = trimpoints
+X		draw_pts (tpts, YELLOW)
+X	#
+X	if flags[AXVIS] :
+X		draw_axis ()
+X	#
+X	swapbuffers()
 X
 Xdef make_lights():
-X lmdef(DEFLMODEL,1,[])
-X lmdef(DEFLIGHT,1,[])
-X #
-X # define material #1
-X #
-X a = []
-X a = a + [EMISSION, 0.0, 0.0, 0.0]
-X a = a + [AMBIENT, 0.1, 0.1, 0.1]
-X a = a + [DIFFUSE, 0.6, 0.3, 0.3]
-X a = a + [SPECULAR, 0.0, 0.6, 0.0]
-X a = a + [SHININESS, 2.0]
-X a = a + [LMNULL]
-X lmdef(DEFMATERIAL, 1, a)
-X #
-X # turn on lighting
-X #
-X lmbind(LIGHT0, 1)
-X lmbind(LMODEL, 1)
+X	lmdef(DEFLMODEL,1,[])
+X	lmdef(DEFLIGHT,1,[])
+X	#
+X	# define material #1
+X	#
+X	a = []
+X	a = a + [EMISSION, 0.0, 0.0, 0.0]
+X	a = a + [AMBIENT,  0.1, 0.1, 0.1]
+X	a = a + [DIFFUSE,  0.6, 0.3, 0.3]
+X	a = a + [SPECULAR,  0.0, 0.6, 0.0]
+X	a = a + [SHININESS, 2.0]
+X	a = a + [LMNULL]
+X	lmdef(DEFMATERIAL, 1, a)
+X	#
+X	# turn on lighting
+X	#
+X	lmbind(LIGHT0, 1)
+X	lmbind(LMODEL, 1)
 X
 Xdef main():
-X init_windows()
-X make_lights()
-X init_view()
-X #
-X panel.needredraw()
-X panels = panel.defpanellist('nurbs.s')
-X p = panels[0]
-X #
-X def cbtrim (a) :
-X flags[TRIM:TRIM+1] = [int (a.val)]
-X p.trim.upfunc = cbtrim
-X #
-X def cbquit (a) :
-X import sys
-X sys.exit (1)
-X p.quit.upfunc = cbquit
-X #
-X def cbmotion (a) :
-X flags[FREEZE:FREEZE+1] = [int (a.val)]
-X p.motion.upfunc = cbmotion
-X #
-X def cbxyzaxis (a) :
-X flags[AXVIS:AXVIS+1] = [int (a.val)]
-X p.xyzaxis.upfunc = cbxyzaxis
-X #
-X def cbtrimpnts (a) :
-X flags[TPVIS:TPVIS+1] = [int (a.val)]
-X p.trimpnts.upfunc = cbtrimpnts
-X #
-X def cbcntlpnts (a) :
-X flags[CPVIS:CPVIS+1] = [int (a.val)]
-X p.cntlpnts.upfunc = cbcntlpnts
-X #
-X def cbnurb (a) :
-X flags[VIS:VIS+1] = [int (a.val)]
-X p.nurb.upfunc = cbnurb
-X #
-X set_scene(flags)
-X setnurbsproperty( N_ERRORCHECKING, 1.0 )
-X setnurbsproperty( N_PIXEL_TOLERANCE, 50.0 )
-X draw_trim_surface(flags)
-X #
-X while 1:
-X act = panel.dopanel()
-X #
-X wid = panel.userredraw ()
-X if wid :
-X winset (wid)
-X reshapeviewport()
-X set_scene(flags)
-X draw_trim_surface(flags)
-X #
-X set_scene(flags)
-X draw_trim_surface(flags)
+X	init_windows()
+X	make_lights()
+X	init_view()
+X	#
+X	panel.needredraw()
+X	panels = panel.defpanellist('nurbs.s')
+X	p = panels[0]
+X	#
+X	def cbtrim (a) :
+X		flags[TRIM:TRIM+1] = [int (a.val)]
+X	p.trim.upfunc = cbtrim
+X	#
+X	def cbquit (a) :
+X		import sys
+X		sys.exit (1)
+X	p.quit.upfunc = cbquit
+X	#
+X	def cbmotion (a) :
+X		flags[FREEZE:FREEZE+1] = [int (a.val)]
+X	p.motion.upfunc = cbmotion
+X	#
+X	def cbxyzaxis (a) :
+X		flags[AXVIS:AXVIS+1] = [int (a.val)]
+X	p.xyzaxis.upfunc = cbxyzaxis
+X	#
+X	def cbtrimpnts (a) :
+X		flags[TPVIS:TPVIS+1] = [int (a.val)]
+X	p.trimpnts.upfunc = cbtrimpnts
+X	#
+X	def cbcntlpnts (a) :
+X		flags[CPVIS:CPVIS+1] = [int (a.val)]
+X	p.cntlpnts.upfunc = cbcntlpnts
+X	#
+X	def cbnurb (a) :
+X		flags[VIS:VIS+1] = [int (a.val)]
+X	p.nurb.upfunc = cbnurb
+X	#
+X	set_scene(flags)
+X	setnurbsproperty( N_ERRORCHECKING, 1.0 )
+X	setnurbsproperty( N_PIXEL_TOLERANCE, 50.0 )
+X	draw_trim_surface(flags)
+X	#
+X	while 1:
+X		act = panel.dopanel()
+X		#
+X		wid =  panel.userredraw ()
+X		if wid :
+X			winset (wid)
+X			reshapeviewport()
+X			set_scene(flags)
+X			draw_trim_surface(flags)
+X		#
+X		set_scene(flags)
+X		draw_trim_surface(flags)
 X
 Xmain()
 EOF
@@ -407,10 +407,10 @@ X (DRAFT)
 X}
 X
 X\author{
-X Guido van Rossum \\
-X Dept. CST, CWI, Kruislaan 413 \\
-X 1098 SJ Amsterdam, The Netherlands \\
-X E-mail: {\tt gu...@cwi.nl}
+X	Guido van Rossum \\
+X	Dept. CST, CWI, Kruislaan 413 \\
+X	1098 SJ Amsterdam, The Netherlands \\
+X	E-mail: {\tt gu...@cwi.nl}
 X}
 X
 X\begin{document}
@@ -552,15 +552,15 @@ X{\tt /usr/local}
 Xare possible; check with your local \Python\ guru or system
 Xadministrator.%
 X\footnote{
-X At CWI, at the time of writing, the interpreter can be found in
-X the following places:
-X On the Amoeba Ultrix machines, use the standard path,
-X {\tt /usr/local/python}.
-X On the Sun file servers, use
-X {\tt /ufs/guido/bin/}{\em arch}{\tt /python},
-X where {\em arch} can be {\tt sgi} or {\tt sun4}.
-X On piring, use {\tt /userfs3/amoeba/bin/python}.
-X (If you can't find a binary advertised here, get in touch with me.)
+X	At CWI, at the time of writing, the interpreter can be found in
+X	the following places:
+X	On the Amoeba Ultrix machines, use the standard path,
+X	{\tt /usr/local/python}.
+X	On the Sun file servers, use
+X	{\tt /ufs/guido/bin/}{\em arch}{\tt /python},
+X	where {\em arch} can be {\tt sgi} or {\tt sun4}.
+X	On piring, use {\tt /userfs3/amoeba/bin/python}.
+X	(If you can't find a binary advertised here, get in touch with me.)
 X}
 X
 XThe interpreter operates somewhat like the \UNIX\ shell: when called with
@@ -570,13 +570,13 @@ Xstandard input, it reads and executes a
 X{\em script}
 Xfrom that file.%
 X\footnote{
-X There is a difference between ``{\tt python file}'' and
-X ``{\tt python $<$file}''. In the latter case {\tt input()} and
-X {\tt raw\_input()} are satisfied from {\em file}, which has
-X already been read until the end by the parser, so they will read
-X EOF immediately. In the former case (which is usually what
-X you want) they are satisfied from whatever file or device is
-X connected to standard input of the \Python\ interpreter.
+X	There is a difference between ``{\tt python file}'' and
+X	``{\tt python $<$file}''.  In the latter case {\tt input()} and
+X	{\tt raw\_input()} are satisfied from {\em file}, which has
+X	already been read until the end by the parser, so they will read
+X	EOF immediately.  In the former case (which is usually what
+X	you want) they are satisfied from whatever file or device is
+X	connected to standard input of the \Python\ interpreter.
 X}
 XIf available, the script name and additional arguments thereafter are
 Xpassed to the script in the variable
@@ -630,10 +630,10 @@ X{\tt PYTHONPATH}
 Xis not set, an installation-dependent default path is used, usually
 X{\tt .:/usr/local/lib/python}.%
 X\footnote{
-X Modules are really searched in the list of directories given by
-X the variable {\tt sys.path} which is initialized from
-X {\tt PYTHONPATH} or from the installation-dependent default.
-X See the section on Standard Modules later.
+X	Modules are really searched in the list of directories given by
+X	the variable {\tt sys.path} which is initialized from
+X	{\tt PYTHONPATH} or from the installation-dependent default.
+X	See the section on Standard Modules later.
 X}
 X
 XOn BSD'ish \UNIX\ systems, \Python\ scripts can be made directly executable,
@@ -660,10 +660,10 @@ Xhowever, the basics are easily explained.
 X
 XIf supported,%
 X\footnote{
-X Perhaps the quickest check to see whether command line editing
-X is supported is typing Control-P to the first \Python\ prompt
-X you get. If it beeps, you have command line editing.
-X If not, you can skip the rest of this section.
+X	Perhaps the quickest check to see whether command line editing
+X	is supported is typing Control-P to the first \Python\ prompt
+X	you get.  If it beeps, you have command line editing.
+X	If not, you can skip the rest of this section.
 X}
 Xinput line editing is active whenever the interpreter prints a primary
 Xor secondary prompt.
@@ -821,9 +821,9 @@ X'He'
 X>>> word[2:4]
 X'lp'
 X>>> # Slice indices have useful defaults:
-X>>> word[:2] # Take first two characters
+X>>> word[:2]    # Take first two characters
 X'He'
-X>>> word[2:] # Drop first two characters
+X>>> word[2:]    # Drop first two characters
 X'lpA'
 X>>> # A useful invariant: s[:i] + s[i:] = s
 X>>> word[:3] + word[3:]
@@ -846,12 +846,12 @@ XSlice indices (but not simple subscripts) may be negative numbers, to
 Xstart counting from the right.
 XFor example:
 X\bcode\begin{verbatim}
-X>>> word[-2:] # Take last two characters
+X>>> word[-2:]    # Take last two characters
 X'pA'
-X>>> word[:-2] # Drop last two characters
+X>>> word[:-2]    # Drop last two characters
 X'Hel'
 X>>> # But -0 does not count from the right!
-X>>> word[-0:] # (since -0 equals 0)
+X>>> word[-0:]    # (since -0 equals 0)
 X'HelpA'
 X>>>
 X\end{verbatim}\ecode
@@ -868,8 +868,8 @@ X\bcode\begin{verbatim}
 X +---+---+---+---+---+
 X | H | e | l | p | A |
 X +---+---+---+---+---+
-X 0 1 2 3 4 5
-X-5 -4 -3 -2 -1
+X 0   1   2   3   4   5
+X-5  -4  -3  -2  -1
 X\end{verbatim}\ecode
 XThe first row of numbers gives the position of the indices 0...5 in the
 Xstring; the second row gives the corresponding negative indices.
@@ -968,8 +968,8 @@ X>>> # Fibonacci series:
 X>>> # the sum of two elements defines the next
 X>>> a, b = 0, 1
 X>>> while b < 100:
-X... print b
-X... a, b = b, a+b
+X...       print b
+X...       a, b = b, a+b
 X...
 X1
 X1
@@ -1014,9 +1014,9 @@ X{\tt >=}
 Xand
 X{\tt <>}.%
 X\footnote{
-X The ambiguity of using {\tt =}
-X for both assignment and equality is resolved by disallowing
-X unparenthesized conditions at the right hand side of assignments.
+X	The ambiguity of using {\tt =}
+X	for both assignment and equality is resolved by disallowing
+X	unparenthesized conditions at the right hand side of assignments.
 X}
 X\item
 XThe
@@ -1049,8 +1049,8 @@ XA trailing comma avoids the newline after the output:
 X\bcode\begin{verbatim}
 X>>> a, b = 0, 1
 X>>> while b < 1000:
-X... print b,
-X... a, b = b, a+b
+X...     print b,
+X...     a, b = b, a+b
 X...
 X1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987
 X>>>
@@ -1071,14 +1071,14 @@ XPerhaps the most well-known statement type is the {\tt if} statement.
 XFor example:
 X\bcode\begin{verbatim}
 X>>> if x < 0:
-X... x = 0
-X... print 'Negative changed to zero'
+X...      x = 0
+X...      print 'Negative changed to zero'
 X... elif x = 0:
-X... print 'Zero'
+X...      print 'Zero'
 X... elif x = 1:
-X... print 'Single'
+X...      print 'Single'
 X... else:
-X... print 'More'
+X...      print 'More'
 X...
 X\end{verbatim}\ecode
 XThere can be zero or more {\tt elif} parts, and the {\tt else} part is
@@ -1101,7 +1101,7 @@ X\bcode\begin{verbatim}
 X>>> # Measure some strings:
 X>>> a = ['cat', 'window', 'defenestrate']
 X>>> for x in a:
-X... print x, len(x)
+X...     print x, len(x)
 X...
 Xcat 3
 Xwindow 6
@@ -1139,7 +1139,7 @@ Xand {\tt len()} as follows:
 X\bcode\begin{verbatim}
 X>>> a = ['Mary', 'had', 'a', 'little', 'boy']
 X>>> for i in range(len(a)):
-X... print i, a[i]
+X...     print i, a[i]
 X...
 X0 Mary
 X1 had
@@ -1161,12 +1161,12 @@ XThis is exemplified by the following loop, which searches for a list
 Xitem of value 0:
 X\bcode\begin{verbatim}
 X>>> for n in range(2, 10):
-X... for x in range(2, n):
-X... if n % x = 0:
-X... print n, 'equals', x, '*', n/x
-X... break
-X... else:
-X... print n, 'is a prime number'
+X...     for x in range(2, n):
+X...         if n % x = 0:
+X...            print n, 'equals', x, '*', n/x
+X...            break
+X...     else:
+X...          print n, 'is a prime number'
 X...
 X2 is a prime number
 X3 is a prime number
@@ -1187,7 +1187,7 @@ Xprogram requires no action.
 XFor example:
 X\bcode\begin{verbatim}
 X>>> while 1:
-X... pass # Busy-wait for keyboard interrupt
+X...       pass # Busy-wait for keyboard interrupt
 X...
 X\end{verbatim}\ecode
 X
@@ -1200,11 +1200,11 @@ X
 XWe can create a function that writes the Fibonacci series to an
 Xarbitrary boundary:
 X\bcode\begin{verbatim}
-X>>> def fib(n): # write Fibonacci series up to n
-X... a, b = 0, 1
-X... while b <= n:
-X... print b,
-X... a, b = b, a+b
+X>>> def fib(n):    # write Fibonacci series up to n
+X...     a, b = 0, 1
+X...     while b <= n:
+X...           print b,
+X...           a, b = b, a+b
 X...
 X>>> # Now call the function we just defined:
 X>>> fib(2000)
@@ -1235,10 +1235,10 @@ Xthe local symbol table of the called function when it is called;
 Xthus, arguments are passed using
 X{\em call\ by\ value}.%
 X\footnote{
-X Actually, {\em call by object reference} would be a better
-X description, since if a mutable object is passed, the caller
-X will see any changes the callee makes to it (e.g., items
-X inserted into a list).
+X	 Actually, {\em call  by  object reference} would be a better
+X	 description, since if a mutable object is passed, the caller
+X	 will see any changes the callee makes to it (e.g., items
+X	 inserted into a list).
 X}
 XWhen a function calls another function, a new local symbol table is
 Xcreated for that call.
@@ -1278,15 +1278,15 @@ XIt is simple to write a function that returns a list of the numbers of
 Xthe Fibonacci series, instead of printing it:
 X\bcode\begin{verbatim}
 X>>> def fib2(n): # return Fibonacci series up to n
-X... result = []
-X... a, b = 0, 1
-X... while b <= n:
-X... result.append(b) # see below
-X... a, b = b, a+b
-X... return result
+X...     result = []
+X...     a, b = 0, 1
+X...     while b <= n:
+X...           result.append(b)    # see below
+X...           a, b = b, a+b
+X...     return result
 X...
-X>>> f100 = fib2(100) # call it
-X>>> f100 # write the result
+X>>> f100 = fib2(100)    # call it
+X>>> f100                # write the result
 X[1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
 X>>>
 X\end{verbatim}\ecode
@@ -1326,8 +1326,8 @@ XIn this case it is equivalent to
 X{\tt ret = ret + [b]},
 Xbut more efficient.%
 X\footnote{
-X There is a subtle semantic difference if the object
-X is referenced from more than one place.
+X	There is a subtle semantic difference if the object
+X	is referenced from more than one place.
 X}
 X\end{itemize}
 XThe list object type has two more methods:
@@ -1391,19 +1391,19 @@ Xin the current directory with the following contents:
 X\bcode\begin{verbatim}
 X# Fibonacci numbers module
 X
-Xdef fib(n): # write Fibonacci series up to n
-X a, b = 0, 1
-X while b <= n:
-X print b,
-X a, b = b, a+b
+Xdef fib(n):    # write Fibonacci series up to n
+X    a, b = 0, 1
+X    while b <= n:
+X          print b,
+X          a, b = b, a+b
 X
 Xdef fib2(n): # return Fibonacci series up to n
-X ret = []
-X a, b = 0, 1
-X while b <= n:
-X ret.append(b)
-X a, b = b, a+b
-X return ret
+X    ret = []
+X    a, b = 0, 1
+X    while b <= n:
+X          ret.append(b)
+X          a, b = b, a+b
+X    return ret
 X\end{verbatim}\ecode
 XNow enter the \Python\ interpreter and import this module with the
 Xfollowing command:
@@ -1441,9 +1441,9 @@ XThey are executed only the
 X{\em first}
 Xtime the module is imported somewhere.%
 X\footnote{
-X In fact function definitions are also `statements' that are
-X `executed'; the execution enters the function name in the
-X module's global symbol table.
+X	In fact function definitions are also `statements' that are
+X	`executed'; the execution enters the function name in the
+X	module's global symbol table.
 X}
 X
 XEach module has its own private symbol table, which is used as the
@@ -1555,7 +1555,7 @@ X\bcode\begin{verbatim}
 X>>> while 1 print 'Hello world'
 XParsing error: file <stdin>, line 1:
 Xwhile 1 print 'Hello world'
-X ^
+X             ^
 XUnhandled exception: run-time error: syntax error
 X>>>
 X\end{verbatim}\ecode
@@ -1576,15 +1576,15 @@ X\bcode\small\begin{verbatim}
 X>>> 10 * (1/0)
 XUnhandled exception: run-time error: integer division by zero
 XStack backtrace (innermost last):
-X File "<stdin>", line 1
+X  File "<stdin>", line 1
 X>>> 4 + foo*3
 XUnhandled exception: undefined name: foo
 XStack backtrace (innermost last):
-X File "<stdin>", line 1
+X  File "<stdin>", line 1
 X>>> '2' + 2
 XUnhandled exception: type error: illegal argument type for built-in operation
 XStack backtrace (innermost last):
-X File "<stdin>", line 1
+X  File "<stdin>", line 1
 X>>>
 X\end{verbatim}\ecode
 XErrors detected during execution are called
@@ -1621,9 +1621,9 @@ X{\em Undefined\ name}
 Xerrors are more serious: these are usually caused by misspelled
 Xidentifiers.%
 X\footnote{
-X The parser does not check whether names used in a program are at
-X all defined elsewhere in the program, so such checks are
-X postponed until run-time. The same holds for type checking.
+X	The parser does not check whether names used in a program are at
+X	all defined elsewhere in the program, so such checks are
+X	postponed until run-time.  The same holds for type checking.
 X}
 XThe detail is the offending identifier.
 X\item
@@ -1642,11 +1642,11 @@ Xsome floating point numbers:
 X\bcode\begin{verbatim}
 X>>> numbers = [0.3333, 2.5, 0.0, 10.0]
 X>>> for x in numbers:
-X... print x,
-X... try:
-X... print 1.0 / x
-X... except RuntimeError:
-X... print '*** has no inverse ***'
+X...     print x,
+X...     try:
+X...         print 1.0 / x
+X...     except RuntimeError:
+X...         print '*** has no inverse ***'
 X...
 X0.3333 3.00030003
 X2.5 0.4
@@ -1686,7 +1686,7 @@ XAn except clause may name multiple exceptions as a parenthesized list,
 Xe.g.:
 X\bcode\begin{verbatim}
 X... except (RuntimeError, TypeError, NameError):
-X... pass
+X...     pass
 X\end{verbatim}\ecode
 XThe last except clause may omit the exception name(s), to serve as a
 Xwildcard.
@@ -1701,9 +1701,9 @@ Xspecify a variable after the exception name (or list) to receive the
 Xargument's value, as follows:
 X\bcode\begin{verbatim}
 X>>> try:
-X... foo()
+X...     foo()
 X... except NameError, x:
-X... print 'name', x, 'undefined'
+X...     print 'name', x, 'undefined'
 X...
 Xname foo undefined
 X>>>
@@ -1717,21 +1717,21 @@ XThese are in fact string objects whose
 X{\em object\ identity}
 X(not their value!) identifies the exceptions.%
 X\footnote{
-X There should really be a separate exception type; it is pure
-X laziness that exceptions are identified by strings, and this may
-X be fixed in the future.
+X	There should really be a separate exception type; it is pure
+X	laziness that exceptions are identified by strings, and this may
+X	be fixed in the future.
 X}
 XThe string is printed as the second part of the message for unhandled
 Xexceptions.
 XTheir names and values are:
 X\bcode\begin{verbatim}
-XEOFError 'end-of-file read'
-XKeyboardInterrupt 'keyboard interrupt'
-XMemoryError 'out of memory' *
-XNameError 'undefined name' *
-XRuntimeError 'run-time error' *
-XSystemError 'system error' *
-XTypeError 'type error' *
+XEOFError              'end-of-file read'
+XKeyboardInterrupt     'keyboard interrupt'
+XMemoryError           'out of memory'           *
+XNameError             'undefined name'          *
+XRuntimeError          'run-time error'          *
+XSystemError           'system error'            *
+XTypeError             'type error'              *
 X\end{verbatim}\ecode
 XThe meanings should be clear enough.
 XThose exceptions with a {\tt *} in the third column have an argument.
@@ -1742,12 +1742,12 @@ Xthat are called (even indirectly) in the try clause.
 XFor example:
 X\bcode\begin{verbatim}
 X>>> def this_fails():
-X... x = 1/0
+X...     x = 1/0
 X...
 X>>> try:
-X... this_fails()
+X...     this_fails()
 X... except RuntimeError, detail:
-X... print 'Handling run-time error:', detail
+X...     print 'Handling run-time error:', detail
 X...
 XHandling run-time error: domain error or zero division
 X>>>
@@ -1762,7 +1762,7 @@ X\bcode\begin{verbatim}
 X>>> raise NameError, 'Hi There!'
 XUnhandled exception: undefined name: Hi There!
 XStack backtrace (innermost last):
-X File "<stdin>", line 1
+X  File "<stdin>", line 1
 X>>>
 X\end{verbatim}\ecode
 XThe first argument to {\tt raise} names the exception to be raised.
@@ -1776,15 +1776,15 @@ XFor example:
 X\bcode\begin{verbatim}
 X>>> my_exc = 'nobody likes me!'
 X>>> try:
-X... raise my_exc, 2*2
+X...     raise my_exc, 2*2
 X... except my_exc, val:
-X... print 'My exception occured, value:', val
+X...     print 'My exception occured, value:', val
 X...
 XMy exception occured, value: 4
 X>>> raise my_exc, 1
 XUnhandled exception: nobody likes me!: 1
 XStack backtrace (innermost last):
-X File "<stdin>", line 7
+X  File "<stdin>", line 7
 X>>>
 X\end{verbatim}\ecode
 XMany standard modules use this to report errors that may occur in
@@ -1797,14 +1797,14 @@ Xdefine clean-up actions that must be executed under all circumstances.
 XFor example:
 X\bcode\begin{verbatim}
 X>>> try:
-X... raise KeyboardInterrupt
+X...     raise KeyboardInterrupt
 X... finally:
-X... print 'Goodbye, world!'
+X...     print 'Goodbye, world!'
 X...
 XGoodbye, world!
 XUnhandled exception: keyboard interrupt
 XStack backtrace (innermost last):
-X File "<stdin>", line 2
+X  File "<stdin>", line 2
 X>>>
 X\end{verbatim}\ecode
 XThe
@@ -1854,11 +1854,11 @@ XAlso, like Modula-3 but unlike C++, the built-in operators with special
 Xsyntax (arithmetic operators, subscripting etc.) cannot be redefined for
 Xclass members.%
 X\footnote{
-X They can be redefined for new object types implemented in C in
-X extensions to the interpreter, however. It would require only a
-X naming convention and a relatively small change to the
-X interpreter to allow operator overloading for classes, so
-X perhaps someday...
+X	They can be redefined for new object types implemented in C in
+X	extensions to the interpreter, however.  It would require only a
+X	naming convention and a relatively small change to the
+X	interpreter to allow operator overloading for classes, so
+X	perhaps someday...
 X}
 X
 X\subsubsection{A Simple Example}
@@ -1869,22 +1869,22 @@ Xremove elements, a membership test, and a request for the size of the
 Xset.
 X\bcode\begin{verbatim}
 Xclass Set():
-X def new(self):
-X self.elements = []
-X return self
-X def add(self, e):
-X if e not in self.elements:
-X self.elements.append(e)
-X def remove(self, e):
-X if e in self.elements:
-X for i in range(len(self.elements)):
-X if self.elements[i] = e:
-X del self.elements[i]
-X break
-X def is_element(self, e):
-X return e in self.elements
-X def size(self):
-X return len(self.elements)
+X    def new(self):
+X        self.elements = []
+X        return self
+X    def add(self, e):
+X        if e not in self.elements:
+X            self.elements.append(e)
+X    def remove(self, e):
+X        if e in self.elements:
+X            for i in range(len(self.elements)):
+X                if self.elements[i] = e:
+X                    del self.elements[i]
+X                    break
+X    def is_element(self, e):
+X        return e in self.elements
+X    def size(self):
+X        return len(self.elements)
 X\end{verbatim}\ecode
 XNote that the class definition looks like a big compound statement,
 Xwith all the function definitons indented repective to the
@@ -1936,13 +1936,13 @@ X
 X\section{XXX P.M.}
 X
 X\begin{itemize}
-X\item The {\tt del} statement.
-X\item The {\tt dir()} function.
-X\item Tuples.
-X\item Dictionaries.
-X\item Objects and types in general.
-X\item Backquotes.
-X\item And/Or/Not.
+X\item	The {\tt del} statement.
+X\item	The {\tt dir()} function.
+X\item	Tuples.
+X\item	Dictionaries.
+X\item	Objects and types in general.
+X\item	Backquotes.
+X\item	And/Or/Not.
 X\end{itemize}
 X
 X\end{document}

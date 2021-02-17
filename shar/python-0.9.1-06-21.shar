@@ -10,51 +10,51 @@ echo 'x - doc/Makefile'
 sed 's/^X//' > 'doc/Makefile' << 'EOF'
 X# Makefile for Python documentation.
 X
-XLATEX= latex
-XDVIPS= dvips
-XTEXPREVIEW= xdvi
+XLATEX=		latex
+XDVIPS=		dvips
+XTEXPREVIEW=	xdvi
 X
-XPRINT= lpr
+XPRINT=		lpr
 X
-Xtut: tut.dvi
-X $(TEXPREVIEW) tut
+Xtut:		tut.dvi
+X		$(TEXPREVIEW) tut
 X
-Xtut.dvi tut.ps: tut.toc tut.tex myformat.sty
+Xtut.dvi tut.ps:	tut.toc tut.tex myformat.sty
 X
-Xmod: mod.dvi
-X $(TEXPREVIEW) mod
+Xmod:		mod.dvi
+X		$(TEXPREVIEW) mod
 X
-Xmod.dvi mod.ps: mod.toc mod.tex mod1.tex mod2.tex mod3.tex myformat.sty
+Xmod.dvi mod.ps:	mod.toc mod.tex mod1.tex mod2.tex mod3.tex myformat.sty
 X
-XALL= tut.ps mod.ps
+XALL=		tut.ps mod.ps
 X
-Xall: $(ALL)
+Xall:		$(ALL)
 X
-Xprint: $(ALL)
-X $(PRINT) $(ALL)
+Xprint:		$(ALL)
+X		$(PRINT) $(ALL)
 X
 Xclean:
-X rm -f *.dvi *.aux *.toc *.log *.ps core [#@,]* *~
+X		rm -f *.dvi *.aux *.toc *.log *.ps core [#@,]* *~
 X
-X.SUFFIXES: # Remove default suffixes
+X.SUFFIXES:	# Remove default suffixes
 X
-X.SUFFIXES: .tex .aux .toc .dvi .ps
+X.SUFFIXES:	.tex .aux .toc .dvi .ps
 X
 X.tex.aux:
-X $(LATEX) $*
+X		$(LATEX) $*
 X
 X.tex.toc:
-X $(LATEX) $*
+X		$(LATEX) $*
 X
 X.tex.dvi:
-X $(LATEX) $*
+X		$(LATEX) $*
 X
 X.dvi.ps:
-X $(DVIPS) $* >$*.ps
+X		$(DVIPS) $* >$*.ps
 X
 X.tex.ps:
-X $(LATEX) $*
-X $(DVIPS) $* >$*.ps
+X		$(LATEX) $*
+X		$(DVIPS) $* >$*.ps
 EOF
 fi
 if test -s 'doc/mod2.tex'
@@ -151,12 +151,12 @@ X{\tt cosh(x)},
 X{\tt exp(x)},
 X{\tt fabs(x)},
 X{\tt floor(x)},
-X%{\tt fmod(...)} XXX not yet
+X%{\tt fmod(...)}  XXX not yet
 X%{\tt frexp(...)} XXX not yet
 X%{\tt ldexp(...)} XXX not yet
 X{\tt log(x)},
 X{\tt log10(x)},
-X%{\tt modf(...)} XXX not yet
+X%{\tt modf(...)}  XXX not yet
 X{\tt pow(x,y)},
 X{\tt sin(x)},
 X{\tt sinh(x)},
@@ -257,7 +257,7 @@ X>>> s[1:6] # The entire match
 X'--b--'
 X>>> s[3:4] # The subpattern
 X'b'
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X
 X\subsection{Built-in Module {\tt posix}}
@@ -757,16 +757,16 @@ Ximport stdwin
 Xfrom stdwinevents import *
 X
 Xdef main():
-X mywin = stdwin.open('Hello')
-X #
-X while 1:
-X (type, win, detail) = stdwin.getevent()
-X if type = WE_DRAW:
-X draw = win.begindrawing()
-X draw.text((0, 0), 'Hello, world')
-X del draw
-X elif type = WE_CLOSE:
-X break
+X    mywin = stdwin.open('Hello')
+X    #
+X    while 1:
+X        (type, win, detail) = stdwin.getevent()
+X        if type = WE_DRAW:
+X            draw = win.begindrawing()
+X            draw.text((0, 0), 'Hello, world')
+X            del draw
+X        elif type = WE_CLOSE:
+X            break
 X
 Xmain()
 X\end{verbatim}\ecode
@@ -844,7 +844,7 @@ XFor example:
 X\bcode\begin{verbatim}
 X>>> amoeba.name_lookup('/profile/cap')
 Xaa:1c:95:52:6a:fa/14(ff)/8e:ba:5b:8:11:1a
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThe following methods are defined for capability objects.
 X\begin{description}
@@ -943,7 +943,7 @@ X%.br
 XAmplifies a chunk of samples by a variable factor changing from
 X{\tt f1}/256 to {\tt f2}/256.
 XNegative factors are allowed.
-XResulting values that are to large to fit in a byte are clipped.
+XResulting values that are to large to fit in a byte are clipped.         
 X\funcitem{reverse}{buf}
 X%.br
 XReturns a chunk of samples backwards.
@@ -1064,7 +1064,7 @@ Xis called for the normal, and then
 X{\tt v3f()}
 Xis called for the point.
 X\funcitem{vnarray}{}
-XSimilar to
+XSimilar to 
 X{\tt nvarray()}
 Xbut the pairs have the point first and the normal second.
 X\funcitem{nurbssurface}{s\_k[], t\_k[], ctl[][], s\_ord, t\_ord, type}
@@ -1106,22 +1106,22 @@ X\bcode\begin{verbatim}
 Ximport gl, GL, time
 X
 Xdef main():
-X gl.foreground()
-X gl.prefposition(500, 900, 500, 900)
-X w = gl.winopen('CrissCross')
-X gl.ortho2(0.0, 400.0, 0.0, 400.0)
-X gl.color(GL.WHITE)
-X gl.clear()
-X gl.color(GL.RED)
-X gl.bgnline()
-X gl.v2f(0.0, 0.0)
-X gl.v2f(400.0, 400.0)
-X gl.endline()
-X gl.bgnline()
-X gl.v2f(400.0, 0.0)
-X gl.v2f(0.0, 400.0)
-X gl.endline()
-X time.sleep(5)
+X    gl.foreground()
+X    gl.prefposition(500, 900, 500, 900)
+X    w = gl.winopen('CrissCross')
+X    gl.ortho2(0.0, 400.0, 0.0, 400.0)
+X    gl.color(GL.WHITE)
+X    gl.clear()
+X    gl.color(GL.RED)
+X    gl.bgnline()
+X    gl.v2f(0.0, 0.0)
+X    gl.v2f(400.0, 400.0)
+X    gl.endline()
+X    gl.bgnline()
+X    gl.v2f(400.0, 0.0)
+X    gl.v2f(0.0, 400.0)
+X    gl.endline()
+X    time.sleep(5)
 X
 Xmain()
 X\end{verbatim}\ecode
@@ -1156,12 +1156,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1197,410 +1197,410 @@ X#include "intobject.h"
 X#include "listobject.h"
 X
 Xtypedef struct s_loopstruct {
-X struct s_loopstruct *l_next; /* Make a list of it */
-X TscOperand l_label; /* Indentify the loop */
-X int l_index; /* The index of the list */
-X int l_size; /* The size of the list */
-X int l_retaddr; /* Addres to jump back */
-X int l_endaddr; /* Addres to jump to end */
-X object *l_list; /* The list to append to */
+X	struct s_loopstruct	*l_next;	/* Make a list of it      */
+X	TscOperand		l_label;	/* Indentify the loop     */
+X	int			l_index;	/* The index of the list  */
+X	int			l_size;		/* The size of the list   */
+X	int			l_retaddr;	/* Addres to jump back    */
+X	int			l_endaddr;	/* Addres to jump to end  */
+X	object			*l_list;	/* The list to append to  */
 X} TsLoop, *TpsLoop;
 X
 X
 X/*
-X** This file contains the Stubcode interpreter.
-X** All the instructions have there own function. The interpreter
-X** reads an instruction from the data and if needed also an operand.
-X** After this it calls the function that executes the instruction.
+X**	This file contains the Stubcode interpreter.
+X**	All the instructions have there own function. The interpreter
+X**	reads an instruction from the data and if needed also an operand.
+X**	After this it calls the function that executes the instruction.
 X*/
 X
 Xstruct sc_ProcessBlock {
-X object **stack;
-X unsigned char *buffer, *data;
-X int sp, bp, pc, maxbufsize, datsize;
-X header hdr;
-X TpsLoop loops;
+X	object 		**stack;
+X	unsigned char	*buffer, *data;
+X	int 		sp, bp, pc, maxbufsize, datsize;
+X	header 		hdr;
+X	TpsLoop		loops;
 X};
 X
 Xextern getcapability();
 X
 X/*
-X * Clean up the mess the loops make.
+X *	 Clean up the mess the loops make.
 X */
 X
 Xstatic void
 XxCleanUpLoops(sc_pb)
-X struct sc_ProcessBlock *sc_pb;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X TpsLoop prev, this;
+X	TpsLoop prev, this;
 X
-X if (sc_pb->loops == NULL)
-X return;
-X prev = sc_pb->loops;
-X this = sc_pb->loops->l_next;
-X while(this) {
-X free((char *)prev);
-X prev = this;
-X this = this->l_next;
-X }
-X free((char *)prev);
+X	if (sc_pb->loops == NULL)
+X		return;
+X	prev = sc_pb->loops;
+X	this = sc_pb->loops->l_next;
+X	while(this) {
+X		free((char *)prev);
+X		prev = this;
+X		this = this->l_next;
+X	}
+X	free((char *)prev);
 X}
 X
 Xstatic int
 Xfindendloop(label, sc_pb)
-X TscOperand label;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand label;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X TscOperand operand;
-X TscOpcode opcode;
-X int walk = sc_pb->pc, found = 0;
+X	TscOperand operand;
+X	TscOpcode opcode;
+X	int walk = sc_pb->pc, found = 0;
 X
-X while (!found && (walk < sc_pb->datsize)) {
-X memcpy(&opcode, &sc_pb->data[walk], sizeof(TscOpcode));
-X walk += sizeof(TscOpcode);
-X if (opcode & (FLAGS | OPERAND)) {
-X memcpy(&operand, &sc_pb->data[walk], sizeof(TscOperand));
-X walk += sizeof(TscOperand);
-X }
-X if (opcode == EndLoop)
-X if (operand == label) found = 1;
-X }
-X if (found)
-X return walk;
-X return -1;
+X	while (!found && (walk < sc_pb->datsize)) {
+X		memcpy(&opcode, &sc_pb->data[walk], sizeof(TscOpcode));
+X		walk += sizeof(TscOpcode);
+X		if (opcode & (FLAGS | OPERAND)) {
+X			memcpy(&operand, &sc_pb->data[walk], sizeof(TscOperand));
+X			walk += sizeof(TscOperand);
+X		}
+X		if (opcode == EndLoop)
+X			if (operand == label) found = 1;
+X	}
+X	if (found)
+X		return walk;
+X	return -1;
 X}
 X
 Xstatic int
 Xfindloop(ret, label, sc_pb)
-X TpsLoop *ret;
-X TscOperand label;
-X struct sc_ProcessBlock *sc_pb;
+X	TpsLoop *ret;
+X	TscOperand label;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X TpsLoop walk;
+X	TpsLoop walk;
 X
-X for (walk = sc_pb->loops; walk != NULL; walk = walk->l_next) {
-X if (walk->l_label == label) break;
-X }
-X if (walk == NULL) {
-X TpsLoop newloop;
+X	for (walk = sc_pb->loops; walk != NULL; walk = walk->l_next) {
+X		if (walk->l_label == label) break;
+X	}
+X	if (walk == NULL) {
+X		TpsLoop newloop;
 X
-X newloop = (TpsLoop)malloc(sizeof(TsLoop));
-X if (newloop == NULL) {
-X err_nomem();
-X return -1;
-X }
-X newloop->l_label = label;
-X newloop->l_index = 0;
-X newloop->l_retaddr = sc_pb->pc - (sizeof(TscOpcode) + sizeof(TscOperand));
-X /*
-X ** We need a correction because the pc points to
-X ** the instruction after the XXXLoop.
-X */
-X if ((newloop->l_endaddr = findendloop(label, sc_pb)) < 0) {
-X free((char *)newloop);
-X err_scerr(NoEndLoop);
-X return -1;
-X }
-X newloop->l_list = NULL;
-X newloop->l_next = sc_pb->loops;
-X sc_pb->loops = newloop;
-X *ret = newloop;
-X return 1;
-X }
-X *ret = walk;
-X return 0;
+X		newloop = (TpsLoop)malloc(sizeof(TsLoop));
+X		if (newloop == NULL) {
+X			err_nomem();
+X			return -1;
+X		}
+X		newloop->l_label = label;
+X		newloop->l_index = 0;
+X		newloop->l_retaddr = sc_pb->pc - (sizeof(TscOpcode) + sizeof(TscOperand));
+X		/*
+X		**	 We need a correction because the pc points to
+X		**	 the instruction after the XXXLoop.
+X		*/
+X		if ((newloop->l_endaddr = findendloop(label, sc_pb)) < 0) {
+X			free((char *)newloop);
+X			err_scerr(NoEndLoop);
+X			return -1;
+X		}
+X		newloop->l_list = NULL;
+X		newloop->l_next = sc_pb->loops;
+X		sc_pb->loops = newloop;
+X		*ret = newloop;
+X		return 1;
+X	}
+X	*ret = walk;
+X	return 0;
 X}
 X
 X#ifdef 0
 X
 Xstatic void
 Xremoveloop(this, sc_pb)
-X TpsLoop this;
-X struct sc_ProcessBlock *sc_pb;
+X	TpsLoop this;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X TpsLoop walk, prev = NULL;
+X	TpsLoop walk, prev = NULL;
 X
-X for (walk = sc_pb->loops; walk != NULL; walk = walk->l_next) {
-X if (walk->l_label == this->l_label) {
-X if (prev != NULL) {
-X prev->l_next = walk->l_next;
-X } else {
-X loop = walk->l_next;
-X }
-X free((char *)this);
-X break;
-X }
-X prev = walk;
-X }
+X	for (walk = sc_pb->loops; walk != NULL; walk = walk->l_next) {
+X		if (walk->l_label == this->l_label) {
+X			if (prev != NULL) {
+X				prev->l_next = walk->l_next;
+X			} else {
+X				loop = walk->l_next;
+X			}
+X			free((char *)this);
+X			break;
+X		}
+X		prev = walk;
+X	}
 X}
 X
 X#endif
 X
 Xstatic int
 Xinit(self, sc_pb)
-X object *self;
-X struct sc_ProcessBlock *sc_pb;
+X	object *self;
+X	struct sc_ProcessBlock *sc_pb;
 X{
 Xobject *string;
 Xint datasize;
 X
-X string = gettupleitem(self, STUBC);
-X if (string == NULL)
-X return -1;
-X sc_pb->data = getstringvalue(string);
-X if (sc_pb->data == NULL)
-X return -1;
-X datasize = (int)getstringsize(string);
-X if (datasize == -1)
-X return -1;
-X sc_pb->stack = (object **)malloc(STKSIZE * sizeof(object *));
-X if (sc_pb->stack == NULL) {
-X err_nomem();
-X return -1;
-X }
-X sc_pb->bp = sc_pb->sp = sc_pb->pc = 0;
-X sc_pb->loops = NULL;
-X return datasize;
+X	string = gettupleitem(self, STUBC);
+X	if (string == NULL)
+X		return -1;
+X	sc_pb->data = getstringvalue(string);
+X	if (sc_pb->data == NULL)
+X		return -1;
+X	datasize = (int)getstringsize(string);
+X	if (datasize == -1)
+X		return -1;
+X	sc_pb->stack = (object **)malloc(STKSIZE * sizeof(object *));
+X	if (sc_pb->stack == NULL) {
+X		err_nomem();
+X		return -1;
+X	}
+X	sc_pb->bp = sc_pb->sp = sc_pb->pc = 0;
+X	sc_pb->loops = NULL;
+X	return datasize;
 X}
 X
 Xstatic void reinit(sc_pb)
-X struct sc_ProcessBlock *sc_pb;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X int i;
+X	int i;
 X
-X sc_pb->bp = 0;
-X for (i = 0; i < sc_pb->sp; i++) {
-X DECREF(sc_pb->stack[i]);
-X }
-X sc_pb->sp = 0;
+X	sc_pb->bp = 0;
+X	for (i = 0; i < sc_pb->sp; i++) {
+X		DECREF(sc_pb->stack[i]);
+X	}
+X	sc_pb->sp = 0;
 X}
 X
 Xstatic void UnInit(self, sc_pb)
-X object *self;
-X struct sc_ProcessBlock *sc_pb;
+X	object *self;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X int i;
+X	int i;
 X
-X free(sc_pb->buffer);
-X reinit(sc_pb);
-X free((char *)sc_pb->stack);
-X xCleanUpLoops(sc_pb);
+X	free(sc_pb->buffer);
+X	reinit(sc_pb);
+X	free((char *)sc_pb->stack);
+X	xCleanUpLoops(sc_pb);
 X}
 X
 Xstatic object *
 Xstacktop(sc_pb)
-X struct sc_ProcessBlock *sc_pb;
+X	struct sc_ProcessBlock *sc_pb;
 X{
 X
-X if (sc_pb->sp == 0)
-X return err_scerr(StackUnderflow);
-X if (sc_pb->sp == (STKSIZE + 1))
-X return err_scerr(StackOverflow);
-X return sc_pb->stack[sc_pb->sp - 1];
+X	if (sc_pb->sp == 0)
+X		return err_scerr(StackUnderflow);
+X	if (sc_pb->sp == (STKSIZE + 1))
+X		return err_scerr(StackOverflow);
+X	return sc_pb->stack[sc_pb->sp - 1];
 X}
 X
 X/*
-X * Push an object on the stack.
+X *	 Push an object on the stack.
 X */
 Xstatic int
 XxPush(element, sc_pb)
-X object *element;
-X struct sc_ProcessBlock *sc_pb;
+X	object *element;
+X	struct sc_ProcessBlock *sc_pb;
 X{
 X
-X if (sc_pb->sp >= STKSIZE) {
-X err_scerr(StackOverflow);
-X return -1;
-X }
-X if (element == NULL) {
-X err_scerr(ElementIsNull);
-X return -1;
-X }
-X INCREF(element);
+X	if (sc_pb->sp >= STKSIZE) {
+X		err_scerr(StackOverflow);
+X		return -1;
+X	}
+X	if (element == NULL) {
+X		err_scerr(ElementIsNull);
+X		return -1;
+X	}
+X	INCREF(element);
 X#ifdef STACK_TRACE
-X printf("pushed :");
-X printobject(element, stdout, 0);
-X printf("\n");
+X	printf("pushed :");
+X	printobject(element, stdout, 0);
+X	printf("\n");
 X#endif
-X sc_pb->stack[sc_pb->sp++] = element;
-X return 0;
+X	sc_pb->stack[sc_pb->sp++] = element;
+X	return 0;
 X}
 X
 X/*
-X * Perform the RPC.
+X *	 Perform the RPC.
 X */
 Xstatic int
 XxTrans(self,cmd, sc_pb)
-X object *self;
-X TscOperand cmd;
-X struct sc_ProcessBlock *sc_pb;
+X	object *self;
+X	TscOperand cmd;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X short ret;
-X capability cap;
-X object *capobj;
+X	short ret;
+X	capability cap;
+X	object *capobj;
 X
-X if ((capobj = gettupleitem(self, CAP)) == NULL)
-X return -1;
-X if (getcapability(capobj, &cap) == -1)
-X return -1;
-X sc_pb->hdr.h_port = cap.cap_port;
-X sc_pb->hdr.h_priv = cap.cap_priv;
-X sc_pb->hdr.h_command = (command)cmd;
+X	if ((capobj = gettupleitem(self, CAP)) == NULL)
+X		return -1;
+X	if (getcapability(capobj, &cap) == -1)
+X		return -1;
+X	sc_pb->hdr.h_port = cap.cap_port;
+X	sc_pb->hdr.h_priv = cap.cap_priv;
+X	sc_pb->hdr.h_command = (command)cmd;
 X#ifdef SCDEBUG
-X printf("bp = %d maxbufsize = %d\n",sc_pb->bp, sc_pb->maxbufsize);
-X {
-X int i;
+X	printf("bp = %d maxbufsize = %d\n",sc_pb->bp, sc_pb->maxbufsize);
+X	{
+X		int i;
 X
-X for (i = 0; i < sc_pb->bp; i++) {
-X printf("%x ", sc_pb->buffer[i]);
-X }
-X }
-X printf("\n");
+X		for (i = 0; i < sc_pb->bp; i++) {
+X			printf("%x ", sc_pb->buffer[i]);
+X		}
+X	}
+X	printf("\n");
 X#endif
-X ret = trans(&sc_pb->hdr, sc_pb->buffer, (bufsize) sc_pb->bp,
-X &sc_pb->hdr, sc_pb->buffer, (bufsize)sc_pb->maxbufsize);
+X	ret = trans(&sc_pb->hdr, sc_pb->buffer, (bufsize) sc_pb->bp, 
+X		&sc_pb->hdr, sc_pb->buffer, (bufsize)sc_pb->maxbufsize);
 X#ifdef SCDEBUG
-X printf("after Trans:ret = %d\n",ret);
-X {
-X int i;
+X	printf("after Trans:ret = %d\n",ret);
+X	{
+X		int i;
 X
-X for (i = 0; i < ret; i++) {
-X printf("%x ", sc_pb->buffer[i]);
-X }
-X }
-X printf("\n");
+X		for (i = 0; i < ret; i++) {
+X			printf("%x ", sc_pb->buffer[i]);
+X		}
+X	}
+X	printf("\n");
 X#endif
-X if (ERR_STATUS(ret)) {
-X amoeba_error(ERR_CONVERT(ret));
-X return -1;
-X }
-X if (sc_pb->hdr.h_status != 0) {
-X object *v;
+X	if (ERR_STATUS(ret)) {
+X		amoeba_error(ERR_CONVERT(ret));
+X		return -1;
+X	}
+X	if (sc_pb->hdr.h_status != 0) {
+X		object *v;
 X
-X if ((v = newintobject(sc_pb->hdr.h_status)) == NULL)
-X return -1;
-X err_scerrset(TransError, v, "Trans");
-X DECREF(v);
-X return -1;
-X }
-X reinit(sc_pb);
-X return 0;
+X		if ((v = newintobject(sc_pb->hdr.h_status)) == NULL)
+X			return -1;
+X		err_scerrset(TransError, v, "Trans");
+X		DECREF(v);
+X		return -1;
+X	}
+X	reinit(sc_pb);
+X	return 0;
 X}
 X
 X/*
-X * Test the tuple size.
+X *	 Test the tuple size.
 X */
 Xstatic int
 XxTTupleS(size, sc_pb)
-X TscOperand size;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand size;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *tuple;
+X	object *tuple;
 X
-X if ((tuple = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (!is_tupleobject(tuple))
-X return err_scerrset(TypeFailure, tuple, "TTupleS");
-X if (gettuplesize(tuple) != (unsigned int)size)
-X return err_scerrset(SizeError, tuple, "TTupleS");
-X return 0;
+X	if ((tuple = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	if (!is_tupleobject(tuple))
+X		return err_scerrset(TypeFailure, tuple, "TTupleS");
+X	if (gettuplesize(tuple) != (unsigned int)size)
+X		return err_scerrset(SizeError, tuple, "TTupleS");
+X	return 0;
 X}
 X
 X/*
-X * Unpack a tuple
+X *	 Unpack a tuple
 X */
 Xstatic int
 XxUnpack(size, sc_pb)
-X TscOperand size;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand size;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *tuple, *element;
-X int i;
+X	object *tuple, *element;
+X	int i;
 X
-X if (size < (TscOperand)2) {
-X element = newintobject(size);
-X if (element == NULL)
-X return -1;
-X return err_scerrset(SizeError, element, "Unpack");
-X }
-X if ((tuple = stacktop(sc_pb)) == NULL)
-X return -1;
-X INCREF(tuple);
-X if (xPop((TscOperand) 1, sc_pb) != 0) {
-X DECREF(tuple);
-X return -1;
-X }
-X for (i = 0; i < (int)size; i++) {
-X if ((element = gettupleitem(tuple, i)) == NULL) {
-X DECREF(tuple);
-X return -1;
-X }
-X if (xPush(element, sc_pb) != 0) {
-X DECREF(tuple);
-X return -1;
-X }
-X }
-X DECREF(tuple);
-X return 0;
+X	if (size < (TscOperand)2) {
+X		element = newintobject(size);
+X		if (element == NULL) 
+X			return -1;
+X		return err_scerrset(SizeError, element, "Unpack");
+X	}
+X	if ((tuple = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	INCREF(tuple);
+X	if (xPop((TscOperand) 1, sc_pb) != 0) {
+X		DECREF(tuple);
+X		return -1;
+X	}
+X	for (i = 0; i < (int)size; i++) {
+X		if ((element = gettupleitem(tuple, i)) == NULL) {
+X			DECREF(tuple);
+X			return -1;
+X		}
+X		if (xPush(element, sc_pb) != 0) {
+X			DECREF(tuple);
+X			return -1;
+X		}
+X	}
+X	DECREF(tuple);
+X	return 0;
 X}
 X
 X/*
-X * Marshal the Ailword to a headerfiels.
+X *	 Marshal the Ailword to a headerfiels.
 X */
 Xstatic int
 XxAilword(headerfield, sc_pb)
-X TscOperand headerfield;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand headerfield;
+X	struct sc_ProcessBlock *sc_pb;
 X{
 X
-X switch(headerfield) {
+X	switch(headerfield) {
+X	
+X	case H_EXTRA:
+X		sc_pb->hdr.h_extra = (uint16)_ailword;
+X		return 0;
+X	
+X	case H_SIZE:
+X		sc_pb->hdr.h_size = (bufsize)_ailword;
+X		return 0;
+X	
+X	case H_OFFSET:
+X		sc_pb->hdr.h_offset = (int32)_ailword;
+X		return 0;
+X	
+X	default:
+X		{
+X			object *v;
 X
-X case H_EXTRA:
-X sc_pb->hdr.h_extra = (uint16)_ailword;
-X return 0;
-X
-X case H_SIZE:
-X sc_pb->hdr.h_size = (bufsize)_ailword;
-X return 0;
-X
-X case H_OFFSET:
-X sc_pb->hdr.h_offset = (int32)_ailword;
-X return 0;
-X
-X default:
-X {
-X object *v;
-X
-X if ((v = newintobject(headerfield)) == NULL)
-X return -1;
-X return err_scerrset(FlagError, v, "Ailword");
-X }
-X }
+X			if ((v = newintobject(headerfield)) == NULL)
+X				return -1;
+X			return err_scerrset(FlagError, v, "Ailword");
+X		}
+X	}
 X}
 X
 Xstatic int
 XxStringS(sc_pb)
-X struct sc_ProcessBlock *sc_pb;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *size, *string;
-X int s;
+X	object *size, *string;
+X	int s;
 X
-X if ((string = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (!is_stringobject(string))
-X return err_scerrset(TypeFailure, string, "StringS");
-X if ((s = getstringsize(string)) < 0)
-X return -1;
-X if (xPop((TscOperand) 1, sc_pb) != 0)
-X return -1;
-X if ((size = newintobject(s)) == NULL)
-X return -1;
-X if (xPush(size, sc_pb) != 0) {
-X DECREF(size);
-X return -1;
-X }
-X DECREF(size);
-X return 0;
+X	if ((string = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	if (!is_stringobject(string))
+X		return err_scerrset(TypeFailure, string, "StringS");
+X	if ((s = getstringsize(string)) < 0)
+X		return -1;
+X	if (xPop((TscOperand) 1, sc_pb) != 0)
+X		return -1;
+X	if ((size = newintobject(s)) == NULL)
+X		return -1;
+X	if (xPush(size, sc_pb) != 0) {
+X		DECREF(size);
+X		return -1;
+X	}
+X	DECREF(size);
+X	return 0;
 X}
 X
 X/*
@@ -1608,27 +1608,27 @@ X *
 X */
 Xstatic int
 XxListS(sc_pb)
-X struct sc_ProcessBlock *sc_pb;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *size, *list;
-X int s;
+X	object *size, *list;
+X	int s;
 X
-X if ((list = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (!is_listobject(list))
-X return err_scerrset(TypeFailure, list, "ListS");
-X if ((s = getlistsize(list)) < 0)
-X return -1;
-X if (xPop((TscOperand) 1, sc_pb) != 0)
-X return -1;
-X if ((size = newintobject(s)) == NULL)
-X return -1;
-X if (xPush(size, sc_pb) != 0) {
-X DECREF(size);
-X return -1;
-X }
-X DECREF(size);
-X return 0;
+X	if ((list = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	if (!is_listobject(list))
+X		return err_scerrset(TypeFailure, list, "ListS");
+X	if ((s = getlistsize(list)) < 0)
+X		return -1;
+X	if (xPop((TscOperand) 1, sc_pb) != 0)
+X		return -1;
+X	if ((size = newintobject(s)) == NULL)
+X		return -1;
+X	if (xPush(size, sc_pb) != 0) {
+X		DECREF(size);
+X		return -1;
+X	}
+X	DECREF(size);
+X	return 0;
 X}
 X
 X/*
@@ -1636,657 +1636,657 @@ X * Marshal a fixed string to the buffer.
 X */
 Xstatic int
 XxPutFS(size, sc_pb)
-X TscOperand size;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand size;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *string;
-X char *str;
+X	object *string;
+X	char *str;
 X
-X if ((string = stacktop(sc_pb)) == NULL) {
-X return -1;
-X }
-X if (!is_stringobject(string))
-X return err_scerrset(TypeFailure, string, "PutFS");
-X if (getstringsize(string) != size)
-X return err_scerrset(SizeError, string, "PutFS");
-X if ((str = getstringvalue(string)) == NULL)
-X return -1;
-X if ((size + sc_pb->bp) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X memcpy(&sc_pb->buffer[sc_pb->bp], str, (int)size);
-X sc_pb->bp += size;
-X return xPop((TscOperand) 1, sc_pb);
+X	if ((string = stacktop(sc_pb)) == NULL) {
+X		return -1;
+X	}
+X	if (!is_stringobject(string))
+X		return err_scerrset(TypeFailure, string, "PutFS");
+X	if (getstringsize(string) != size)
+X		return err_scerrset(SizeError, string, "PutFS");
+X	if ((str = getstringvalue(string)) == NULL)
+X		return -1;
+X	if ((size + sc_pb->bp) > sc_pb->maxbufsize) {
+X		err_scerr(BufferOverflow);
+X		return -1;
+X	}
+X	memcpy(&sc_pb->buffer[sc_pb->bp], str, (int)size);
+X	sc_pb->bp += size;
+X	return xPop((TscOperand) 1, sc_pb);
 X}
 X
 X
 X/*
-X * Test the size of a string or list
+X *	 Test the size of a string or list
 X */
 Xstatic int
 XxTStringSeq(size, sc_pb)
-X TscOperand size;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand size;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *string;
+X	object *string;
 X
-X if ((string = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (!is_stringobject(string))
-X return err_scerrset(TypeFailure, string, "TStringSeq");
-X if (getstringsize(string) != size)
-X return err_scerrset(SizeError, string, "TStringSeq");
-X return 0;
+X	if ((string = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	if (!is_stringobject(string))
+X		return err_scerrset(TypeFailure, string, "TStringSeq");
+X	if (getstringsize(string) != size)
+X		return err_scerrset(SizeError, string, "TStringSeq");
+X	return 0;
 X}
 X
 Xstatic int
 XxTStringSlt(size, sc_pb)
-X TscOperand size;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand size;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *string;
+X	object *string;
 X
-X if ((string = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (!is_stringobject(string))
-X return err_scerrset(TypeFailure, string, "TStringSlt");
-X if (getstringsize(string) > size)
-X return err_scerrset(SizeError, string, "TStringSlt");
-X return 0;
+X	if ((string = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	if (!is_stringobject(string))
+X		return err_scerrset(TypeFailure, string, "TStringSlt");
+X	if (getstringsize(string) > size)
+X		return err_scerrset(SizeError, string, "TStringSlt");
+X	return 0;
 X}
 X
 Xstatic int
 XxTListSeq(size, sc_pb)
-X TscOperand size;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand size;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *list;
+X	object *list;
 X
-X if ((list = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (!is_listobject(list))
-X return err_scerrset(TypeFailure, list, "TListSeq");
-X if (getlistsize(list) != size)
-X return err_scerrset(SizeError, list, "TListSeq");
-X return 0;
+X	if ((list = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	if (!is_listobject(list))
+X		return err_scerrset(TypeFailure, list, "TListSeq");
+X	if (getlistsize(list) != size)
+X		return err_scerrset(SizeError, list, "TListSeq");
+X	return 0;
 X}
 X
 Xstatic int
 XxTListSlt(size, sc_pb)
-X TscOperand size;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand size;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *list;
+X	object *list;
 X
-X if ((list = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (!is_listobject(list))
-X return err_scerrset(TypeFailure, list, "TListSlt");
-X if (getlistsize(list) > size)
-X return err_scerrset(SizeError, list, "TListSlt");
-X return 0;
+X	if ((list = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	if (!is_listobject(list))
+X		return err_scerrset(TypeFailure, list, "TListSlt");
+X	if (getlistsize(list) > size)
+X		return err_scerrset(SizeError, list, "TListSlt");
+X	return 0;
 X}
 X
 Xstatic int
 XxPutVS(sc_pb)
-X struct sc_ProcessBlock *sc_pb;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *string;
-X char *str;
-X int size;
+X	object *string;
+X	char *str;
+X	int size;
 X
-X if ((string = stacktop(sc_pb)) == NULL)
-X return -1;
-X if ((size = getstringsize(string)) < 0)
-X return (size == -1 ? -1 : err_scerrset(SizeError, string, "PutVS"));
-X if ((str = getstringvalue(string)) == NULL)
-X return -1;
-X if (sc_pb->bp + size > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X memcpy(&sc_pb->buffer[sc_pb->bp], str, size);
-X sc_pb->bp += size;
-X return xPop((TscOperand) 1, sc_pb);
+X	if ((string = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	if ((size = getstringsize(string)) < 0)
+X		return (size == -1 ? -1 : err_scerrset(SizeError, string, "PutVS"));
+X	if ((str = getstringvalue(string)) == NULL)
+X		return -1;
+X	if (sc_pb->bp + size > sc_pb->maxbufsize) {
+X		err_scerr(BufferOverflow);
+X		return -1;
+X	}
+X	memcpy(&sc_pb->buffer[sc_pb->bp], str, size);
+X	sc_pb->bp += size;
+X	return xPop((TscOperand) 1, sc_pb);
 X}
 X
 X/*
-X * The loop instructions.
+X *	 The loop instructions.
 X */
 Xstatic int
 XxLoopPut(label, sc_pb)
-X TscOperand label;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand label;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X TpsLoop this;
-X object *list, *element;
+X	TpsLoop this;
+X	object *list, *element;
 X
-X if (findloop(&this, label, sc_pb) < 0)
-X return -1;
-X if ((list = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (!is_listobject(list))
-X return err_scerrset(TypeFailure, list, "LoopPut");
-X if (this->l_index >= getlistsize(list)) {
-X sc_pb->pc = this->l_endaddr;
-X /*
-X ** Pop the list from the stack
-X */
-X return xPop((TscOperand)1, sc_pb);
-X }
-X if ((element = getlistitem(list, this->l_index)) == NULL)
-X return -1;
-X return xPush(element, sc_pb);
+X	if (findloop(&this, label, sc_pb) < 0)
+X		return -1;
+X	if ((list = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	if (!is_listobject(list))
+X		return err_scerrset(TypeFailure, list, "LoopPut");
+X	if (this->l_index >= getlistsize(list)) {
+X		sc_pb->pc = this->l_endaddr;
+X		/*
+X		**	Pop the list from the stack
+X		*/
+X		return xPop((TscOperand)1, sc_pb);
+X	}
+X	if ((element = getlistitem(list, this->l_index)) == NULL)
+X		return -1;
+X	return xPush(element, sc_pb);
 X}
 X
 Xstatic int
 XxLoopGet(label, sc_pb)
-X TscOperand label;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand label;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X TpsLoop this;
-X object *element, *integer;
-X int i;
+X	TpsLoop this;
+X	object *element, *integer;
+X	int i;
 X
-X if ((i = findloop(&this, label, sc_pb)) < 0)
-X return -1;
-X else if (i == 1) {
-X /*
-X * It is the first time we enter LoopGet label
-X */
-X if ((this->l_list = newlistobject(0)) == NULL)
-X return -1;
-X if ((integer = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (!is_intobject(integer))
-X return err_scerrset(TypeFailure, integer, "LoopGet");
-X this->l_size = getintvalue(integer);
-X if (xPop((TscOperand) 1, sc_pb) != 0)
-X return -1;
-X } else {
-X if ((element = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (addlistitem(this->l_list, element) != 0)
-X return -1;
-X if (xPop((TscOperand) 1, sc_pb) != 0)
-X return -1;
-X }
-X if (this->l_index >= this->l_size) {
-X int ret;
+X	if ((i = findloop(&this, label, sc_pb)) < 0)
+X		return -1;
+X	else if (i == 1) {
+X		/*
+X		 *	 It is the first time we enter LoopGet label
+X		 */
+X		if ((this->l_list = newlistobject(0)) == NULL)
+X			return -1;
+X		if ((integer = stacktop(sc_pb)) == NULL)
+X			return -1;
+X		if (!is_intobject(integer))
+X			return err_scerrset(TypeFailure, integer, "LoopGet");
+X		this->l_size = getintvalue(integer);
+X		if (xPop((TscOperand) 1, sc_pb) != 0)
+X			return -1;
+X	} else {
+X		if ((element = stacktop(sc_pb)) == NULL)
+X			return -1;
+X		if (addlistitem(this->l_list, element) != 0)
+X			return -1;
+X		if (xPop((TscOperand) 1, sc_pb) != 0)
+X			return -1;
+X	}
+X	if (this->l_index >= this->l_size) {
+X		int ret;
 X
-X sc_pb->pc = this->l_endaddr;
-X ret = xPush(this->l_list, sc_pb);
-X DECREF(this->l_list);
-X return ret;
-X }
-X return 0;
+X		sc_pb->pc = this->l_endaddr;
+X		ret = xPush(this->l_list, sc_pb);
+X		DECREF(this->l_list);
+X		return ret;
+X	}
+X	return 0;
 X}
 X
 Xstatic int
 XxEndLoop(label, sc_pb)
-X TscOperand label;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand label;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X TpsLoop this;
+X	TpsLoop this;
 X
-X if (findloop(&this, label, sc_pb) < 0)
-X return -1;
-X this ->l_index += 1;
-X sc_pb->pc = this->l_retaddr;
-X return 0;
+X	if (findloop(&this, label, sc_pb) < 0)
+X		return -1;
+X	this ->l_index += 1;
+X	sc_pb->pc = this->l_retaddr;
+X	return 0;
 X}
 X
 Xstatic int
 XxPutI(flags, sc_pb)
-X TscOperand flags;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand flags;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *integer;
+X	object *integer;
 X
-X if ((integer = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (!is_intobject(integer))
-X return err_scerrset(TypeFailure, integer, "PutI");
-X if (flags & ALL_FIELDS) {
-X long i;
+X	if ((integer = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	if (!is_intobject(integer))
+X		return err_scerrset(TypeFailure, integer, "PutI");
+X	if (flags & ALL_FIELDS) {
+X		long i;
 X
-X /*
-X * The integer must be marshalles in the header.
-X * No type casting according to the type flag because
-X * we have to cast to the headerfield types.
-X */
-X i = getintvalue(integer);
-X switch(flags & ALL_FIELDS) {
+X		/*
+X		 *	 The integer must be marshalles in the header.
+X		 *	 No type casting according to the type flag because
+X		 *	 we have to cast to the headerfield types.
+X		 */
+X		i = getintvalue(integer);
+X		switch(flags & ALL_FIELDS) {
+X		
+X		case H_EXTRA:
+X			sc_pb->hdr.h_extra = (uint16)i;
+X			break;
+X	
+X		case H_SIZE:
+X			sc_pb->hdr.h_size = (bufsize)i;
+X			break;
+X	
+X		case H_OFFSET:
+X			sc_pb->hdr.h_offset = (int32)i;
+X			break;
+X	
+X		default:
+X			if ((integer = newintobject(flags & ALL_FIELDS)) == NULL)
+X				return -1;
+X			err_scerrset(FlagError, integer, "Ailword");
+X			DECREF(integer);
+X			return -1;
+X		}
+X	} else {
+X		long i;
 X
-X case H_EXTRA:
-X sc_pb->hdr.h_extra = (uint16)i;
-X break;
+X		i = getintvalue(integer);
+X		switch(flags & ALLTYPES) {
+X		
+X		case 0:
+X			{
+X				int16 x;
 X
-X case H_SIZE:
-X sc_pb->hdr.h_size = (bufsize)i;
-X break;
+X				x = (int16)i;
+X				if ((sc_pb->bp + sizeof(int16)) > sc_pb->maxbufsize) {
+X					err_scerr(BufferOverflow);
+X					return -1;
+X				}
+X				memcpy(&sc_pb->buffer[sc_pb->bp], &x, sizeof(int16));
+X				sc_pb->bp += sizeof(int16);
+X				break;
+X			}
 X
-X case H_OFFSET:
-X sc_pb->hdr.h_offset = (int32)i;
-X break;
+X		case NOSIGN:
+X			{
+X				uint16 x;
 X
-X default:
-X if ((integer = newintobject(flags & ALL_FIELDS)) == NULL)
-X return -1;
-X err_scerrset(FlagError, integer, "Ailword");
-X DECREF(integer);
-X return -1;
-X }
-X } else {
-X long i;
+X				x = (uint16)i;
+X				if ((sc_pb->bp + sizeof(uint16)) > sc_pb->maxbufsize) {
+X					err_scerr(BufferOverflow);
+X					return -1;
+X				}
+X				memcpy(&sc_pb->buffer[sc_pb->bp], &x, sizeof(uint16));
+X				sc_pb->bp += sizeof(uint16);
+X				break;
+X			}
 X
-X i = getintvalue(integer);
-X switch(flags & ALLTYPES) {
+X		case INT32:
+X			{
+X				int32 x;
 X
-X case 0:
-X {
-X int16 x;
+X				x = (int32)i;
+X				if ((sc_pb->bp + sizeof(int32)) > sc_pb->maxbufsize) {
+X					err_scerr(BufferOverflow);
+X					return -1;
+X				}
+X				memcpy(&sc_pb->buffer[sc_pb->bp], &x, sizeof(int32));
+X				sc_pb->bp += sizeof(int32);
+X				break;
+X			}
 X
-X x = (int16)i;
-X if ((sc_pb->bp + sizeof(int16)) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X memcpy(&sc_pb->buffer[sc_pb->bp], &x, sizeof(int16));
-X sc_pb->bp += sizeof(int16);
-X break;
-X }
+X		case INT32 | NOSIGN:
+X			{
+X				uint32 x;
 X
-X case NOSIGN:
-X {
-X uint16 x;
+X				x = (uint32)i;
+X				if ((sc_pb->bp + sizeof(uint32)) > sc_pb->maxbufsize) {
+X					err_scerr(BufferOverflow);
+X					return -1;
+X				}
+X				memcpy(&sc_pb->buffer[sc_pb->bp], &x, sizeof(uint32));
+X				sc_pb->bp += sizeof(uint32);
+X				break;
+X			}
+X		default:
+X			{
+X				object *x;
 X
-X x = (uint16)i;
-X if ((sc_pb->bp + sizeof(uint16)) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X memcpy(&sc_pb->buffer[sc_pb->bp], &x, sizeof(uint16));
-X sc_pb->bp += sizeof(uint16);
-X break;
-X }
-X
-X case INT32:
-X {
-X int32 x;
-X
-X x = (int32)i;
-X if ((sc_pb->bp + sizeof(int32)) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X memcpy(&sc_pb->buffer[sc_pb->bp], &x, sizeof(int32));
-X sc_pb->bp += sizeof(int32);
-X break;
-X }
-X
-X case INT32 | NOSIGN:
-X {
-X uint32 x;
-X
-X x = (uint32)i;
-X if ((sc_pb->bp + sizeof(uint32)) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X memcpy(&sc_pb->buffer[sc_pb->bp], &x, sizeof(uint32));
-X sc_pb->bp += sizeof(uint32);
-X break;
-X }
-X default:
-X {
-X object *x;
-X
-X if ((x = newintobject(flags)) == NULL)
-X return -1;
-X err_scerrset(FlagError, x, "PutI");
-X DECREF(x);
-X return -1;
-X }
-X }
-X }
-X return xPop((TscOperand)1, sc_pb);
+X				if ((x = newintobject(flags)) == NULL)
+X					return -1;
+X				err_scerrset(FlagError, x, "PutI");
+X				DECREF(x);
+X				return -1;
+X			}
+X		}
+X	}
+X	return xPop((TscOperand)1, sc_pb);
 X}
 X
 Xstatic int
 XxPutC(sc_pb)
-X struct sc_ProcessBlock *sc_pb;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X capability cap;
-X object *capobj;
+X	capability cap;
+X	object *capobj;
 X
-X if ((capobj = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (!is_capobj(capobj))
-X return err_scerrset(TypeFailure, capobj, "xPutC");
-X if (getcapability(capobj, &cap) != 0)
-X return -1;
-X if ((sc_pb->bp + CAPSIZE) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X memcpy(&sc_pb->buffer[sc_pb->bp], &cap, CAPSIZE);
-X sc_pb->bp += CAPSIZE;
-X return xPop((TscOperand) 1, sc_pb);
+X	if ((capobj = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	if (!is_capobj(capobj))
+X		return err_scerrset(TypeFailure, capobj, "xPutC");
+X	if (getcapability(capobj, &cap) != 0)
+X		return -1;
+X	if ((sc_pb->bp + CAPSIZE) > sc_pb->maxbufsize) {
+X		err_scerr(BufferOverflow);
+X		return -1;
+X	}
+X	memcpy(&sc_pb->buffer[sc_pb->bp], &cap, CAPSIZE);
+X	sc_pb->bp += CAPSIZE;
+X	return xPop((TscOperand) 1, sc_pb);
 X}
 X
 Xstatic int
 XxDup(n, sc_pb)
-X TscOperand n;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand n;
+X	struct sc_ProcessBlock *sc_pb;
 X{
 X
-X if ((int)n > sc_pb->sp) {
-X object *i;
+X	if ((int)n > sc_pb->sp) {
+X		object *i;
 X
-X if ((i = newintobject((long)n)) == NULL)
-X return -1;
-X err_scerrset(RangeError, i, "Dup");
-X DECREF(i);
-X return -1;
-X }
-X return xPush(sc_pb->stack[sc_pb->sp - n], sc_pb);
+X		if ((i = newintobject((long)n)) == NULL)
+X			return -1;
+X		err_scerrset(RangeError, i, "Dup");
+X		DECREF(i);
+X		return -1;
+X	}
+X	return xPush(sc_pb->stack[sc_pb->sp - n], sc_pb);
 X}
 X
 Xstatic int
 XxPop(n, sc_pb)
-X TscOperand n;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand n;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X int i;
+X	int i;
 X
-X if ((sc_pb->sp - (int)n) < 0) {
-X err_scerr(StackUnderflow);
-X return -1;
-X }
-X for (i = 0; i < (int)n; i++) {
-X sc_pb->sp--;
+X	if ((sc_pb->sp - (int)n) < 0) {
+X		err_scerr(StackUnderflow);
+X		return -1;
+X	}
+X	for (i = 0; i < (int)n; i++) {
+X		sc_pb->sp--;
 X#ifdef STACK_TRACE
-X printf("popped :");
-X printobject(sc_pb->stack[sc_pb->sp], stdout, 0);
-X printf("\n");
+X		printf("popped :");
+X		printobject(sc_pb->stack[sc_pb->sp], stdout, 0);
+X		printf("\n");
 X#endif
-X DECREF(sc_pb->stack[sc_pb->sp]);
-X }
-X return 0;
+X		DECREF(sc_pb->stack[sc_pb->sp]);
+X	}
+X	return 0;
 X}
 X
 Xstatic int
 XxAlign(n, sc_pb)
-X TscOperand n;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand n;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X int align = sc_pb->bp % (int)n;
+X	int align = sc_pb->bp % (int)n;
 X
 X#ifdef SCDEBUG
-X printf("Old bp = %d\n", sc_pb->bp);
+X	printf("Old bp = %d\n", sc_pb->bp);
 X#endif
-X sc_pb->bp += (align == 0) ? 0 : ((int)n - align);
+X	sc_pb->bp += (align == 0) ? 0 : ((int)n - align);
 X#ifdef SCDEBUG
-X printf("New bp = %d\n", sc_pb->bp);
+X	printf("New bp = %d\n", sc_pb->bp);
 X#endif
-X return 0;
+X	return 0;
 X}
 X
 Xstatic int
 XxPack(size, sc_pb)
-X TscOperand size;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand size;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *element, *tuple;
-X int i, ret;
+X	object *element, *tuple;
+X	int i, ret;
 X
-X if ((tuple = newtupleobject((int)size)) == NULL)
-X return -1;
-X for (i = 0; i < (int)size; i++) {
-X if ((element = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (settupleitem(tuple, (int)size - i - 1, element) != 0)
-X return -1;
-X INCREF(element);
-X if (xPop((TscOperand) 1, sc_pb) != 0)
-X return -1;
-X }
-X ret = xPush(tuple, sc_pb);
-X DECREF(tuple);
-X return ret;
+X	if ((tuple = newtupleobject((int)size)) == NULL)
+X		return -1;
+X	for (i = 0; i < (int)size; i++) {
+X		if ((element = stacktop(sc_pb)) == NULL)
+X			return -1;
+X		if (settupleitem(tuple, (int)size - i - 1, element) != 0)
+X			return -1;
+X		INCREF(element);
+X		if (xPop((TscOperand) 1, sc_pb) != 0)
+X			return -1;
+X	}
+X	ret = xPush(tuple, sc_pb);
+X	DECREF(tuple);
+X	return ret;
 X}
 X
 Xstatic int
 XxGetVS(sc_pb)
-X struct sc_ProcessBlock *sc_pb;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *string, *integer;
-X int size;
+X	object *string, *integer;
+X	int size;
 X
-X if ((integer = stacktop(sc_pb)) == NULL)
-X return -1;
-X if (!is_intobject(integer))
-X return err_scerrset(TypeFailure, integer, "GetVS");
-X size = getintvalue(integer);
-X if ((sc_pb->bp + size) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X if ((string = newsizedstringobject(&sc_pb->buffer[sc_pb->bp], size)) == NULL)
-X return -1;
-X sc_pb->bp += size;
-X if (xPop((TscOperand) 1, sc_pb) != 0)
-X return -1;
-X if (xPush(string, sc_pb) != 0) {
-X return -1;
-X }
-X DECREF(string);
-X return 0;
+X	if ((integer = stacktop(sc_pb)) == NULL)
+X		return -1;
+X	if (!is_intobject(integer))
+X		return err_scerrset(TypeFailure, integer, "GetVS");
+X	size = getintvalue(integer);
+X	if ((sc_pb->bp + size) > sc_pb->maxbufsize) {
+X		err_scerr(BufferOverflow);
+X		return -1;
+X	}
+X	if ((string = newsizedstringobject(&sc_pb->buffer[sc_pb->bp], size)) == NULL)
+X		return -1;
+X	sc_pb->bp += size;
+X	if (xPop((TscOperand) 1, sc_pb) != 0)
+X		return -1;
+X	if (xPush(string, sc_pb) != 0) {
+X		return -1;
+X	}
+X	DECREF(string);
+X	return 0;
 X}
 X
 Xstatic int
 XxGetFS(size, sc_pb)
-X TscOperand size;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand size;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *string;
+X	object *string;
 X
-X if ((sc_pb->bp + (int)size) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X if ((string = newsizedstringobject(&sc_pb->buffer[sc_pb->bp], (int)size)) == NULL)
-X return -1;
-X sc_pb->bp += (int)size;
-X if(xPush(string, sc_pb) != 0) {
-X return -1;
-X }
-X DECREF(string);
-X return 0;
+X	if ((sc_pb->bp + (int)size) > sc_pb->maxbufsize) {
+X		err_scerr(BufferOverflow);
+X		return -1;
+X	}
+X	if ((string = newsizedstringobject(&sc_pb->buffer[sc_pb->bp], (int)size)) == NULL)
+X		return -1;
+X	sc_pb->bp += (int)size;
+X	if(xPush(string, sc_pb) != 0) {
+X		return -1;
+X	}
+X	DECREF(string);
+X	return 0;
 X}
 X
 Xstatic int
 XxGetI(flags, sc_pb)
-X TscOperand flags;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand flags;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *integer;
-X long i;
+X	object *integer;
+X	long i;
 X
-X if (flags & ALL_FIELDS) {
+X	if (flags & ALL_FIELDS) {
 X
-X switch(flags & ALL_FIELDS) {
+X		switch(flags & ALL_FIELDS) {
+X		
+X		case H_EXTRA:
+X			i = (long)sc_pb->hdr.h_extra;
+X			break;
 X
-X case H_EXTRA:
-X i = (long)sc_pb->hdr.h_extra;
-X break;
+X		case H_SIZE:
+X			i = (long)sc_pb->hdr.h_size;
+X			break;
+X	
+X		case H_OFFSET:
+X			i = (long)sc_pb->hdr.h_offset;
+X			break;
+X	
+X		default:
+X			if ((integer = newintobject(flags & ALL_FIELDS)) == NULL)
+X				return -1;
+X			err_scerrset(FlagError, integer, "Ailword");
+X			DECREF(integer);
+X			return -1;
+X		}
+X	} else {
+X		switch(flags & ALLTYPES) {
+X		
+X		case 0:
+X			{
+X				int16 x;
 X
-X case H_SIZE:
-X i = (long)sc_pb->hdr.h_size;
-X break;
+X				if ((sc_pb->bp + sizeof(int16)) > sc_pb->maxbufsize) {
+X					err_scerr(BufferOverflow);
+X					return -1;
+X				}
+X				memcpy(&x, &sc_pb->buffer[sc_pb->bp], sizeof(int16));
+X				sc_pb->bp += sizeof(int16);
+X				i = (long)x;
+X				break;
+X			}
 X
-X case H_OFFSET:
-X i = (long)sc_pb->hdr.h_offset;
-X break;
+X		case NOSIGN:
+X			{
+X				uint16 x;
 X
-X default:
-X if ((integer = newintobject(flags & ALL_FIELDS)) == NULL)
-X return -1;
-X err_scerrset(FlagError, integer, "Ailword");
-X DECREF(integer);
-X return -1;
-X }
-X } else {
-X switch(flags & ALLTYPES) {
+X				if ((sc_pb->bp + sizeof(uint16)) > sc_pb->maxbufsize) {
+X					err_scerr(BufferOverflow);
+X					return -1;
+X				}
+X				memcpy(&x, &sc_pb->buffer[sc_pb->bp], sizeof(uint16));
+X				sc_pb->bp += sizeof(uint16);
+X				i = (long)x;
+X				break;
+X			}
 X
-X case 0:
-X {
-X int16 x;
+X		case INT32:
+X			{
+X				int32 x;
 X
-X if ((sc_pb->bp + sizeof(int16)) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X memcpy(&x, &sc_pb->buffer[sc_pb->bp], sizeof(int16));
-X sc_pb->bp += sizeof(int16);
-X i = (long)x;
-X break;
-X }
+X				if ((sc_pb->bp + sizeof(int32)) > sc_pb->maxbufsize) {
+X					err_scerr(BufferOverflow);
+X					return -1;
+X				}
+X				memcpy(&x, &sc_pb->buffer[sc_pb->bp], sizeof(int32));
+X				sc_pb->bp += sizeof(int32);
+X				i = (long)x;
+X				break;
+X			}
 X
-X case NOSIGN:
-X {
-X uint16 x;
+X		case INT32 | NOSIGN:
+X			{
+X				uint32 x;
 X
-X if ((sc_pb->bp + sizeof(uint16)) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X memcpy(&x, &sc_pb->buffer[sc_pb->bp], sizeof(uint16));
-X sc_pb->bp += sizeof(uint16);
-X i = (long)x;
-X break;
-X }
-X
-X case INT32:
-X {
-X int32 x;
-X
-X if ((sc_pb->bp + sizeof(int32)) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X memcpy(&x, &sc_pb->buffer[sc_pb->bp], sizeof(int32));
-X sc_pb->bp += sizeof(int32);
-X i = (long)x;
-X break;
-X }
-X
-X case INT32 | NOSIGN:
-X {
-X uint32 x;
-X
-X if ((sc_pb->bp + sizeof(uint32)) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X memcpy(&x, &sc_pb->buffer[sc_pb->bp], sizeof(uint32));
-X sc_pb->bp += sizeof(uint32);
-X i = (long)x;
-X break;
-X }
-X default:
-X {
-X if ((integer = newintobject(flags)) == NULL)
-X return -1;
-X err_scerrset(FlagError, integer, "GetI");
-X DECREF(integer);
-X return -1;
-X }
-X }
-X }
-X if ((integer = newintobject(i)) == NULL)
-X return -1;
-X if (xPush(integer, sc_pb) != 0) {
-X DECREF(integer);
-X return -1;
-X }
-X DECREF(integer);
-X return 0;
+X				if ((sc_pb->bp + sizeof(uint32)) > sc_pb->maxbufsize) {
+X					err_scerr(BufferOverflow);
+X					return -1;
+X				}
+X				memcpy(&x, &sc_pb->buffer[sc_pb->bp], sizeof(uint32));
+X				sc_pb->bp += sizeof(uint32);
+X				i = (long)x;
+X				break;
+X			}
+X		default:
+X			{
+X				if ((integer = newintobject(flags)) == NULL)
+X					return -1;
+X				err_scerrset(FlagError, integer, "GetI");
+X				DECREF(integer);
+X				return -1;
+X			}
+X		}
+X	}
+X	if ((integer = newintobject(i)) == NULL)
+X		return -1;
+X	if (xPush(integer, sc_pb) != 0) {
+X		DECREF(integer);
+X		return -1;
+X	}
+X	DECREF(integer);
+X	return 0;
 X}
 X
 Xstatic int
 XxGetC(flags, sc_pb)
-X TscOperand flags;
-X struct sc_ProcessBlock *sc_pb;
+X	TscOperand flags;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X extern object *newcapobject();
-X object *capobj;
-X capability cap;
+X	extern object *newcapobject();
+X	object *capobj;
+X	capability cap;
 X
-X if ((int)flags != 0) {
-X switch ((int)flags) {
-X
-X case PSEUDOFIELD:
-X cap.cap_port = sc_pb->hdr.h_port;
-X cap.cap_priv = sc_pb->hdr.h_priv;
-X break;
-X }
-X } else {
-X if ((CAPSIZE + sc_pb->bp) > sc_pb->maxbufsize) {
-X err_scerr(BufferOverflow);
-X return -1;
-X }
-X memcpy(&cap, &sc_pb->buffer[sc_pb->bp], CAPSIZE);
-X }
-X if ((capobj = newcapobject(&cap)) == NULL)
-X return -1;
-X return xPush(capobj, sc_pb);
+X	if ((int)flags != 0) {
+X		switch ((int)flags) {
+X		
+X		case PSEUDOFIELD:
+X			cap.cap_port = sc_pb->hdr.h_port;
+X			cap.cap_priv = sc_pb->hdr.h_priv;
+X			break;
+X		}
+X	} else {
+X		if ((CAPSIZE + sc_pb->bp) > sc_pb->maxbufsize) {
+X			err_scerr(BufferOverflow);
+X			return -1;
+X		}
+X		memcpy(&cap, &sc_pb->buffer[sc_pb->bp], CAPSIZE);
+X	}
+X	if ((capobj = newcapobject(&cap)) == NULL)
+X		return -1;
+X	return xPush(capobj, sc_pb);
 X}
 X
 Xstatic int
 XxEqual(sc_pb)
-X struct sc_ProcessBlock *sc_pb;
+X	struct sc_ProcessBlock *sc_pb;
 X{
-X object *int1, *int2;
+X	object *int1, *int2;
 X
-X if (sc_pb->sp < 2) {
-X err_scerr(StackUnderflow);
-X return -1;
-X }
-X int1 = sc_pb->stack[sc_pb->sp - 1];
-X int2 = sc_pb->stack[sc_pb->sp - 2];
-X if ((int1 == NULL) || (int2 == NULL))
-X return -1;
-X if (!is_intobject(int1))
-X return err_scerrset(TypeFailure, int1, "Equal");
-X if (!is_intobject(int2))
-X return err_scerrset(TypeFailure, int2, "Equal");
-X if (getintvalue(int1) != getintvalue(int2)) {
-X object *tmptuple;
+X	if (sc_pb->sp < 2) {
+X		err_scerr(StackUnderflow);
+X		return -1;
+X	}
+X	int1 = sc_pb->stack[sc_pb->sp - 1];
+X	int2 = sc_pb->stack[sc_pb->sp - 2];
+X	if ((int1 == NULL) || (int2 == NULL))
+X		return -1;
+X	if (!is_intobject(int1))
+X		return err_scerrset(TypeFailure, int1, "Equal");
+X	if (!is_intobject(int2))
+X		return err_scerrset(TypeFailure, int2, "Equal");
+X	if (getintvalue(int1) != getintvalue(int2)) {
+X		object *tmptuple;
 X
-X if ((tmptuple = newtupleobject(2)) == NULL)
-X return -1;
-X INCREF(int1);
-X if (settupleitem(tmptuple, 0, int1) != 0) {
-X DECREF(tmptuple);
-X DECREF(int1);
-X return -1;
-X }
-X if (settupleitem(tmptuple, 1, int2) != 0) {
-X DECREF(tmptuple);
-X DECREF(int2);
-X return -1;
-X }
-X return err_scerrset(SizeError, tmptuple, "Equal");
-X }
-X return 0;
+X		if ((tmptuple = newtupleobject(2)) == NULL)
+X			return -1;
+X		INCREF(int1);
+X		if (settupleitem(tmptuple, 0, int1) != 0) {
+X			DECREF(tmptuple);
+X			DECREF(int1);
+X			return -1;
+X		}
+X		if (settupleitem(tmptuple, 1, int2) != 0) {
+X			DECREF(tmptuple);
+X			DECREF(int2);
+X			return -1;
+X		}
+X		return err_scerrset(SizeError, tmptuple, "Equal");
+X	}
+X	return 0;
 X}
 X
 Xobject *
 Xsc_interpreter(self, args)
-X object *self, *args;
+X	object *self, *args;
 X{
 XTscOpcode opcode;
 XTscOperand operand;
@@ -2294,215 +2294,215 @@ Xint datasize, ret;
 Xobject *returnobject;
 Xstruct sc_ProcessBlock sc_pb;
 X
-X if ((datasize = init(self, &sc_pb)) < 0)
-X return NULL;
-X memcpy(&opcode, sc_pb.data, sizeof(TscOpcode));
-X sc_pb.datsize = datasize;
-X sc_pb.pc += sizeof(TscOpcode);
-X if (opcode != BufSize) {
-X free((char *)sc_pb.stack);
-X return err_scerr(NoBufSize);
-X }
-X memcpy(&operand, &sc_pb.data[sc_pb.pc], sizeof(TscOperand));
-X sc_pb.pc += sizeof(TscOperand);
-X sc_pb.buffer = (unsigned char *)malloc(operand);
-X sc_pb.maxbufsize = (int)operand;
-X if (sc_pb.buffer == NULL) {
-X free((char *)sc_pb.stack);
-X return err_nomem();
-X }
-X memcpy(&opcode, &sc_pb.data[sc_pb.pc], sizeof(TscOpcode));
-X if (opcode != NoArgs) {
-X if (xPush(args, &sc_pb) != 0) {
-X UnInit(self, &sc_pb);
-X return NULL;
-X }
-X }
-X while (sc_pb.pc < datasize) {
-X memcpy(&opcode, &sc_pb.data[sc_pb.pc], sizeof(TscOpcode));
-X sc_pb.pc += sizeof(TscOpcode);
-X if (opcode & (OPERAND | FLAGS)) {
-X memcpy(&operand, &sc_pb.data[sc_pb.pc], sizeof(TscOperand));
-X sc_pb.pc += sizeof(TscOperand);
-X }
+X	if ((datasize = init(self, &sc_pb)) < 0)
+X		return NULL;
+X	memcpy(&opcode, sc_pb.data, sizeof(TscOpcode));
+X	sc_pb.datsize = datasize;
+X	sc_pb.pc += sizeof(TscOpcode);
+X	if (opcode != BufSize) {
+X		free((char *)sc_pb.stack);
+X		return err_scerr(NoBufSize);
+X	}
+X	memcpy(&operand, &sc_pb.data[sc_pb.pc], sizeof(TscOperand));
+X	sc_pb.pc += sizeof(TscOperand);
+X	sc_pb.buffer = (unsigned char *)malloc(operand);
+X	sc_pb.maxbufsize = (int)operand;
+X	if (sc_pb.buffer == NULL) {
+X		free((char *)sc_pb.stack);
+X		return err_nomem();
+X	}
+X	memcpy(&opcode, &sc_pb.data[sc_pb.pc], sizeof(TscOpcode));
+X	if (opcode != NoArgs) {
+X		if (xPush(args, &sc_pb) != 0) {
+X			UnInit(self, &sc_pb);
+X			return NULL;
+X		}
+X	}
+X	while (sc_pb.pc < datasize) {
+X		memcpy(&opcode, &sc_pb.data[sc_pb.pc], sizeof(TscOpcode));
+X		sc_pb.pc += sizeof(TscOpcode);
+X		if (opcode & (OPERAND | FLAGS)) {
+X			memcpy(&operand, &sc_pb.data[sc_pb.pc], sizeof(TscOperand));
+X			sc_pb.pc += sizeof(TscOperand);
+X		}
 X#ifdef SCDEBUG
-X xPrintCode(opcode);
-X if ((opcode & FLAGS) && (opcode & OPERAND))
-X xPrintFlags(operand);
-X else if (opcode & OPERAND)
-X xPrintNum(operand);
-X printf("\n");
-X fflush(stdout);
+X		xPrintCode(opcode);
+X		if ((opcode & FLAGS) && (opcode & OPERAND))
+X			xPrintFlags(operand);
+X		else if (opcode & OPERAND)
+X			xPrintNum(operand);
+X		printf("\n");
+X		fflush(stdout);
 X#endif
 X#ifdef STACK_TRACE
-X {
-X register i;
+X		{
+X			register i;
 X
-X printf("Stack trace :\n");
-X for(i = 0; i < sc_pb.sp; i++) {
-X printobject(sc_pb.stack[i], stdout, 0);
-X printf("\n");
-X }
-X }
+X			printf("Stack trace :\n");
+X			for(i = 0; i < sc_pb.sp; i++) {
+X				printobject(sc_pb.stack[i], stdout, 0);
+X				printf("\n");
+X			}
+X		}
 X#endif
-X switch(opcode) {
+X		switch(opcode) {
 X
-X case NoArgs:
-X ret = 0;
-X if (args != NULL) {
-X err_scerrset(TypeFailure, args, "NoArgs");
-X ret = -1;
-X }
-X break;
+X		case NoArgs:
+X			ret = 0;
+X			if (args != NULL) {
+X				err_scerrset(TypeFailure, args, "NoArgs");
+X				ret = -1;
+X			}
+X			break;
 X
-X case BufSize:
-X UnInit(self, &sc_pb);
-X return err_scerr(TwoBufSize);
+X		case BufSize:
+X			UnInit(self, &sc_pb);
+X			return err_scerr(TwoBufSize);
 X
-X case Trans:
-X ret = xTrans(self, operand, &sc_pb);
-X break;
+X		case Trans:
+X			ret = xTrans(self, operand, &sc_pb);
+X			break;
 X
-X case TTupleS:
-X ret = xTTupleS(operand, &sc_pb);
-X break;
+X		case TTupleS:
+X			ret = xTTupleS(operand, &sc_pb);
+X			break;
 X
-X case Unpack:
-X ret = xUnpack(operand, &sc_pb);
-X break;
+X		case Unpack:
+X			ret = xUnpack(operand, &sc_pb);
+X			break;
 X
-X case AilWord:
-X ret = xAilword(operand, &sc_pb);
-X break;
+X		case AilWord:
+X			ret = xAilword(operand, &sc_pb);
+X			break;
 X
-X case StringS:
-X ret = xStringS(&sc_pb);
-X break;
+X		case StringS:
+X			ret = xStringS(&sc_pb);
+X			break;
 X
-X case ListS:
-X ret = xListS(&sc_pb);
-X break;
+X		case ListS:
+X			ret = xListS(&sc_pb);
+X			break;
 X
-X case PutFS:
-X ret = xPutFS(operand, &sc_pb);
-X break;
+X		case PutFS:
+X			ret = xPutFS(operand, &sc_pb);
+X			break;
 X
-X case TStringSeq:
-X ret = xTStringSeq(operand, &sc_pb);
-X break;
+X		case TStringSeq:
+X			ret = xTStringSeq(operand, &sc_pb);
+X			break;
 X
-X case TStringSlt:
-X ret = xTStringSlt(operand, &sc_pb);
-X break;
+X		case TStringSlt:
+X			ret = xTStringSlt(operand, &sc_pb);
+X			break;
 X
-X case PutVS:
-X ret = xPutVS(&sc_pb);
-X break;
+X		case PutVS:
+X			ret = xPutVS(&sc_pb);
+X			break;
 X
-X case TListSeq:
-X ret = xTListSeq(operand, &sc_pb);
-X break;
+X		case TListSeq:
+X			ret = xTListSeq(operand, &sc_pb);
+X			break;
 X
-X case TListSlt:
+X		case TListSlt:
+X		
+	ret = xTListSlt(operand, &sc_pb);
+X			break;
 X
-ret = xTListSlt(operand, &sc_pb);
-X break;
+X		case LoopPut:
+X			ret = xLoopPut(operand, &sc_pb);
+X			break;
 X
-X case LoopPut:
-X ret = xLoopPut(operand, &sc_pb);
-X break;
+X		case EndLoop:
+X			ret = xEndLoop(operand, &sc_pb);
+X			break;
 X
-X case EndLoop:
-X ret = xEndLoop(operand, &sc_pb);
-X break;
+X		case PutI:
+X			ret = xPutI(operand, &sc_pb);
+X			break;
 X
-X case PutI:
-X ret = xPutI(operand, &sc_pb);
-X break;
+X		case PutC:
+X			ret = xPutC(&sc_pb);
+X			break;
 X
-X case PutC:
-X ret = xPutC(&sc_pb);
-X break;
+X		case Dup:
+X			ret = xDup(operand, &sc_pb);
+X			break;
 X
-X case Dup:
-X ret = xDup(operand, &sc_pb);
-X break;
+X		case Pop:
+X			ret = xPop(operand, &sc_pb);
+X			break;
 X
-X case Pop:
-X ret = xPop(operand, &sc_pb);
-X break;
+X		case Align:
+X			ret = xAlign(operand, &sc_pb);
+X			break;
+X		
+X		case Pack:
+X			ret = xPack(operand, &sc_pb);
+X			break;
 X
-X case Align:
-X ret = xAlign(operand, &sc_pb);
-X break;
+X		case GetVS:
+X			ret = xGetVS(&sc_pb);
+X			break;
+X		
+X		case LoopGet:
+X			ret = xLoopGet(operand, &sc_pb);
+X			break;
+X		
+X		case GetFS:
+X			ret = xGetFS(operand, &sc_pb);
+X			break;
+X		
+X		case GetI:
+X			ret = xGetI(operand, &sc_pb);
+X			break;
+X		
+X		case GetC:
+X			ret = xGetC(operand, &sc_pb);
+X			break;
+X		
+X		case PushI:
+X			{
+X				object *element;
+X			
+X				element = newintobject((long)operand);
+X				if (element == NULL) {
+X					UnInit(self, &sc_pb);
+X					return NULL;
+X				}
+X				ret = xPush(element, &sc_pb);
+X				if (ret == 0)
+X					DECREF(element);
+X			}
+X			break;
 X
-X case Pack:
-X ret = xPack(operand, &sc_pb);
-X break;
+X		case Equal:
+X			ret = xEqual(&sc_pb);
+X			break;
 X
-X case GetVS:
-X ret = xGetVS(&sc_pb);
-X break;
+X		default:
+X			{
+X				char errstr[256];
 X
-X case LoopGet:
-X ret = xLoopGet(operand, &sc_pb);
-X break;
-X
-X case GetFS:
-X ret = xGetFS(operand, &sc_pb);
-X break;
-X
-X case GetI:
-X ret = xGetI(operand, &sc_pb);
-X break;
-X
-X case GetC:
-X ret = xGetC(operand, &sc_pb);
-X break;
-X
-X case PushI:
-X {
-X object *element;
-X
-X element = newintobject((long)operand);
-X if (element == NULL) {
-X UnInit(self, &sc_pb);
-X return NULL;
-X }
-X ret = xPush(element, &sc_pb);
-X if (ret == 0)
-X DECREF(element);
-X }
-X break;
-X
-X case Equal:
-X ret = xEqual(&sc_pb);
-X break;
-X
-X default:
-X {
-X char errstr[256];
-X
-X UnInit(self, &sc_pb);
-X sprintf(errstr, "Unknow stubcode %d", opcode);
-X err_setstr(RuntimeError, errstr);
-X return NULL;
-X }
-X }
-X if (ret != 0) {
-X UnInit(self, &sc_pb);
-X return NULL;
-X }
-X }
-X if (sc_pb.sp > 0) {
-X INCREF(sc_pb.stack[sc_pb.sp - 1]);
-X returnobject = sc_pb.stack[sc_pb.sp - 1];
-X } else {
-X INCREF(None);
-X returnobject = None;
-X }
-X UnInit(self, &sc_pb);
-X return returnobject;
+X				UnInit(self, &sc_pb);
+X				sprintf(errstr, "Unknow stubcode %d", opcode);
+X				err_setstr(RuntimeError, errstr);
+X				return NULL;
+X			}
+X		}
+X		if (ret != 0) {
+X			UnInit(self, &sc_pb);
+X			return NULL;
+X		}
+X	}
+X	if (sc_pb.sp > 0) {
+X		INCREF(sc_pb.stack[sc_pb.sp - 1]);
+X		returnobject = sc_pb.stack[sc_pb.sp - 1];
+X	} else {
+X		INCREF(None);
+X		returnobject = None;
+X	}
+X	UnInit(self, &sc_pb);
+X	return returnobject;
 X}
 EOF
 fi

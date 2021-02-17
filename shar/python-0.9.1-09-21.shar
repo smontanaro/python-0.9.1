@@ -29,7 +29,7 @@ X\funcitem{hexdigits}
 XThe string
 X{\tt '0123456789abcdefABCDEF'}.
 X\funcitem{letters}
-XThe concatenation of the strings
+XThe concatenation of the strings	
 X{\tt lowercase}
 Xand
 X{\tt uppercase}
@@ -109,7 +109,7 @@ X\funcitem{swapcase}{s}
 XConverts lower case letters to upper case and vice versa.
 X\funcitem{upper}{s}
 XConvert letters to upper case.
-X\funcitem{ljust(s, width), rjust(s, width), center}{s, width}
+X\funcitem{ljust(s, width), rjust(s, width),  center}{s, width}
 X%.br
 XThese functions respectively left-justify, right-justify and center a
 Xstring in a field of given width.
@@ -262,7 +262,7 @@ X>>> optlist
 X[('-a', ''), ('-b', ''), ('-c', 'foo'), ('-d', 'bar')]
 X>>> args
 X['a1', 'a2']
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThe exception
 X{\tt getopt.error = 'getopt error'}
@@ -315,7 +315,7 @@ XRead the file for details.
 XSuggested usage is
 X\bcode\begin{verbatim}
 X>>> from stdwinevents import *
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X
 X\subsection{Standard Module {\tt rect}}
@@ -352,7 +352,7 @@ X>>> r2 = (0, 0), (10, 20)
 X>>> r3 = rect.intersect(r1, r2)
 X>>> if r3 is rect.empty: print 'Empty intersection'
 XEmpty intersection
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X\funcitem{is\_empty}{r}
 X%.br
@@ -503,12 +503,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -539,12 +539,12 @@ X
 Xstatic int
 Xinit()
 X{
-X if (audio_fd >= 0)
-X return 1;
-X if ((audio_fd = asa_init()) >= 0)
-X return 1;
-X err_setstr(RuntimeError, "can't initialize async audio");
-X return 0;
+X	if (audio_fd >= 0)
+X		return 1;
+X	if ((audio_fd = asa_init()) >= 0)
+X		return 1;
+X	err_setstr(RuntimeError, "can't initialize async audio");
+X	return 0;
 X}
 X
 X
@@ -552,567 +552,567 @@ X/* POSIX methods */
 X
 Xstatic object *
 Xaudio_get_ioctl(self, args, code)
-X object *self;
-X object *args;
-X long code;
+X	object *self;
+X	object *args;
+X	long code;
 X{
-X long x;
-X if (!getnoarg(args))
-X return NULL;
-X if (!init())
-X return NULL;
-X if ((x = ioctl(audio_fd, code, (char *) NULL)) < 0) {
-X return NULL;
-X }
-X return newintobject(x);
+X	long x;
+X	if (!getnoarg(args))
+X		return NULL;
+X	if (!init())
+X		return NULL;
+X	if ((x = ioctl(audio_fd, code, (char *) NULL)) < 0) {
+X		return NULL;
+X	}
+X	return newintobject(x);
 X}
 X
 Xstatic object *
 Xaudio_set_ioctl(self, args, code)
-X object *self;
-X object *args;
-X long code;
+X	object *self;
+X	object *args;
+X	long code;
 X{
-X long x;
-X if (!getlongarg(args, &x))
-X return NULL;
-X if (!init())
-X return NULL;
-X if (ioctl(audio_fd, code, (char *) x) != 0)
-X return NULL;
-X INCREF(None);
-X return None;
+X	long x;
+X	if (!getlongarg(args, &x))
+X		return NULL;
+X	if (!init())
+X		return NULL;
+X	if (ioctl(audio_fd, code, (char *) x) != 0)
+X		return NULL;
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xaudio_getingain(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X return audio_get_ioctl(self, args, AUDIOCGETINGAIN);
+X	return audio_get_ioctl(self, args, AUDIOCGETINGAIN);
 X}
 X
 Xstatic object *
 Xaudio_getoutgain(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X return audio_get_ioctl(self, args, AUDIOCGETOUTGAIN);
+X	return audio_get_ioctl(self, args, AUDIOCGETOUTGAIN);
 X}
 X
 Xstatic object *
 Xaudio_setingain(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X return audio_set_ioctl(self, args, AUDIOCSETINGAIN);
+X	return audio_set_ioctl(self, args, AUDIOCSETINGAIN);
 X}
 X
 Xstatic object *
 Xaudio_setoutgain(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X return audio_set_ioctl(self, args, AUDIOCSETOUTGAIN);
+X	return audio_set_ioctl(self, args, AUDIOCSETOUTGAIN);
 X}
 X
 Xstatic object *
 Xaudio_setrate(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X return audio_set_ioctl(self, args, AUDIOCSETRATE);
+X	return audio_set_ioctl(self, args, AUDIOCSETRATE);
 X}
 X
 Xstatic object *
 Xaudio_setduration(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X return audio_set_ioctl(self, args, AUDIOCDURATION);
+X	return audio_set_ioctl(self, args, AUDIOCDURATION);
 X}
 X
 X/* Compute average bias, and remove it */
 X
 Xstatic void
 Xunbias(buf, len)
-X char *buf;
-X int len;
+X	char *buf;
+X	int len;
 X{
-X register int i;
-X register int c;
-X register long bias;
-X if (len == 0)
-X return;
-X bias = 0;
-X for (i = 0; i < len; i++) {
-X c = buf[i];
-X if (c > 127)
-X c -= 256;
-X bias += c;
-X }
-X bias = (bias + len/2) / len; /* Rounded average */
-X if (bias != 0) {
-X for (i = 0; i < len; i++) {
-X buf[i] -= bias;
-X }
-X }
+X	register int i;
+X	register int c;
+X	register long bias;
+X	if (len == 0)
+X		return;
+X	bias = 0;
+X	for (i = 0; i < len; i++) {
+X		c = buf[i];
+X		if (c > 127)
+X			c -= 256;
+X		bias += c;
+X	}
+X	bias = (bias + len/2) / len; /* Rounded average */
+X	if (bias != 0) {
+X		for (i = 0; i < len; i++) {
+X			buf[i] -= bias;
+X		}
+X	}
 X}
 X
 Xstatic object *
 Xaudio_read(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int c, i, n;
-X object *v;
-X char *s;
-X if (!getintarg(args, &n))
-X return NULL;
-X if (n <= 0) {
-X err_setstr(RuntimeError, "audio.read: arg <= 0");
-X return NULL;
-X }
-X if (!init())
-X return NULL;
-X v = newsizedstringobject((char *)NULL, n);
-X if (v == NULL)
-X return err_nomem();
-X s = getstringvalue(v);
-X n = read(audio_fd, s, n);
-X if (intrcheck()) {
-X DECREF(v);
-X err_set(KeyboardInterrupt);
-X return NULL;
-X }
-X /* Check for errors */
-X if (n < 0) {
-X DECREF(v);
-X return NULL;
-X }
-X /* But EOF is reported as an empty string */
-X
-X unbias(s, n);
-X resizestring(&v, n);
-X return v;
+X	int c, i, n;
+X	object *v;
+X	char *s;
+X	if (!getintarg(args, &n))
+X		return NULL;
+X	if (n <= 0) {
+X		err_setstr(RuntimeError, "audio.read: arg <= 0");
+X		return NULL;
+X	}
+X	if (!init())
+X		return NULL;
+X	v = newsizedstringobject((char *)NULL, n);
+X	if (v == NULL)
+X		return err_nomem();
+X	s = getstringvalue(v);
+X	n = read(audio_fd, s, n);
+X	if (intrcheck()) {
+X		DECREF(v);
+X		err_set(KeyboardInterrupt);
+X		return NULL;
+X	}
+X	/* Check for errors */
+X	if (n < 0) {
+X		DECREF(v);
+X		return NULL;
+X	}
+X	/* But EOF is reported as an empty string */
+X	
+X	unbias(s, n);
+X	resizestring(&v, n);
+X	return v;
 X}
 X
 Xstatic object *
 Xaudio_write(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int n, n2;
-X object *v;
-X if (!getstrarg(args, &v))
-X return NULL;
-X if (!init())
-X return NULL;
-X errno = 0;
-X n2 = write(audio_fd, getstringvalue(v), n = getstringsize(v));
-X if (intrcheck()) {
-X err_set(KeyboardInterrupt);
-X return NULL;
-X }
-X /* Check for other errors */
-X if (n2 != n) {
-X if (errno == 0)
-X errno = EIO;
-X return NULL;
-X }
-X INCREF(None);
-X return None;
+X	int n, n2;
+X	object *v;
+X	if (!getstrarg(args, &v))
+X		return NULL;
+X	if (!init())
+X		return NULL;
+X	errno = 0;
+X	n2 = write(audio_fd, getstringvalue(v), n = getstringsize(v));
+X	if (intrcheck()) {
+X		err_set(KeyboardInterrupt);
+X		return NULL;
+X	}
+X	/* Check for other errors */
+X	if (n2 != n) {
+X		if (errno == 0)
+X			errno = EIO;
+X		return NULL;
+X	}
+X	INCREF(None);
+X	return None;
 X}
 X
 X/* audio.amplify(sample, f1, f2).
-X Amplify a sample by a factor changing from f1/256 to (almost) f2/256.
-X Negative factors are allowed. Sound values that are to large
-X to fit in a byte are clipped. */
+X   Amplify a sample by a factor changing from f1/256 to (almost) f2/256.
+X   Negative factors are allowed.  Sound values that are to large
+X   to fit in a byte are clipped. */
 X
 Xstatic object *
 Xaudio_amplify(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *v;
-X char *s, *t;
-X int f1, f2;
-X int i, n;
-X int c;
-X if (!getstrintintarg(args, &v, &f1, &f2))
-X return NULL;
-X n = getstringsize(v);
-X s = getstringvalue(v);
-X v = newsizedstringobject((char *)NULL, n);
-X if (v == NULL)
-X return err_nomem();
-X t = getstringvalue(v);
-X for (i = 0; i < n; i++) {
-X c = s[i];
-X if (c > 127) c -= 256; /* If chars are unsigned */
-X c = c * ( f1*(n-i) + f2*i ) / ( n*256 );
-X if (c > 127) c = 127;
-X else if (c < -128) c = -128;
-X t[i] = c;
-X }
-X return v;
+X	object *v;
+X	char *s, *t;
+X	int f1, f2;
+X	int i, n;
+X	int c;
+X	if (!getstrintintarg(args, &v, &f1, &f2))
+X		return NULL;
+X	n = getstringsize(v);
+X	s = getstringvalue(v);
+X	v = newsizedstringobject((char *)NULL, n);
+X	if (v == NULL)
+X		return err_nomem();
+X	t = getstringvalue(v);
+X	for (i = 0; i < n; i++) {
+X		c = s[i];
+X		if (c > 127) c -= 256; /* If chars are unsigned */
+X		c = c * ( f1*(n-i) + f2*i ) / ( n*256 );
+X		if (c > 127) c = 127;
+X		else if (c < -128) c = -128;
+X		t[i] = c;
+X	}
+X	return v;
 X}
 X
 X/* audio.reverse(s): return a sample backwards */
 X
 Xstatic object *
 Xaudio_reverse(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *v;
-X char *s, *t;
-X int i, n;
-X if (!getstrarg(args, &v))
-X return NULL;
-X n = getstringsize(v);
-X s = getstringvalue(v);
-X v = newsizedstringobject((char *)NULL, n);
-X if (v == NULL)
-X return err_nomem();
-X t = getstringvalue(v);
-X for (i = 0; i < n; i++) {
-X t[n-1-i] = s[i];
-X }
-X return v;
+X	object *v;
+X	char *s, *t;
+X	int i, n;
+X	if (!getstrarg(args, &v))
+X		return NULL;
+X	n = getstringsize(v);
+X	s = getstringvalue(v);
+X	v = newsizedstringobject((char *)NULL, n);
+X	if (v == NULL)
+X		return err_nomem();
+X	t = getstringvalue(v);
+X	for (i = 0; i < n; i++) {
+X		t[n-1-i] = s[i];
+X	}
+X	return v;
 X}
 X
 X/* audio.add(a, b): add two samples.
-X Bytes that exceed the range are clipped.
-X If one is shorter, the rest of the longer sample is returned unchanged. */
+X   Bytes that exceed the range are clipped.
+X   If one is shorter, the rest of the longer sample is returned unchanged. */
 X
 Xstatic object *
 Xaudio_add(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *a, *b, *v;
-X char *sa, *sb, *t;
-X int i, n, na, nb, c, ca, cb;
-X if (!getstrstrarg(args, &a, &b))
-X return NULL;
-X na = getstringsize(a);
-X sa = getstringvalue(a);
-X nb = getstringsize(b);
-X sb = getstringvalue(b);
-X n = (na > nb) ? na : nb;
-X v = newsizedstringobject((char *)NULL, n);
-X if (v == NULL)
-X return err_nomem();
-X t = getstringvalue(v);
-X for (i = 0; i < n; i++) {
-X c = 0;
-X if (i < na) {
-X ca = sa[i];
-X if (ca > 127) ca = ca - 256;
-X c = c + ca;
-X }
-X if (i < nb) {
-X cb = sb[i];
-X if (cb > 127) cb = cb - 256;
-X c = c + cb;
-X }
-X if (c > 127) c = 127;
-X else if (c < -128) c = -128;
-X t[i] = c;
-X }
-X return v;
+X	object *a, *b, *v;
+X	char *sa, *sb, *t;
+X	int i, n, na, nb, c, ca, cb;
+X	if (!getstrstrarg(args, &a, &b))
+X		return NULL;
+X	na = getstringsize(a);
+X	sa = getstringvalue(a);
+X	nb = getstringsize(b);
+X	sb = getstringvalue(b);
+X	n = (na > nb) ? na : nb;
+X	v = newsizedstringobject((char *)NULL, n);
+X	if (v == NULL)
+X		return err_nomem();
+X	t = getstringvalue(v);
+X	for (i = 0; i < n; i++) {
+X		c = 0;
+X		if (i < na) {
+X			ca = sa[i];
+X			if (ca > 127) ca = ca - 256;
+X			c = c + ca;
+X		}
+X		if (i < nb) {
+X			cb = sb[i];
+X			if (cb > 127) cb = cb - 256;
+X			c = c + cb;
+X		}
+X		if (c > 127) c = 127;
+X		else if (c < -128) c = -128;
+X		t[i] = c;
+X	}
+X	return v;
 X}
 X
 X/* audio.chr2num(s) returns a list containing the numeric values
-X of the samples. */
+X   of the samples. */
 X
 Xstatic object *
 Xaudio_chr2num(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *v, *w;
-X char *s;
-X int c, i, n;
-X static object *ints[256];
-X
-X /* To avoid filling memory with all those int objects, we create
-X integer objects for all the desired values and reference these. */
-X if (ints[255] == NULL) {
-X for (i = 0; i < 256; i++) {
-X if (ints[i] != NULL)
-X continue;
-X c = i;
-X if (c > 127) c -= 256;
-X ints[i] = newintobject((long)c);
-X if (ints[i] == NULL)
-X return NULL;
-X }
-X }
-X
-X if (!getstrarg(args, &v))
-X return NULL;
-X n = getstringsize(v);
-X s = getstringvalue(v);
-X v = newlistobject(n);
-X if (v == NULL)
-X return err_nomem();
-X for (i = 0; i < n; i++) {
-X c = s[i] & 0xff;
-X w = ints[c];
-X INCREF(w);
-X if (setlistitem(v, i, w) != 0) {
-X DECREF(v);
-X return NULL;
-X }
-X }
-X return v;
+X	object *v, *w;
+X	char *s;
+X	int c, i, n;
+X	static object *ints[256];
+X	
+X	/* To avoid filling memory with all those int objects, we create
+X	   integer objects for all the desired values and reference these. */
+X	if (ints[255] == NULL) {
+X		for (i = 0; i < 256; i++) {
+X			if (ints[i] != NULL)
+X				continue;
+X			c = i;
+X			if (c > 127) c -= 256;
+X			ints[i] = newintobject((long)c);
+X			if (ints[i] == NULL)
+X				return NULL;
+X		}
+X	}
+X	
+X	if (!getstrarg(args, &v))
+X		return NULL;
+X	n = getstringsize(v);
+X	s = getstringvalue(v);
+X	v = newlistobject(n);
+X	if (v == NULL)
+X		return err_nomem();
+X	for (i = 0; i < n; i++) {
+X		c = s[i] & 0xff;
+X		w = ints[c];
+X		INCREF(w);
+X		if (setlistitem(v, i, w) != 0) {
+X			DECREF(v);
+X			return NULL;
+X		}
+X	}
+X	return v;
 X}
 X
 X/* audio.num2chr is the inverse of audio.chr2num.
-X Excess values are clipped. */
+X   Excess values are clipped. */
 X
 Xstatic object *
 Xaudio_num2chr(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *v, *w;
-X char *s;
-X int c, i, n;
-X if (!is_listobject(args)) {
-X err_badarg();
-X return NULL;
-X }
-X n = getlistsize(args);
-X v = newsizedstringobject((char *)NULL, n);
-X if (v == NULL)
-X return NULL;
-X s = getstringvalue(v);
-X for (i = 0; i < n; i++) {
-X w = getlistitem(args, i);
-X if (!is_intobject(w)) {
-X DECREF(v);
-X err_badarg();
-X return NULL;
-X }
-X s[i] = getintvalue(w);
-X }
-X return v;
+X	object *v, *w;
+X	char *s;
+X	int c, i, n;
+X	if (!is_listobject(args)) {
+X		err_badarg();
+X		return NULL;
+X	}
+X	n = getlistsize(args);
+X	v = newsizedstringobject((char *)NULL, n);
+X	if (v == NULL)
+X		return NULL;
+X	s = getstringvalue(v);
+X	for (i = 0; i < n; i++) {
+X		w = getlistitem(args, i);
+X		if (!is_intobject(w)) {
+X			DECREF(v);
+X			err_badarg();
+X			return NULL;
+X		}
+X		s[i] = getintvalue(w);
+X	}
+X	return v;
 X}
 X
 Xstatic object *stdaudio_buffer = NULL;
 X
 Xstatic object *
 Xaudio_start_recording(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int n;
-X object *v;
-X char *s;
-X if (!getintarg(args, &n))
-X return NULL;
-X if (stdaudio_buffer != NULL) {
-X err_setstr(RuntimeError, "audio.start_recording: device busy");
-X return NULL;
-X }
-X if (n <= 0) {
-X err_setstr(TypeError, "audio.start_recording: arg <= 0");
-X return NULL;
-X }
-X if (!init())
-X return NULL;
-X v = newsizedstringobject((char *)NULL, n);
-X if (v == NULL)
-X return err_nomem();
-X s = getstringvalue(v);
-X asa_start_read(s, n);
-X stdaudio_buffer = v;
-X INCREF(None);
-X return None;
+X	int n;
+X	object *v;
+X	char *s;
+X	if (!getintarg(args, &n))
+X		return NULL;
+X	if (stdaudio_buffer != NULL) {
+X		err_setstr(RuntimeError, "audio.start_recording: device busy");
+X		return NULL;
+X	}
+X	if (n <= 0) {
+X		err_setstr(TypeError, "audio.start_recording: arg <= 0");
+X		return NULL;
+X	}
+X	if (!init())
+X		return NULL;
+X	v = newsizedstringobject((char *)NULL, n);
+X	if (v == NULL)
+X		return err_nomem();
+X	s = getstringvalue(v);
+X	asa_start_read(s, n);
+X	stdaudio_buffer = v;
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xaudio_poll(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int n;
-X if (!getnoarg(args))
-X return NULL;
-X if (stdaudio_buffer == NULL) {
-X err_setstr(RuntimeError, "audio.poll: not busy");
-X return NULL;
-X }
-X if (!init())
-X return NULL;
-X if ((n = asa_poll()) < 0)
-X return NULL;
-X return newintobject(n);
+X	int n;
+X	if (!getnoarg(args))
+X		return NULL;
+X	if (stdaudio_buffer == NULL) {
+X		err_setstr(RuntimeError, "audio.poll: not busy");
+X		return NULL;
+X	}
+X	if (!init())
+X		return NULL;
+X	if ((n = asa_poll()) < 0)
+X		return NULL;
+X	return newintobject(n);
 X}
 X
 Xstatic object *
 Xaudio_wait_recording(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *v;
-X int n;
-X if (!getnoarg(args))
-X return NULL;
-X if (stdaudio_buffer == NULL) {
-X err_setstr(RuntimeError, "audio.wait_recording: not busy");
-X return NULL;
-X }
-X if (!init())
-X return NULL;
-X if ((n = asa_wait()) < 0)
-X return NULL;
-X v = stdaudio_buffer;
-X stdaudio_buffer = NULL;
-X unbias(getstringvalue(v), n);
-X resizestring(&v, n);
-X return v;
+X	object *v;
+X	int n;
+X	if (!getnoarg(args))
+X		return NULL;
+X	if (stdaudio_buffer == NULL) {
+X		err_setstr(RuntimeError, "audio.wait_recording: not busy");
+X		return NULL;
+X	}
+X	if (!init())
+X		return NULL;
+X	if ((n = asa_wait()) < 0)
+X		return NULL;
+X	v = stdaudio_buffer;
+X	stdaudio_buffer = NULL;
+X	unbias(getstringvalue(v), n);
+X	resizestring(&v, n);
+X	return v;
 X}
 X
 Xstatic object *
 Xaudio_stop_recording(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int n;
-X object *v;
-X char *s;
-X if (!getnoarg(args))
-X return NULL;
-X if (stdaudio_buffer == NULL) {
-X err_setstr(RuntimeError, "audio.stop_recording: not busy");
-X return NULL;
-X }
-X if ((n = asa_cancel()) < 0)
-X return NULL;
-X v = stdaudio_buffer;
-X stdaudio_buffer = NULL;
-X s = getstringvalue(v);
-X unbias(s, n);
-X resizestring(&v, n);
-X return v;
+X	int n;
+X	object *v;
+X	char *s;
+X	if (!getnoarg(args))
+X		return NULL;
+X	if (stdaudio_buffer == NULL) {
+X		err_setstr(RuntimeError, "audio.stop_recording: not busy");
+X		return NULL;
+X	}
+X	if ((n = asa_cancel()) < 0)
+X		return NULL;
+X	v = stdaudio_buffer;
+X	stdaudio_buffer = NULL;
+X	s = getstringvalue(v);
+X	unbias(s, n);
+X	resizestring(&v, n);
+X	return v;
 X}
 X
 Xstatic object *
 Xaudio_start_playing(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *v;
-X if (!getstrarg(args, &v))
-X return NULL;
-X if (stdaudio_buffer != NULL) {
-X err_setstr(RuntimeError, "audio.start_recording: device rbusy");
-X return NULL;
-X }
-X asa_start_write(getstringvalue(v), (int)getstringsize(v));
-X INCREF(v);
-X stdaudio_buffer = v;
-X INCREF(None);
-X return None;
+X	object *v;
+X	if (!getstrarg(args, &v))
+X		return NULL;
+X	if (stdaudio_buffer != NULL) {
+X		err_setstr(RuntimeError, "audio.start_recording: device rbusy");
+X		return NULL;
+X	}
+X	asa_start_write(getstringvalue(v), (int)getstringsize(v));
+X	INCREF(v);
+X	stdaudio_buffer = v;
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xaudio_wait_playing(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int n;
-X if (!getnoarg(args))
-X return NULL;
-X if (stdaudio_buffer == NULL) {
-X err_setstr(RuntimeError, "audio.wait_playing: not busy");
-X return NULL;
-X }
-X if ((n = asa_wait()) < 0)
-X return NULL;
-X DECREF(stdaudio_buffer);
-X stdaudio_buffer = NULL;
-X /* XXX return newintobject((long)n); ??? */
-X INCREF(None);
-X return None;
+X	int n;
+X	if (!getnoarg(args))
+X		return NULL;
+X	if (stdaudio_buffer == NULL) {
+X		err_setstr(RuntimeError, "audio.wait_playing: not busy");
+X		return NULL;
+X	}
+X	if ((n = asa_wait()) < 0)
+X		return NULL;
+X	DECREF(stdaudio_buffer);
+X	stdaudio_buffer = NULL;
+X	/* XXX return newintobject((long)n); ??? */
+X	INCREF(None);
+X	return None;
 X}
 X
 Xstatic object *
 Xaudio_stop_playing(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X int n;
-X if (!getnoarg(args))
-X return NULL;
-X if (stdaudio_buffer == NULL) {
-X err_setstr(RuntimeError, "audio.stop_playing: not busy");
-X return NULL;
-X }
-X if ((n = asa_cancel()) < 0)
-X return NULL;
-X DECREF(stdaudio_buffer);
-X stdaudio_buffer = NULL;
-X return newintobject((long)n);
+X	int n;
+X	if (!getnoarg(args))
+X		return NULL;
+X	if (stdaudio_buffer == NULL) {
+X		err_setstr(RuntimeError, "audio.stop_playing: not busy");
+X		return NULL;
+X	}
+X	if ((n = asa_cancel()) < 0)
+X		return NULL;
+X	DECREF(stdaudio_buffer);
+X	stdaudio_buffer = NULL;
+X	return newintobject((long)n);
 X}
 X
 Xstatic object *
 Xaudio_audio_done(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X if (!getnoarg(args))
-X return NULL;
-X asa_done();
-X if (stdaudio_buffer != NULL)
-X DECREF(stdaudio_buffer);
-X stdaudio_buffer = NULL;
-X audio_fd = -1;
-X INCREF(None);
-X return None;
+X	if (!getnoarg(args))
+X		return NULL;
+X	asa_done();
+X	if (stdaudio_buffer != NULL)
+X		DECREF(stdaudio_buffer);
+X	stdaudio_buffer = NULL;
+X	audio_fd = -1;
+X	INCREF(None);
+X	return None;
 X}
 X
 X
 Xstatic struct methodlist audio_methods[] = {
-X {"getingain", audio_getingain},
-X {"getoutgain", audio_getoutgain},
-X {"setingain", audio_setingain},
-X {"setoutgain", audio_setoutgain},
-X {"setrate", audio_setrate},
-X {"setduration", audio_setduration},
-X {"read", audio_read},
-X {"write", audio_write},
-X {"amplify", audio_amplify},
-X {"reverse", audio_reverse},
-X {"add", audio_add},
-X {"chr2num", audio_chr2num},
-X {"num2chr", audio_num2chr},
-X
-X /* "asa" interface: */
-X
-X {"start_recording", audio_start_recording},
-X {"poll_recording", audio_poll},
-X {"wait_recording", audio_wait_recording},
-X {"stop_recording", audio_stop_recording},
-X
-X {"start_playing", audio_start_playing},
-X {"poll_playing", audio_poll},
-X {"wait_playing", audio_wait_playing},
-X {"stop_playing", audio_stop_playing},
-X
-X {"done", audio_audio_done},
-X
-X {NULL, NULL} /* Sentinel */
+X	{"getingain",	audio_getingain},
+X	{"getoutgain",	audio_getoutgain},
+X	{"setingain",	audio_setingain},
+X	{"setoutgain",	audio_setoutgain},
+X	{"setrate",	audio_setrate},
+X	{"setduration",	audio_setduration},
+X	{"read",	audio_read},
+X	{"write",	audio_write},
+X	{"amplify",	audio_amplify},
+X	{"reverse",	audio_reverse},
+X	{"add",		audio_add},
+X	{"chr2num",	audio_chr2num},
+X	{"num2chr",	audio_num2chr},
+X	
+X	/* "asa" interface: */
+X	
+X	{"start_recording",	audio_start_recording},
+X	{"poll_recording",	audio_poll},
+X	{"wait_recording",	audio_wait_recording},
+X	{"stop_recording",	audio_stop_recording},
+X	
+X	{"start_playing",	audio_start_playing},
+X	{"poll_playing",	audio_poll},
+X	{"wait_playing",	audio_wait_playing},
+X	{"stop_playing",	audio_stop_playing},
+X	
+X	{"done",		audio_audio_done},
+X	
+X	{NULL,		NULL}			/* Sentinel */
 X};
 X
 Xvoid
 Xinitaudio()
 X{
-X initmodule("audio", audio_methods);
+X	initmodule("audio", audio_methods);
 X}
 EOF
 fi
@@ -1125,12 +1125,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1155,7 +1155,7 @@ X- uses chaining instead of hashed linear probing
 X- remembers the hash value with the entry to speed up table resizing
 X- sets the table size to a power of 2
 X- uses a different hash function:
-X h = 0; p = str; while (*p) h = (h<<5) - h + *p++;
+X	h = 0; p = str; while (*p) h = (h<<5) - h + *p++;
 X*/
 X
 X#include "allobjects.h"
@@ -1171,10 +1171,10 @@ Xof that many entries to fail (if none of the earlier values cause such
 Xfailure already).
 X*/
 Xstatic unsigned int primes[] = {
-X 3, 7, 13, 31, 61, 127, 251, 509, 1021, 2017, 4093,
-X 5987,
-X 9551, 15683, 19609, 31397,
-X 0xffffffff /* All bits set -- truncation OK */
+X	3, 7, 13, 31, 61, 127, 251, 509, 1021, 2017, 4093,
+X	5987,
+X	9551, 15683, 19609, 31397,
+X	0xffffffff /* All bits set -- truncation OK */
 X};
 X
 X/* String used as dummy key to fill deleted entries */
@@ -1183,12 +1183,12 @@ X
 X/*
 XInvariant for entries: when in use, de_value is not NULL and de_key is
 Xnot NULL and not dummy; when not in use, de_value is NULL and de_key
-Xis either NULL or dummy. A dummy key value cannot be replaced by NULL,
+Xis either NULL or dummy.  A dummy key value cannot be replaced by NULL,
 Xsince otherwise other keys may be lost.
 X*/
 Xtypedef struct {
-X stringobject *de_key;
-X object *de_value;
+X	stringobject *de_key;
+X	object *de_value;
 X} dictentry;
 X
 X/*
@@ -1200,34 +1200,34 @@ XTo avoid slowing down lookups on a near-full table, we resize the table
 Xwhen it is more than half filled.
 X*/
 Xtypedef struct {
-X OB_HEAD
-X int di_fill;
-X int di_used;
-X int di_size;
-X dictentry *di_table;
+X	OB_HEAD
+X	int di_fill;
+X	int di_used;
+X	int di_size;
+X	dictentry *di_table;
 X} dictobject;
 X
 Xobject *
 Xnewdictobject()
 X{
-X register dictobject *dp;
-X if (dummy == NULL) { /* Auto-initialize dummy */
-X dummy = (stringobject *) newstringobject("");
-X if (dummy == NULL)
-X return NULL;
-X }
-X dp = NEWOBJ(dictobject, &Dicttype);
-X if (dp == NULL)
-X return NULL;
-X dp->di_size = primes[0];
-X dp->di_table = (dictentry *) calloc(sizeof(dictentry), dp->di_size);
-X if (dp->di_table == NULL) {
-X DEL(dp);
-X return err_nomem();
-X }
-X dp->di_fill = 0;
-X dp->di_used = 0;
-X return (object *)dp;
+X	register dictobject *dp;
+X	if (dummy == NULL) { /* Auto-initialize dummy */
+X		dummy = (stringobject *) newstringobject("");
+X		if (dummy == NULL)
+X			return NULL;
+X	}
+X	dp = NEWOBJ(dictobject, &Dicttype);
+X	if (dp == NULL)
+X		return NULL;
+X	dp->di_size = primes[0];
+X	dp->di_table = (dictentry *) calloc(sizeof(dictentry), dp->di_size);
+X	if (dp->di_table == NULL) {
+X		DEL(dp);
+X		return err_nomem();
+X	}
+X	dp->di_fill = 0;
+X	dp->di_used = 0;
+X	return (object *)dp;
 X}
 X
 X/*
@@ -1245,44 +1245,44 @@ XThe initial probe index is then computed as sum mod the table size.
 XSubsequent probe indices are incr apart (mod table size), where incr
 Xis also derived from sum, with the additional requirement that it is
 Xrelative prime to the table size (i.e., 1 <= incr < size, since the size
-Xis a prime number). My choice for incr is somewhat arbitrary.
+Xis a prime number).  My choice for incr is somewhat arbitrary.
 X*/
 Xstatic dictentry *lookdict PROTO((dictobject *, char *));
 Xstatic dictentry *
 Xlookdict(dp, key)
-X register dictobject *dp;
-X char *key;
+X	register dictobject *dp;
+X	char *key;
 X{
-X register int i, incr;
-X register dictentry *freeslot = NULL;
-X register unsigned char *p = (unsigned char *) key;
-X register unsigned long sum = *p << 7;
-X while (*p != '\0')
-X sum = sum + sum + *p++;
-X i = sum % dp->di_size;
-X do {
-X sum = sum + sum + 1;
-X incr = sum % dp->di_size;
-X } while (incr == 0);
-X for (;;) {
-X register dictentry *ep = &dp->di_table[i];
-X if (ep->de_key == NULL) {
-X if (freeslot != NULL)
-X return freeslot;
-X else
-X return ep;
-X }
-X if (ep->de_key == dummy) {
-X if (freeslot != NULL)
-X freeslot = ep;
-X }
-X else if (GETSTRINGVALUE(ep->de_key)[0] == key[0]) {
-X if (strcmp(GETSTRINGVALUE(ep->de_key), key) == 0) {
-X return ep;
-X }
-X }
-X i = (i + incr) % dp->di_size;
-X }
+X	register int i, incr;
+X	register dictentry *freeslot = NULL;
+X	register unsigned char *p = (unsigned char *) key;
+X	register unsigned long sum = *p << 7;
+X	while (*p != '\0')
+X		sum = sum + sum + *p++;
+X	i = sum % dp->di_size;
+X	do {
+X		sum = sum + sum + 1;
+X		incr = sum % dp->di_size;
+X	} while (incr == 0);
+X	for (;;) {
+X		register dictentry *ep = &dp->di_table[i];
+X		if (ep->de_key == NULL) {
+X			if (freeslot != NULL)
+X				return freeslot;
+X			else
+X				return ep;
+X		}
+X		if (ep->de_key == dummy) {
+X			if (freeslot != NULL)
+X				freeslot = ep;
+X		}
+X		else if (GETSTRINGVALUE(ep->de_key)[0] == key[0]) {
+X			if (strcmp(GETSTRINGVALUE(ep->de_key), key) == 0) {
+X				return ep;
+X			}
+X		}
+X		i = (i + incr) % dp->di_size;
+X	}
 X}
 X
 X/*
@@ -1293,438 +1293,438 @@ X*/
 Xstatic void insertdict PROTO((dictobject *, stringobject *, object *));
 Xstatic void
 Xinsertdict(dp, key, value)
-X register dictobject *dp;
-X stringobject *key;
-X object *value;
+X	register dictobject *dp;
+X	stringobject *key;
+X	object *value;
 X{
-X register dictentry *ep;
-X ep = lookdict(dp, GETSTRINGVALUE(key));
-X if (ep->de_value != NULL) {
-X DECREF(ep->de_value);
-X DECREF(key);
-X }
-X else {
-X if (ep->de_key == NULL)
-X dp->di_fill++;
-X else
-X DECREF(ep->de_key);
-X ep->de_key = key;
-X dp->di_used++;
-X }
-X ep->de_value = value;
+X	register dictentry *ep;
+X	ep = lookdict(dp, GETSTRINGVALUE(key));
+X	if (ep->de_value != NULL) {
+X		DECREF(ep->de_value);
+X		DECREF(key);
+X	}
+X	else {
+X		if (ep->de_key == NULL)
+X			dp->di_fill++;
+X		else
+X			DECREF(ep->de_key);
+X		ep->de_key = key;
+X		dp->di_used++;
+X	}
+X	ep->de_value = value;
 X}
 X
 X/*
 XRestructure the table by allocating a new table and reinserting all
-Xitems again. When entries have been deleted, the new table may
+Xitems again.  When entries have been deleted, the new table may
 Xactually be smaller than the old one.
 X*/
 Xstatic int dictresize PROTO((dictobject *));
 Xstatic int
 Xdictresize(dp)
-X dictobject *dp;
+X	dictobject *dp;
 X{
-X register int oldsize = dp->di_size;
-X register int newsize;
-X register dictentry *oldtable = dp->di_table;
-X register dictentry *newtable;
-X register dictentry *ep;
-X register int i;
-X newsize = dp->di_size;
-X for (i = 0; ; i++) {
-X if (primes[i] > dp->di_used*2) {
-X newsize = primes[i];
-X break;
-X }
-X }
-X newtable = (dictentry *) calloc(sizeof(dictentry), newsize);
-X if (newtable == NULL) {
-X err_nomem();
-X return -1;
-X }
-X dp->di_size = newsize;
-X dp->di_table = newtable;
-X dp->di_fill = 0;
-X dp->di_used = 0;
-X for (i = 0, ep = oldtable; i < oldsize; i++, ep++) {
-X if (ep->de_value != NULL)
-X insertdict(dp, ep->de_key, ep->de_value);
-X else if (ep->de_key != NULL)
-X DECREF(ep->de_key);
-X }
-X DEL(oldtable);
-X return 0;
+X	register int oldsize = dp->di_size;
+X	register int newsize;
+X	register dictentry *oldtable = dp->di_table;
+X	register dictentry *newtable;
+X	register dictentry *ep;
+X	register int i;
+X	newsize = dp->di_size;
+X	for (i = 0; ; i++) {
+X		if (primes[i] > dp->di_used*2) {
+X			newsize = primes[i];
+X			break;
+X		}
+X	}
+X	newtable = (dictentry *) calloc(sizeof(dictentry), newsize);
+X	if (newtable == NULL) {
+X		err_nomem();
+X		return -1;
+X	}
+X	dp->di_size = newsize;
+X	dp->di_table = newtable;
+X	dp->di_fill = 0;
+X	dp->di_used = 0;
+X	for (i = 0, ep = oldtable; i < oldsize; i++, ep++) {
+X		if (ep->de_value != NULL)
+X			insertdict(dp, ep->de_key, ep->de_value);
+X		else if (ep->de_key != NULL)
+X			DECREF(ep->de_key);
+X	}
+X	DEL(oldtable);
+X	return 0;
 X}
 X
 Xobject *
 Xdictlookup(op, key)
-X object *op;
-X char *key;
+X	object *op;
+X	char *key;
 X{
-X if (!is_dictobject(op))
-X fatal("dictlookup on non-dictionary");
-X return lookdict((dictobject *)op, key) -> de_value;
+X	if (!is_dictobject(op))
+X		fatal("dictlookup on non-dictionary");
+X	return lookdict((dictobject *)op, key) -> de_value;
 X}
 X
 X#ifdef NOT_USED
 Xstatic object *
 Xdict2lookup(op, key)
-X register object *op;
-X register object *key;
+X	register object *op;
+X	register object *key;
 X{
-X register object *res;
-X if (!is_dictobject(op)) {
-X err_badcall();
-X return NULL;
-X }
-X if (!is_stringobject(key)) {
-X err_badarg();
-X return NULL;
-X }
-X res = lookdict((dictobject *)op, ((stringobject *)key)->ob_sval)
-X -> de_value;
-X if (res == NULL)
-X err_setstr(KeyError, "key not in dictionary");
-X return res;
+X	register object *res;
+X	if (!is_dictobject(op)) {
+X		err_badcall();
+X		return NULL;
+X	}
+X	if (!is_stringobject(key)) {
+X		err_badarg();
+X		return NULL;
+X	}
+X	res = lookdict((dictobject *)op, ((stringobject *)key)->ob_sval)
+X								-> de_value;
+X	if (res == NULL)
+X		err_setstr(KeyError, "key not in dictionary");
+X	return res;
 X}
 X#endif
 X
 Xstatic int
 Xdict2insert(op, key, value)
-X register object *op;
-X object *key;
-X object *value;
+X	register object *op;
+X	object *key;
+X	object *value;
 X{
-X register dictobject *dp;
-X register stringobject *keyobj;
-X if (!is_dictobject(op)) {
-X err_badcall();
-X return -1;
-X }
-X dp = (dictobject *)op;
-X if (!is_stringobject(key)) {
-X err_badarg();
-X return -1;
-X }
-X keyobj = (stringobject *)key;
-X /* if fill >= 2/3 size, resize */
-X if (dp->di_fill*3 >= dp->di_size*2) {
-X if (dictresize(dp) != 0) {
-X if (dp->di_fill+1 > dp->di_size)
-X return -1;
-X }
-X }
-X INCREF(keyobj);
-X INCREF(value);
-X insertdict(dp, keyobj, value);
-X return 0;
+X	register dictobject *dp;
+X	register stringobject *keyobj;
+X	if (!is_dictobject(op)) {
+X		err_badcall();
+X		return -1;
+X	}
+X	dp = (dictobject *)op;
+X	if (!is_stringobject(key)) {
+X		err_badarg();
+X		return -1;
+X	}
+X	keyobj = (stringobject *)key;
+X	/* if fill >= 2/3 size, resize */
+X	if (dp->di_fill*3 >= dp->di_size*2) {
+X		if (dictresize(dp) != 0) {
+X			if (dp->di_fill+1 > dp->di_size)
+X				return -1;
+X		}
+X	}
+X	INCREF(keyobj);
+X	INCREF(value);
+X	insertdict(dp, keyobj, value);
+X	return 0;
 X}
 X
 Xint
 Xdictinsert(op, key, value)
-X object *op;
-X char *key;
-X object *value;
+X	object *op;
+X	char *key;
+X	object *value;
 X{
-X register object *keyobj;
-X register int err;
-X keyobj = newstringobject(key);
-X if (keyobj == NULL) {
-X err_nomem();
-X return -1;
-X }
-X err = dict2insert(op, keyobj, value);
-X DECREF(keyobj);
-X return err;
+X	register object *keyobj;
+X	register int err;
+X	keyobj = newstringobject(key);
+X	if (keyobj == NULL) {
+X		err_nomem();
+X		return -1;
+X	}
+X	err = dict2insert(op, keyobj, value);
+X	DECREF(keyobj);
+X	return err;
 X}
 X
 Xint
 Xdictremove(op, key)
-X object *op;
-X char *key;
+X	object *op;
+X	char *key;
 X{
-X register dictobject *dp;
-X register dictentry *ep;
-X if (!is_dictobject(op)) {
-X err_badcall();
-X return -1;
-X }
-X dp = (dictobject *)op;
-X ep = lookdict(dp, key);
-X if (ep->de_value == NULL) {
-X err_setstr(KeyError, "key not in dictionary");
-X return -1;
-X }
-X DECREF(ep->de_key);
-X INCREF(dummy);
-X ep->de_key = dummy;
-X DECREF(ep->de_value);
-X ep->de_value = NULL;
-X dp->di_used--;
-X return 0;
+X	register dictobject *dp;
+X	register dictentry *ep;
+X	if (!is_dictobject(op)) {
+X		err_badcall();
+X		return -1;
+X	}
+X	dp = (dictobject *)op;
+X	ep = lookdict(dp, key);
+X	if (ep->de_value == NULL) {
+X		err_setstr(KeyError, "key not in dictionary");
+X		return -1;
+X	}
+X	DECREF(ep->de_key);
+X	INCREF(dummy);
+X	ep->de_key = dummy;
+X	DECREF(ep->de_value);
+X	ep->de_value = NULL;
+X	dp->di_used--;
+X	return 0;
 X}
 X
 Xstatic int
 Xdict2remove(op, key)
-X object *op;
-X register object *key;
+X	object *op;
+X	register object *key;
 X{
-X if (!is_stringobject(key)) {
-X err_badarg();
-X return -1;
-X }
-X return dictremove(op, GETSTRINGVALUE((stringobject *)key));
+X	if (!is_stringobject(key)) {
+X		err_badarg();
+X		return -1;
+X	}
+X	return dictremove(op, GETSTRINGVALUE((stringobject *)key));
 X}
 X
 Xint
 Xgetdictsize(op)
-X register object *op;
+X	register object *op;
 X{
-X if (!is_dictobject(op)) {
-X err_badcall();
-X return -1;
-X }
-X return ((dictobject *)op) -> di_size;
+X	if (!is_dictobject(op)) {
+X		err_badcall();
+X		return -1;
+X	}
+X	return ((dictobject *)op) -> di_size;
 X}
 X
 Xstatic object *
 Xgetdict2key(op, i)
-X object *op;
-X register int i;
+X	object *op;
+X	register int i;
 X{
-X /* XXX This can't return errors since its callers assume
-X that NULL means there was no key at that point */
-X register dictobject *dp;
-X if (!is_dictobject(op)) {
-X /* err_badcall(); */
-X return NULL;
-X }
-X dp = (dictobject *)op;
-X if (i < 0 || i >= dp->di_size) {
-X /* err_badarg(); */
-X return NULL;
-X }
-X if (dp->di_table[i].de_value == NULL) {
-X /* Not an error! */
-X return NULL;
-X }
-X return (object *) dp->di_table[i].de_key;
+X	/* XXX This can't return errors since its callers assume
+X	   that NULL means there was no key at that point */
+X	register dictobject *dp;
+X	if (!is_dictobject(op)) {
+X		/* err_badcall(); */
+X		return NULL;
+X	}
+X	dp = (dictobject *)op;
+X	if (i < 0 || i >= dp->di_size) {
+X		/* err_badarg(); */
+X		return NULL;
+X	}
+X	if (dp->di_table[i].de_value == NULL) {
+X		/* Not an error! */
+X		return NULL;
+X	}
+X	return (object *) dp->di_table[i].de_key;
 X}
 X
 Xchar *
 Xgetdictkey(op, i)
-X object *op;
-X int i;
+X	object *op;
+X	int i;
 X{
-X register object *keyobj = getdict2key(op, i);
-X if (keyobj == NULL)
-X return NULL;
-X return GETSTRINGVALUE((stringobject *)keyobj);
+X	register object *keyobj = getdict2key(op, i);
+X	if (keyobj == NULL)
+X		return NULL;
+X	return GETSTRINGVALUE((stringobject *)keyobj);
 X}
 X
 X/* Methods */
 X
 Xstatic void
 Xdict_dealloc(dp)
-X register dictobject *dp;
+X	register dictobject *dp;
 X{
-X register int i;
-X register dictentry *ep;
-X for (i = 0, ep = dp->di_table; i < dp->di_size; i++, ep++) {
-X if (ep->de_key != NULL)
-X DECREF(ep->de_key);
-X if (ep->de_value != NULL)
-X DECREF(ep->de_value);
-X }
-X if (dp->di_table != NULL)
-X DEL(dp->di_table);
-X DEL(dp);
+X	register int i;
+X	register dictentry *ep;
+X	for (i = 0, ep = dp->di_table; i < dp->di_size; i++, ep++) {
+X		if (ep->de_key != NULL)
+X			DECREF(ep->de_key);
+X		if (ep->de_value != NULL)
+X			DECREF(ep->de_value);
+X	}
+X	if (dp->di_table != NULL)
+X		DEL(dp->di_table);
+X	DEL(dp);
 X}
 X
 Xstatic void
 Xdict_print(dp, fp, flags)
-X register dictobject *dp;
-X register FILE *fp;
-X register int flags;
+X	register dictobject *dp;
+X	register FILE *fp;
+X	register int flags;
 X{
-X register int i;
-X register int any;
-X register dictentry *ep;
-X fprintf(fp, "{");
-X any = 0;
-X for (i = 0, ep = dp->di_table; i < dp->di_size && !StopPrint;
-X i++, ep++) {
-X if (ep->de_value != NULL) {
-X if (any++ > 0)
-X fprintf(fp, "; ");
-X printobject((object *)ep->de_key, fp, flags);
-X fprintf(fp, ": ");
-X printobject(ep->de_value, fp, flags);
-X }
-X }
-X fprintf(fp, "}");
+X	register int i;
+X	register int any;
+X	register dictentry *ep;
+X	fprintf(fp, "{");
+X	any = 0;
+X	for (i = 0, ep = dp->di_table; i < dp->di_size && !StopPrint;
+X							i++, ep++) {
+X		if (ep->de_value != NULL) {
+X			if (any++ > 0)
+X				fprintf(fp, "; ");
+X			printobject((object *)ep->de_key, fp, flags);
+X			fprintf(fp, ": ");
+X			printobject(ep->de_value, fp, flags);
+X		}
+X	}
+X	fprintf(fp, "}");
 X}
 X
 Xstatic void
 Xjs(pv, w)
-X object **pv;
-X object *w;
+X	object **pv;
+X	object *w;
 X{
-X joinstring(pv, w);
-X if (w != NULL)
-X DECREF(w);
+X	joinstring(pv, w);
+X	if (w != NULL)
+X		DECREF(w);
 X}
 X
 Xstatic object *
 Xdict_repr(dp)
-X dictobject *dp;
+X	dictobject *dp;
 X{
-X auto object *v;
-X register object *w;
-X object *semi, *colon;
-X register int i;
-X register int any;
-X register dictentry *ep;
-X v = newstringobject("{");
-X semi = newstringobject("; ");
-X colon = newstringobject(": ");
-X any = 0;
-X for (i = 0, ep = dp->di_table; i < dp->di_size && !StopPrint;
-X i++, ep++) {
-X if (ep->de_value != NULL) {
-X if (any++)
-X joinstring(&v, semi);
-X js(&v, w = reprobject((object *)ep->de_key));
-X joinstring(&v, colon);
-X js(&v, w = reprobject(ep->de_value));
-X }
-X }
-X js(&v, w = newstringobject("}"));
-X if (semi != NULL)
-X DECREF(semi);
-X if (colon != NULL)
-X DECREF(colon);
-X return v;
+X	auto object *v;
+X	register object *w;
+X	object *semi, *colon;
+X	register int i;
+X	register int any;
+X	register dictentry *ep;
+X	v = newstringobject("{");
+X	semi = newstringobject("; ");
+X	colon = newstringobject(": ");
+X	any = 0;
+X	for (i = 0, ep = dp->di_table; i < dp->di_size && !StopPrint;
+X							i++, ep++) {
+X		if (ep->de_value != NULL) {
+X			if (any++)
+X				joinstring(&v, semi);
+X			js(&v, w = reprobject((object *)ep->de_key));
+X			joinstring(&v, colon);
+X			js(&v, w = reprobject(ep->de_value));
+X		}
+X	}
+X	js(&v, w = newstringobject("}"));
+X	if (semi != NULL)
+X		DECREF(semi);
+X	if (colon != NULL)
+X		DECREF(colon);
+X	return v;
 X}
 X
 Xstatic int
 Xdict_length(dp)
-X dictobject *dp;
+X	dictobject *dp;
 X{
-X return dp->di_used;
+X	return dp->di_used;
 X}
 X
 Xstatic object *
 Xdict_subscript(dp, v)
-X dictobject *dp;
-X register object *v;
+X	dictobject *dp;
+X	register object *v;
 X{
-X if (!is_stringobject(v)) {
-X err_badarg();
-X return NULL;
-X }
-X v = lookdict(dp, GETSTRINGVALUE((stringobject *)v)) -> de_value;
-X if (v == NULL)
-X err_setstr(KeyError, "key not in dictionary");
-X else
-X INCREF(v);
-X return v;
+X	if (!is_stringobject(v)) {
+X		err_badarg();
+X		return NULL;
+X	}
+X	v = lookdict(dp, GETSTRINGVALUE((stringobject *)v)) -> de_value;
+X	if (v == NULL)
+X		err_setstr(KeyError, "key not in dictionary");
+X	else
+X		INCREF(v);
+X	return v;
 X}
 X
 Xstatic int
 Xdict_ass_sub(dp, v, w)
-X dictobject *dp;
-X object *v, *w;
+X	dictobject *dp;
+X	object *v, *w;
 X{
-X if (w == NULL)
-X return dict2remove((object *)dp, v);
-X else
-X return dict2insert((object *)dp, v, w);
+X	if (w == NULL)
+X		return dict2remove((object *)dp, v);
+X	else
+X		return dict2insert((object *)dp, v, w);
 X}
 X
 Xstatic mapping_methods dict_as_mapping = {
-X dict_length, /*mp_length*/
-X dict_subscript, /*mp_subscript*/
-X dict_ass_sub, /*mp_ass_subscript*/
+X	dict_length,	/*mp_length*/
+X	dict_subscript,	/*mp_subscript*/
+X	dict_ass_sub,	/*mp_ass_subscript*/
 X};
 X
 Xstatic object *
 Xdict_keys(dp, args)
-X register dictobject *dp;
-X object *args;
+X	register dictobject *dp;
+X	object *args;
 X{
-X register object *v;
-X register int i, j;
-X if (!getnoarg(args))
-X return NULL;
-X v = newlistobject(dp->di_used);
-X if (v == NULL)
-X return NULL;
-X for (i = 0, j = 0; i < dp->di_size; i++) {
-X if (dp->di_table[i].de_value != NULL) {
-X stringobject *key = dp->di_table[i].de_key;
-X INCREF(key);
-X setlistitem(v, j, (object *)key);
-X j++;
-X }
-X }
-X return v;
+X	register object *v;
+X	register int i, j;
+X	if (!getnoarg(args))
+X		return NULL;
+X	v = newlistobject(dp->di_used);
+X	if (v == NULL)
+X		return NULL;
+X	for (i = 0, j = 0; i < dp->di_size; i++) {
+X		if (dp->di_table[i].de_value != NULL) {
+X			stringobject *key = dp->di_table[i].de_key;
+X			INCREF(key);
+X			setlistitem(v, j, (object *)key);
+X			j++;
+X		}
+X	}
+X	return v;
 X}
 X
 Xobject *
 Xgetdictkeys(dp)
-X object *dp;
+X	object *dp;
 X{
-X if (dp == NULL || !is_dictobject(dp)) {
-X err_badcall();
-X return NULL;
-X }
-X return dict_keys((dictobject *)dp, (object *)NULL);
+X	if (dp == NULL || !is_dictobject(dp)) {
+X		err_badcall();
+X		return NULL;
+X	}
+X	return dict_keys((dictobject *)dp, (object *)NULL);
 X}
 X
 Xstatic object *
 Xdict_has_key(dp, args)
-X register dictobject *dp;
-X object *args;
+X	register dictobject *dp;
+X	object *args;
 X{
-X object *key;
-X register long ok;
-X if (!getstrarg(args, &key))
-X return NULL;
-X ok = lookdict(dp, GETSTRINGVALUE((stringobject *)key))->de_value
-X != NULL;
-X return newintobject(ok);
+X	object *key;
+X	register long ok;
+X	if (!getstrarg(args, &key))
+X		return NULL;
+X	ok = lookdict(dp, GETSTRINGVALUE((stringobject *)key))->de_value
+X								!= NULL;
+X	return newintobject(ok);
 X}
 X
 Xstatic struct methodlist dict_methods[] = {
-X {"keys", dict_keys},
-X {"has_key", dict_has_key},
-X {NULL, NULL} /* sentinel */
+X	{"keys",	dict_keys},
+X	{"has_key",	dict_has_key},
+X	{NULL,		NULL}		/* sentinel */
 X};
 X
 Xstatic object *
 Xdict_getattr(dp, name)
-X dictobject *dp;
-X char *name;
+X	dictobject *dp;
+X	char *name;
 X{
-X return findmethod(dict_methods, (object *)dp, name);
+X	return findmethod(dict_methods, (object *)dp, name);
 X}
 X
 Xtypeobject Dicttype = {
-X OB_HEAD_INIT(&Typetype)
-X 0,
-X "dictionary",
-X sizeof(dictobject),
-X 0,
-X dict_dealloc, /*tp_dealloc*/
-X dict_print, /*tp_print*/
-X dict_getattr, /*tp_getattr*/
-X 0, /*tp_setattr*/
-X 0, /*tp_compare*/
-X dict_repr, /*tp_repr*/
-X 0, /*tp_as_number*/
-X 0, /*tp_as_sequence*/
-X &dict_as_mapping, /*tp_as_mapping*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,
+X	"dictionary",
+X	sizeof(dictobject),
+X	0,
+X	dict_dealloc,	/*tp_dealloc*/
+X	dict_print,	/*tp_print*/
+X	dict_getattr,	/*tp_getattr*/
+X	0,		/*tp_setattr*/
+X	0,		/*tp_compare*/
+X	dict_repr,	/*tp_repr*/
+X	0,		/*tp_as_number*/
+X	0,		/*tp_as_sequence*/
+X	&dict_as_mapping,	/*tp_as_mapping*/
 X};
 EOF
 fi
@@ -1737,12 +1737,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1776,109 +1776,109 @@ X
 X/* PART ONE -- CONSTRUCT NFA -- Cf. Algorithm 3.2 from [Aho&Ullman 77] */
 X
 Xtypedef struct _nfaarc {
-X int ar_label;
-X int ar_arrow;
+X	int	ar_label;
+X	int	ar_arrow;
 X} nfaarc;
 X
 Xtypedef struct _nfastate {
-X int st_narcs;
-X nfaarc *st_arc;
+X	int	st_narcs;
+X	nfaarc	*st_arc;
 X} nfastate;
 X
 Xtypedef struct _nfa {
-X int nf_type;
-X char *nf_name;
-X int nf_nstates;
-X nfastate *nf_state;
-X int nf_start, nf_finish;
+X	int		nf_type;
+X	char		*nf_name;
+X	int		nf_nstates;
+X	nfastate	*nf_state;
+X	int		nf_start, nf_finish;
 X} nfa;
 X
 Xstatic int
 Xaddnfastate(nf)
-X nfa *nf;
+X	nfa *nf;
 X{
-X nfastate *st;
-X
-X RESIZE(nf->nf_state, nfastate, nf->nf_nstates + 1);
-X if (nf->nf_state == NULL)
-X fatal("out of mem");
-X st = &nf->nf_state[nf->nf_nstates++];
-X st->st_narcs = 0;
-X st->st_arc = NULL;
-X return st - nf->nf_state;
+X	nfastate *st;
+X	
+X	RESIZE(nf->nf_state, nfastate, nf->nf_nstates + 1);
+X	if (nf->nf_state == NULL)
+X		fatal("out of mem");
+X	st = &nf->nf_state[nf->nf_nstates++];
+X	st->st_narcs = 0;
+X	st->st_arc = NULL;
+X	return st - nf->nf_state;
 X}
 X
 Xstatic void
 Xaddnfaarc(nf, from, to, lbl)
-X nfa *nf;
-X int from, to, lbl;
+X	nfa *nf;
+X	int from, to, lbl;
 X{
-X nfastate *st;
-X nfaarc *ar;
-X
-X st = &nf->nf_state[from];
-X RESIZE(st->st_arc, nfaarc, st->st_narcs + 1);
-X if (st->st_arc == NULL)
-X fatal("out of mem");
-X ar = &st->st_arc[st->st_narcs++];
-X ar->ar_label = lbl;
-X ar->ar_arrow = to;
+X	nfastate *st;
+X	nfaarc *ar;
+X	
+X	st = &nf->nf_state[from];
+X	RESIZE(st->st_arc, nfaarc, st->st_narcs + 1);
+X	if (st->st_arc == NULL)
+X		fatal("out of mem");
+X	ar = &st->st_arc[st->st_narcs++];
+X	ar->ar_label = lbl;
+X	ar->ar_arrow = to;
 X}
 X
 Xstatic nfa *
 Xnewnfa(name)
-X char *name;
+X	char *name;
 X{
-X nfa *nf;
-X static type = NT_OFFSET; /* All types will be disjunct */
-X
-X nf = NEW(nfa, 1);
-X if (nf == NULL)
-X fatal("no mem for new nfa");
-X nf->nf_type = type++;
-X nf->nf_name = name; /* XXX strdup(name) ??? */
-X nf->nf_nstates = 0;
-X nf->nf_state = NULL;
-X nf->nf_start = nf->nf_finish = -1;
-X return nf;
+X	nfa *nf;
+X	static type = NT_OFFSET; /* All types will be disjunct */
+X	
+X	nf = NEW(nfa, 1);
+X	if (nf == NULL)
+X		fatal("no mem for new nfa");
+X	nf->nf_type = type++;
+X	nf->nf_name = name; /* XXX strdup(name) ??? */
+X	nf->nf_nstates = 0;
+X	nf->nf_state = NULL;
+X	nf->nf_start = nf->nf_finish = -1;
+X	return nf;
 X}
 X
 Xtypedef struct _nfagrammar {
-X int gr_nnfas;
-X nfa **gr_nfa;
-X labellist gr_ll;
+X	int		gr_nnfas;
+X	nfa		**gr_nfa;
+X	labellist	gr_ll;
 X} nfagrammar;
 X
 Xstatic nfagrammar *
 Xnewnfagrammar()
 X{
-X nfagrammar *gr;
-X
-X gr = NEW(nfagrammar, 1);
-X if (gr == NULL)
-X fatal("no mem for new nfa grammar");
-X gr->gr_nnfas = 0;
-X gr->gr_nfa = NULL;
-X gr->gr_ll.ll_nlabels = 0;
-X gr->gr_ll.ll_label = NULL;
-X addlabel(&gr->gr_ll, ENDMARKER, "EMPTY");
-X return gr;
+X	nfagrammar *gr;
+X	
+X	gr = NEW(nfagrammar, 1);
+X	if (gr == NULL)
+X		fatal("no mem for new nfa grammar");
+X	gr->gr_nnfas = 0;
+X	gr->gr_nfa = NULL;
+X	gr->gr_ll.ll_nlabels = 0;
+X	gr->gr_ll.ll_label = NULL;
+X	addlabel(&gr->gr_ll, ENDMARKER, "EMPTY");
+X	return gr;
 X}
 X
 Xstatic nfa *
 Xaddnfa(gr, name)
-X nfagrammar *gr;
-X char *name;
+X	nfagrammar *gr;
+X	char *name;
 X{
-X nfa *nf;
-X
-X nf = newnfa(name);
-X RESIZE(gr->gr_nfa, nfa *, gr->gr_nnfas + 1);
-X if (gr->gr_nfa == NULL)
-X fatal("out of mem");
-X gr->gr_nfa[gr->gr_nnfas++] = nf;
-X addlabel(&gr->gr_ll, NAME, nf->nf_name);
-X return nf;
+X	nfa *nf;
+X	
+X	nf = newnfa(name);
+X	RESIZE(gr->gr_nfa, nfa *, gr->gr_nnfas + 1);
+X	if (gr->gr_nfa == NULL)
+X		fatal("out of mem");
+X	gr->gr_nfa[gr->gr_nnfas++] = nf;
+X	addlabel(&gr->gr_ll, NAME, nf->nf_name);
+X	return nf;
 X}
 X
 X#ifdef DEBUG
@@ -1886,231 +1886,231 @@ X
 Xstatic char REQNFMT[] = "metacompile: less than %d children\n";
 X
 X#define REQN(i, count) \
-X if (i < count) { \
-X fprintf(stderr, REQNFMT, count); \
-X abort(); \
-X } else
+X 	if (i < count) { \
+X		fprintf(stderr, REQNFMT, count); \
+X		abort(); \
+X	} else
 X
 X#else
-X#define REQN(i, count) /* empty */
+X#define REQN(i, count)	/* empty */
 X#endif
 X
 Xstatic nfagrammar *
 Xmetacompile(n)
-X node *n;
+X	node *n;
 X{
-X nfagrammar *gr;
-X int i;
-X
-X printf("Compiling (meta-) parse tree into NFA grammar\n");
-X gr = newnfagrammar();
-X REQ(n, MSTART);
-X i = n->n_nchildren - 1; /* Last child is ENDMARKER */
-X n = n->n_child;
-X for (; --i >= 0; n++) {
-X if (n->n_type != NEWLINE)
-X compile_rule(gr, n);
-X }
-X return gr;
+X	nfagrammar *gr;
+X	int i;
+X	
+X	printf("Compiling (meta-) parse tree into NFA grammar\n");
+X	gr = newnfagrammar();
+X	REQ(n, MSTART);
+X	i = n->n_nchildren - 1; /* Last child is ENDMARKER */
+X	n = n->n_child;
+X	for (; --i >= 0; n++) {
+X		if (n->n_type != NEWLINE)
+X			compile_rule(gr, n);
+X	}
+X	return gr;
 X}
 X
 Xstatic
 Xcompile_rule(gr, n)
-X nfagrammar *gr;
-X node *n;
+X	nfagrammar *gr;
+X	node *n;
 X{
-X nfa *nf;
-X
-X REQ(n, RULE);
-X REQN(n->n_nchildren, 4);
-X n = n->n_child;
-X REQ(n, NAME);
-X nf = addnfa(gr, n->n_str);
-X n++;
-X REQ(n, COLON);
-X n++;
-X REQ(n, RHS);
-X compile_rhs(&gr->gr_ll, nf, n, &nf->nf_start, &nf->nf_finish);
-X n++;
-X REQ(n, NEWLINE);
+X	nfa *nf;
+X	
+X	REQ(n, RULE);
+X	REQN(n->n_nchildren, 4);
+X	n = n->n_child;
+X	REQ(n, NAME);
+X	nf = addnfa(gr, n->n_str);
+X	n++;
+X	REQ(n, COLON);
+X	n++;
+X	REQ(n, RHS);
+X	compile_rhs(&gr->gr_ll, nf, n, &nf->nf_start, &nf->nf_finish);
+X	n++;
+X	REQ(n, NEWLINE);
 X}
 X
 Xstatic
 Xcompile_rhs(ll, nf, n, pa, pb)
-X labellist *ll;
-X nfa *nf;
-X node *n;
-X int *pa, *pb;
+X	labellist *ll;
+X	nfa *nf;
+X	node *n;
+X	int *pa, *pb;
 X{
-X int i;
-X int a, b;
-X
-X REQ(n, RHS);
-X i = n->n_nchildren;
-X REQN(i, 1);
-X n = n->n_child;
-X REQ(n, ALT);
-X compile_alt(ll, nf, n, pa, pb);
-X if (--i <= 0)
-X return;
-X n++;
-X a = *pa;
-X b = *pb;
-X *pa = addnfastate(nf);
-X *pb = addnfastate(nf);
-X addnfaarc(nf, *pa, a, EMPTY);
-X addnfaarc(nf, b, *pb, EMPTY);
-X for (; --i >= 0; n++) {
-X REQ(n, VBAR);
-X REQN(i, 1);
-X --i;
-X n++;
-X REQ(n, ALT);
-X compile_alt(ll, nf, n, &a, &b);
-X addnfaarc(nf, *pa, a, EMPTY);
-X addnfaarc(nf, b, *pb, EMPTY);
-X }
+X	int i;
+X	int a, b;
+X	
+X	REQ(n, RHS);
+X	i = n->n_nchildren;
+X	REQN(i, 1);
+X	n = n->n_child;
+X	REQ(n, ALT);
+X	compile_alt(ll, nf, n, pa, pb);
+X	if (--i <= 0)
+X		return;
+X	n++;
+X	a = *pa;
+X	b = *pb;
+X	*pa = addnfastate(nf);
+X	*pb = addnfastate(nf);
+X	addnfaarc(nf, *pa, a, EMPTY);
+X	addnfaarc(nf, b, *pb, EMPTY);
+X	for (; --i >= 0; n++) {
+X		REQ(n, VBAR);
+X		REQN(i, 1);
+X		--i;
+X		n++;
+X		REQ(n, ALT);
+X		compile_alt(ll, nf, n, &a, &b);
+X		addnfaarc(nf, *pa, a, EMPTY);
+X		addnfaarc(nf, b, *pb, EMPTY);
+X	}
 X}
 X
 Xstatic
 Xcompile_alt(ll, nf, n, pa, pb)
-X labellist *ll;
-X nfa *nf;
-X node *n;
-X int *pa, *pb;
+X	labellist *ll;
+X	nfa *nf;
+X	node *n;
+X	int *pa, *pb;
 X{
-X int i;
-X int a, b;
-X
-X REQ(n, ALT);
-X i = n->n_nchildren;
-X REQN(i, 1);
-X n = n->n_child;
-X REQ(n, ITEM);
-X compile_item(ll, nf, n, pa, pb);
-X --i;
-X n++;
-X for (; --i >= 0; n++) {
-X if (n->n_type == COMMA) { /* XXX Temporary */
-X REQN(i, 1);
-X --i;
-X n++;
-X }
-X REQ(n, ITEM);
-X compile_item(ll, nf, n, &a, &b);
-X addnfaarc(nf, *pb, a, EMPTY);
-X *pb = b;
-X }
+X	int i;
+X	int a, b;
+X	
+X	REQ(n, ALT);
+X	i = n->n_nchildren;
+X	REQN(i, 1);
+X	n = n->n_child;
+X	REQ(n, ITEM);
+X	compile_item(ll, nf, n, pa, pb);
+X	--i;
+X	n++;
+X	for (; --i >= 0; n++) {
+X		if (n->n_type == COMMA) { /* XXX Temporary */
+X			REQN(i, 1);
+X			--i;
+X			n++;
+X		}
+X		REQ(n, ITEM);
+X		compile_item(ll, nf, n, &a, &b);
+X		addnfaarc(nf, *pb, a, EMPTY);
+X		*pb = b;
+X	}
 X}
 X
 Xstatic
 Xcompile_item(ll, nf, n, pa, pb)
-X labellist *ll;
-X nfa *nf;
-X node *n;
-X int *pa, *pb;
+X	labellist *ll;
+X	nfa *nf;
+X	node *n;
+X	int *pa, *pb;
 X{
-X int i;
-X int a, b;
-X
-X REQ(n, ITEM);
-X i = n->n_nchildren;
-X REQN(i, 1);
-X n = n->n_child;
-X if (n->n_type == LSQB) {
-X REQN(i, 3);
-X n++;
-X REQ(n, RHS);
-X *pa = addnfastate(nf);
-X *pb = addnfastate(nf);
-X addnfaarc(nf, *pa, *pb, EMPTY);
-X compile_rhs(ll, nf, n, &a, &b);
-X addnfaarc(nf, *pa, a, EMPTY);
-X addnfaarc(nf, b, *pb, EMPTY);
-X REQN(i, 1);
-X n++;
-X REQ(n, RSQB);
-X }
-X else {
-X compile_atom(ll, nf, n, pa, pb);
-X if (--i <= 0)
-X return;
-X n++;
-X addnfaarc(nf, *pb, *pa, EMPTY);
-X if (n->n_type == STAR)
-X *pb = *pa;
-X else
-X REQ(n, PLUS);
-X }
+X	int i;
+X	int a, b;
+X	
+X	REQ(n, ITEM);
+X	i = n->n_nchildren;
+X	REQN(i, 1);
+X	n = n->n_child;
+X	if (n->n_type == LSQB) {
+X		REQN(i, 3);
+X		n++;
+X		REQ(n, RHS);
+X		*pa = addnfastate(nf);
+X		*pb = addnfastate(nf);
+X		addnfaarc(nf, *pa, *pb, EMPTY);
+X		compile_rhs(ll, nf, n, &a, &b);
+X		addnfaarc(nf, *pa, a, EMPTY);
+X		addnfaarc(nf, b, *pb, EMPTY);
+X		REQN(i, 1);
+X		n++;
+X		REQ(n, RSQB);
+X	}
+X	else {
+X		compile_atom(ll, nf, n, pa, pb);
+X		if (--i <= 0)
+X			return;
+X		n++;
+X		addnfaarc(nf, *pb, *pa, EMPTY);
+X		if (n->n_type == STAR)
+X			*pb = *pa;
+X		else
+X			REQ(n, PLUS);
+X	}
 X}
 X
 Xstatic
 Xcompile_atom(ll, nf, n, pa, pb)
-X labellist *ll;
-X nfa *nf;
-X node *n;
-X int *pa, *pb;
+X	labellist *ll;
+X	nfa *nf;
+X	node *n;
+X	int *pa, *pb;
 X{
-X int i;
-X
-X REQ(n, ATOM);
-X i = n->n_nchildren;
-X REQN(i, 1);
-X n = n->n_child;
-X if (n->n_type == LPAR) {
-X REQN(i, 3);
-X n++;
-X REQ(n, RHS);
-X compile_rhs(ll, nf, n, pa, pb);
-X n++;
-X REQ(n, RPAR);
-X }
-X else if (n->n_type == NAME || n->n_type == STRING) {
-X *pa = addnfastate(nf);
-X *pb = addnfastate(nf);
-X addnfaarc(nf, *pa, *pb, addlabel(ll, n->n_type, n->n_str));
-X }
-X else
-X REQ(n, NAME);
+X	int i;
+X	
+X	REQ(n, ATOM);
+X	i = n->n_nchildren;
+X	REQN(i, 1);
+X	n = n->n_child;
+X	if (n->n_type == LPAR) {
+X		REQN(i, 3);
+X		n++;
+X		REQ(n, RHS);
+X		compile_rhs(ll, nf, n, pa, pb);
+X		n++;
+X		REQ(n, RPAR);
+X	}
+X	else if (n->n_type == NAME || n->n_type == STRING) {
+X		*pa = addnfastate(nf);
+X		*pb = addnfastate(nf);
+X		addnfaarc(nf, *pa, *pb, addlabel(ll, n->n_type, n->n_str));
+X	}
+X	else
+X		REQ(n, NAME);
 X}
 X
 Xstatic void
 Xdumpstate(ll, nf, istate)
-X labellist *ll;
-X nfa *nf;
-X int istate;
+X	labellist *ll;
+X	nfa *nf;
+X	int istate;
 X{
-X nfastate *st;
-X int i;
-X nfaarc *ar;
-X
-X printf("%c%2d%c",
-X istate == nf->nf_start ? '*' : ' ',
-X istate,
-X istate == nf->nf_finish ? '.' : ' ');
-X st = &nf->nf_state[istate];
-X ar = st->st_arc;
-X for (i = 0; i < st->st_narcs; i++) {
-X if (i > 0)
-X printf("\n ");
-X printf("-> %2d %s", ar->ar_arrow,
-X labelrepr(&ll->ll_label[ar->ar_label]));
-X ar++;
-X }
-X printf("\n");
+X	nfastate *st;
+X	int i;
+X	nfaarc *ar;
+X	
+X	printf("%c%2d%c",
+X		istate == nf->nf_start ? '*' : ' ',
+X		istate,
+X		istate == nf->nf_finish ? '.' : ' ');
+X	st = &nf->nf_state[istate];
+X	ar = st->st_arc;
+X	for (i = 0; i < st->st_narcs; i++) {
+X		if (i > 0)
+X			printf("\n    ");
+X		printf("-> %2d  %s", ar->ar_arrow,
+X			labelrepr(&ll->ll_label[ar->ar_label]));
+X		ar++;
+X	}
+X	printf("\n");
 X}
 X
 Xstatic void
 Xdumpnfa(ll, nf)
-X labellist *ll;
-X nfa *nf;
+X	labellist *ll;
+X	nfa *nf;
 X{
-X int i;
-X
-X printf("NFA '%s' has %d states; start %d, finish %d\n",
-X nf->nf_name, nf->nf_nstates, nf->nf_start, nf->nf_finish);
-X for (i = 0; i < nf->nf_nstates; i++)
-X dumpstate(ll, nf, i);
+X	int i;
+X	
+X	printf("NFA '%s' has %d states; start %d, finish %d\n",
+X		nf->nf_name, nf->nf_nstates, nf->nf_start, nf->nf_finish);
+X	for (i = 0; i < nf->nf_nstates; i++)
+X		dumpstate(ll, nf, i);
 X}
 X
 X
@@ -2118,255 +2118,255 @@ X/* PART TWO -- CONSTRUCT DFA -- Algorithm 3.1 from [Aho&Ullman 77] */
 X
 Xstatic int
 Xaddclosure(ss, nf, istate)
-X bitset ss;
-X nfa *nf;
-X int istate;
+X	bitset ss;
+X	nfa *nf;
+X	int istate;
 X{
-X if (addbit(ss, istate)) {
-X nfastate *st = &nf->nf_state[istate];
-X nfaarc *ar = st->st_arc;
-X int i;
-X
-X for (i = st->st_narcs; --i >= 0; ) {
-X if (ar->ar_label == EMPTY)
-X addclosure(ss, nf, ar->ar_arrow);
-X ar++;
-X }
-X }
+X	if (addbit(ss, istate)) {
+X		nfastate *st = &nf->nf_state[istate];
+X		nfaarc *ar = st->st_arc;
+X		int i;
+X		
+X		for (i = st->st_narcs; --i >= 0; ) {
+X			if (ar->ar_label == EMPTY)
+X				addclosure(ss, nf, ar->ar_arrow);
+X			ar++;
+X		}
+X	}
 X}
 X
 Xtypedef struct _ss_arc {
-X bitset sa_bitset;
-X int sa_arrow;
-X int sa_label;
+X	bitset	sa_bitset;
+X	int	sa_arrow;
+X	int	sa_label;
 X} ss_arc;
 X
 Xtypedef struct _ss_state {
-X bitset ss_ss;
-X int ss_narcs;
-X ss_arc *ss_arc;
-X int ss_deleted;
-X int ss_finish;
-X int ss_rename;
+X	bitset	ss_ss;
+X	int	ss_narcs;
+X	ss_arc	*ss_arc;
+X	int	ss_deleted;
+X	int	ss_finish;
+X	int	ss_rename;
 X} ss_state;
 X
 Xtypedef struct _ss_dfa {
-X int sd_nstates;
-X ss_state *sd_state;
+X	int	sd_nstates;
+X	ss_state *sd_state;
 X} ss_dfa;
 X
 Xstatic
 Xmakedfa(gr, nf, d)
-X nfagrammar *gr;
-X nfa *nf;
-X dfa *d;
+X	nfagrammar *gr;
+X	nfa *nf;
+X	dfa *d;
 X{
-X int nbits = nf->nf_nstates;
-X bitset ss;
-X int xx_nstates;
-X ss_state *xx_state, *yy;
-X ss_arc *zz;
-X int istate, jstate, iarc, jarc, ibit;
-X nfastate *st;
-X nfaarc *ar;
+X	int nbits = nf->nf_nstates;
+X	bitset ss;
+X	int xx_nstates;
+X	ss_state *xx_state, *yy;
+X	ss_arc *zz;
+X	int istate, jstate, iarc, jarc, ibit;
+X	nfastate *st;
+X	nfaarc *ar;
+X	
+X	ss = newbitset(nbits);
+X	addclosure(ss, nf, nf->nf_start);
+X	xx_state = NEW(ss_state, 1);
+X	if (xx_state == NULL)
+X		fatal("no mem for xx_state in makedfa");
+X	xx_nstates = 1;
+X	yy = &xx_state[0];
+X	yy->ss_ss = ss;
+X	yy->ss_narcs = 0;
+X	yy->ss_arc = NULL;
+X	yy->ss_deleted = 0;
+X	yy->ss_finish = testbit(ss, nf->nf_finish);
+X	if (yy->ss_finish)
+X		printf("Error: nonterminal '%s' may produce empty.\n",
+X			nf->nf_name);
+X	
+X	/* This algorithm is from a book written before
+X	   the invention of structured programming... */
 X
-X ss = newbitset(nbits);
-X addclosure(ss, nf, nf->nf_start);
-X xx_state = NEW(ss_state, 1);
-X if (xx_state == NULL)
-X fatal("no mem for xx_state in makedfa");
-X xx_nstates = 1;
-X yy = &xx_state[0];
-X yy->ss_ss = ss;
-X yy->ss_narcs = 0;
-X yy->ss_arc = NULL;
-X yy->ss_deleted = 0;
-X yy->ss_finish = testbit(ss, nf->nf_finish);
-X if (yy->ss_finish)
-X printf("Error: nonterminal '%s' may produce empty.\n",
-X nf->nf_name);
-X
-X /* This algorithm is from a book written before
-X the invention of structured programming... */
-X
-X /* For each unmarked state... */
-X for (istate = 0; istate < xx_nstates; ++istate) {
-X yy = &xx_state[istate];
-X ss = yy->ss_ss;
-X /* For all its states... */
-X for (ibit = 0; ibit < nf->nf_nstates; ++ibit) {
-X if (!testbit(ss, ibit))
-X continue;
-X st = &nf->nf_state[ibit];
-X /* For all non-empty arcs from this state... */
-X for (iarc = 0; iarc < st->st_narcs; iarc++) {
-X ar = &st->st_arc[iarc];
-X if (ar->ar_label == EMPTY)
-X continue;
-X /* Look up in list of arcs from this state */
-X for (jarc = 0; jarc < yy->ss_narcs; ++jarc) {
-X zz = &yy->ss_arc[jarc];
-X if (ar->ar_label == zz->sa_label)
-X goto found;
-X }
-X /* Add new arc for this state */
-X RESIZE(yy->ss_arc, ss_arc, yy->ss_narcs + 1);
-X if (yy->ss_arc == NULL)
-X fatal("out of mem");
-X zz = &yy->ss_arc[yy->ss_narcs++];
-X zz->sa_label = ar->ar_label;
-X zz->sa_bitset = newbitset(nbits);
-X zz->sa_arrow = -1;
-X found: ;
-X /* Add destination */
-X addclosure(zz->sa_bitset, nf, ar->ar_arrow);
-X }
-X }
-X /* Now look up all the arrow states */
-X for (jarc = 0; jarc < xx_state[istate].ss_narcs; jarc++) {
-X zz = &xx_state[istate].ss_arc[jarc];
-X for (jstate = 0; jstate < xx_nstates; jstate++) {
-X if (samebitset(zz->sa_bitset,
-X xx_state[jstate].ss_ss, nbits)) {
-X zz->sa_arrow = jstate;
-X goto done;
-X }
-X }
-X RESIZE(xx_state, ss_state, xx_nstates + 1);
-X if (xx_state == NULL)
-X fatal("out of mem");
-X zz->sa_arrow = xx_nstates;
-X yy = &xx_state[xx_nstates++];
-X yy->ss_ss = zz->sa_bitset;
-X yy->ss_narcs = 0;
-X yy->ss_arc = NULL;
-X yy->ss_deleted = 0;
-X yy->ss_finish = testbit(yy->ss_ss, nf->nf_finish);
-X done: ;
-X }
-X }
-X
-X if (debugging)
-X printssdfa(xx_nstates, xx_state, nbits, &gr->gr_ll,
-X "before minimizing");
-X
-X simplify(xx_nstates, xx_state);
-X
-X if (debugging)
-X printssdfa(xx_nstates, xx_state, nbits, &gr->gr_ll,
-X "after minimizing");
-X
-X convert(d, xx_nstates, xx_state);
-X
-X /* XXX cleanup */
+X	/* For each unmarked state... */
+X	for (istate = 0; istate < xx_nstates; ++istate) {
+X		yy = &xx_state[istate];
+X		ss = yy->ss_ss;
+X		/* For all its states... */
+X		for (ibit = 0; ibit < nf->nf_nstates; ++ibit) {
+X			if (!testbit(ss, ibit))
+X				continue;
+X			st = &nf->nf_state[ibit];
+X			/* For all non-empty arcs from this state... */
+X			for (iarc = 0; iarc < st->st_narcs; iarc++) {
+X				ar = &st->st_arc[iarc];
+X				if (ar->ar_label == EMPTY)
+X					continue;
+X				/* Look up in list of arcs from this state */
+X				for (jarc = 0; jarc < yy->ss_narcs; ++jarc) {
+X					zz = &yy->ss_arc[jarc];
+X					if (ar->ar_label == zz->sa_label)
+X						goto found;
+X				}
+X				/* Add new arc for this state */
+X				RESIZE(yy->ss_arc, ss_arc, yy->ss_narcs + 1);
+X				if (yy->ss_arc == NULL)
+X					fatal("out of mem");
+X				zz = &yy->ss_arc[yy->ss_narcs++];
+X				zz->sa_label = ar->ar_label;
+X				zz->sa_bitset = newbitset(nbits);
+X				zz->sa_arrow = -1;
+X			 found:	;
+X				/* Add destination */
+X				addclosure(zz->sa_bitset, nf, ar->ar_arrow);
+X			}
+X		}
+X		/* Now look up all the arrow states */
+X		for (jarc = 0; jarc < xx_state[istate].ss_narcs; jarc++) {
+X			zz = &xx_state[istate].ss_arc[jarc];
+X			for (jstate = 0; jstate < xx_nstates; jstate++) {
+X				if (samebitset(zz->sa_bitset,
+X					xx_state[jstate].ss_ss, nbits)) {
+X					zz->sa_arrow = jstate;
+X					goto done;
+X				}
+X			}
+X			RESIZE(xx_state, ss_state, xx_nstates + 1);
+X			if (xx_state == NULL)
+X				fatal("out of mem");
+X			zz->sa_arrow = xx_nstates;
+X			yy = &xx_state[xx_nstates++];
+X			yy->ss_ss = zz->sa_bitset;
+X			yy->ss_narcs = 0;
+X			yy->ss_arc = NULL;
+X			yy->ss_deleted = 0;
+X			yy->ss_finish = testbit(yy->ss_ss, nf->nf_finish);
+X		 done:	;
+X		}
+X	}
+X	
+X	if (debugging)
+X		printssdfa(xx_nstates, xx_state, nbits, &gr->gr_ll,
+X						"before minimizing");
+X	
+X	simplify(xx_nstates, xx_state);
+X	
+X	if (debugging)
+X		printssdfa(xx_nstates, xx_state, nbits, &gr->gr_ll,
+X						"after minimizing");
+X	
+X	convert(d, xx_nstates, xx_state);
+X	
+X	/* XXX cleanup */
 X}
 X
 Xstatic
 Xprintssdfa(xx_nstates, xx_state, nbits, ll, msg)
-X int xx_nstates;
-X ss_state *xx_state;
-X int nbits;
-X labellist *ll;
-X char *msg;
+X	int xx_nstates;
+X	ss_state *xx_state;
+X	int nbits;
+X	labellist *ll;
+X	char *msg;
 X{
-X int i, ibit, iarc;
-X ss_state *yy;
-X ss_arc *zz;
-X
-X printf("Subset DFA %s\n", msg);
-X for (i = 0; i < xx_nstates; i++) {
-X yy = &xx_state[i];
-X if (yy->ss_deleted)
-X continue;
-X printf(" Subset %d", i);
-X if (yy->ss_finish)
-X printf(" (finish)");
-X printf(" { ");
-X for (ibit = 0; ibit < nbits; ibit++) {
-X if (testbit(yy->ss_ss, ibit))
-X printf("%d ", ibit);
-X }
-X printf("}\n");
-X for (iarc = 0; iarc < yy->ss_narcs; iarc++) {
-X zz = &yy->ss_arc[iarc];
-X printf(" Arc to state %d, label %s\n",
-X zz->sa_arrow,
-X labelrepr(&ll->ll_label[zz->sa_label]));
-X }
-X }
+X	int i, ibit, iarc;
+X	ss_state *yy;
+X	ss_arc *zz;
+X	
+X	printf("Subset DFA %s\n", msg);
+X	for (i = 0; i < xx_nstates; i++) {
+X		yy = &xx_state[i];
+X		if (yy->ss_deleted)
+X			continue;
+X		printf(" Subset %d", i);
+X		if (yy->ss_finish)
+X			printf(" (finish)");
+X		printf(" { ");
+X		for (ibit = 0; ibit < nbits; ibit++) {
+X			if (testbit(yy->ss_ss, ibit))
+X				printf("%d ", ibit);
+X		}
+X		printf("}\n");
+X		for (iarc = 0; iarc < yy->ss_narcs; iarc++) {
+X			zz = &yy->ss_arc[iarc];
+X			printf("  Arc to state %d, label %s\n",
+X				zz->sa_arrow,
+X				labelrepr(&ll->ll_label[zz->sa_label]));
+X		}
+X	}
 X}
 X
 X
 X/* PART THREE -- SIMPLIFY DFA */
 X
 X/* Simplify the DFA by repeatedly eliminating states that are
-X equivalent to another oner. This is NOT Algorithm 3.3 from
-X [Aho&Ullman 77]. It does not always finds the minimal DFA,
-X but it does usually make a much smaller one... (For an example
-X of sub-optimal behaviour, try S: x a b+ | y a b+.)
+X   equivalent to another oner.  This is NOT Algorithm 3.3 from
+X   [Aho&Ullman 77].  It does not always finds the minimal DFA,
+X   but it does usually make a much smaller one...  (For an example
+X   of sub-optimal behaviour, try S: x a b+ | y a b+.)
 X*/
 X
 Xstatic int
 Xsamestate(s1, s2)
-X ss_state *s1, *s2;
+X	ss_state *s1, *s2;
 X{
-X int i;
-X
-X if (s1->ss_narcs != s2->ss_narcs || s1->ss_finish != s2->ss_finish)
-X return 0;
-X for (i = 0; i < s1->ss_narcs; i++) {
-X if (s1->ss_arc[i].sa_arrow != s2->ss_arc[i].sa_arrow ||
-X s1->ss_arc[i].sa_label != s2->ss_arc[i].sa_label)
-X return 0;
-X }
-X return 1;
+X	int i;
+X	
+X	if (s1->ss_narcs != s2->ss_narcs || s1->ss_finish != s2->ss_finish)
+X		return 0;
+X	for (i = 0; i < s1->ss_narcs; i++) {
+X		if (s1->ss_arc[i].sa_arrow != s2->ss_arc[i].sa_arrow ||
+X			s1->ss_arc[i].sa_label != s2->ss_arc[i].sa_label)
+X			return 0;
+X	}
+X	return 1;
 X}
 X
 Xstatic void
 Xrenamestates(xx_nstates, xx_state, from, to)
-X int xx_nstates;
-X ss_state *xx_state;
-X int from, to;
+X	int xx_nstates;
+X	ss_state *xx_state;
+X	int from, to;
 X{
-X int i, j;
-X
-X if (debugging)
-X printf("Rename state %d to %d.\n", from, to);
-X for (i = 0; i < xx_nstates; i++) {
-X if (xx_state[i].ss_deleted)
-X continue;
-X for (j = 0; j < xx_state[i].ss_narcs; j++) {
-X if (xx_state[i].ss_arc[j].sa_arrow == from)
-X xx_state[i].ss_arc[j].sa_arrow = to;
-X }
-X }
+X	int i, j;
+X	
+X	if (debugging)
+X		printf("Rename state %d to %d.\n", from, to);
+X	for (i = 0; i < xx_nstates; i++) {
+X		if (xx_state[i].ss_deleted)
+X			continue;
+X		for (j = 0; j < xx_state[i].ss_narcs; j++) {
+X			if (xx_state[i].ss_arc[j].sa_arrow == from)
+X				xx_state[i].ss_arc[j].sa_arrow = to;
+X		}
+X	}
 X}
 X
 Xstatic
 Xsimplify(xx_nstates, xx_state)
-X int xx_nstates;
-X ss_state *xx_state;
+X	int xx_nstates;
+X	ss_state *xx_state;
 X{
-X int changes;
-X int i, j, k;
-X
-X do {
-X changes = 0;
-X for (i = 1; i < xx_nstates; i++) {
-X if (xx_state[i].ss_deleted)
-X continue;
-X for (j = 0; j < i; j++) {
-X if (xx_state[j].ss_deleted)
-X continue;
-X if (samestate(&xx_state[i], &xx_state[j])) {
-X xx_state[i].ss_deleted++;
-X renamestates(xx_nstates, xx_state, i, j);
-X changes++;
-X break;
-X }
-X }
-X }
-X } while (changes);
+X	int changes;
+X	int i, j, k;
+X	
+X	do {
+X		changes = 0;
+X		for (i = 1; i < xx_nstates; i++) {
+X			if (xx_state[i].ss_deleted)
+X				continue;
+X			for (j = 0; j < i; j++) {
+X				if (xx_state[j].ss_deleted)
+X					continue;
+X				if (samestate(&xx_state[i], &xx_state[j])) {
+X					xx_state[i].ss_deleted++;
+X					renamestates(xx_nstates, xx_state, i, j);
+X					changes++;
+X					break;
+X				}
+X			}
+X		}
+X	} while (changes);
 X}
 X
 X
@@ -2376,36 +2376,36 @@ X/* Convert the DFA into a grammar that can be used by our parser */
 X
 Xstatic
 Xconvert(d, xx_nstates, xx_state)
-X dfa *d;
-X int xx_nstates;
-X ss_state *xx_state;
+X	dfa *d;
+X	int xx_nstates;
+X	ss_state *xx_state;
 X{
-X int i, j;
-X ss_state *yy;
-X ss_arc *zz;
-X
-X for (i = 0; i < xx_nstates; i++) {
-X yy = &xx_state[i];
-X if (yy->ss_deleted)
-X continue;
-X yy->ss_rename = addstate(d);
-X }
-X
-X for (i = 0; i < xx_nstates; i++) {
-X yy = &xx_state[i];
-X if (yy->ss_deleted)
-X continue;
-X for (j = 0; j < yy->ss_narcs; j++) {
-X zz = &yy->ss_arc[j];
-X addarc(d, yy->ss_rename,
-X xx_state[zz->sa_arrow].ss_rename,
-X zz->sa_label);
-X }
-X if (yy->ss_finish)
-X addarc(d, yy->ss_rename, yy->ss_rename, 0);
-X }
-X
-X d->d_initial = 0;
+X	int i, j;
+X	ss_state *yy;
+X	ss_arc *zz;
+X	
+X	for (i = 0; i < xx_nstates; i++) {
+X		yy = &xx_state[i];
+X		if (yy->ss_deleted)
+X			continue;
+X		yy->ss_rename = addstate(d);
+X	}
+X	
+X	for (i = 0; i < xx_nstates; i++) {
+X		yy = &xx_state[i];
+X		if (yy->ss_deleted)
+X			continue;
+X		for (j = 0; j < yy->ss_narcs; j++) {
+X			zz = &yy->ss_arc[j];
+X			addarc(d, yy->ss_rename,
+X				xx_state[zz->sa_arrow].ss_rename,
+X				zz->sa_label);
+X		}
+X		if (yy->ss_finish)
+X			addarc(d, yy->ss_rename, yy->ss_rename, 0);
+X	}
+X	
+X	d->d_initial = 0;
 X}
 X
 X
@@ -2413,45 +2413,45 @@ X/* PART FIVE -- GLUE IT ALL TOGETHER */
 X
 Xstatic grammar *
 Xmaketables(gr)
-X nfagrammar *gr;
+X	nfagrammar *gr;
 X{
-X int i;
-X nfa *nf;
-X dfa *d;
-X grammar *g;
-X
-X if (gr->gr_nnfas == 0)
-X return NULL;
-X g = newgrammar(gr->gr_nfa[0]->nf_type);
-X /* XXX first rule must be start rule */
-X g->g_ll = gr->gr_ll;
-X
-X for (i = 0; i < gr->gr_nnfas; i++) {
-X nf = gr->gr_nfa[i];
-X if (debugging) {
-X printf("Dump of NFA for '%s' ...\n", nf->nf_name);
-X dumpnfa(&gr->gr_ll, nf);
-X }
-X printf("Making DFA for '%s' ...\n", nf->nf_name);
-X d = adddfa(g, nf->nf_type, nf->nf_name);
-X makedfa(gr, gr->gr_nfa[i], d);
-X }
-X
-X return g;
+X	int i;
+X	nfa *nf;
+X	dfa *d;
+X	grammar *g;
+X	
+X	if (gr->gr_nnfas == 0)
+X		return NULL;
+X	g = newgrammar(gr->gr_nfa[0]->nf_type);
+X			/* XXX first rule must be start rule */
+X	g->g_ll = gr->gr_ll;
+X	
+X	for (i = 0; i < gr->gr_nnfas; i++) {
+X		nf = gr->gr_nfa[i];
+X		if (debugging) {
+X			printf("Dump of NFA for '%s' ...\n", nf->nf_name);
+X			dumpnfa(&gr->gr_ll, nf);
+X		}
+X		printf("Making DFA for '%s' ...\n", nf->nf_name);
+X		d = adddfa(g, nf->nf_type, nf->nf_name);
+X		makedfa(gr, gr->gr_nfa[i], d);
+X	}
+X	
+X	return g;
 X}
 X
 Xgrammar *
 Xpgen(n)
-X node *n;
+X	node *n;
 X{
-X nfagrammar *gr;
-X grammar *g;
-X
-X gr = metacompile(n);
-X g = maketables(gr);
-X translatelabels(g);
-X addfirstsets(g);
-X return g;
+X	nfagrammar *gr;
+X	grammar *g;
+X	
+X	gr = metacompile(n);
+X	g = maketables(gr);
+X	translatelabels(g);
+X	addfirstsets(g);
+X	return g;
 X}
 X
 X
@@ -2462,26 +2462,26 @@ X-----------
 X
 XInput is a grammar in extended BNF (using * for repetition, + for
 Xat-least-once repetition, [] for optional parts, | for alternatives and
-X() for grouping). This has already been parsed and turned into a parse
+X() for grouping).  This has already been parsed and turned into a parse
 Xtree.
 X
 XEach rule is considered as a regular expression in its own right.
 XIt is turned into a Non-deterministic Finite Automaton (NFA), which
 Xis then turned into a Deterministic Finite Automaton (DFA), which is then
-Xoptimized to reduce the number of states. See [Aho&Ullman 77] chapter 3,
+Xoptimized to reduce the number of states.  See [Aho&Ullman 77] chapter 3,
 Xor similar compiler books (this technique is more often used for lexical
 Xanalyzers).
 X
 XThe DFA's are used by the parser as parsing tables in a special way
-Xthat's probably unique. Before they are usable, the FIRST sets of all
+Xthat's probably unique.  Before they are usable, the FIRST sets of all
 Xnon-terminals are computed.
 X
 XReference
 X---------
 X
 X[Aho&Ullman 77]
-X Aho&Ullman, Principles of Compiler Design, Addison-Wesley 1977
-X (first edition)
+X	Aho&Ullman, Principles of Compiler Design, Addison-Wesley 1977
+X	(first edition)
 X
 X*/
 EOF
@@ -2495,12 +2495,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -2523,164 +2523,164 @@ X#include "modsupport.h"
 X
 X#include "regexp.h"
 X
-Xstatic object *RegexpError; /* Exception */
+Xstatic object *RegexpError;	/* Exception */	
 X
 Xtypedef struct {
-X OB_HEAD
-X object *re_string; /* The string (for printing) */
-X regexp *re_prog; /* The compiled regular expression */
+X	OB_HEAD
+X	object *re_string;	/* The string (for printing) */
+X	regexp *re_prog;	/* The compiled regular expression */
 X} regexpobject;
 X
-Xextern typeobject Regexptype; /* Really static, forward */
+Xextern typeobject Regexptype;	/* Really static, forward */
 X
 Xstatic regexpobject *
 Xnewregexpobject(string, prog)
-X object *string;
-X regexp *prog;
+X	object *string;
+X	regexp *prog;
 X{
-X regexpobject *re;
-X re = NEWOBJ(regexpobject, &Regexptype);
-X if (re != NULL) {
-X XINCREF(string);
-X re->re_string = string;
-X re->re_prog = prog;
-X }
-X return re;
+X	regexpobject *re;
+X	re = NEWOBJ(regexpobject, &Regexptype);
+X	if (re != NULL) {
+X		XINCREF(string);
+X		re->re_string = string;
+X		re->re_prog = prog;
+X	}
+X	return re;
 X}
 X
 X/* Regexp methods */
 X
 Xstatic void
 Xregexp_dealloc(re)
-X regexpobject *re;
+X	regexpobject *re;
 X{
-X XDECREF(re->re_string);
-X XDEL(re->re_prog);
-X DEL(re);
+X	XDECREF(re->re_string);
+X	XDEL(re->re_prog);
+X	DEL(re);
 X}
 X
 Xstatic object *
 Xmakeresult(prog, buffer)
-X regexp *prog;
-X char *buffer;
+X	regexp *prog;
+X	char *buffer;
 X{
-X int n;
-X object *v;
-X /* Count substrings found, including \0, the main one */
-X for (n = 0; n < 10 && prog->startp[n] != NULL; n++)
-X ;
-X v = newtupleobject(n);
-X if (v != NULL) {
-X int i;
-X for (i = 0; i < n; i++) {
-X object *w, *u;
-X long start, end;
-X start = prog->startp[i] - buffer;
-X end = prog->endp[i] - buffer;
-X if ( (w = newtupleobject(2)) == NULL ||
-X (u = newintobject(start)) == NULL ||
-X settupleitem(w, 0, u) != 0 ||
-X (u = newintobject(end)) == NULL ||
-X settupleitem(w, 1, u) != 0) {
-X XDECREF(w);
-X DECREF(v);
-X return NULL;
-X }
-X settupleitem(v, i, w);
-X }
-X }
-X return v;
+X	int n;
+X	object *v;
+X	/* Count substrings found, including \0, the main one */
+X	for (n = 0; n < 10 && prog->startp[n] != NULL; n++)
+X		;
+X	v = newtupleobject(n);
+X	if (v != NULL) {
+X		int i;
+X		for (i = 0; i < n; i++) {
+X			object *w, *u;
+X			long start, end;
+X			start = prog->startp[i] - buffer;
+X			end = prog->endp[i] - buffer;
+X			if (	(w = newtupleobject(2)) == NULL ||
+X				(u = newintobject(start)) == NULL ||
+X				settupleitem(w, 0, u) != 0 ||
+X				(u = newintobject(end)) == NULL ||
+X				settupleitem(w, 1, u) != 0) {
+X				XDECREF(w);
+X				DECREF(v);
+X				return NULL;
+X			}
+X			settupleitem(v, i, w);
+X		}
+X	}
+X	return v;
 X}
 X
 Xstatic object *
 Xregexp_exec(re, args)
-X regexpobject *re;
-X object *args;
+X	regexpobject *re;
+X	object *args;
 X{
-X object *v;
-X char *buffer;
-X int offset;
-X if (args != NULL && is_stringobject(args)) {
-X v = args;
-X offset = 0;
-X }
-X else if (!getstrintarg(args, &v, &offset))
-X return NULL;
-X buffer = getstringvalue(v);
+X	object *v;
+X	char *buffer;
+X	int offset;
+X	if (args != NULL && is_stringobject(args)) {
+X		v = args;
+X		offset = 0;
+X	}
+X	else if (!getstrintarg(args, &v, &offset))
+X		return NULL;
+X	buffer = getstringvalue(v);
 X#ifndef MULTILINE
 X#define reglexec(prog, str, offset) regexec((prog), (str)+(offset))
 X#endif
-X if (!reglexec(re->re_prog, buffer, offset))
-X return newtupleobject(0);
-X return makeresult(re->re_prog, buffer);
+X	if (!reglexec(re->re_prog, buffer, offset))
+X		return newtupleobject(0);
+X	return makeresult(re->re_prog, buffer);
 X}
 X
 Xstatic struct methodlist regexp_methods[] = {
-X "exec", regexp_exec,
-X {NULL, NULL} /* sentinel */
+X	"exec",		regexp_exec,
+X	{NULL,		NULL}		/* sentinel */
 X};
 X
 Xstatic object *
 Xregexp_getattr(re, name)
-X regexpobject *re;
-X char *name;
+X	regexpobject *re;
+X	char *name;
 X{
-X return findmethod(regexp_methods, (object *)re, name);
+X	return findmethod(regexp_methods, (object *)re, name);
 X}
 X
 Xstatic typeobject Regexptype = {
-X OB_HEAD_INIT(&Typetype)
-X 0, /*ob_size*/
-X "regexp", /*tp_name*/
-X sizeof(regexpobject), /*tp_size*/
-X 0, /*tp_itemsize*/
-X /* methods */
-X regexp_dealloc, /*tp_dealloc*/
-X 0, /*tp_print*/
-X regexp_getattr, /*tp_getattr*/
-X 0, /*tp_setattr*/
-X 0, /*tp_compare*/
-X 0, /*tp_repr*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,			/*ob_size*/
+X	"regexp",		/*tp_name*/
+X	sizeof(regexpobject),	/*tp_size*/
+X	0,			/*tp_itemsize*/
+X	/* methods */
+X	regexp_dealloc,		/*tp_dealloc*/
+X	0,			/*tp_print*/
+X	regexp_getattr,		/*tp_getattr*/
+X	0,			/*tp_setattr*/
+X	0,			/*tp_compare*/
+X	0,			/*tp_repr*/
 X};
 X
 Xvoid
 Xregerror(str)
-X char *str;
+X	char *str;
 X{
-X err_setstr(RegexpError, str);
+X	err_setstr(RegexpError, str);
 X}
 X
 Xstatic object *
 Xregexp_compile(self, args)
-X object *self;
-X object *args;
+X	object *self;
+X	object *args;
 X{
-X object *string;
-X regexp *prog;
-X if (!getstrarg(args, &string))
-X return NULL;
-X prog = regcomp(getstringvalue(string));
-X if (prog == NULL)
-X return NULL; /* regerror() has called err_seterr() */
-X return (object *)newregexpobject(string, prog);
+X	object *string;
+X	regexp *prog;
+X	if (!getstrarg(args, &string))
+X		return NULL;
+X	prog = regcomp(getstringvalue(string));
+X	if (prog == NULL)
+X		return NULL;	/* regerror() has called err_seterr() */
+X	return (object *)newregexpobject(string, prog);
 X}
 X
 Xstatic struct methodlist regexp_global_methods[] = {
-X {"compile", regexp_compile},
-X {NULL, NULL} /* sentinel */
+X	{"compile",	regexp_compile},
+X	{NULL,		NULL}		/* sentinel */
 X};
 X
 Xinitregexp()
 X{
-X object *m, *d;
-X
-X m = initmodule("regexp", regexp_global_methods);
-X d = getmoduledict(m);
-X
-X /* Initialize regexp.error exception */
-X RegexpError = newstringobject("regexp.error");
-X if (RegexpError == NULL || dictinsert(d, "error", RegexpError) != 0)
-X fatal("can't define regexp.error");
+X	object *m, *d;
+X	
+X	m = initmodule("regexp", regexp_global_methods);
+X	d = getmoduledict(m);
+X	
+X	/* Initialize regexp.error exception */
+X	RegexpError = newstringobject("regexp.error");
+X	if (RegexpError == NULL || dictinsert(d, "error", RegexpError) != 0)
+X		fatal("can't define regexp.error");
 X}
 EOF
 fi

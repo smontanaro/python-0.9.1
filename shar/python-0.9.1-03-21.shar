@@ -12,12 +12,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -35,9 +35,9 @@ X
 X/* Compile an expression node to intermediate code */
 X
 X/* XXX TO DO:
-X XXX Compute maximum needed stack sizes while compiling
-X XXX Generate simple jump for break/return outside 'try...finally'
-X XXX Include function name in code (and module names?)
+X   XXX Compute maximum needed stack sizes while compiling
+X   XXX Generate simple jump for break/return outside 'try...finally'
+X   XXX Include function name in code (and module names?)
 X*/
 X
 X#include "allobjects.h"
@@ -54,102 +54,102 @@ X
 X#define OFF(x) offsetof(codeobject, x)
 X
 Xstatic struct memberlist code_memberlist[] = {
-X {"co_code", T_OBJECT, OFF(co_code)},
-X {"co_consts", T_OBJECT, OFF(co_consts)},
-X {"co_names", T_OBJECT, OFF(co_names)},
-X {"co_filename", T_OBJECT, OFF(co_filename)},
-X {NULL} /* Sentinel */
+X	{"co_code",	T_OBJECT,	OFF(co_code)},
+X	{"co_consts",	T_OBJECT,	OFF(co_consts)},
+X	{"co_names",	T_OBJECT,	OFF(co_names)},
+X	{"co_filename",	T_OBJECT,	OFF(co_filename)},
+X	{NULL}	/* Sentinel */
 X};
 X
 Xstatic object *
 Xcode_getattr(co, name)
-X codeobject *co;
-X char *name;
+X	codeobject *co;
+X	char *name;
 X{
-X return getmember((char *)co, code_memberlist, name);
+X	return getmember((char *)co, code_memberlist, name);
 X}
 X
 Xstatic void
 Xcode_dealloc(co)
-X codeobject *co;
+X	codeobject *co;
 X{
-X XDECREF(co->co_code);
-X XDECREF(co->co_consts);
-X XDECREF(co->co_names);
-X XDECREF(co->co_filename);
-X DEL(co);
+X	XDECREF(co->co_code);
+X	XDECREF(co->co_consts);
+X	XDECREF(co->co_names);
+X	XDECREF(co->co_filename);
+X	DEL(co);
 X}
 X
 Xtypeobject Codetype = {
-X OB_HEAD_INIT(&Typetype)
-X 0,
-X "code",
-X sizeof(codeobject),
-X 0,
-X code_dealloc, /*tp_dealloc*/
-X 0, /*tp_print*/
-X code_getattr, /*tp_getattr*/
-X 0, /*tp_setattr*/
-X 0, /*tp_compare*/
-X 0, /*tp_repr*/
-X 0, /*tp_as_number*/
-X 0, /*tp_as_sequence*/
-X 0, /*tp_as_mapping*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,
+X	"code",
+X	sizeof(codeobject),
+X	0,
+X	code_dealloc,	/*tp_dealloc*/
+X	0,		/*tp_print*/
+X	code_getattr,	/*tp_getattr*/
+X	0,		/*tp_setattr*/
+X	0,		/*tp_compare*/
+X	0,		/*tp_repr*/
+X	0,		/*tp_as_number*/
+X	0,		/*tp_as_sequence*/
+X	0,		/*tp_as_mapping*/
 X};
 X
 Xstatic codeobject *newcodeobject PROTO((object *, object *, object *, char *));
 X
 Xstatic codeobject *
 Xnewcodeobject(code, consts, names, filename)
-X object *code;
-X object *consts;
-X object *names;
-X char *filename;
+X	object *code;
+X	object *consts;
+X	object *names;
+X	char *filename;
 X{
-X codeobject *co;
-X int i;
-X /* Check argument types */
-X if (code == NULL || !is_stringobject(code) ||
-X consts == NULL || !is_listobject(consts) ||
-X names == NULL || !is_listobject(names)) {
-X err_badcall();
-X return NULL;
-X }
-X /* Make sure the list of names contains only strings */
-X for (i = getlistsize(names); --i >= 0; ) {
-X object *v = getlistitem(names, i);
-X if (v == NULL || !is_stringobject(v)) {
-X err_badcall();
-X return NULL;
-X }
-X }
-X co = NEWOBJ(codeobject, &Codetype);
-X if (co != NULL) {
-X INCREF(code);
-X co->co_code = (stringobject *)code;
-X INCREF(consts);
-X co->co_consts = consts;
-X INCREF(names);
-X co->co_names = names;
-X if ((co->co_filename = newstringobject(filename)) == NULL) {
-X DECREF(co);
-X co = NULL;
-X }
-X }
-X return co;
+X	codeobject *co;
+X	int i;
+X	/* Check argument types */
+X	if (code == NULL || !is_stringobject(code) ||
+X		consts == NULL || !is_listobject(consts) ||
+X		names == NULL || !is_listobject(names)) {
+X		err_badcall();
+X		return NULL;
+X	}
+X	/* Make sure the list of names contains only strings */
+X	for (i = getlistsize(names); --i >= 0; ) {
+X		object *v = getlistitem(names, i);
+X		if (v == NULL || !is_stringobject(v)) {
+X			err_badcall();
+X			return NULL;
+X		}
+X	}
+X	co = NEWOBJ(codeobject, &Codetype);
+X	if (co != NULL) {
+X		INCREF(code);
+X		co->co_code = (stringobject *)code;
+X		INCREF(consts);
+X		co->co_consts = consts;
+X		INCREF(names);
+X		co->co_names = names;
+X		if ((co->co_filename = newstringobject(filename)) == NULL) {
+X			DECREF(co);
+X			co = NULL;
+X		}
+X	}
+X	return co;
 X}
 X
 X
 X/* Data structure used internally */
 Xstruct compiling {
-X object *c_code; /* string */
-X object *c_consts; /* list of objects */
-X object *c_names; /* list of strings (names) */
-X int c_nexti; /* index into c_code */
-X int c_errors; /* counts errors occurred */
-X int c_infunction; /* set when compiling a function */
-X int c_loops; /* counts nested loops */
-X char *c_filename; /* filename of current node */
+X	object *c_code;		/* string */
+X	object *c_consts;	/* list of objects */
+X	object *c_names;	/* list of strings (names) */
+X	int c_nexti;		/* index into c_code */
+X	int c_errors;		/* counts errors occurred */
+X	int c_infunction;	/* set when compiling a function */
+X	int c_loops;		/* counts nested loops */
+X	char *c_filename;	/* filename of current node */
 X};
 X
 X/* Prototypes */
@@ -169,709 +169,709 @@ Xstatic void com_addopname PROTO((struct compiling *, int, node *));
 X
 Xstatic int
 Xcom_init(c, filename)
-X struct compiling *c;
-X char *filename;
+X	struct compiling *c;
+X	char *filename;
 X{
-X if ((c->c_code = newsizedstringobject((char *)NULL, 0)) == NULL)
-X goto fail_3;
-X if ((c->c_consts = newlistobject(0)) == NULL)
-X goto fail_2;
-X if ((c->c_names = newlistobject(0)) == NULL)
-X goto fail_1;
-X c->c_nexti = 0;
-X c->c_errors = 0;
-X c->c_infunction = 0;
-X c->c_loops = 0;
-X c->c_filename = filename;
-X return 1;
-X
-X fail_1:
-X DECREF(c->c_consts);
-X fail_2:
-X DECREF(c->c_code);
-X fail_3:
-X return 0;
+X	if ((c->c_code = newsizedstringobject((char *)NULL, 0)) == NULL)
+X		goto fail_3;
+X	if ((c->c_consts = newlistobject(0)) == NULL)
+X		goto fail_2;
+X	if ((c->c_names = newlistobject(0)) == NULL)
+X		goto fail_1;
+X	c->c_nexti = 0;
+X	c->c_errors = 0;
+X	c->c_infunction = 0;
+X	c->c_loops = 0;
+X	c->c_filename = filename;
+X	return 1;
+X	
+X  fail_1:
+X	DECREF(c->c_consts);
+X  fail_2:
+X	DECREF(c->c_code);
+X  fail_3:
+X 	return 0;
 X}
 X
 Xstatic void
 Xcom_free(c)
-X struct compiling *c;
+X	struct compiling *c;
 X{
-X XDECREF(c->c_code);
-X XDECREF(c->c_consts);
-X XDECREF(c->c_names);
+X	XDECREF(c->c_code);
+X	XDECREF(c->c_consts);
+X	XDECREF(c->c_names);
 X}
 X
 Xstatic void
 Xcom_done(c)
-X struct compiling *c;
+X	struct compiling *c;
 X{
-X if (c->c_code != NULL)
-X resizestring(&c->c_code, c->c_nexti);
+X	if (c->c_code != NULL)
+X		resizestring(&c->c_code, c->c_nexti);
 X}
 X
 Xstatic void
 Xcom_addbyte(c, byte)
-X struct compiling *c;
-X int byte;
+X	struct compiling *c;
+X	int byte;
 X{
-X int len;
-X if (byte < 0 || byte > 255) {
-X fprintf(stderr, "XXX compiling bad byte: %d\n", byte);
-X abort();
-X err_setstr(SystemError, "com_addbyte: byte out of range");
-X c->c_errors++;
-X }
-X if (c->c_code == NULL)
-X return;
-X len = getstringsize(c->c_code);
-X if (c->c_nexti >= len) {
-X if (resizestring(&c->c_code, len+1000) != 0) {
-X c->c_errors++;
-X return;
-X }
-X }
-X getstringvalue(c->c_code)[c->c_nexti++] = byte;
+X	int len;
+X	if (byte < 0 || byte > 255) {
+X		fprintf(stderr, "XXX compiling bad byte: %d\n", byte);
+X		abort();
+X		err_setstr(SystemError, "com_addbyte: byte out of range");
+X		c->c_errors++;
+X	}
+X	if (c->c_code == NULL)
+X		return;
+X	len = getstringsize(c->c_code);
+X	if (c->c_nexti >= len) {
+X		if (resizestring(&c->c_code, len+1000) != 0) {
+X			c->c_errors++;
+X			return;
+X		}
+X	}
+X	getstringvalue(c->c_code)[c->c_nexti++] = byte;
 X}
 X
 Xstatic void
 Xcom_addint(c, x)
-X struct compiling *c;
-X int x;
+X	struct compiling *c;
+X	int x;
 X{
-X com_addbyte(c, x & 0xff);
-X com_addbyte(c, x >> 8); /* XXX x should be positive */
+X	com_addbyte(c, x & 0xff);
+X	com_addbyte(c, x >> 8); /* XXX x should be positive */
 X}
 X
 Xstatic void
 Xcom_addoparg(c, op, arg)
-X struct compiling *c;
-X int op;
-X int arg;
+X	struct compiling *c;
+X	int op;
+X	int arg;
 X{
-X com_addbyte(c, op);
-X com_addint(c, arg);
+X	com_addbyte(c, op);
+X	com_addint(c, arg);
 X}
 X
 Xstatic void
 Xcom_addfwref(c, op, p_anchor)
-X struct compiling *c;
-X int op;
-X int *p_anchor;
+X	struct compiling *c;
+X	int op;
+X	int *p_anchor;
 X{
-X /* Compile a forward reference for backpatching */
-X int here;
-X int anchor;
-X com_addbyte(c, op);
-X here = c->c_nexti;
-X anchor = *p_anchor;
-X *p_anchor = here;
-X com_addint(c, anchor == 0 ? 0 : here - anchor);
+X	/* Compile a forward reference for backpatching */
+X	int here;
+X	int anchor;
+X	com_addbyte(c, op);
+X	here = c->c_nexti;
+X	anchor = *p_anchor;
+X	*p_anchor = here;
+X	com_addint(c, anchor == 0 ? 0 : here - anchor);
 X}
 X
 Xstatic void
 Xcom_backpatch(c, anchor)
-X struct compiling *c;
-X int anchor; /* Must be nonzero */
+X	struct compiling *c;
+X	int anchor; /* Must be nonzero */
 X{
-X unsigned char *code = (unsigned char *) getstringvalue(c->c_code);
-X int target = c->c_nexti;
-X int lastanchor = 0;
-X int dist;
-X int prev;
-X for (;;) {
-X /* Make the JUMP instruction at anchor point to target */
-X prev = code[anchor] + (code[anchor+1] << 8);
-X dist = target - (anchor+2);
-X code[anchor] = dist & 0xff;
-X code[anchor+1] = dist >> 8;
-X if (!prev)
-X break;
-X lastanchor = anchor;
-X anchor -= prev;
-X }
+X	unsigned char *code = (unsigned char *) getstringvalue(c->c_code);
+X	int target = c->c_nexti;
+X	int lastanchor = 0;
+X	int dist;
+X	int prev;
+X	for (;;) {
+X		/* Make the JUMP instruction at anchor point to target */
+X		prev = code[anchor] + (code[anchor+1] << 8);
+X		dist = target - (anchor+2);
+X		code[anchor] = dist & 0xff;
+X		code[anchor+1] = dist >> 8;
+X		if (!prev)
+X			break;
+X		lastanchor = anchor;
+X		anchor -= prev;
+X	}
 X}
 X
 X/* Handle constants and names uniformly */
 X
 Xstatic int
 Xcom_add(c, list, v)
-X struct compiling *c;
-X object *list;
-X object *v;
+X	struct compiling *c;
+X	object *list;
+X	object *v;
 X{
-X int n = getlistsize(list);
-X int i;
-X for (i = n; --i >= 0; ) {
-X object *w = getlistitem(list, i);
-X if (cmpobject(v, w) == 0)
-X return i;
-X }
-X if (addlistitem(list, v) != 0)
-X c->c_errors++;
-X return n;
+X	int n = getlistsize(list);
+X	int i;
+X	for (i = n; --i >= 0; ) {
+X		object *w = getlistitem(list, i);
+X		if (cmpobject(v, w) == 0)
+X			return i;
+X	}
+X	if (addlistitem(list, v) != 0)
+X		c->c_errors++;
+X	return n;
 X}
 X
 Xstatic int
 Xcom_addconst(c, v)
-X struct compiling *c;
-X object *v;
+X	struct compiling *c;
+X	object *v;
 X{
-X return com_add(c, c->c_consts, v);
+X	return com_add(c, c->c_consts, v);
 X}
 X
 Xstatic int
 Xcom_addname(c, v)
-X struct compiling *c;
-X object *v;
+X	struct compiling *c;
+X	object *v;
 X{
-X return com_add(c, c->c_names, v);
+X	return com_add(c, c->c_names, v);
 X}
 X
 Xstatic void
 Xcom_addopname(c, op, n)
-X struct compiling *c;
-X int op;
-X node *n;
+X	struct compiling *c;
+X	int op;
+X	node *n;
 X{
-X object *v;
-X int i;
-X char *name;
-X if (TYPE(n) == STAR)
-X name = "*";
-X else {
-X REQ(n, NAME);
-X name = STR(n);
-X }
-X if ((v = newstringobject(name)) == NULL) {
-X c->c_errors++;
-X i = 255;
-X }
-X else {
-X i = com_addname(c, v);
-X DECREF(v);
-X }
-X com_addoparg(c, op, i);
+X	object *v;
+X	int i;
+X	char *name;
+X	if (TYPE(n) == STAR)
+X		name = "*";
+X	else {
+X		REQ(n, NAME);
+X		name = STR(n);
+X	}
+X	if ((v = newstringobject(name)) == NULL) {
+X		c->c_errors++;
+X		i = 255;
+X	}
+X	else {
+X		i = com_addname(c, v);
+X		DECREF(v);
+X	}
+X	com_addoparg(c, op, i);
 X}
 X
 Xstatic object *
 Xparsenumber(s)
-X char *s;
+X	char *s;
 X{
-X extern long strtol();
-X extern double atof();
-X char *end = s;
-X long x;
-X x = strtol(s, &end, 0);
-X if (*end == '\0')
-X return newintobject(x);
-X if (*end == '.' || *end == 'e' || *end == 'E')
-X return newfloatobject(atof(s));
-X err_setstr(RuntimeError, "bad number syntax");
-X return NULL;
+X	extern long strtol();
+X	extern double atof();
+X	char *end = s;
+X	long x;
+X	x = strtol(s, &end, 0);
+X	if (*end == '\0')
+X		return newintobject(x);
+X	if (*end == '.' || *end == 'e' || *end == 'E')
+X		return newfloatobject(atof(s));
+X	err_setstr(RuntimeError, "bad number syntax");
+X	return NULL;
 X}
 X
 Xstatic object *
 Xparsestr(s)
-X char *s;
+X	char *s;
 X{
-X object *v;
-X int len;
-X char *buf;
-X char *p;
-X int c;
-X if (*s != '\'') {
-X err_badcall();
-X return NULL;
-X }
-X s++;
-X len = strlen(s);
-X if (s[--len] != '\'') {
-X err_badcall();
-X return NULL;
-X }
-X if (strchr(s, '\\') == NULL)
-X return newsizedstringobject(s, len);
-X v = newsizedstringobject((char *)NULL, len);
-X p = buf = getstringvalue(v);
-X while (*s != '\0' && *s != '\'') {
-X if (*s != '\\') {
-X *p++ = *s++;
-X continue;
-X }
-X s++;
-X switch (*s++) {
-X /* XXX This assumes ASCII! */
-X case '\\': *p++ = '\\'; break;
-X case '\'': *p++ = '\''; break;
-X case 'b': *p++ = '\b'; break;
-X case 'f': *p++ = '\014'; break; /* FF */
-X case 't': *p++ = '\t'; break;
-X case 'n': *p++ = '\n'; break;
-X case 'r': *p++ = '\r'; break;
-X case 'v': *p++ = '\013'; break; /* VT */
-X case 'E': *p++ = '\033'; break; /* ESC, not C */
-X case 'a': *p++ = '\007'; break; /* BEL, not classic C */
-X case '0': case '1': case '2': case '3':
-X case '4': case '5': case '6': case '7':
-X c = s[-1] - '0';
-X if ('0' <= *s && *s <= '7') {
-X c = (c<<3) + *s++ - '0';
-X if ('0' <= *s && *s <= '7')
-X c = (c<<3) + *s++ - '0';
-X }
-X *p++ = c;
-X break;
-X case 'x':
-X if (isxdigit(*s)) {
-X sscanf(s, "%x", &c);
-X *p++ = c;
-X do {
-X s++;
-X } while (isxdigit(*s));
-X break;
-X }
-X /* FALLTHROUGH */
-X default: *p++ = '\\'; *p++ = s[-1]; break;
-X }
-X }
-X resizestring(&v, (int)(p - buf));
-X return v;
+X	object *v;
+X	int len;
+X	char *buf;
+X	char *p;
+X	int c;
+X	if (*s != '\'') {
+X		err_badcall();
+X		return NULL;
+X	}
+X	s++;
+X	len = strlen(s);
+X	if (s[--len] != '\'') {
+X		err_badcall();
+X		return NULL;
+X	}
+X	if (strchr(s, '\\') == NULL)
+X		return newsizedstringobject(s, len);
+X	v = newsizedstringobject((char *)NULL, len);
+X	p = buf = getstringvalue(v);
+X	while (*s != '\0' && *s != '\'') {
+X		if (*s != '\\') {
+X			*p++ = *s++;
+X			continue;
+X		}
+X		s++;
+X		switch (*s++) {
+X		/* XXX This assumes ASCII! */
+X		case '\\': *p++ = '\\'; break;
+X		case '\'': *p++ = '\''; break;
+X		case 'b': *p++ = '\b'; break;
+X		case 'f': *p++ = '\014'; break; /* FF */
+X		case 't': *p++ = '\t'; break;
+X		case 'n': *p++ = '\n'; break;
+X		case 'r': *p++ = '\r'; break;
+X		case 'v': *p++ = '\013'; break; /* VT */
+X		case 'E': *p++ = '\033'; break; /* ESC, not C */
+X		case 'a': *p++ = '\007'; break; /* BEL, not classic C */
+X		case '0': case '1': case '2': case '3':
+X		case '4': case '5': case '6': case '7':
+X			c = s[-1] - '0';
+X			if ('0' <= *s && *s <= '7') {
+X				c = (c<<3) + *s++ - '0';
+X				if ('0' <= *s && *s <= '7')
+X					c = (c<<3) + *s++ - '0';
+X			}
+X			*p++ = c;
+X			break;
+X		case 'x':
+X			if (isxdigit(*s)) {
+X				sscanf(s, "%x", &c);
+X				*p++ = c;
+X				do {
+X					s++;
+X				} while (isxdigit(*s));
+X				break;
+X			}
+X		/* FALLTHROUGH */
+X		default: *p++ = '\\'; *p++ = s[-1]; break;
+X		}
+X	}
+X	resizestring(&v, (int)(p - buf));
+X	return v;
 X}
 X
 Xstatic void
 Xcom_list_constructor(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int len;
-X int i;
-X object *v, *w;
-X if (TYPE(n) != testlist)
-X REQ(n, exprlist);
-X /* exprlist: expr (',' expr)* [',']; likewise for testlist */
-X len = (NCH(n) + 1) / 2;
-X for (i = 0; i < NCH(n); i += 2)
-X com_node(c, CHILD(n, i));
-X com_addoparg(c, BUILD_LIST, len);
+X	int len;
+X	int i;
+X	object *v, *w;
+X	if (TYPE(n) != testlist)
+X		REQ(n, exprlist);
+X	/* exprlist: expr (',' expr)* [',']; likewise for testlist */
+X	len = (NCH(n) + 1) / 2;
+X	for (i = 0; i < NCH(n); i += 2)
+X		com_node(c, CHILD(n, i));
+X	com_addoparg(c, BUILD_LIST, len);
 X}
 X
 Xstatic void
 Xcom_atom(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X node *ch;
-X object *v;
-X int i;
-X REQ(n, atom);
-X ch = CHILD(n, 0);
-X switch (TYPE(ch)) {
-X case LPAR:
-X if (TYPE(CHILD(n, 1)) == RPAR)
-X com_addoparg(c, BUILD_TUPLE, 0);
-X else
-X com_node(c, CHILD(n, 1));
-X break;
-X case LSQB:
-X if (TYPE(CHILD(n, 1)) == RSQB)
-X com_addoparg(c, BUILD_LIST, 0);
-X else
-X com_list_constructor(c, CHILD(n, 1));
-X break;
-X case LBRACE:
-X com_addoparg(c, BUILD_MAP, 0);
-X break;
-X case BACKQUOTE:
-X com_node(c, CHILD(n, 1));
-X com_addbyte(c, UNARY_CONVERT);
-X break;
-X case NUMBER:
-X if ((v = parsenumber(STR(ch))) == NULL) {
-X c->c_errors++;
-X i = 255;
-X }
-X else {
-X i = com_addconst(c, v);
-X DECREF(v);
-X }
-X com_addoparg(c, LOAD_CONST, i);
-X break;
-X case STRING:
-X if ((v = parsestr(STR(ch))) == NULL) {
-X c->c_errors++;
-X i = 255;
-X }
-X else {
-X i = com_addconst(c, v);
-X DECREF(v);
-X }
-X com_addoparg(c, LOAD_CONST, i);
-X break;
-X case NAME:
-X com_addopname(c, LOAD_NAME, ch);
-X break;
-X default:
-X fprintf(stderr, "node type %d\n", TYPE(ch));
-X err_setstr(SystemError, "com_atom: unexpected node type");
-X c->c_errors++;
-X }
+X	node *ch;
+X	object *v;
+X	int i;
+X	REQ(n, atom);
+X	ch = CHILD(n, 0);
+X	switch (TYPE(ch)) {
+X	case LPAR:
+X		if (TYPE(CHILD(n, 1)) == RPAR)
+X			com_addoparg(c, BUILD_TUPLE, 0);
+X		else
+X			com_node(c, CHILD(n, 1));
+X		break;
+X	case LSQB:
+X		if (TYPE(CHILD(n, 1)) == RSQB)
+X			com_addoparg(c, BUILD_LIST, 0);
+X		else
+X			com_list_constructor(c, CHILD(n, 1));
+X		break;
+X	case LBRACE:
+X		com_addoparg(c, BUILD_MAP, 0);
+X		break;
+X	case BACKQUOTE:
+X		com_node(c, CHILD(n, 1));
+X		com_addbyte(c, UNARY_CONVERT);
+X		break;
+X	case NUMBER:
+X		if ((v = parsenumber(STR(ch))) == NULL) {
+X			c->c_errors++;
+X			i = 255;
+X		}
+X		else {
+X			i = com_addconst(c, v);
+X			DECREF(v);
+X		}
+X		com_addoparg(c, LOAD_CONST, i);
+X		break;
+X	case STRING:
+X		if ((v = parsestr(STR(ch))) == NULL) {
+X			c->c_errors++;
+X			i = 255;
+X		}
+X		else {
+X			i = com_addconst(c, v);
+X			DECREF(v);
+X		}
+X		com_addoparg(c, LOAD_CONST, i);
+X		break;
+X	case NAME:
+X		com_addopname(c, LOAD_NAME, ch);
+X		break;
+X	default:
+X		fprintf(stderr, "node type %d\n", TYPE(ch));
+X		err_setstr(SystemError, "com_atom: unexpected node type");
+X		c->c_errors++;
+X	}
 X}
 X
 Xstatic void
 Xcom_slice(c, n, op)
-X struct compiling *c;
-X node *n;
-X int op;
+X	struct compiling *c;
+X	node *n;
+X	int op;
 X{
-X if (NCH(n) == 1) {
-X com_addbyte(c, op);
-X }
-X else if (NCH(n) == 2) {
-X if (TYPE(CHILD(n, 0)) != COLON) {
-X com_node(c, CHILD(n, 0));
-X com_addbyte(c, op+1);
-X }
-X else {
-X com_node(c, CHILD(n, 1));
-X com_addbyte(c, op+2);
-X }
-X }
-X else {
-X com_node(c, CHILD(n, 0));
-X com_node(c, CHILD(n, 2));
-X com_addbyte(c, op+3);
-X }
+X	if (NCH(n) == 1) {
+X		com_addbyte(c, op);
+X	}
+X	else if (NCH(n) == 2) {
+X		if (TYPE(CHILD(n, 0)) != COLON) {
+X			com_node(c, CHILD(n, 0));
+X			com_addbyte(c, op+1);
+X		}
+X		else {
+X			com_node(c, CHILD(n, 1));
+X			com_addbyte(c, op+2);
+X		}
+X	}
+X	else {
+X		com_node(c, CHILD(n, 0));
+X		com_node(c, CHILD(n, 2));
+X		com_addbyte(c, op+3);
+X	}
 X}
 X
 Xstatic void
 Xcom_apply_subscript(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X REQ(n, subscript);
-X if (NCH(n) == 1 && TYPE(CHILD(n, 0)) != COLON) {
-X /* It's a single subscript */
-X com_node(c, CHILD(n, 0));
-X com_addbyte(c, BINARY_SUBSCR);
-X }
-X else {
-X /* It's a slice: [expr] ':' [expr] */
-X com_slice(c, n, SLICE);
-X }
+X	REQ(n, subscript);
+X	if (NCH(n) == 1 && TYPE(CHILD(n, 0)) != COLON) {
+X		/* It's a single subscript */
+X		com_node(c, CHILD(n, 0));
+X		com_addbyte(c, BINARY_SUBSCR);
+X	}
+X	else {
+X		/* It's a slice: [expr] ':' [expr] */
+X		com_slice(c, n, SLICE);
+X	}
 X}
 X
 Xstatic void
 Xcom_call_function(c, n)
-X struct compiling *c;
-X node *n; /* EITHER testlist OR ')' */
+X	struct compiling *c;
+X	node *n; /* EITHER testlist OR ')' */
 X{
-X if (TYPE(n) == RPAR) {
-X com_addbyte(c, UNARY_CALL);
-X }
-X else {
-X com_node(c, n);
-X com_addbyte(c, BINARY_CALL);
-X }
+X	if (TYPE(n) == RPAR) {
+X		com_addbyte(c, UNARY_CALL);
+X	}
+X	else {
+X		com_node(c, n);
+X		com_addbyte(c, BINARY_CALL);
+X	}
 X}
 X
 Xstatic void
 Xcom_select_member(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X com_addopname(c, LOAD_ATTR, n);
+X	com_addopname(c, LOAD_ATTR, n);
 X}
 X
 Xstatic void
 Xcom_apply_trailer(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X REQ(n, trailer);
-X switch (TYPE(CHILD(n, 0))) {
-X case LPAR:
-X com_call_function(c, CHILD(n, 1));
-X break;
-X case DOT:
-X com_select_member(c, CHILD(n, 1));
-X break;
-X case LSQB:
-X com_apply_subscript(c, CHILD(n, 1));
-X break;
-X default:
-X err_setstr(SystemError,
-X "com_apply_trailer: unknown trailer type");
-X c->c_errors++;
-X }
+X	REQ(n, trailer);
+X	switch (TYPE(CHILD(n, 0))) {
+X	case LPAR:
+X		com_call_function(c, CHILD(n, 1));
+X		break;
+X	case DOT:
+X		com_select_member(c, CHILD(n, 1));
+X		break;
+X	case LSQB:
+X		com_apply_subscript(c, CHILD(n, 1));
+X		break;
+X	default:
+X		err_setstr(SystemError,
+X			"com_apply_trailer: unknown trailer type");
+X		c->c_errors++;
+X	}
 X}
 X
 Xstatic void
 Xcom_factor(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int i;
-X REQ(n, factor);
-X if (TYPE(CHILD(n, 0)) == PLUS) {
-X com_factor(c, CHILD(n, 1));
-X com_addbyte(c, UNARY_POSITIVE);
-X }
-X else if (TYPE(CHILD(n, 0)) == MINUS) {
-X com_factor(c, CHILD(n, 1));
-X com_addbyte(c, UNARY_NEGATIVE);
-X }
-X else {
-X com_atom(c, CHILD(n, 0));
-X for (i = 1; i < NCH(n); i++)
-X com_apply_trailer(c, CHILD(n, i));
-X }
+X	int i;
+X	REQ(n, factor);
+X	if (TYPE(CHILD(n, 0)) == PLUS) {
+X		com_factor(c, CHILD(n, 1));
+X		com_addbyte(c, UNARY_POSITIVE);
+X	}
+X	else if (TYPE(CHILD(n, 0)) == MINUS) {
+X		com_factor(c, CHILD(n, 1));
+X		com_addbyte(c, UNARY_NEGATIVE);
+X	}
+X	else {
+X		com_atom(c, CHILD(n, 0));
+X		for (i = 1; i < NCH(n); i++)
+X			com_apply_trailer(c, CHILD(n, i));
+X	}
 X}
 X
 Xstatic void
 Xcom_term(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int i;
-X int op;
-X REQ(n, term);
-X com_factor(c, CHILD(n, 0));
-X for (i = 2; i < NCH(n); i += 2) {
-X com_factor(c, CHILD(n, i));
-X switch (TYPE(CHILD(n, i-1))) {
-X case STAR:
-X op = BINARY_MULTIPLY;
-X break;
-X case SLASH:
-X op = BINARY_DIVIDE;
-X break;
-X case PERCENT:
-X op = BINARY_MODULO;
-X break;
-X default:
-X err_setstr(SystemError,
-X "com_term: term operator not *, / or %");
-X c->c_errors++;
-X op = 255;
-X }
-X com_addbyte(c, op);
-X }
+X	int i;
+X	int op;
+X	REQ(n, term);
+X	com_factor(c, CHILD(n, 0));
+X	for (i = 2; i < NCH(n); i += 2) {
+X		com_factor(c, CHILD(n, i));
+X		switch (TYPE(CHILD(n, i-1))) {
+X		case STAR:
+X			op = BINARY_MULTIPLY;
+X			break;
+X		case SLASH:
+X			op = BINARY_DIVIDE;
+X			break;
+X		case PERCENT:
+X			op = BINARY_MODULO;
+X			break;
+X		default:
+X			err_setstr(SystemError,
+X				"com_term: term operator not *, / or %");
+X			c->c_errors++;
+X			op = 255;
+X		}
+X		com_addbyte(c, op);
+X	}
 X}
 X
 Xstatic void
 Xcom_expr(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int i;
-X int op;
-X REQ(n, expr);
-X com_term(c, CHILD(n, 0));
-X for (i = 2; i < NCH(n); i += 2) {
-X com_term(c, CHILD(n, i));
-X switch (TYPE(CHILD(n, i-1))) {
-X case PLUS:
-X op = BINARY_ADD;
-X break;
-X case MINUS:
-X op = BINARY_SUBTRACT;
-X break;
-X default:
-X err_setstr(SystemError,
-X "com_expr: expr operator not + or -");
-X c->c_errors++;
-X op = 255;
-X }
-X com_addbyte(c, op);
-X }
+X	int i;
+X	int op;
+X	REQ(n, expr);
+X	com_term(c, CHILD(n, 0));
+X	for (i = 2; i < NCH(n); i += 2) {
+X		com_term(c, CHILD(n, i));
+X		switch (TYPE(CHILD(n, i-1))) {
+X		case PLUS:
+X			op = BINARY_ADD;
+X			break;
+X		case MINUS:
+X			op = BINARY_SUBTRACT;
+X			break;
+X		default:
+X			err_setstr(SystemError,
+X				"com_expr: expr operator not + or -");
+X			c->c_errors++;
+X			op = 255;
+X		}
+X		com_addbyte(c, op);
+X	}
 X}
 X
 Xstatic enum cmp_op
 Xcmp_type(n)
-X node *n;
+X	node *n;
 X{
-X REQ(n, comp_op);
-X /* comp_op: '<' | '>' | '=' | '>' '=' | '<' '=' | '<' '>'
-X | 'in' | 'not' 'in' | 'is' | 'is' not' */
-X if (NCH(n) == 1) {
-X n = CHILD(n, 0);
-X switch (TYPE(n)) {
-X case LESS: return LT;
-X case GREATER: return GT;
-X case EQUAL: return EQ;
-X case NAME: if (strcmp(STR(n), "in") == 0) return IN;
-X if (strcmp(STR(n), "is") == 0) return IS;
-X }
-X }
-X else if (NCH(n) == 2) {
-X int t2 = TYPE(CHILD(n, 1));
-X switch (TYPE(CHILD(n, 0))) {
-X case LESS: if (t2 == EQUAL) return LE;
-X if (t2 == GREATER) return NE;
-X break;
-X case GREATER: if (t2 == EQUAL) return GE;
-X break;
-X case NAME: if (strcmp(STR(CHILD(n, 1)), "in") == 0)
-X return NOT_IN;
-X if (strcmp(STR(CHILD(n, 0)), "is") == 0)
-X return IS_NOT;
-X }
-X }
-X return BAD;
+X	REQ(n, comp_op);
+X	/* comp_op: '<' | '>' | '=' | '>' '=' | '<' '=' | '<' '>'
+X	          | 'in' | 'not' 'in' | 'is' | 'is' not' */
+X	if (NCH(n) == 1) {
+X		n = CHILD(n, 0);
+X		switch (TYPE(n)) {
+X		case LESS:	return LT;
+X		case GREATER:	return GT;
+X		case EQUAL:	return EQ;
+X		case NAME:	if (strcmp(STR(n), "in") == 0) return IN;
+X				if (strcmp(STR(n), "is") == 0) return IS;
+X		}
+X	}
+X	else if (NCH(n) == 2) {
+X		int t2 = TYPE(CHILD(n, 1));
+X		switch (TYPE(CHILD(n, 0))) {
+X		case LESS:	if (t2 == EQUAL)	return LE;
+X				if (t2 == GREATER)	return NE;
+X				break;
+X		case GREATER:	if (t2 == EQUAL)	return GE;
+X				break;
+X		case NAME:	if (strcmp(STR(CHILD(n, 1)), "in") == 0)
+X					return NOT_IN;
+X				if (strcmp(STR(CHILD(n, 0)), "is") == 0)
+X					return IS_NOT;
+X		}
+X	}
+X	return BAD;
 X}
 X
 Xstatic void
 Xcom_comparison(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int i;
-X enum cmp_op op;
-X int anchor;
-X REQ(n, comparison); /* comparison: expr (comp_op expr)* */
-X com_expr(c, CHILD(n, 0));
-X if (NCH(n) == 1)
-X return;
-X
-X /****************************************************************
-X The following code is generated for all but the last
-X comparison in a chain:
-X
-X label: on stack: opcode: jump to:
-X
-X a <code to load b>
-X a, b DUP_TOP
-X a, b, b ROT_THREE
-X b, a, b COMPARE_OP
-X b, 0-or-1 JUMP_IF_FALSE L1
-X b, 1 POP_TOP
-X b
-X
-X We are now ready to repeat this sequence for the next
-X comparison in the chain.
-X
-X For the last we generate:
-X
-X b <code to load c>
-X b, c COMPARE_OP
-X 0-or-1
-X
-X If there were any jumps to L1 (i.e., there was more than one
-X comparison), we generate:
-X
-X 0-or-1 JUMP_FORWARD L2
-X L1: b, 0 ROT_TWO
-X 0, b POP_TOP
-X 0
-X L2:
-X ****************************************************************/
-X
-X anchor = 0;
-X
-X for (i = 2; i < NCH(n); i += 2) {
-X com_expr(c, CHILD(n, i));
-X if (i+2 < NCH(n)) {
-X com_addbyte(c, DUP_TOP);
-X com_addbyte(c, ROT_THREE);
-X }
-X op = cmp_type(CHILD(n, i-1));
-X if (op == BAD) {
-X err_setstr(SystemError,
-X "com_comparison: unknown comparison op");
-X c->c_errors++;
-X }
-X com_addoparg(c, COMPARE_OP, op);
-X if (i+2 < NCH(n)) {
-X com_addfwref(c, JUMP_IF_FALSE, &anchor);
-X com_addbyte(c, POP_TOP);
-X }
-X }
-X
-X if (anchor) {
-X int anchor2 = 0;
-X com_addfwref(c, JUMP_FORWARD, &anchor2);
-X com_backpatch(c, anchor);
-X com_addbyte(c, ROT_TWO);
-X com_addbyte(c, POP_TOP);
-X com_backpatch(c, anchor2);
-X }
+X	int i;
+X	enum cmp_op op;
+X	int anchor;
+X	REQ(n, comparison); /* comparison: expr (comp_op expr)* */
+X	com_expr(c, CHILD(n, 0));
+X	if (NCH(n) == 1)
+X		return;
+X	
+X	/****************************************************************
+X	   The following code is generated for all but the last
+X	   comparison in a chain:
+X	   
+X	   label:	on stack:	opcode:		jump to:
+X	   
+X			a		<code to load b>
+X			a, b		DUP_TOP
+X			a, b, b		ROT_THREE
+X			b, a, b		COMPARE_OP
+X			b, 0-or-1	JUMP_IF_FALSE	L1
+X			b, 1		POP_TOP
+X			b		
+X	
+X	   We are now ready to repeat this sequence for the next
+X	   comparison in the chain.
+X	   
+X	   For the last we generate:
+X	   
+X	   		b		<code to load c>
+X	   		b, c		COMPARE_OP
+X	   		0-or-1		
+X	   
+X	   If there were any jumps to L1 (i.e., there was more than one
+X	   comparison), we generate:
+X	   
+X	   		0-or-1		JUMP_FORWARD	L2
+X	   L1:		b, 0		ROT_TWO
+X	   		0, b		POP_TOP
+X	   		0
+X	   L2:
+X	****************************************************************/
+X	
+X	anchor = 0;
+X	
+X	for (i = 2; i < NCH(n); i += 2) {
+X		com_expr(c, CHILD(n, i));
+X		if (i+2 < NCH(n)) {
+X			com_addbyte(c, DUP_TOP);
+X			com_addbyte(c, ROT_THREE);
+X		}
+X		op = cmp_type(CHILD(n, i-1));
+X		if (op == BAD) {
+X			err_setstr(SystemError,
+X				"com_comparison: unknown comparison op");
+X			c->c_errors++;
+X		}
+X		com_addoparg(c, COMPARE_OP, op);
+X		if (i+2 < NCH(n)) {
+X			com_addfwref(c, JUMP_IF_FALSE, &anchor);
+X			com_addbyte(c, POP_TOP);
+X		}
+X	}
+X	
+X	if (anchor) {
+X		int anchor2 = 0;
+X		com_addfwref(c, JUMP_FORWARD, &anchor2);
+X		com_backpatch(c, anchor);
+X		com_addbyte(c, ROT_TWO);
+X		com_addbyte(c, POP_TOP);
+X		com_backpatch(c, anchor2);
+X	}
 X}
 X
 Xstatic void
 Xcom_not_test(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X REQ(n, not_test); /* 'not' not_test | comparison */
-X if (NCH(n) == 1) {
-X com_comparison(c, CHILD(n, 0));
-X }
-X else {
-X com_not_test(c, CHILD(n, 1));
-X com_addbyte(c, UNARY_NOT);
-X }
+X	REQ(n, not_test); /* 'not' not_test | comparison */
+X	if (NCH(n) == 1) {
+X		com_comparison(c, CHILD(n, 0));
+X	}
+X	else {
+X		com_not_test(c, CHILD(n, 1));
+X		com_addbyte(c, UNARY_NOT);
+X	}
 X}
 X
 Xstatic void
 Xcom_and_test(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int i;
-X int anchor;
-X REQ(n, and_test); /* not_test ('and' not_test)* */
-X anchor = 0;
-X i = 0;
-X for (;;) {
-X com_not_test(c, CHILD(n, i));
-X if ((i += 2) >= NCH(n))
-X break;
-X com_addfwref(c, JUMP_IF_FALSE, &anchor);
-X com_addbyte(c, POP_TOP);
-X }
-X if (anchor)
-X com_backpatch(c, anchor);
+X	int i;
+X	int anchor;
+X	REQ(n, and_test); /* not_test ('and' not_test)* */
+X	anchor = 0;
+X	i = 0;
+X	for (;;) {
+X		com_not_test(c, CHILD(n, i));
+X		if ((i += 2) >= NCH(n))
+X			break;
+X		com_addfwref(c, JUMP_IF_FALSE, &anchor);
+X		com_addbyte(c, POP_TOP);
+X	}
+X	if (anchor)
+X		com_backpatch(c, anchor);
 X}
 X
 Xstatic void
 Xcom_test(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int i;
-X int anchor;
-X REQ(n, test); /* and_test ('and' and_test)* */
-X anchor = 0;
-X i = 0;
-X for (;;) {
-X com_and_test(c, CHILD(n, i));
-X if ((i += 2) >= NCH(n))
-X break;
-X com_addfwref(c, JUMP_IF_TRUE, &anchor);
-X com_addbyte(c, POP_TOP);
-X }
-X if (anchor)
-X com_backpatch(c, anchor);
+X	int i;
+X	int anchor;
+X	REQ(n, test); /* and_test ('and' and_test)* */
+X	anchor = 0;
+X	i = 0;
+X	for (;;) {
+X		com_and_test(c, CHILD(n, i));
+X		if ((i += 2) >= NCH(n))
+X			break;
+X		com_addfwref(c, JUMP_IF_TRUE, &anchor);
+X		com_addbyte(c, POP_TOP);
+X	}
+X	if (anchor)
+X		com_backpatch(c, anchor);
 X}
 X
 Xstatic void
 Xcom_list(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X /* exprlist: expr (',' expr)* [',']; likewise for testlist */
-X if (NCH(n) == 1) {
-X com_node(c, CHILD(n, 0));
-X }
-X else {
-X int i;
-X int len;
-X len = (NCH(n) + 1) / 2;
-X for (i = 0; i < NCH(n); i += 2)
-X com_node(c, CHILD(n, i));
-X com_addoparg(c, BUILD_TUPLE, len);
-X }
+X	/* exprlist: expr (',' expr)* [',']; likewise for testlist */
+X	if (NCH(n) == 1) {
+X		com_node(c, CHILD(n, 0));
+X	}
+X	else {
+X		int i;
+X		int len;
+X		len = (NCH(n) + 1) / 2;
+X		for (i = 0; i < NCH(n); i += 2)
+X			com_node(c, CHILD(n, i));
+X		com_addoparg(c, BUILD_TUPLE, len);
+X	}
 X}
 X
 X
@@ -882,903 +882,903 @@ Xstatic void com_assign PROTO((struct compiling *, node *, int));
 X
 Xstatic void
 Xcom_assign_attr(c, n, assigning)
-X struct compiling *c;
-X node *n;
-X int assigning;
+X	struct compiling *c;
+X	node *n;
+X	int assigning;
 X{
-X com_addopname(c, assigning ? STORE_ATTR : DELETE_ATTR, n);
+X	com_addopname(c, assigning ? STORE_ATTR : DELETE_ATTR, n);
 X}
 X
 Xstatic void
 Xcom_assign_slice(c, n, assigning)
-X struct compiling *c;
-X node *n;
-X int assigning;
+X	struct compiling *c;
+X	node *n;
+X	int assigning;
 X{
-X com_slice(c, n, assigning ? STORE_SLICE : DELETE_SLICE);
+X	com_slice(c, n, assigning ? STORE_SLICE : DELETE_SLICE);
 X}
 X
 Xstatic void
 Xcom_assign_subscript(c, n, assigning)
-X struct compiling *c;
-X node *n;
-X int assigning;
+X	struct compiling *c;
+X	node *n;
+X	int assigning;
 X{
-X com_node(c, n);
-X com_addbyte(c, assigning ? STORE_SUBSCR : DELETE_SUBSCR);
+X	com_node(c, n);
+X	com_addbyte(c, assigning ? STORE_SUBSCR : DELETE_SUBSCR);
 X}
 X
 Xstatic void
 Xcom_assign_trailer(c, n, assigning)
-X struct compiling *c;
-X node *n;
-X int assigning;
+X	struct compiling *c;
+X	node *n;
+X	int assigning;
 X{
-X char *name;
-X REQ(n, trailer);
-X switch (TYPE(CHILD(n, 0))) {
-X case LPAR: /* '(' [exprlist] ')' */
-X err_setstr(TypeError, "can't assign to function call");
-X c->c_errors++;
-X break;
-X case DOT: /* '.' NAME */
-X com_assign_attr(c, CHILD(n, 1), assigning);
-X break;
-X case LSQB: /* '[' subscript ']' */
-X n = CHILD(n, 1);
-X REQ(n, subscript); /* subscript: expr | [expr] ':' [expr] */
-X if (NCH(n) > 1 || TYPE(CHILD(n, 0)) == COLON)
-X com_assign_slice(c, n, assigning);
-X else
-X com_assign_subscript(c, CHILD(n, 0), assigning);
-X break;
-X default:
-X err_setstr(TypeError, "unknown trailer type");
-X c->c_errors++;
-X }
+X	char *name;
+X	REQ(n, trailer);
+X	switch (TYPE(CHILD(n, 0))) {
+X	case LPAR: /* '(' [exprlist] ')' */
+X		err_setstr(TypeError, "can't assign to function call");
+X		c->c_errors++;
+X		break;
+X	case DOT: /* '.' NAME */
+X		com_assign_attr(c, CHILD(n, 1), assigning);
+X		break;
+X	case LSQB: /* '[' subscript ']' */
+X		n = CHILD(n, 1);
+X		REQ(n, subscript); /* subscript: expr | [expr] ':' [expr] */
+X		if (NCH(n) > 1 || TYPE(CHILD(n, 0)) == COLON)
+X			com_assign_slice(c, n, assigning);
+X		else
+X			com_assign_subscript(c, CHILD(n, 0), assigning);
+X		break;
+X	default:
+X		err_setstr(TypeError, "unknown trailer type");
+X		c->c_errors++;
+X	}
 X}
 X
 Xstatic void
 Xcom_assign_tuple(c, n, assigning)
-X struct compiling *c;
-X node *n;
-X int assigning;
+X	struct compiling *c;
+X	node *n;
+X	int assigning;
 X{
-X int i;
-X if (TYPE(n) != testlist)
-X REQ(n, exprlist);
-X if (assigning)
-X com_addoparg(c, UNPACK_TUPLE, (NCH(n)+1)/2);
-X for (i = 0; i < NCH(n); i += 2)
-X com_assign(c, CHILD(n, i), assigning);
+X	int i;
+X	if (TYPE(n) != testlist)
+X		REQ(n, exprlist);
+X	if (assigning)
+X		com_addoparg(c, UNPACK_TUPLE, (NCH(n)+1)/2);
+X	for (i = 0; i < NCH(n); i += 2)
+X		com_assign(c, CHILD(n, i), assigning);
 X}
 X
 Xstatic void
 Xcom_assign_list(c, n, assigning)
-X struct compiling *c;
-X node *n;
-X int assigning;
+X	struct compiling *c;
+X	node *n;
+X	int assigning;
 X{
-X int i;
-X if (assigning)
-X com_addoparg(c, UNPACK_LIST, (NCH(n)+1)/2);
-X for (i = 0; i < NCH(n); i += 2)
-X com_assign(c, CHILD(n, i), assigning);
+X	int i;
+X	if (assigning)
+X		com_addoparg(c, UNPACK_LIST, (NCH(n)+1)/2);
+X	for (i = 0; i < NCH(n); i += 2)
+X		com_assign(c, CHILD(n, i), assigning);
 X}
 X
 Xstatic void
 Xcom_assign_name(c, n, assigning)
-X struct compiling *c;
-X node *n;
-X int assigning;
+X	struct compiling *c;
+X	node *n;
+X	int assigning;
 X{
-X REQ(n, NAME);
-X com_addopname(c, assigning ? STORE_NAME : DELETE_NAME, n);
+X	REQ(n, NAME);
+X	com_addopname(c, assigning ? STORE_NAME : DELETE_NAME, n);
 X}
 X
 Xstatic void
 Xcom_assign(c, n, assigning)
-X struct compiling *c;
-X node *n;
-X int assigning;
+X	struct compiling *c;
+X	node *n;
+X	int assigning;
 X{
-X /* Loop to avoid trivial recursion */
-X for (;;) {
-X switch (TYPE(n)) {
-X
-X case exprlist:
-X case testlist:
-X if (NCH(n) > 1) {
-X com_assign_tuple(c, n, assigning);
-X return;
-X }
-X n = CHILD(n, 0);
-X break;
-X
-X case test:
-X case and_test:
-X case not_test:
-X if (NCH(n) > 1) {
-X err_setstr(TypeError,
-X "can't assign to operator");
-X c->c_errors++;
-X return;
-X }
-X n = CHILD(n, 0);
-X break;
-X
-X case comparison:
-X if (NCH(n) > 1) {
-X err_setstr(TypeError,
-X "can't assign to operator");
-X c->c_errors++;
-X return;
-X }
-X n = CHILD(n, 0);
-X break;
-X
-X case expr:
-X if (NCH(n) > 1) {
-X err_setstr(TypeError,
-X "can't assign to operator");
-X c->c_errors++;
-X return;
-X }
-X n = CHILD(n, 0);
-X break;
-X
-X case term:
-X if (NCH(n) > 1) {
-X err_setstr(TypeError,
-X "can't assign to operator");
-X c->c_errors++;
-X return;
-X }
-X n = CHILD(n, 0);
-X break;
-X
-X case factor: /* ('+'|'-') factor | atom trailer* */
-X if (TYPE(CHILD(n, 0)) != atom) { /* '+' | '-' */
-X err_setstr(TypeError,
-X "can't assign to operator");
-X c->c_errors++;
-X return;
-X }
-X if (NCH(n) > 1) { /* trailer present */
-X int i;
-X com_node(c, CHILD(n, 0));
-X for (i = 1; i+1 < NCH(n); i++) {
-X com_apply_trailer(c, CHILD(n, i));
-X } /* NB i is still alive */
-X com_assign_trailer(c,
-X CHILD(n, i), assigning);
-X return;
-X }
-X n = CHILD(n, 0);
-X break;
-X
-X case atom:
-X switch (TYPE(CHILD(n, 0))) {
-X case LPAR:
-X n = CHILD(n, 1);
-X if (TYPE(n) == RPAR) {
-X /* XXX Should allow () = () ??? */
-X err_setstr(TypeError,
-X "can't assign to ()");
-X c->c_errors++;
-X return;
-X }
-X break;
-X case LSQB:
-X n = CHILD(n, 1);
-X if (TYPE(n) == RSQB) {
-X err_setstr(TypeError,
-X "can't assign to []");
-X c->c_errors++;
-X return;
-X }
-X com_assign_list(c, n, assigning);
-X return;
-X case NAME:
-X com_assign_name(c, CHILD(n, 0), assigning);
-X return;
-X default:
-X err_setstr(TypeError,
-X "can't assign to constant");
-X c->c_errors++;
-X return;
-X }
-X break;
-X
-X default:
-X fprintf(stderr, "node type %d\n", TYPE(n));
-X err_setstr(SystemError, "com_assign: bad node");
-X c->c_errors++;
-X return;
-X
-X }
-X }
+X	/* Loop to avoid trivial recursion */
+X	for (;;) {
+X		switch (TYPE(n)) {
+X		
+X		case exprlist:
+X		case testlist:
+X			if (NCH(n) > 1) {
+X				com_assign_tuple(c, n, assigning);
+X				return;
+X			}
+X			n = CHILD(n, 0);
+X			break;
+X		
+X		case test:
+X		case and_test:
+X		case not_test:
+X			if (NCH(n) > 1) {
+X				err_setstr(TypeError,
+X					"can't assign to operator");
+X				c->c_errors++;
+X				return;
+X			}
+X			n = CHILD(n, 0);
+X			break;
+X		
+X		case comparison:
+X			if (NCH(n) > 1) {
+X				err_setstr(TypeError,
+X					"can't assign to operator");
+X				c->c_errors++;
+X				return;
+X			}
+X			n = CHILD(n, 0);
+X			break;
+X		
+X		case expr:
+X			if (NCH(n) > 1) {
+X				err_setstr(TypeError,
+X					"can't assign to operator");
+X				c->c_errors++;
+X				return;
+X			}
+X			n = CHILD(n, 0);
+X			break;
+X		
+X		case term:
+X			if (NCH(n) > 1) {
+X				err_setstr(TypeError,
+X					"can't assign to operator");
+X				c->c_errors++;
+X				return;
+X			}
+X			n = CHILD(n, 0);
+X			break;
+X		
+X		case factor: /* ('+'|'-') factor | atom trailer* */
+X			if (TYPE(CHILD(n, 0)) != atom) { /* '+' | '-' */
+X				err_setstr(TypeError,
+X					"can't assign to operator");
+X				c->c_errors++;
+X				return;
+X			}
+X			if (NCH(n) > 1) { /* trailer present */
+X				int i;
+X				com_node(c, CHILD(n, 0));
+X				for (i = 1; i+1 < NCH(n); i++) {
+X					com_apply_trailer(c, CHILD(n, i));
+X				} /* NB i is still alive */
+X				com_assign_trailer(c,
+X						CHILD(n, i), assigning);
+X				return;
+X			}
+X			n = CHILD(n, 0);
+X			break;
+X		
+X		case atom:
+X			switch (TYPE(CHILD(n, 0))) {
+X			case LPAR:
+X				n = CHILD(n, 1);
+X				if (TYPE(n) == RPAR) {
+X					/* XXX Should allow () = () ??? */
+X					err_setstr(TypeError,
+X						"can't assign to ()");
+X					c->c_errors++;
+X					return;
+X				}
+X				break;
+X			case LSQB:
+X				n = CHILD(n, 1);
+X				if (TYPE(n) == RSQB) {
+X					err_setstr(TypeError,
+X						"can't assign to []");
+X					c->c_errors++;
+X					return;
+X				}
+X				com_assign_list(c, n, assigning);
+X				return;
+X			case NAME:
+X				com_assign_name(c, CHILD(n, 0), assigning);
+X				return;
+X			default:
+X				err_setstr(TypeError,
+X						"can't assign to constant");
+X				c->c_errors++;
+X				return;
+X			}
+X			break;
+X		
+X		default:
+X			fprintf(stderr, "node type %d\n", TYPE(n));
+X			err_setstr(SystemError, "com_assign: bad node");
+X			c->c_errors++;
+X			return;
+X		
+X		}
+X	}
 X}
 X
 Xstatic void
 Xcom_expr_stmt(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X REQ(n, expr_stmt); /* exprlist ('=' exprlist)* NEWLINE */
-X com_node(c, CHILD(n, NCH(n)-2));
-X if (NCH(n) == 2) {
-X com_addbyte(c, PRINT_EXPR);
-X }
-X else {
-X int i;
-X for (i = 0; i < NCH(n)-3; i+=2) {
-X if (i+2 < NCH(n)-3)
-X com_addbyte(c, DUP_TOP);
-X com_assign(c, CHILD(n, i), 1/*assign*/);
-X }
-X }
+X	REQ(n, expr_stmt); /* exprlist ('=' exprlist)* NEWLINE */
+X	com_node(c, CHILD(n, NCH(n)-2));
+X	if (NCH(n) == 2) {
+X		com_addbyte(c, PRINT_EXPR);
+X	}
+X	else {
+X		int i;
+X		for (i = 0; i < NCH(n)-3; i+=2) {
+X			if (i+2 < NCH(n)-3)
+X				com_addbyte(c, DUP_TOP);
+X			com_assign(c, CHILD(n, i), 1/*assign*/);
+X		}
+X	}
 X}
 X
 Xstatic void
 Xcom_print_stmt(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int i;
-X REQ(n, print_stmt); /* 'print' (test ',')* [test] NEWLINE */
-X for (i = 1; i+1 < NCH(n); i += 2) {
-X com_node(c, CHILD(n, i));
-X com_addbyte(c, PRINT_ITEM);
-X }
-X if (TYPE(CHILD(n, NCH(n)-2)) != COMMA)
-X com_addbyte(c, PRINT_NEWLINE);
-X /* XXX Alternatively, LOAD_CONST '\n' and then PRINT_ITEM */
+X	int i;
+X	REQ(n, print_stmt); /* 'print' (test ',')* [test] NEWLINE */
+X	for (i = 1; i+1 < NCH(n); i += 2) {
+X		com_node(c, CHILD(n, i));
+X		com_addbyte(c, PRINT_ITEM);
+X	}
+X	if (TYPE(CHILD(n, NCH(n)-2)) != COMMA)
+X		com_addbyte(c, PRINT_NEWLINE);
+X		/* XXX Alternatively, LOAD_CONST '\n' and then PRINT_ITEM */
 X}
 X
 Xstatic void
 Xcom_return_stmt(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X REQ(n, return_stmt); /* 'return' [testlist] NEWLINE */
-X if (!c->c_infunction) {
-X err_setstr(TypeError, "'return' outside function");
-X c->c_errors++;
-X }
-X if (NCH(n) == 2)
-X com_addoparg(c, LOAD_CONST, com_addconst(c, None));
-X else
-X com_node(c, CHILD(n, 1));
-X com_addbyte(c, RETURN_VALUE);
+X	REQ(n, return_stmt); /* 'return' [testlist] NEWLINE */
+X	if (!c->c_infunction) {
+X		err_setstr(TypeError, "'return' outside function");
+X		c->c_errors++;
+X	}
+X	if (NCH(n) == 2)
+X		com_addoparg(c, LOAD_CONST, com_addconst(c, None));
+X	else
+X		com_node(c, CHILD(n, 1));
+X	com_addbyte(c, RETURN_VALUE);
 X}
 X
 Xstatic void
 Xcom_raise_stmt(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X REQ(n, raise_stmt); /* 'raise' expr [',' expr] NEWLINE */
-X com_node(c, CHILD(n, 1));
-X if (NCH(n) > 3)
-X com_node(c, CHILD(n, 3));
-X else
-X com_addoparg(c, LOAD_CONST, com_addconst(c, None));
-X com_addbyte(c, RAISE_EXCEPTION);
+X	REQ(n, raise_stmt); /* 'raise' expr [',' expr] NEWLINE */
+X	com_node(c, CHILD(n, 1));
+X	if (NCH(n) > 3)
+X		com_node(c, CHILD(n, 3));
+X	else
+X		com_addoparg(c, LOAD_CONST, com_addconst(c, None));
+X	com_addbyte(c, RAISE_EXCEPTION);
 X}
 X
 Xstatic void
 Xcom_import_stmt(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int i;
-X REQ(n, import_stmt);
-X /* 'import' NAME (',' NAME)* NEWLINE |
-X 'from' NAME 'import' ('*' | NAME (',' NAME)*) NEWLINE */
-X if (STR(CHILD(n, 0))[0] == 'f') {
-X /* 'from' NAME 'import' ... */
-X REQ(CHILD(n, 1), NAME);
-X com_addopname(c, IMPORT_NAME, CHILD(n, 1));
-X for (i = 3; i < NCH(n); i += 2)
-X com_addopname(c, IMPORT_FROM, CHILD(n, i));
-X com_addbyte(c, POP_TOP);
-X }
-X else {
-X /* 'import' ... */
-X for (i = 1; i < NCH(n); i += 2) {
-X com_addopname(c, IMPORT_NAME, CHILD(n, i));
-X com_addopname(c, STORE_NAME, CHILD(n, i));
-X }
-X }
+X	int i;
+X	REQ(n, import_stmt);
+X	/* 'import' NAME (',' NAME)* NEWLINE |
+X	   'from' NAME 'import' ('*' | NAME (',' NAME)*) NEWLINE */
+X	if (STR(CHILD(n, 0))[0] == 'f') {
+X		/* 'from' NAME 'import' ... */
+X		REQ(CHILD(n, 1), NAME);
+X		com_addopname(c, IMPORT_NAME, CHILD(n, 1));
+X		for (i = 3; i < NCH(n); i += 2)
+X			com_addopname(c, IMPORT_FROM, CHILD(n, i));
+X		com_addbyte(c, POP_TOP);
+X	}
+X	else {
+X		/* 'import' ... */
+X		for (i = 1; i < NCH(n); i += 2) {
+X			com_addopname(c, IMPORT_NAME, CHILD(n, i));
+X			com_addopname(c, STORE_NAME, CHILD(n, i));
+X		}
+X	}
 X}
 X
 Xstatic void
 Xcom_if_stmt(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int i;
-X int anchor = 0;
-X REQ(n, if_stmt);
-X /*'if' test ':' suite ('elif' test ':' suite)* ['else' ':' suite] */
-X for (i = 0; i+3 < NCH(n); i+=4) {
-X int a = 0;
-X node *ch = CHILD(n, i+1);
-X if (i > 0)
-X com_addoparg(c, SET_LINENO, ch->n_lineno);
-X com_node(c, CHILD(n, i+1));
-X com_addfwref(c, JUMP_IF_FALSE, &a);
-X com_addbyte(c, POP_TOP);
-X com_node(c, CHILD(n, i+3));
-X com_addfwref(c, JUMP_FORWARD, &anchor);
-X com_backpatch(c, a);
-X com_addbyte(c, POP_TOP);
-X }
-X if (i+2 < NCH(n))
-X com_node(c, CHILD(n, i+2));
-X com_backpatch(c, anchor);
+X	int i;
+X	int anchor = 0;
+X	REQ(n, if_stmt);
+X	/*'if' test ':' suite ('elif' test ':' suite)* ['else' ':' suite] */
+X	for (i = 0; i+3 < NCH(n); i+=4) {
+X		int a = 0;
+X		node *ch = CHILD(n, i+1);
+X		if (i > 0)
+X			com_addoparg(c, SET_LINENO, ch->n_lineno);
+X		com_node(c, CHILD(n, i+1));
+X		com_addfwref(c, JUMP_IF_FALSE, &a);
+X		com_addbyte(c, POP_TOP);
+X		com_node(c, CHILD(n, i+3));
+X		com_addfwref(c, JUMP_FORWARD, &anchor);
+X		com_backpatch(c, a);
+X		com_addbyte(c, POP_TOP);
+X	}
+X	if (i+2 < NCH(n))
+X		com_node(c, CHILD(n, i+2));
+X	com_backpatch(c, anchor);
 X}
 X
 Xstatic void
 Xcom_while_stmt(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int break_anchor = 0;
-X int anchor = 0;
-X int begin;
-X REQ(n, while_stmt); /* 'while' test ':' suite ['else' ':' suite] */
-X com_addfwref(c, SETUP_LOOP, &break_anchor);
-X begin = c->c_nexti;
-X com_addoparg(c, SET_LINENO, n->n_lineno);
-X com_node(c, CHILD(n, 1));
-X com_addfwref(c, JUMP_IF_FALSE, &anchor);
-X com_addbyte(c, POP_TOP);
-X c->c_loops++;
-X com_node(c, CHILD(n, 3));
-X c->c_loops--;
-X com_addoparg(c, JUMP_ABSOLUTE, begin);
-X com_backpatch(c, anchor);
-X com_addbyte(c, POP_TOP);
-X com_addbyte(c, POP_BLOCK);
-X if (NCH(n) > 4)
-X com_node(c, CHILD(n, 6));
-X com_backpatch(c, break_anchor);
+X	int break_anchor = 0;
+X	int anchor = 0;
+X	int begin;
+X	REQ(n, while_stmt); /* 'while' test ':' suite ['else' ':' suite] */
+X	com_addfwref(c, SETUP_LOOP, &break_anchor);
+X	begin = c->c_nexti;
+X	com_addoparg(c, SET_LINENO, n->n_lineno);
+X	com_node(c, CHILD(n, 1));
+X	com_addfwref(c, JUMP_IF_FALSE, &anchor);
+X	com_addbyte(c, POP_TOP);
+X	c->c_loops++;
+X	com_node(c, CHILD(n, 3));
+X	c->c_loops--;
+X	com_addoparg(c, JUMP_ABSOLUTE, begin);
+X	com_backpatch(c, anchor);
+X	com_addbyte(c, POP_TOP);
+X	com_addbyte(c, POP_BLOCK);
+X	if (NCH(n) > 4)
+X		com_node(c, CHILD(n, 6));
+X	com_backpatch(c, break_anchor);
 X}
 X
 Xstatic void
 Xcom_for_stmt(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X object *v;
-X int break_anchor = 0;
-X int anchor = 0;
-X int begin;
-X REQ(n, for_stmt);
-X /* 'for' exprlist 'in' exprlist ':' suite ['else' ':' suite] */
-X com_addfwref(c, SETUP_LOOP, &break_anchor);
-X com_node(c, CHILD(n, 3));
-X v = newintobject(0L);
-X if (v == NULL)
-X c->c_errors++;
-X com_addoparg(c, LOAD_CONST, com_addconst(c, v));
-X XDECREF(v);
-X begin = c->c_nexti;
-X com_addoparg(c, SET_LINENO, n->n_lineno);
-X com_addfwref(c, FOR_LOOP, &anchor);
-X com_assign(c, CHILD(n, 1), 1/*assigning*/);
-X c->c_loops++;
-X com_node(c, CHILD(n, 5));
-X c->c_loops--;
-X com_addoparg(c, JUMP_ABSOLUTE, begin);
-X com_backpatch(c, anchor);
-X com_addbyte(c, POP_BLOCK);
-X if (NCH(n) > 8)
-X com_node(c, CHILD(n, 8));
-X com_backpatch(c, break_anchor);
+X	object *v;
+X	int break_anchor = 0;
+X	int anchor = 0;
+X	int begin;
+X	REQ(n, for_stmt);
+X	/* 'for' exprlist 'in' exprlist ':' suite ['else' ':' suite] */
+X	com_addfwref(c, SETUP_LOOP, &break_anchor);
+X	com_node(c, CHILD(n, 3));
+X	v = newintobject(0L);
+X	if (v == NULL)
+X		c->c_errors++;
+X	com_addoparg(c, LOAD_CONST, com_addconst(c, v));
+X	XDECREF(v);
+X	begin = c->c_nexti;
+X	com_addoparg(c, SET_LINENO, n->n_lineno);
+X	com_addfwref(c, FOR_LOOP, &anchor);
+X	com_assign(c, CHILD(n, 1), 1/*assigning*/);
+X	c->c_loops++;
+X	com_node(c, CHILD(n, 5));
+X	c->c_loops--;
+X	com_addoparg(c, JUMP_ABSOLUTE, begin);
+X	com_backpatch(c, anchor);
+X	com_addbyte(c, POP_BLOCK);
+X	if (NCH(n) > 8)
+X		com_node(c, CHILD(n, 8));
+X	com_backpatch(c, break_anchor);
 X}
 X
 X/* Although 'execpt' and 'finally' clauses can be combined
-X syntactically, they are compiled separately. In fact,
-X try: S
-X except E1: S1
-X except E2: S2
-X ...
-X finally: Sf
-X is equivalent to
-X try:
-X try: S
-X except E1: S1
-X except E2: S2
-X ...
-X finally: Sf
-X meaning that the 'finally' clause is entered even if things
-X go wrong again in an exception handler. Note that this is
-X not the case for exception handlers: at most one is entered.
+X   syntactically, they are compiled separately.  In fact,
+X	try: S
+X	except E1: S1
+X	except E2: S2
+X	...
+X	finally: Sf
+X   is equivalent to
+X	try:
+X	    try: S
+X	    except E1: S1
+X	    except E2: S2
+X	    ...
+X	finally: Sf
+X   meaning that the 'finally' clause is entered even if things
+X   go wrong again in an exception handler.  Note that this is
+X   not the case for exception handlers: at most one is entered.
+X   
+X   Code generated for "try: S finally: Sf" is as follows:
+X   
+X		SETUP_FINALLY	L
+X		<code for S>
+X		POP_BLOCK
+X		LOAD_CONST	<nil>
+X	L:	<code for Sf>
+X		END_FINALLY
+X   
+X   The special instructions use the block stack.  Each block
+X   stack entry contains the instruction that created it (here
+X   SETUP_FINALLY), the level of the value stack at the time the
+X   block stack entry was created, and a label (here L).
+X   
+X   SETUP_FINALLY:
+X	Pushes the current value stack level and the label
+X	onto the block stack.
+X   POP_BLOCK:
+X	Pops en entry from the block stack, and pops the value
+X	stack until its level is the same as indicated on the
+X	block stack.  (The label is ignored.)
+X   END_FINALLY:
+X	Pops a variable number of entries from the *value* stack
+X	and re-raises the exception they specify.  The number of
+X	entries popped depends on the (pseudo) exception type.
+X   
+X   The block stack is unwound when an exception is raised:
+X   when a SETUP_FINALLY entry is found, the exception is pushed
+X   onto the value stack (and the exception condition is cleared),
+X   and the interpreter jumps to the label gotten from the block
+X   stack.
+X   
+X   Code generated for "try: S except E1, V1: S1 except E2, V2: S2 ...":
+X   (The contents of the value stack is shown in [], with the top
+X   at the right; 'tb' is trace-back info, 'val' the exception's
+X   associated value, and 'exc' the exception.)
+X   
+X   Value stack		Label	Instruction	Argument
+X   []				SETUP_EXCEPT	L1
+X   []				<code for S>
+X   []				POP_BLOCK
+X   []				JUMP_FORWARD	L0
+X   
+X   [tb, val, exc]	L1:	DUP				)
+X   [tb, val, exc, exc]		<evaluate E1>			)
+X   [tb, val, exc, exc, E1]	COMPARE_OP	EXC_MATCH	) only if E1
+X   [tb, val, exc, 1-or-0]	JUMP_IF_FALSE	L2		)
+X   [tb, val, exc, 1]		POP				)
+X   [tb, val, exc]		POP
+X   [tb, val]			<assign to V1>	(or POP if no V1)
+X   [tb]				POP
+X   []				<code for S1>
+X   				JUMP_FORWARD	L0
+X   
+X   [tb, val, exc, 0]	L2:	POP
+X   [tb, val, exc]		DUP
+X   .............................etc.......................
 X
-X Code generated for "try: S finally: Sf" is as follows:
-X
-X SETUP_FINALLY L
-X <code for S>
-X POP_BLOCK
-X LOAD_CONST <nil>
-X L: <code for Sf>
-X END_FINALLY
-X
-X The special instructions use the block stack. Each block
-X stack entry contains the instruction that created it (here
-X SETUP_FINALLY), the level of the value stack at the time the
-X block stack entry was created, and a label (here L).
-X
-X SETUP_FINALLY:
-X Pushes the current value stack level and the label
-X onto the block stack.
-X POP_BLOCK:
-X Pops en entry from the block stack, and pops the value
-X stack until its level is the same as indicated on the
-X block stack. (The label is ignored.)
-X END_FINALLY:
-X Pops a variable number of entries from the *value* stack
-X and re-raises the exception they specify. The number of
-X entries popped depends on the (pseudo) exception type.
-X
-X The block stack is unwound when an exception is raised:
-X when a SETUP_FINALLY entry is found, the exception is pushed
-X onto the value stack (and the exception condition is cleared),
-X and the interpreter jumps to the label gotten from the block
-X stack.
-X
-X Code generated for "try: S except E1, V1: S1 except E2, V2: S2 ...":
-X (The contents of the value stack is shown in [], with the top
-X at the right; 'tb' is trace-back info, 'val' the exception's
-X associated value, and 'exc' the exception.)
-X
-X Value stack Label Instruction Argument
-X [] SETUP_EXCEPT L1
-X [] <code for S>
-X [] POP_BLOCK
-X [] JUMP_FORWARD L0
-X
-X [tb, val, exc] L1: DUP )
-X [tb, val, exc, exc] <evaluate E1> )
-X [tb, val, exc, exc, E1] COMPARE_OP EXC_MATCH ) only if E1
-X [tb, val, exc, 1-or-0] JUMP_IF_FALSE L2 )
-X [tb, val, exc, 1] POP )
-X [tb, val, exc] POP
-X [tb, val] <assign to V1> (or POP if no V1)
-X [tb] POP
-X [] <code for S1>
-X JUMP_FORWARD L0
-X
-X [tb, val, exc, 0] L2: POP
-X [tb, val, exc] DUP
-X .............................etc.......................
-X
-X [tb, val, exc, 0] Ln+1: POP
-X [tb, val, exc] END_FINALLY # re-raise exception
-X
-X [] L0: <next statement>
-X
-X Of course, parts are not generated if Vi or Ei is not present.
+X   [tb, val, exc, 0]	Ln+1:	POP
+X   [tb, val, exc]	   	END_FINALLY	# re-raise exception
+X   
+X   []			L0:	<next statement>
+X   
+X   Of course, parts are not generated if Vi or Ei is not present.
 X*/
 X
 Xstatic void
 Xcom_try_stmt(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int finally_anchor = 0;
-X int except_anchor = 0;
-X REQ(n, try_stmt);
-X /* 'try' ':' suite (except_clause ':' suite)* ['finally' ':' suite] */
-X
-X if (NCH(n) > 3 && TYPE(CHILD(n, NCH(n)-3)) != except_clause) {
-X /* Have a 'finally' clause */
-X com_addfwref(c, SETUP_FINALLY, &finally_anchor);
-X }
-X if (NCH(n) > 3 && TYPE(CHILD(n, 3)) == except_clause) {
-X /* Have an 'except' clause */
-X com_addfwref(c, SETUP_EXCEPT, &except_anchor);
-X }
-X com_node(c, CHILD(n, 2));
-X if (except_anchor) {
-X int end_anchor = 0;
-X int i;
-X node *ch;
-X com_addbyte(c, POP_BLOCK);
-X com_addfwref(c, JUMP_FORWARD, &end_anchor);
-X com_backpatch(c, except_anchor);
-X for (i = 3;
-X i < NCH(n) && TYPE(ch = CHILD(n, i)) == except_clause;
-X i += 3) {
-X /* except_clause: 'except' [expr [',' expr]] */
-X if (except_anchor == 0) {
-X err_setstr(TypeError,
-X "default 'except:' must be last");
-X c->c_errors++;
-X break;
-X }
-X except_anchor = 0;
-X com_addoparg(c, SET_LINENO, ch->n_lineno);
-X if (NCH(ch) > 1) {
-X com_addbyte(c, DUP_TOP);
-X com_node(c, CHILD(ch, 1));
-X com_addoparg(c, COMPARE_OP, EXC_MATCH);
-X com_addfwref(c, JUMP_IF_FALSE, &except_anchor);
-X com_addbyte(c, POP_TOP);
-X }
-X com_addbyte(c, POP_TOP);
-X if (NCH(ch) > 3)
-X com_assign(c, CHILD(ch, 3), 1/*assigning*/);
-X else
-X com_addbyte(c, POP_TOP);
-X com_addbyte(c, POP_TOP);
-X com_node(c, CHILD(n, i+2));
-X com_addfwref(c, JUMP_FORWARD, &end_anchor);
-X if (except_anchor) {
-X com_backpatch(c, except_anchor);
-X com_addbyte(c, POP_TOP);
-X }
-X }
-X com_addbyte(c, END_FINALLY);
-X com_backpatch(c, end_anchor);
-X }
-X if (finally_anchor) {
-X node *ch;
-X com_addbyte(c, POP_BLOCK);
-X com_addoparg(c, LOAD_CONST, com_addconst(c, None));
-X com_backpatch(c, finally_anchor);
-X ch = CHILD(n, NCH(n)-1);
-X com_addoparg(c, SET_LINENO, ch->n_lineno);
-X com_node(c, ch);
-X com_addbyte(c, END_FINALLY);
-X }
+X	int finally_anchor = 0;
+X	int except_anchor = 0;
+X	REQ(n, try_stmt);
+X	/* 'try' ':' suite (except_clause ':' suite)* ['finally' ':' suite] */
+X	
+X	if (NCH(n) > 3 && TYPE(CHILD(n, NCH(n)-3)) != except_clause) {
+X		/* Have a 'finally' clause */
+X		com_addfwref(c, SETUP_FINALLY, &finally_anchor);
+X	}
+X	if (NCH(n) > 3 && TYPE(CHILD(n, 3)) == except_clause) {
+X		/* Have an 'except' clause */
+X		com_addfwref(c, SETUP_EXCEPT, &except_anchor);
+X	}
+X	com_node(c, CHILD(n, 2));
+X	if (except_anchor) {
+X		int end_anchor = 0;
+X		int i;
+X		node *ch;
+X		com_addbyte(c, POP_BLOCK);
+X		com_addfwref(c, JUMP_FORWARD, &end_anchor);
+X		com_backpatch(c, except_anchor);
+X		for (i = 3;
+X			i < NCH(n) && TYPE(ch = CHILD(n, i)) == except_clause;
+X								i += 3) {
+X			/* except_clause: 'except' [expr [',' expr]] */
+X			if (except_anchor == 0) {
+X				err_setstr(TypeError,
+X					"default 'except:' must be last");
+X				c->c_errors++;
+X				break;
+X			}
+X			except_anchor = 0;
+X			com_addoparg(c, SET_LINENO, ch->n_lineno);
+X			if (NCH(ch) > 1) {
+X				com_addbyte(c, DUP_TOP);
+X				com_node(c, CHILD(ch, 1));
+X				com_addoparg(c, COMPARE_OP, EXC_MATCH);
+X				com_addfwref(c, JUMP_IF_FALSE, &except_anchor);
+X				com_addbyte(c, POP_TOP);
+X			}
+X			com_addbyte(c, POP_TOP);
+X			if (NCH(ch) > 3)
+X				com_assign(c, CHILD(ch, 3), 1/*assigning*/);
+X			else
+X				com_addbyte(c, POP_TOP);
+X			com_addbyte(c, POP_TOP);
+X			com_node(c, CHILD(n, i+2));
+X			com_addfwref(c, JUMP_FORWARD, &end_anchor);
+X			if (except_anchor) {
+X				com_backpatch(c, except_anchor);
+X				com_addbyte(c, POP_TOP);
+X			}
+X		}
+X		com_addbyte(c, END_FINALLY);
+X		com_backpatch(c, end_anchor);
+X	}
+X	if (finally_anchor) {
+X		node *ch;
+X		com_addbyte(c, POP_BLOCK);
+X		com_addoparg(c, LOAD_CONST, com_addconst(c, None));
+X		com_backpatch(c, finally_anchor);
+X		ch = CHILD(n, NCH(n)-1);
+X		com_addoparg(c, SET_LINENO, ch->n_lineno);
+X		com_node(c, ch);
+X		com_addbyte(c, END_FINALLY);
+X	}
 X}
 X
 Xstatic void
 Xcom_suite(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X REQ(n, suite);
-X /* simple_stmt | NEWLINE INDENT NEWLINE* (stmt NEWLINE*)+ DEDENT */
-X if (NCH(n) == 1) {
-X com_node(c, CHILD(n, 0));
-X }
-X else {
-X int i;
-X for (i = 0; i < NCH(n); i++) {
-X node *ch = CHILD(n, i);
-X if (TYPE(ch) == stmt)
-X com_node(c, ch);
-X }
-X }
+X	REQ(n, suite);
+X	/* simple_stmt | NEWLINE INDENT NEWLINE* (stmt NEWLINE*)+ DEDENT */
+X	if (NCH(n) == 1) {
+X		com_node(c, CHILD(n, 0));
+X	}
+X	else {
+X		int i;
+X		for (i = 0; i < NCH(n); i++) {
+X			node *ch = CHILD(n, i);
+X			if (TYPE(ch) == stmt)
+X				com_node(c, ch);
+X		}
+X	}
 X}
 X
 Xstatic void
 Xcom_funcdef(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X object *v;
-X REQ(n, funcdef); /* funcdef: 'def' NAME parameters ':' suite */
-X v = (object *)compile(n, c->c_filename);
-X if (v == NULL)
-X c->c_errors++;
-X else {
-X int i = com_addconst(c, v);
-X com_addoparg(c, LOAD_CONST, i);
-X com_addbyte(c, BUILD_FUNCTION);
-X com_addopname(c, STORE_NAME, CHILD(n, 1));
-X DECREF(v);
-X }
+X	object *v;
+X	REQ(n, funcdef); /* funcdef: 'def' NAME parameters ':' suite */
+X	v = (object *)compile(n, c->c_filename);
+X	if (v == NULL)
+X		c->c_errors++;
+X	else {
+X		int i = com_addconst(c, v);
+X		com_addoparg(c, LOAD_CONST, i);
+X		com_addbyte(c, BUILD_FUNCTION);
+X		com_addopname(c, STORE_NAME, CHILD(n, 1));
+X		DECREF(v);
+X	}
 X}
 X
 Xstatic void
 Xcom_bases(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int i, nbases;
-X REQ(n, baselist);
-X /*
-X baselist: atom arguments (',' atom arguments)*
-X arguments: '(' [testlist] ')'
-X */
-X for (i = 0; i < NCH(n); i += 3)
-X com_node(c, CHILD(n, i));
-X com_addoparg(c, BUILD_TUPLE, (NCH(n)+1) / 3);
+X	int i, nbases;
+X	REQ(n, baselist);
+X	/*
+X	baselist: atom arguments (',' atom arguments)*
+X	arguments: '(' [testlist] ')'
+X	*/
+X	for (i = 0; i < NCH(n); i += 3)
+X		com_node(c, CHILD(n, i));
+X	com_addoparg(c, BUILD_TUPLE, (NCH(n)+1) / 3);
 X}
 X
 Xstatic void
 Xcom_classdef(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X object *v;
-X REQ(n, classdef);
-X /*
-X classdef: 'class' NAME parameters ['=' baselist] ':' suite
-X baselist: atom arguments (',' atom arguments)*
-X arguments: '(' [testlist] ')'
-X */
-X if (NCH(n) == 7)
-X com_bases(c, CHILD(n, 4));
-X else
-X com_addoparg(c, LOAD_CONST, com_addconst(c, None));
-X v = (object *)compile(n, c->c_filename);
-X if (v == NULL)
-X c->c_errors++;
-X else {
-X int i = com_addconst(c, v);
-X com_addoparg(c, LOAD_CONST, i);
-X com_addbyte(c, BUILD_FUNCTION);
-X com_addbyte(c, UNARY_CALL);
-X com_addbyte(c, BUILD_CLASS);
-X com_addopname(c, STORE_NAME, CHILD(n, 1));
-X DECREF(v);
-X }
+X	object *v;
+X	REQ(n, classdef);
+X	/*
+X	classdef: 'class' NAME parameters ['=' baselist] ':' suite
+X	baselist: atom arguments (',' atom arguments)*
+X	arguments: '(' [testlist] ')'
+X	*/
+X	if (NCH(n) == 7)
+X		com_bases(c, CHILD(n, 4));
+X	else
+X		com_addoparg(c, LOAD_CONST, com_addconst(c, None));
+X	v = (object *)compile(n, c->c_filename);
+X	if (v == NULL)
+X		c->c_errors++;
+X	else {
+X		int i = com_addconst(c, v);
+X		com_addoparg(c, LOAD_CONST, i);
+X		com_addbyte(c, BUILD_FUNCTION);
+X		com_addbyte(c, UNARY_CALL);
+X		com_addbyte(c, BUILD_CLASS);
+X		com_addopname(c, STORE_NAME, CHILD(n, 1));
+X		DECREF(v);
+X	}
 X}
 X
 Xstatic void
 Xcom_node(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X switch (TYPE(n)) {
+X	switch (TYPE(n)) {
+X	
+X	/* Definition nodes */
+X	
+X	case funcdef:
+X		com_funcdef(c, n);
+X		break;
+X	case classdef:
+X		com_classdef(c, n);
+X		break;
+X	
+X	/* Trivial parse tree nodes */
+X	
+X	case stmt:
+X	case flow_stmt:
+X		com_node(c, CHILD(n, 0));
+X		break;
 X
-X /* Definition nodes */
+X	case simple_stmt:
+X	case compound_stmt:
+X		com_addoparg(c, SET_LINENO, n->n_lineno);
+X		com_node(c, CHILD(n, 0));
+X		break;
 X
-X case funcdef:
-X com_funcdef(c, n);
-X break;
-X case classdef:
-X com_classdef(c, n);
-X break;
-X
-X /* Trivial parse tree nodes */
-X
-X case stmt:
-X case flow_stmt:
-X com_node(c, CHILD(n, 0));
-X break;
-X
-X case simple_stmt:
-X case compound_stmt:
-X com_addoparg(c, SET_LINENO, n->n_lineno);
-X com_node(c, CHILD(n, 0));
-X break;
-X
-X /* Statement nodes */
-X
-X case expr_stmt:
-X com_expr_stmt(c, n);
-X break;
-X case print_stmt:
-X com_print_stmt(c, n);
-X break;
-X case del_stmt: /* 'del' exprlist NEWLINE */
-X com_assign(c, CHILD(n, 1), 0/*delete*/);
-X break;
-X case pass_stmt:
-X break;
-X case break_stmt:
-X if (c->c_loops == 0) {
-X err_setstr(TypeError, "'break' outside loop");
-X c->c_errors++;
-X }
-X com_addbyte(c, BREAK_LOOP);
-X break;
-X case return_stmt:
-X com_return_stmt(c, n);
-X break;
-X case raise_stmt:
-X com_raise_stmt(c, n);
-X break;
-X case import_stmt:
-X com_import_stmt(c, n);
-X break;
-X case if_stmt:
-X com_if_stmt(c, n);
-X break;
-X case while_stmt:
-X com_while_stmt(c, n);
-X break;
-X case for_stmt:
-X com_for_stmt(c, n);
-X break;
-X case try_stmt:
-X com_try_stmt(c, n);
-X break;
-X case suite:
-X com_suite(c, n);
-X break;
-X
-X /* Expression nodes */
-X
-X case testlist:
-X com_list(c, n);
-X break;
-X case test:
-X com_test(c, n);
-X break;
-X case and_test:
-X com_and_test(c, n);
-X break;
-X case not_test:
-X com_not_test(c, n);
-X break;
-X case comparison:
-X com_comparison(c, n);
-X break;
-X case exprlist:
-X com_list(c, n);
-X break;
-X case expr:
-X com_expr(c, n);
-X break;
-X case term:
-X com_term(c, n);
-X break;
-X case factor:
-X com_factor(c, n);
-X break;
-X case atom:
-X com_atom(c, n);
-X break;
-X
-X default:
-X fprintf(stderr, "node type %d\n", TYPE(n));
-X err_setstr(SystemError, "com_node: unexpected node type");
-X c->c_errors++;
-X }
+X	/* Statement nodes */
+X	
+X	case expr_stmt:
+X		com_expr_stmt(c, n);
+X		break;
+X	case print_stmt:
+X		com_print_stmt(c, n);
+X		break;
+X	case del_stmt: /* 'del' exprlist NEWLINE */
+X		com_assign(c, CHILD(n, 1), 0/*delete*/);
+X		break;
+X	case pass_stmt:
+X		break;
+X	case break_stmt:
+X		if (c->c_loops == 0) {
+X			err_setstr(TypeError, "'break' outside loop");
+X			c->c_errors++;
+X		}
+X		com_addbyte(c, BREAK_LOOP);
+X		break;
+X	case return_stmt:
+X		com_return_stmt(c, n);
+X		break;
+X	case raise_stmt:
+X		com_raise_stmt(c, n);
+X		break;
+X	case import_stmt:
+X		com_import_stmt(c, n);
+X		break;
+X	case if_stmt:
+X		com_if_stmt(c, n);
+X		break;
+X	case while_stmt:
+X		com_while_stmt(c, n);
+X		break;
+X	case for_stmt:
+X		com_for_stmt(c, n);
+X		break;
+X	case try_stmt:
+X		com_try_stmt(c, n);
+X		break;
+X	case suite:
+X		com_suite(c, n);
+X		break;
+X	
+X	/* Expression nodes */
+X	
+X	case testlist:
+X		com_list(c, n);
+X		break;
+X	case test:
+X		com_test(c, n);
+X		break;
+X	case and_test:
+X		com_and_test(c, n);
+X		break;
+X	case not_test:
+X		com_not_test(c, n);
+X		break;
+X	case comparison:
+X		com_comparison(c, n);
+X		break;
+X	case exprlist:
+X		com_list(c, n);
+X		break;
+X	case expr:
+X		com_expr(c, n);
+X		break;
+X	case term:
+X		com_term(c, n);
+X		break;
+X	case factor:
+X		com_factor(c, n);
+X		break;
+X	case atom:
+X		com_atom(c, n);
+X		break;
+X	
+X	default:
+X		fprintf(stderr, "node type %d\n", TYPE(n));
+X		err_setstr(SystemError, "com_node: unexpected node type");
+X		c->c_errors++;
+X	}
 X}
 X
 Xstatic void com_fplist PROTO((struct compiling *, node *));
 X
 Xstatic void
 Xcom_fpdef(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X REQ(n, fpdef); /* fpdef: NAME | '(' fplist ')' */
-X if (TYPE(CHILD(n, 0)) == LPAR)
-X com_fplist(c, CHILD(n, 1));
-X else
-X com_addopname(c, STORE_NAME, CHILD(n, 0));
+X	REQ(n, fpdef); /* fpdef: NAME | '(' fplist ')' */
+X	if (TYPE(CHILD(n, 0)) == LPAR)
+X		com_fplist(c, CHILD(n, 1));
+X	else
+X		com_addopname(c, STORE_NAME, CHILD(n, 0));
 X}
 X
 Xstatic void
 Xcom_fplist(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X REQ(n, fplist); /* fplist: fpdef (',' fpdef)* */
-X if (NCH(n) == 1) {
-X com_fpdef(c, CHILD(n, 0));
-X }
-X else {
-X int i;
-X com_addoparg(c, UNPACK_TUPLE, (NCH(n)+1)/2);
-X for (i = 0; i < NCH(n); i += 2)
-X com_fpdef(c, CHILD(n, i));
-X }
+X	REQ(n, fplist); /* fplist: fpdef (',' fpdef)* */
+X	if (NCH(n) == 1) {
+X		com_fpdef(c, CHILD(n, 0));
+X	}
+X	else {
+X		int i;
+X		com_addoparg(c, UNPACK_TUPLE, (NCH(n)+1)/2);
+X		for (i = 0; i < NCH(n); i += 2)
+X			com_fpdef(c, CHILD(n, i));
+X	}
 X}
 X
 Xstatic void
 Xcom_file_input(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X int i;
-X REQ(n, file_input); /* (NEWLINE | stmt)* ENDMARKER */
-X for (i = 0; i < NCH(n); i++) {
-X node *ch = CHILD(n, i);
-X if (TYPE(ch) != ENDMARKER && TYPE(ch) != NEWLINE)
-X com_node(c, ch);
-X }
+X	int i;
+X	REQ(n, file_input); /* (NEWLINE | stmt)* ENDMARKER */
+X	for (i = 0; i < NCH(n); i++) {
+X		node *ch = CHILD(n, i);
+X		if (TYPE(ch) != ENDMARKER && TYPE(ch) != NEWLINE)
+X			com_node(c, ch);
+X	}
 X}
 X
 X/* Top-level compile-node interface */
 X
 Xstatic void
 Xcompile_funcdef(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X node *ch;
-X REQ(n, funcdef); /* funcdef: 'def' NAME parameters ':' suite */
-X ch = CHILD(n, 2); /* parameters: '(' [fplist] ')' */
-X ch = CHILD(ch, 1); /* ')' | fplist */
-X if (TYPE(ch) == RPAR)
-X com_addbyte(c, REFUSE_ARGS);
-X else {
-X com_addbyte(c, REQUIRE_ARGS);
-X com_fplist(c, ch);
-X }
-X c->c_infunction = 1;
-X com_node(c, CHILD(n, 4));
-X c->c_infunction = 0;
-X com_addoparg(c, LOAD_CONST, com_addconst(c, None));
-X com_addbyte(c, RETURN_VALUE);
+X	node *ch;
+X	REQ(n, funcdef); /* funcdef: 'def' NAME parameters ':' suite */
+X	ch = CHILD(n, 2); /* parameters: '(' [fplist] ')' */
+X	ch = CHILD(ch, 1); /* ')' | fplist */
+X	if (TYPE(ch) == RPAR)
+X		com_addbyte(c, REFUSE_ARGS);
+X	else {
+X		com_addbyte(c, REQUIRE_ARGS);
+X		com_fplist(c, ch);
+X	}
+X	c->c_infunction = 1;
+X	com_node(c, CHILD(n, 4));
+X	c->c_infunction = 0;
+X	com_addoparg(c, LOAD_CONST, com_addconst(c, None));
+X	com_addbyte(c, RETURN_VALUE);
 X}
 X
 Xstatic void
 Xcompile_node(c, n)
-X struct compiling *c;
-X node *n;
+X	struct compiling *c;
+X	node *n;
 X{
-X com_addoparg(c, SET_LINENO, n->n_lineno);
-X
-X switch (TYPE(n)) {
-X
-X case single_input: /* One interactive command */
-X /* NEWLINE | simple_stmt | compound_stmt NEWLINE */
-X com_addbyte(c, REFUSE_ARGS);
-X n = CHILD(n, 0);
-X if (TYPE(n) != NEWLINE)
-X com_node(c, n);
-X com_addoparg(c, LOAD_CONST, com_addconst(c, None));
-X com_addbyte(c, RETURN_VALUE);
-X break;
-X
-X case file_input: /* A whole file, or built-in function exec() */
-X com_addbyte(c, REFUSE_ARGS);
-X com_file_input(c, n);
-X com_addoparg(c, LOAD_CONST, com_addconst(c, None));
-X com_addbyte(c, RETURN_VALUE);
-X break;
-X
-X case expr_input: /* Built-in function eval() */
-X com_addbyte(c, REFUSE_ARGS);
-X com_node(c, CHILD(n, 0));
-X com_addbyte(c, RETURN_VALUE);
-X break;
-X
-X case eval_input: /* Built-in function input() */
-X com_addbyte(c, REFUSE_ARGS);
-X com_node(c, CHILD(n, 0));
-X com_addbyte(c, RETURN_VALUE);
-X break;
-X
-X case funcdef: /* A function definition */
-X compile_funcdef(c, n);
-X break;
-X
-X case classdef: /* A class definition */
-X /* 'class' NAME parameters ['=' baselist] ':' suite */
-X com_addbyte(c, REFUSE_ARGS);
-X com_node(c, CHILD(n, NCH(n)-1));
-X com_addbyte(c, LOAD_LOCALS);
-X com_addbyte(c, RETURN_VALUE);
-X break;
-X
-X default:
-X fprintf(stderr, "node type %d\n", TYPE(n));
-X err_setstr(SystemError, "compile_node: unexpected node type");
-X c->c_errors++;
-X }
+X	com_addoparg(c, SET_LINENO, n->n_lineno);
+X	
+X	switch (TYPE(n)) {
+X	
+X	case single_input: /* One interactive command */
+X		/* NEWLINE | simple_stmt | compound_stmt NEWLINE */
+X		com_addbyte(c, REFUSE_ARGS);
+X		n = CHILD(n, 0);
+X		if (TYPE(n) != NEWLINE)
+X			com_node(c, n);
+X		com_addoparg(c, LOAD_CONST, com_addconst(c, None));
+X		com_addbyte(c, RETURN_VALUE);
+X		break;
+X	
+X	case file_input: /* A whole file, or built-in function exec() */
+X		com_addbyte(c, REFUSE_ARGS);
+X		com_file_input(c, n);
+X		com_addoparg(c, LOAD_CONST, com_addconst(c, None));
+X		com_addbyte(c, RETURN_VALUE);
+X		break;
+X	
+X	case expr_input: /* Built-in function eval() */
+X		com_addbyte(c, REFUSE_ARGS);
+X		com_node(c, CHILD(n, 0));
+X		com_addbyte(c, RETURN_VALUE);
+X		break;
+X	
+X	case eval_input: /* Built-in function input() */
+X		com_addbyte(c, REFUSE_ARGS);
+X		com_node(c, CHILD(n, 0));
+X		com_addbyte(c, RETURN_VALUE);
+X		break;
+X	
+X	case funcdef: /* A function definition */
+X		compile_funcdef(c, n);
+X		break;
+X	
+X	case classdef: /* A class definition */
+X		/* 'class' NAME parameters ['=' baselist] ':' suite */
+X		com_addbyte(c, REFUSE_ARGS);
+X		com_node(c, CHILD(n, NCH(n)-1));
+X		com_addbyte(c, LOAD_LOCALS);
+X		com_addbyte(c, RETURN_VALUE);
+X		break;
+X	
+X	default:
+X		fprintf(stderr, "node type %d\n", TYPE(n));
+X		err_setstr(SystemError, "compile_node: unexpected node type");
+X		c->c_errors++;
+X	}
 X}
 X
 Xcodeobject *
 Xcompile(n, filename)
-X node *n;
-X char *filename;
+X	node *n;
+X	char *filename;
 X{
-X struct compiling sc;
-X codeobject *co;
-X if (!com_init(&sc, filename))
-X return NULL;
-X compile_node(&sc, n);
-X com_done(&sc);
-X if (sc.c_errors == 0)
-X co = newcodeobject(sc.c_code, sc.c_consts, sc.c_names, filename);
-X else
-X co = NULL;
-X com_free(&sc);
-X return co;
+X	struct compiling sc;
+X	codeobject *co;
+X	if (!com_init(&sc, filename))
+X		return NULL;
+X	compile_node(&sc, n);
+X	com_done(&sc);
+X	if (sc.c_errors == 0)
+X		co = newcodeobject(sc.c_code, sc.c_consts, sc.c_names, filename);
+X	else
+X		co = NULL;
+X	com_free(&sc);
+X	return co;
 X}
 EOF
 fi
@@ -1791,12 +1791,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1814,1072 +1814,1072 @@ X
 X#include "pgenheaders.h"
 X#include "grammar.h"
 Xstatic arc arcs_0_0[3] = {
-X {2, 1},
-X {3, 1},
-X {4, 2},
+X	{2, 1},
+X	{3, 1},
+X	{4, 2},
 X};
 Xstatic arc arcs_0_1[1] = {
-X {0, 1},
+X	{0, 1},
 X};
 Xstatic arc arcs_0_2[1] = {
-X {2, 1},
+X	{2, 1},
 X};
 Xstatic state states_0[3] = {
-X {3, arcs_0_0},
-X {1, arcs_0_1},
-X {1, arcs_0_2},
+X	{3, arcs_0_0},
+X	{1, arcs_0_1},
+X	{1, arcs_0_2},
 X};
 Xstatic arc arcs_1_0[3] = {
-X {2, 0},
-X {6, 0},
-X {7, 1},
+X	{2, 0},
+X	{6, 0},
+X	{7, 1},
 X};
 Xstatic arc arcs_1_1[1] = {
-X {0, 1},
+X	{0, 1},
 X};
 Xstatic state states_1[2] = {
-X {3, arcs_1_0},
-X {1, arcs_1_1},
+X	{3, arcs_1_0},
+X	{1, arcs_1_1},
 X};
 Xstatic arc arcs_2_0[1] = {
-X {9, 1},
+X	{9, 1},
 X};
 Xstatic arc arcs_2_1[1] = {
-X {2, 2},
+X	{2, 2},
 X};
 Xstatic arc arcs_2_2[1] = {
-X {0, 2},
+X	{0, 2},
 X};
 Xstatic state states_2[3] = {
-X {1, arcs_2_0},
-X {1, arcs_2_1},
-X {1, arcs_2_2},
+X	{1, arcs_2_0},
+X	{1, arcs_2_1},
+X	{1, arcs_2_2},
 X};
 Xstatic arc arcs_3_0[1] = {
-X {9, 1},
+X	{9, 1},
 X};
 Xstatic arc arcs_3_1[1] = {
-X {7, 2},
+X	{7, 2},
 X};
 Xstatic arc arcs_3_2[1] = {
-X {0, 2},
+X	{0, 2},
 X};
 Xstatic state states_3[3] = {
-X {1, arcs_3_0},
-X {1, arcs_3_1},
-X {1, arcs_3_2},
+X	{1, arcs_3_0},
+X	{1, arcs_3_1},
+X	{1, arcs_3_2},
 X};
 Xstatic arc arcs_4_0[1] = {
-X {12, 1},
+X	{12, 1},
 X};
 Xstatic arc arcs_4_1[1] = {
-X {13, 2},
+X	{13, 2},
 X};
 Xstatic arc arcs_4_2[1] = {
-X {14, 3},
+X	{14, 3},
 X};
 Xstatic arc arcs_4_3[1] = {
-X {15, 4},
+X	{15, 4},
 X};
 Xstatic arc arcs_4_4[1] = {
-X {16, 5},
+X	{16, 5},
 X};
 Xstatic arc arcs_4_5[1] = {
-X {0, 5},
+X	{0, 5},
 X};
 Xstatic state states_4[6] = {
-X {1, arcs_4_0},
-X {1, arcs_4_1},
-X {1, arcs_4_2},
-X {1, arcs_4_3},
-X {1, arcs_4_4},
-X {1, arcs_4_5},
+X	{1, arcs_4_0},
+X	{1, arcs_4_1},
+X	{1, arcs_4_2},
+X	{1, arcs_4_3},
+X	{1, arcs_4_4},
+X	{1, arcs_4_5},
 X};
 Xstatic arc arcs_5_0[1] = {
-X {17, 1},
+X	{17, 1},
 X};
 Xstatic arc arcs_5_1[2] = {
-X {18, 2},
-X {19, 3},
+X	{18, 2},
+X	{19, 3},
 X};
 Xstatic arc arcs_5_2[1] = {
-X {19, 3},
+X	{19, 3},
 X};
 Xstatic arc arcs_5_3[1] = {
-X {0, 3},
+X	{0, 3},
 X};
 Xstatic state states_5[4] = {
-X {1, arcs_5_0},
-X {2, arcs_5_1},
-X {1, arcs_5_2},
-X {1, arcs_5_3},
+X	{1, arcs_5_0},
+X	{2, arcs_5_1},
+X	{1, arcs_5_2},
+X	{1, arcs_5_3},
 X};
 Xstatic arc arcs_6_0[1] = {
-X {20, 1},
+X	{20, 1},
 X};
 Xstatic arc arcs_6_1[2] = {
-X {21, 0},
-X {0, 1},
+X	{21, 0},
+X	{0, 1},
 X};
 Xstatic state states_6[2] = {
-X {1, arcs_6_0},
-X {2, arcs_6_1},
+X	{1, arcs_6_0},
+X	{2, arcs_6_1},
 X};
 Xstatic arc arcs_7_0[2] = {
-X {13, 1},
-X {17, 2},
+X	{13, 1},
+X	{17, 2},
 X};
 Xstatic arc arcs_7_1[1] = {
-X {0, 1},
+X	{0, 1},
 X};
 Xstatic arc arcs_7_2[1] = {
-X {18, 3},
+X	{18, 3},
 X};
 Xstatic arc arcs_7_3[1] = {
-X {19, 1},
+X	{19, 1},
 X};
 Xstatic state states_7[4] = {
-X {2, arcs_7_0},
-X {1, arcs_7_1},
-X {1, arcs_7_2},
-X {1, arcs_7_3},
+X	{2, arcs_7_0},
+X	{1, arcs_7_1},
+X	{1, arcs_7_2},
+X	{1, arcs_7_3},
 X};
 Xstatic arc arcs_8_0[2] = {
-X {3, 1},
-X {4, 1},
+X	{3, 1},
+X	{4, 1},
 X};
 Xstatic arc arcs_8_1[1] = {
-X {0, 1},
+X	{0, 1},
 X};
 Xstatic state states_8[2] = {
-X {2, arcs_8_0},
-X {1, arcs_8_1},
+X	{2, arcs_8_0},
+X	{1, arcs_8_1},
 X};
 Xstatic arc arcs_9_0[6] = {
-X {22, 1},
-X {23, 1},
-X {24, 1},
-X {25, 1},
-X {26, 1},
-X {27, 1},
+X	{22, 1},
+X	{23, 1},
+X	{24, 1},
+X	{25, 1},
+X	{26, 1},
+X	{27, 1},
 X};
 Xstatic arc arcs_9_1[1] = {
-X {0, 1},
+X	{0, 1},
 X};
 Xstatic state states_9[2] = {
-X {6, arcs_9_0},
-X {1, arcs_9_1},
+X	{6, arcs_9_0},
+X	{1, arcs_9_1},
 X};
 Xstatic arc arcs_10_0[1] = {
-X {28, 1},
+X	{28, 1},
 X};
 Xstatic arc arcs_10_1[2] = {
-X {29, 0},
-X {2, 2},
+X	{29, 0},
+X	{2, 2},
 X};
 Xstatic arc arcs_10_2[1] = {
-X {0, 2},
+X	{0, 2},
 X};
 Xstatic state states_10[3] = {
-X {1, arcs_10_0},
-X {2, arcs_10_1},
-X {1, arcs_10_2},
+X	{1, arcs_10_0},
+X	{2, arcs_10_1},
+X	{1, arcs_10_2},
 X};
 Xstatic arc arcs_11_0[1] = {
-X {30, 1},
+X	{30, 1},
 X};
 Xstatic arc arcs_11_1[2] = {
-X {31, 2},
-X {2, 3},
+X	{31, 2},
+X	{2, 3},
 X};
 Xstatic arc arcs_11_2[2] = {
-X {21, 1},
-X {2, 3},
+X	{21, 1},
+X	{2, 3},
 X};
 Xstatic arc arcs_11_3[1] = {
-X {0, 3},
+X	{0, 3},
 X};
 Xstatic state states_11[4] = {
-X {1, arcs_11_0},
-X {2, arcs_11_1},
-X {2, arcs_11_2},
-X {1, arcs_11_3},
+X	{1, arcs_11_0},
+X	{2, arcs_11_1},
+X	{2, arcs_11_2},
+X	{1, arcs_11_3},
 X};
 Xstatic arc arcs_12_0[1] = {
-X {32, 1},
+X	{32, 1},
 X};
 Xstatic arc arcs_12_1[1] = {
-X {28, 2},
+X	{28, 2},
 X};
 Xstatic arc arcs_12_2[1] = {
-X {2, 3},
+X	{2, 3},
 X};
 Xstatic arc arcs_12_3[1] = {
-X {0, 3},
+X	{0, 3},
 X};
 Xstatic state states_12[4] = {
-X {1, arcs_12_0},
-X {1, arcs_12_1},
-X {1, arcs_12_2},
-X {1, arcs_12_3},
+X	{1, arcs_12_0},
+X	{1, arcs_12_1},
+X	{1, arcs_12_2},
+X	{1, arcs_12_3},
 X};
 Xstatic arc arcs_13_0[1] = {
-X {33, 1},
+X	{33, 1},
 X};
 Xstatic arc arcs_13_1[1] = {
-X {2, 2},
+X	{2, 2},
 X};
 Xstatic arc arcs_13_2[1] = {
-X {0, 2},
+X	{0, 2},
 X};
 Xstatic state states_13[3] = {
-X {1, arcs_13_0},
-X {1, arcs_13_1},
-X {1, arcs_13_2},
+X	{1, arcs_13_0},
+X	{1, arcs_13_1},
+X	{1, arcs_13_2},
 X};
 Xstatic arc arcs_14_0[3] = {
-X {34, 1},
-X {35, 1},
-X {36, 1},
+X	{34, 1},
+X	{35, 1},
+X	{36, 1},
 X};
 Xstatic arc arcs_14_1[1] = {
-X {0, 1},
+X	{0, 1},
 X};
 Xstatic state states_14[2] = {
-X {3, arcs_14_0},
-X {1, arcs_14_1},
+X	{3, arcs_14_0},
+X	{1, arcs_14_1},
 X};
 Xstatic arc arcs_15_0[1] = {
-X {37, 1},
+X	{37, 1},
 X};
 Xstatic arc arcs_15_1[1] = {
-X {2, 2},
+X	{2, 2},
 X};
 Xstatic arc arcs_15_2[1] = {
-X {0, 2},
+X	{0, 2},
 X};
 Xstatic state states_15[3] = {
-X {1, arcs_15_0},
-X {1, arcs_15_1},
-X {1, arcs_15_2},
+X	{1, arcs_15_0},
+X	{1, arcs_15_1},
+X	{1, arcs_15_2},
 X};
 Xstatic arc arcs_16_0[1] = {
-X {38, 1},
+X	{38, 1},
 X};
 Xstatic arc arcs_16_1[2] = {
-X {9, 2},
-X {2, 3},
+X	{9, 2},
+X	{2, 3},
 X};
 Xstatic arc arcs_16_2[1] = {
-X {2, 3},
+X	{2, 3},
 X};
 Xstatic arc arcs_16_3[1] = {
-X {0, 3},
+X	{0, 3},
 X};
 Xstatic state states_16[4] = {
-X {1, arcs_16_0},
-X {2, arcs_16_1},
-X {1, arcs_16_2},
-X {1, arcs_16_3},
+X	{1, arcs_16_0},
+X	{2, arcs_16_1},
+X	{1, arcs_16_2},
+X	{1, arcs_16_3},
 X};
 Xstatic arc arcs_17_0[1] = {
-X {39, 1},
+X	{39, 1},
 X};
 Xstatic arc arcs_17_1[1] = {
-X {40, 2},
+X	{40, 2},
 X};
 Xstatic arc arcs_17_2[2] = {
-X {21, 3},
-X {2, 4},
+X	{21, 3},
+X	{2, 4},
 X};
 Xstatic arc arcs_17_3[1] = {
-X {40, 5},
+X	{40, 5},
 X};
 Xstatic arc arcs_17_4[1] = {
-X {0, 4},
+X	{0, 4},
 X};
 Xstatic arc arcs_17_5[1] = {
-X {2, 4},
+X	{2, 4},
 X};
 Xstatic state states_17[6] = {
-X {1, arcs_17_0},
-X {1, arcs_17_1},
-X {2, arcs_17_2},
-X {1, arcs_17_3},
-X {1, arcs_17_4},
-X {1, arcs_17_5},
+X	{1, arcs_17_0},
+X	{1, arcs_17_1},
+X	{2, arcs_17_2},
+X	{1, arcs_17_3},
+X	{1, arcs_17_4},
+X	{1, arcs_17_5},
 X};
 Xstatic arc arcs_18_0[2] = {
-X {41, 1},
-X {42, 2},
+X	{41, 1},
+X	{42, 2},
 X};
 Xstatic arc arcs_18_1[1] = {
-X {13, 3},
+X	{13, 3},
 X};
 Xstatic arc arcs_18_2[1] = {
-X {13, 4},
+X	{13, 4},
 X};
 Xstatic arc arcs_18_3[2] = {
-X {21, 1},
-X {2, 5},
+X	{21, 1},
+X	{2, 5},
 X};
 Xstatic arc arcs_18_4[1] = {
-X {41, 6},
+X	{41, 6},
 X};
 Xstatic arc arcs_18_5[1] = {
-X {0, 5},
+X	{0, 5},
 X};
 Xstatic arc arcs_18_6[2] = {
-X {43, 7},
-X {13, 8},
+X	{43, 7},
+X	{13, 8},
 X};
 Xstatic arc arcs_18_7[1] = {
-X {2, 5},
+X	{2, 5},
 X};
 Xstatic arc arcs_18_8[2] = {
-X {21, 9},
-X {2, 5},
+X	{21, 9},
+X	{2, 5},
 X};
 Xstatic arc arcs_18_9[1] = {
-X {13, 8},
+X	{13, 8},
 X};
 Xstatic state states_18[10] = {
-X {2, arcs_18_0},
-X {1, arcs_18_1},
-X {1, arcs_18_2},
-X {2, arcs_18_3},
-X {1, arcs_18_4},
-X {1, arcs_18_5},
-X {2, arcs_18_6},
-X {1, arcs_18_7},
-X {2, arcs_18_8},
-X {1, arcs_18_9},
+X	{2, arcs_18_0},
+X	{1, arcs_18_1},
+X	{1, arcs_18_2},
+X	{2, arcs_18_3},
+X	{1, arcs_18_4},
+X	{1, arcs_18_5},
+X	{2, arcs_18_6},
+X	{1, arcs_18_7},
+X	{2, arcs_18_8},
+X	{1, arcs_18_9},
 X};
 Xstatic arc arcs_19_0[6] = {
-X {44, 1},
-X {45, 1},
-X {46, 1},
-X {47, 1},
-X {11, 1},
-X {48, 1},
+X	{44, 1},
+X	{45, 1},
+X	{46, 1},
+X	{47, 1},
+X	{11, 1},
+X	{48, 1},
 X};
 Xstatic arc arcs_19_1[1] = {
-X {0, 1},
+X	{0, 1},
 X};
 Xstatic state states_19[2] = {
-X {6, arcs_19_0},
-X {1, arcs_19_1},
+X	{6, arcs_19_0},
+X	{1, arcs_19_1},
 X};
 Xstatic arc arcs_20_0[1] = {
-X {49, 1},
+X	{49, 1},
 X};
 Xstatic arc arcs_20_1[1] = {
-X {31, 2},
+X	{31, 2},
 X};
 Xstatic arc arcs_20_2[1] = {
-X {15, 3},
+X	{15, 3},
 X};
 Xstatic arc arcs_20_3[1] = {
-X {16, 4},
+X	{16, 4},
 X};
 Xstatic arc arcs_20_4[3] = {
-X {50, 1},
-X {51, 5},
-X {0, 4},
+X	{50, 1},
+X	{51, 5},
+X	{0, 4},
 X};
 Xstatic arc arcs_20_5[1] = {
-X {15, 6},
+X	{15, 6},
 X};
 Xstatic arc arcs_20_6[1] = {
-X {16, 7},
+X	{16, 7},
 X};
 Xstatic arc arcs_20_7[1] = {
-X {0, 7},
+X	{0, 7},
 X};
 Xstatic state states_20[8] = {
-X {1, arcs_20_0},
-X {1, arcs_20_1},
-X {1, arcs_20_2},
-X {1, arcs_20_3},
-X {3, arcs_20_4},
-X {1, arcs_20_5},
-X {1, arcs_20_6},
-X {1, arcs_20_7},
+X	{1, arcs_20_0},
+X	{1, arcs_20_1},
+X	{1, arcs_20_2},
+X	{1, arcs_20_3},
+X	{3, arcs_20_4},
+X	{1, arcs_20_5},
+X	{1, arcs_20_6},
+X	{1, arcs_20_7},
 X};
 Xstatic arc arcs_21_0[1] = {
-X {52, 1},
+X	{52, 1},
 X};
 Xstatic arc arcs_21_1[1] = {
-X {31, 2},
+X	{31, 2},
 X};
 Xstatic arc arcs_21_2[1] = {
-X {15, 3},
+X	{15, 3},
 X};
 Xstatic arc arcs_21_3[1] = {
-X {16, 4},
+X	{16, 4},
 X};
 Xstatic arc arcs_21_4[2] = {
-X {51, 5},
-X {0, 4},
+X	{51, 5},
+X	{0, 4},
 X};
 Xstatic arc arcs_21_5[1] = {
-X {15, 6},
+X	{15, 6},
 X};
 Xstatic arc arcs_21_6[1] = {
-X {16, 7},
+X	{16, 7},
 X};
 Xstatic arc arcs_21_7[1] = {
-X {0, 7},
+X	{0, 7},
 X};
 Xstatic state states_21[8] = {
-X {1, arcs_21_0},
-X {1, arcs_21_1},
-X {1, arcs_21_2},
-X {1, arcs_21_3},
-X {2, arcs_21_4},
-X {1, arcs_21_5},
-X {1, arcs_21_6},
-X {1, arcs_21_7},
+X	{1, arcs_21_0},
+X	{1, arcs_21_1},
+X	{1, arcs_21_2},
+X	{1, arcs_21_3},
+X	{2, arcs_21_4},
+X	{1, arcs_21_5},
+X	{1, arcs_21_6},
+X	{1, arcs_21_7},
 X};
 Xstatic arc arcs_22_0[1] = {
-X {53, 1},
+X	{53, 1},
 X};
 Xstatic arc arcs_22_1[1] = {
-X {28, 2},
+X	{28, 2},
 X};
 Xstatic arc arcs_22_2[1] = {
-X {54, 3},
+X	{54, 3},
 X};
 Xstatic arc arcs_22_3[1] = {
-X {28, 4},
+X	{28, 4},
 X};
 Xstatic arc arcs_22_4[1] = {
-X {15, 5},
+X	{15, 5},
 X};
 Xstatic arc arcs_22_5[1] = {
-X {16, 6},
+X	{16, 6},
 X};
 Xstatic arc arcs_22_6[2] = {
-X {51, 7},
-X {0, 6},
+X	{51, 7},
+X	{0, 6},
 X};
 Xstatic arc arcs_22_7[1] = {
-X {15, 8},
+X	{15, 8},
 X};
 Xstatic arc arcs_22_8[1] = {
-X {16, 9},
+X	{16, 9},
 X};
 Xstatic arc arcs_22_9[1] = {
-X {0, 9},
+X	{0, 9},
 X};
 Xstatic state states_22[10] = {
-X {1, arcs_22_0},
-X {1, arcs_22_1},
-X {1, arcs_22_2},
-X {1, arcs_22_3},
-X {1, arcs_22_4},
-X {1, arcs_22_5},
-X {2, arcs_22_6},
-X {1, arcs_22_7},
-X {1, arcs_22_8},
-X {1, arcs_22_9},
+X	{1, arcs_22_0},
+X	{1, arcs_22_1},
+X	{1, arcs_22_2},
+X	{1, arcs_22_3},
+X	{1, arcs_22_4},
+X	{1, arcs_22_5},
+X	{2, arcs_22_6},
+X	{1, arcs_22_7},
+X	{1, arcs_22_8},
+X	{1, arcs_22_9},
 X};
 Xstatic arc arcs_23_0[1] = {
-X {55, 1},
+X	{55, 1},
 X};
 Xstatic arc arcs_23_1[1] = {
-X {15, 2},
+X	{15, 2},
 X};
 Xstatic arc arcs_23_2[1] = {
-X {16, 3},
+X	{16, 3},
 X};
 Xstatic arc arcs_23_3[3] = {
-X {56, 1},
-X {57, 4},
-X {0, 3},
+X	{56, 1},
+X	{57, 4},
+X	{0, 3},
 X};
 Xstatic arc arcs_23_4[1] = {
-X {15, 5},
+X	{15, 5},
 X};
 Xstatic arc arcs_23_5[1] = {
-X {16, 6},
+X	{16, 6},
 X};
 Xstatic arc arcs_23_6[1] = {
-X {0, 6},
+X	{0, 6},
 X};
 Xstatic state states_23[7] = {
-X {1, arcs_23_0},
-X {1, arcs_23_1},
-X {1, arcs_23_2},
-X {3, arcs_23_3},
-X {1, arcs_23_4},
-X {1, arcs_23_5},
-X {1, arcs_23_6},
+X	{1, arcs_23_0},
+X	{1, arcs_23_1},
+X	{1, arcs_23_2},
+X	{3, arcs_23_3},
+X	{1, arcs_23_4},
+X	{1, arcs_23_5},
+X	{1, arcs_23_6},
 X};
 Xstatic arc arcs_24_0[1] = {
-X {58, 1},
+X	{58, 1},
 X};
 Xstatic arc arcs_24_1[2] = {
-X {40, 2},
-X {0, 1},
+X	{40, 2},
+X	{0, 1},
 X};
 Xstatic arc arcs_24_2[2] = {
-X {21, 3},
-X {0, 2},
+X	{21, 3},
+X	{0, 2},
 X};
 Xstatic arc arcs_24_3[1] = {
-X {40, 4},
+X	{40, 4},
 X};
 Xstatic arc arcs_24_4[1] = {
-X {0, 4},
+X	{0, 4},
 X};
 Xstatic state states_24[5] = {
-X {1, arcs_24_0},
-X {2, arcs_24_1},
-X {2, arcs_24_2},
-X {1, arcs_24_3},
-X {1, arcs_24_4},
+X	{1, arcs_24_0},
+X	{2, arcs_24_1},
+X	{2, arcs_24_2},
+X	{1, arcs_24_3},
+X	{1, arcs_24_4},
 X};
 Xstatic arc arcs_25_0[2] = {
-X {3, 1},
-X {2, 2},
+X	{3, 1},
+X	{2, 2},
 X};
 Xstatic arc arcs_25_1[1] = {
-X {0, 1},
+X	{0, 1},
 X};
 Xstatic arc arcs_25_2[1] = {
-X {59, 3},
+X	{59, 3},
 X};
 Xstatic arc arcs_25_3[2] = {
-X {2, 3},
-X {6, 4},
+X	{2, 3},
+X	{6, 4},
 X};
 Xstatic arc arcs_25_4[3] = {
-X {6, 4},
-X {2, 4},
-X {60, 1},
+X	{6, 4},
+X	{2, 4},
+X	{60, 1},
 X};
 Xstatic state states_25[5] = {
-X {2, arcs_25_0},
-X {1, arcs_25_1},
-X {1, arcs_25_2},
-X {2, arcs_25_3},
-X {3, arcs_25_4},
+X	{2, arcs_25_0},
+X	{1, arcs_25_1},
+X	{1, arcs_25_2},
+X	{2, arcs_25_3},
+X	{3, arcs_25_4},
 X};
 Xstatic arc arcs_26_0[1] = {
-X {61, 1},
+X	{61, 1},
 X};
 Xstatic arc arcs_26_1[2] = {
-X {62, 0},
-X {0, 1},
+X	{62, 0},
+X	{0, 1},
 X};
 Xstatic state states_26[2] = {
-X {1, arcs_26_0},
-X {2, arcs_26_1},
+X	{1, arcs_26_0},
+X	{2, arcs_26_1},
 X};
 Xstatic arc arcs_27_0[1] = {
-X {63, 1},
+X	{63, 1},
 X};
 Xstatic arc arcs_27_1[2] = {
-X {64, 0},
-X {0, 1},
+X	{64, 0},
+X	{0, 1},
 X};
 Xstatic state states_27[2] = {
-X {1, arcs_27_0},
-X {2, arcs_27_1},
+X	{1, arcs_27_0},
+X	{2, arcs_27_1},
 X};
 Xstatic arc arcs_28_0[2] = {
-X {65, 1},
-X {66, 2},
+X	{65, 1},
+X	{66, 2},
 X};
 Xstatic arc arcs_28_1[1] = {
-X {63, 2},
+X	{63, 2},
 X};
 Xstatic arc arcs_28_2[1] = {
-X {0, 2},
+X	{0, 2},
 X};
 Xstatic state states_28[3] = {
-X {2, arcs_28_0},
-X {1, arcs_28_1},
-X {1, arcs_28_2},
+X	{2, arcs_28_0},
+X	{1, arcs_28_1},
+X	{1, arcs_28_2},
 X};
 Xstatic arc arcs_29_0[1] = {
-X {40, 1},
+X	{40, 1},
 X};
 Xstatic arc arcs_29_1[2] = {
-X {67, 0},
-X {0, 1},
+X	{67, 0},
+X	{0, 1},
 X};
 Xstatic state states_29[2] = {
-X {1, arcs_29_0},
-X {2, arcs_29_1},
+X	{1, arcs_29_0},
+X	{2, arcs_29_1},
 X};
 Xstatic arc arcs_30_0[6] = {
-X {68, 1},
-X {69, 2},
-X {29, 3},
-X {54, 3},
-X {65, 4},
-X {70, 5},
+X	{68, 1},
+X	{69, 2},
+X	{29, 3},
+X	{54, 3},
+X	{65, 4},
+X	{70, 5},
 X};
 Xstatic arc arcs_30_1[3] = {
-X {29, 3},
-X {69, 3},
-X {0, 1},
+X	{29, 3},
+X	{69, 3},
+X	{0, 1},
 X};
 Xstatic arc arcs_30_2[2] = {
-X {29, 3},
-X {0, 2},
+X	{29, 3},
+X	{0, 2},
 X};
 Xstatic arc arcs_30_3[1] = {
-X {0, 3},
+X	{0, 3},
 X};
 Xstatic arc arcs_30_4[1] = {
-X {54, 3},
+X	{54, 3},
 X};
 Xstatic arc arcs_30_5[2] = {
-X {65, 3},
-X {0, 5},
+X	{65, 3},
+X	{0, 5},
 X};
 Xstatic state states_30[6] = {
-X {6, arcs_30_0},
-X {3, arcs_30_1},
-X {2, arcs_30_2},
-X {1, arcs_30_3},
-X {1, arcs_30_4},
-X {2, arcs_30_5},
+X	{6, arcs_30_0},
+X	{3, arcs_30_1},
+X	{2, arcs_30_2},
+X	{1, arcs_30_3},
+X	{1, arcs_30_4},
+X	{2, arcs_30_5},
 X};
 Xstatic arc arcs_31_0[1] = {
-X {71, 1},
+X	{71, 1},
 X};
 Xstatic arc arcs_31_1[3] = {
-X {72, 0},
-X {73, 0},
-X {0, 1},
+X	{72, 0},
+X	{73, 0},
+X	{0, 1},
 X};
 Xstatic state states_31[2] = {
-X {1, arcs_31_0},
-X {3, arcs_31_1},
+X	{1, arcs_31_0},
+X	{3, arcs_31_1},
 X};
 Xstatic arc arcs_32_0[1] = {
-X {74, 1},
+X	{74, 1},
 X};
 Xstatic arc arcs_32_1[4] = {
-X {43, 0},
-X {75, 0},
-X {76, 0},
-X {0, 1},
+X	{43, 0},
+X	{75, 0},
+X	{76, 0},
+X	{0, 1},
 X};
 Xstatic state states_32[2] = {
-X {1, arcs_32_0},
-X {4, arcs_32_1},
+X	{1, arcs_32_0},
+X	{4, arcs_32_1},
 X};
 Xstatic arc arcs_33_0[3] = {
-X {72, 1},
-X {73, 1},
-X {77, 2},
+X	{72, 1},
+X	{73, 1},
+X	{77, 2},
 X};
 Xstatic arc arcs_33_1[1] = {
-X {74, 3},
+X	{74, 3},
 X};
 Xstatic arc arcs_33_2[2] = {
-X {78, 2},
-X {0, 2},
+X	{78, 2},
+X	{0, 2},
 X};
 Xstatic arc arcs_33_3[1] = {
-X {0, 3},
+X	{0, 3},
 X};
 Xstatic state states_33[4] = {
-X {3, arcs_33_0},
-X {1, arcs_33_1},
-X {2, arcs_33_2},
-X {1, arcs_33_3},
+X	{3, arcs_33_0},
+X	{1, arcs_33_1},
+X	{2, arcs_33_2},
+X	{1, arcs_33_3},
 X};
 Xstatic arc arcs_34_0[7] = {
-X {17, 1},
-X {79, 2},
-X {81, 3},
-X {83, 4},
-X {13, 5},
-X {84, 5},
-X {85, 5},
+X	{17, 1},
+X	{79, 2},
+X	{81, 3},
+X	{83, 4},
+X	{13, 5},
+X	{84, 5},
+X	{85, 5},
 X};
 Xstatic arc arcs_34_1[2] = {
-X {9, 6},
-X {19, 5},
+X	{9, 6},
+X	{19, 5},
 X};
 Xstatic arc arcs_34_2[2] = {
-X {9, 7},
-X {80, 5},
+X	{9, 7},
+X	{80, 5},
 X};
 Xstatic arc arcs_34_3[1] = {
-X {82, 5},
+X	{82, 5},
 X};
 Xstatic arc arcs_34_4[1] = {
-X {9, 8},
+X	{9, 8},
 X};
 Xstatic arc arcs_34_5[1] = {
-X {0, 5},
+X	{0, 5},
 X};
 Xstatic arc arcs_34_6[1] = {
-X {19, 5},
+X	{19, 5},
 X};
 Xstatic arc arcs_34_7[1] = {
-X {80, 5},
+X	{80, 5},
 X};
 Xstatic arc arcs_34_8[1] = {
-X {83, 5},
+X	{83, 5},
 X};
 Xstatic state states_34[9] = {
-X {7, arcs_34_0},
-X {2, arcs_34_1},
-X {2, arcs_34_2},
-X {1, arcs_34_3},
-X {1, arcs_34_4},
-X {1, arcs_34_5},
-X {1, arcs_34_6},
-X {1, arcs_34_7},
-X {1, arcs_34_8},
+X	{7, arcs_34_0},
+X	{2, arcs_34_1},
+X	{2, arcs_34_2},
+X	{1, arcs_34_3},
+X	{1, arcs_34_4},
+X	{1, arcs_34_5},
+X	{1, arcs_34_6},
+X	{1, arcs_34_7},
+X	{1, arcs_34_8},
 X};
 Xstatic arc arcs_35_0[3] = {
-X {17, 1},
-X {79, 2},
-X {87, 3},
+X	{17, 1},
+X	{79, 2},
+X	{87, 3},
 X};
 Xstatic arc arcs_35_1[2] = {
-X {9, 4},
-X {19, 5},
+X	{9, 4},
+X	{19, 5},
 X};
 Xstatic arc arcs_35_2[1] = {
-X {86, 6},
+X	{86, 6},
 X};
 Xstatic arc arcs_35_3[1] = {
-X {13, 5},
+X	{13, 5},
 X};
 Xstatic arc arcs_35_4[1] = {
-X {19, 5},
+X	{19, 5},
 X};
 Xstatic arc arcs_35_5[1] = {
-X {0, 5},
+X	{0, 5},
 X};
 Xstatic arc arcs_35_6[1] = {
-X {80, 5},
+X	{80, 5},
 X};
 Xstatic state states_35[7] = {
-X {3, arcs_35_0},
-X {2, arcs_35_1},
-X {1, arcs_35_2},
-X {1, arcs_35_3},
-X {1, arcs_35_4},
-X {1, arcs_35_5},
-X {1, arcs_35_6},
+X	{3, arcs_35_0},
+X	{2, arcs_35_1},
+X	{1, arcs_35_2},
+X	{1, arcs_35_3},
+X	{1, arcs_35_4},
+X	{1, arcs_35_5},
+X	{1, arcs_35_6},
 X};
 Xstatic arc arcs_36_0[2] = {
-X {40, 1},
-X {15, 2},
+X	{40, 1},
+X	{15, 2},
 X};
 Xstatic arc arcs_36_1[2] = {
-X {15, 2},
-X {0, 1},
+X	{15, 2},
+X	{0, 1},
 X};
 Xstatic arc arcs_36_2[2] = {
-X {40, 3},
-X {0, 2},
+X	{40, 3},
+X	{0, 2},
 X};
 Xstatic arc arcs_36_3[1] = {
-X {0, 3},
+X	{0, 3},
 X};
 Xstatic state states_36[4] = {
-X {2, arcs_36_0},
-X {2, arcs_36_1},
-X {2, arcs_36_2},
-X {1, arcs_36_3},
+X	{2, arcs_36_0},
+X	{2, arcs_36_1},
+X	{2, arcs_36_2},
+X	{1, arcs_36_3},
 X};
 Xstatic arc arcs_37_0[1] = {
-X {40, 1},
+X	{40, 1},
 X};
 Xstatic arc arcs_37_1[2] = {
-X {21, 2},
-X {0, 1},
+X	{21, 2},
+X	{0, 1},
 X};
 Xstatic arc arcs_37_2[2] = {
-X {40, 1},
-X {0, 2},
+X	{40, 1},
+X	{0, 2},
 X};
 Xstatic state states_37[3] = {
-X {1, arcs_37_0},
-X {2, arcs_37_1},
-X {2, arcs_37_2},
+X	{1, arcs_37_0},
+X	{2, arcs_37_1},
+X	{2, arcs_37_2},
 X};
 Xstatic arc arcs_38_0[1] = {
-X {31, 1},
+X	{31, 1},
 X};
 Xstatic arc arcs_38_1[2] = {
-X {21, 2},
-X {0, 1},
+X	{21, 2},
+X	{0, 1},
 X};
 Xstatic arc arcs_38_2[2] = {
-X {31, 1},
-X {0, 2},
+X	{31, 1},
+X	{0, 2},
 X};
 Xstatic state states_38[3] = {
-X {1, arcs_38_0},
-X {2, arcs_38_1},
-X {2, arcs_38_2},
+X	{1, arcs_38_0},
+X	{2, arcs_38_1},
+X	{2, arcs_38_2},
 X};
 Xstatic arc arcs_39_0[1] = {
-X {88, 1},
+X	{88, 1},
 X};
 Xstatic arc arcs_39_1[1] = {
-X {13, 2},
+X	{13, 2},
 X};
 Xstatic arc arcs_39_2[1] = {
-X {14, 3},
+X	{14, 3},
 X};
 Xstatic arc arcs_39_3[2] = {
-X {29, 4},
-X {15, 5},
+X	{29, 4},
+X	{15, 5},
 X};
 Xstatic arc arcs_39_4[1] = {
-X {89, 6},
+X	{89, 6},
 X};
 Xstatic arc arcs_39_5[1] = {
-X {16, 7},
+X	{16, 7},
 X};
 Xstatic arc arcs_39_6[1] = {
-X {15, 5},
+X	{15, 5},
 X};
 Xstatic arc arcs_39_7[1] = {
-X {0, 7},
+X	{0, 7},
 X};
 Xstatic state states_39[8] = {
-X {1, arcs_39_0},
-X {1, arcs_39_1},
-X {1, arcs_39_2},
-X {2, arcs_39_3},
-X {1, arcs_39_4},
-X {1, arcs_39_5},
-X {1, arcs_39_6},
-X {1, arcs_39_7},
+X	{1, arcs_39_0},
+X	{1, arcs_39_1},
+X	{1, arcs_39_2},
+X	{2, arcs_39_3},
+X	{1, arcs_39_4},
+X	{1, arcs_39_5},
+X	{1, arcs_39_6},
+X	{1, arcs_39_7},
 X};
 Xstatic arc arcs_40_0[1] = {
-X {77, 1},
+X	{77, 1},
 X};
 Xstatic arc arcs_40_1[1] = {
-X {90, 2},
+X	{90, 2},
 X};
 Xstatic arc arcs_40_2[2] = {
-X {21, 0},
-X {0, 2},
+X	{21, 0},
+X	{0, 2},
 X};
 Xstatic state states_40[3] = {
-X {1, arcs_40_0},
-X {1, arcs_40_1},
-X {2, arcs_40_2},
+X	{1, arcs_40_0},
+X	{1, arcs_40_1},
+X	{2, arcs_40_2},
 X};
 Xstatic arc arcs_41_0[1] = {
-X {17, 1},
+X	{17, 1},
 X};
 Xstatic arc arcs_41_1[2] = {
-X {9, 2},
-X {19, 3},
+X	{9, 2},
+X	{19, 3},
 X};
 Xstatic arc arcs_41_2[1] = {
-X {19, 3},
+X	{19, 3},
 X};
 Xstatic arc arcs_41_3[1] = {
-X {0, 3},
+X	{0, 3},
 X};
 Xstatic state states_41[4] = {
-X {1, arcs_41_0},
-X {2, arcs_41_1},
-X {1, arcs_41_2},
-X {1, arcs_41_3},
+X	{1, arcs_41_0},
+X	{2, arcs_41_1},
+X	{1, arcs_41_2},
+X	{1, arcs_41_3},
 X};
 Xstatic dfa dfas[42] = {
-X {256, "single_input", 0, 3, states_0,
-X "\004\060\002\100\343\006\262\000\000\203\072\001"},
-X {257, "file_input", 0, 2, states_1,
-X "\204\060\002\100\343\006\262\000\000\203\072\001"},
-X {258, "expr_input", 0, 3, states_2,
-X "\000\040\002\000\000\000\000\000\002\203\072\000"},
-X {259, "eval_input", 0, 3, states_3,
-X "\000\040\002\000\000\000\000\000\002\203\072\000"},
-X {260, "funcdef", 0, 6, states_4,
-X "\000\020\000\000\000\000\000\000\000\000\000\000"},
-X {261, "parameters", 0, 4, states_5,
-X "\000\000\002\000\000\000\000\000\000\000\000\000"},
-X {262, "fplist", 0, 2, states_6,
-X "\000\040\002\000\000\000\000\000\000\000\000\000"},
-X {263, "fpdef", 0, 4, states_7,
-X "\000\040\002\000\000\000\000\000\000\000\000\000"},
-X {264, "stmt", 0, 2, states_8,
-X "\000\060\002\100\343\006\262\000\000\203\072\001"},
-X {265, "simple_stmt", 0, 2, states_9,
-X "\000\040\002\100\343\006\000\000\000\203\072\000"},
-X {266, "expr_stmt", 0, 3, states_10,
-X "\000\040\002\000\000\000\000\000\000\203\072\000"},
-X {267, "print_stmt", 0, 4, states_11,
-X "\000\000\000\100\000\000\000\000\000\000\000\000"},
-X {268, "del_stmt", 0, 4, states_12,
-X "\000\000\000\000\001\000\000\000\000\000\000\000"},
-X {269, "pass_stmt", 0, 3, states_13,
-X "\000\000\000\000\002\000\000\000\000\000\000\000"},
-X {270, "flow_stmt", 0, 2, states_14,
-X "\000\000\000\000\340\000\000\000\000\000\000\000"},
-X {271, "break_stmt", 0, 3, states_15,
-X "\000\000\000\000\040\000\000\000\000\000\000\000"},
-X {272, "return_stmt", 0, 4, states_16,
-X "\000\000\000\000\100\000\000\000\000\000\000\000"},
-X {273, "raise_stmt", 0, 6, states_17,
-X "\000\000\000\000\200\000\000\000\000\000\000\000"},
-X {274, "import_stmt", 0, 10, states_18,
-X "\000\000\000\000\000\006\000\000\000\000\000\000"},
-X {275, "compound_stmt", 0, 2, states_19,
-X "\000\020\000\000\000\000\262\000\000\000\000\001"},
-X {276, "if_stmt", 0, 8, states_20,
-X "\000\000\000\000\000\000\002\000\000\000\000\000"},
-X {277, "while_stmt", 0, 8, states_21,
-X "\000\000\000\000\000\000\020\000\000\000\000\000"},
-X {278, "for_stmt", 0, 10, states_22,
-X "\000\000\000\000\000\000\040\000\000\000\000\000"},
-X {279, "try_stmt", 0, 7, states_23,
-X "\000\000\000\000\000\000\200\000\000\000\000\000"},
-X {280, "except_clause", 0, 5, states_24,
-X "\000\000\000\000\000\000\000\004\000\000\000\000"},
-X {281, "suite", 0, 5, states_25,
-X "\004\040\002\100\343\006\000\000\000\203\072\000"},
-X {282, "test", 0, 2, states_26,
-X "\000\040\002\000\000\000\000\000\002\203\072\000"},
-X {283, "and_test", 0, 2, states_27,
-X "\000\040\002\000\000\000\000\000\002\203\072\000"},
-X {284, "not_test", 0, 3, states_28,
-X "\000\040\002\000\000\000\000\000\002\203\072\000"},
-X {285, "comparison", 0, 2, states_29,
-X "\000\040\002\000\000\000\000\000\000\203\072\000"},
-X {286, "comp_op", 0, 6, states_30,
-X "\000\000\000\040\000\000\100\000\162\000\000\000"},
-X {287, "expr", 0, 2, states_31,
-X "\000\040\002\000\000\000\000\000\000\203\072\000"},
-X {288, "term", 0, 2, states_32,
-X "\000\040\002\000\000\000\000\000\000\203\072\000"},
-X {289, "factor", 0, 4, states_33,
-X "\000\040\002\000\000\000\000\000\000\203\072\000"},
-X {290, "atom", 0, 9, states_34,
-X "\000\040\002\000\000\000\000\000\000\200\072\000"},
-X {291, "trailer", 0, 7, states_35,
-X "\000\000\002\000\000\000\000\000\000\200\200\000"},
-X {292, "subscript", 0, 4, states_36,
-X "\000\240\002\000\000\000\000\000\000\203\072\000"},
-X {293, "exprlist", 0, 3, states_37,
-X "\000\040\002\000\000\000\000\000\000\203\072\000"},
-X {294, "testlist", 0, 3, states_38,
-X "\000\040\002\000\000\000\000\000\002\203\072\000"},
-X {295, "classdef", 0, 8, states_39,
-X "\000\000\000\000\000\000\000\000\000\000\000\001"},
-X {296, "baselist", 0, 3, states_40,
-X "\000\040\002\000\000\000\000\000\000\200\072\000"},
-X {297, "arguments", 0, 4, states_41,
-X "\000\000\002\000\000\000\000\000\000\000\000\000"},
+X	{256, "single_input", 0, 3, states_0,
+X	 "\004\060\002\100\343\006\262\000\000\203\072\001"},
+X	{257, "file_input", 0, 2, states_1,
+X	 "\204\060\002\100\343\006\262\000\000\203\072\001"},
+X	{258, "expr_input", 0, 3, states_2,
+X	 "\000\040\002\000\000\000\000\000\002\203\072\000"},
+X	{259, "eval_input", 0, 3, states_3,
+X	 "\000\040\002\000\000\000\000\000\002\203\072\000"},
+X	{260, "funcdef", 0, 6, states_4,
+X	 "\000\020\000\000\000\000\000\000\000\000\000\000"},
+X	{261, "parameters", 0, 4, states_5,
+X	 "\000\000\002\000\000\000\000\000\000\000\000\000"},
+X	{262, "fplist", 0, 2, states_6,
+X	 "\000\040\002\000\000\000\000\000\000\000\000\000"},
+X	{263, "fpdef", 0, 4, states_7,
+X	 "\000\040\002\000\000\000\000\000\000\000\000\000"},
+X	{264, "stmt", 0, 2, states_8,
+X	 "\000\060\002\100\343\006\262\000\000\203\072\001"},
+X	{265, "simple_stmt", 0, 2, states_9,
+X	 "\000\040\002\100\343\006\000\000\000\203\072\000"},
+X	{266, "expr_stmt", 0, 3, states_10,
+X	 "\000\040\002\000\000\000\000\000\000\203\072\000"},
+X	{267, "print_stmt", 0, 4, states_11,
+X	 "\000\000\000\100\000\000\000\000\000\000\000\000"},
+X	{268, "del_stmt", 0, 4, states_12,
+X	 "\000\000\000\000\001\000\000\000\000\000\000\000"},
+X	{269, "pass_stmt", 0, 3, states_13,
+X	 "\000\000\000\000\002\000\000\000\000\000\000\000"},
+X	{270, "flow_stmt", 0, 2, states_14,
+X	 "\000\000\000\000\340\000\000\000\000\000\000\000"},
+X	{271, "break_stmt", 0, 3, states_15,
+X	 "\000\000\000\000\040\000\000\000\000\000\000\000"},
+X	{272, "return_stmt", 0, 4, states_16,
+X	 "\000\000\000\000\100\000\000\000\000\000\000\000"},
+X	{273, "raise_stmt", 0, 6, states_17,
+X	 "\000\000\000\000\200\000\000\000\000\000\000\000"},
+X	{274, "import_stmt", 0, 10, states_18,
+X	 "\000\000\000\000\000\006\000\000\000\000\000\000"},
+X	{275, "compound_stmt", 0, 2, states_19,
+X	 "\000\020\000\000\000\000\262\000\000\000\000\001"},
+X	{276, "if_stmt", 0, 8, states_20,
+X	 "\000\000\000\000\000\000\002\000\000\000\000\000"},
+X	{277, "while_stmt", 0, 8, states_21,
+X	 "\000\000\000\000\000\000\020\000\000\000\000\000"},
+X	{278, "for_stmt", 0, 10, states_22,
+X	 "\000\000\000\000\000\000\040\000\000\000\000\000"},
+X	{279, "try_stmt", 0, 7, states_23,
+X	 "\000\000\000\000\000\000\200\000\000\000\000\000"},
+X	{280, "except_clause", 0, 5, states_24,
+X	 "\000\000\000\000\000\000\000\004\000\000\000\000"},
+X	{281, "suite", 0, 5, states_25,
+X	 "\004\040\002\100\343\006\000\000\000\203\072\000"},
+X	{282, "test", 0, 2, states_26,
+X	 "\000\040\002\000\000\000\000\000\002\203\072\000"},
+X	{283, "and_test", 0, 2, states_27,
+X	 "\000\040\002\000\000\000\000\000\002\203\072\000"},
+X	{284, "not_test", 0, 3, states_28,
+X	 "\000\040\002\000\000\000\000\000\002\203\072\000"},
+X	{285, "comparison", 0, 2, states_29,
+X	 "\000\040\002\000\000\000\000\000\000\203\072\000"},
+X	{286, "comp_op", 0, 6, states_30,
+X	 "\000\000\000\040\000\000\100\000\162\000\000\000"},
+X	{287, "expr", 0, 2, states_31,
+X	 "\000\040\002\000\000\000\000\000\000\203\072\000"},
+X	{288, "term", 0, 2, states_32,
+X	 "\000\040\002\000\000\000\000\000\000\203\072\000"},
+X	{289, "factor", 0, 4, states_33,
+X	 "\000\040\002\000\000\000\000\000\000\203\072\000"},
+X	{290, "atom", 0, 9, states_34,
+X	 "\000\040\002\000\000\000\000\000\000\200\072\000"},
+X	{291, "trailer", 0, 7, states_35,
+X	 "\000\000\002\000\000\000\000\000\000\200\200\000"},
+X	{292, "subscript", 0, 4, states_36,
+X	 "\000\240\002\000\000\000\000\000\000\203\072\000"},
+X	{293, "exprlist", 0, 3, states_37,
+X	 "\000\040\002\000\000\000\000\000\000\203\072\000"},
+X	{294, "testlist", 0, 3, states_38,
+X	 "\000\040\002\000\000\000\000\000\002\203\072\000"},
+X	{295, "classdef", 0, 8, states_39,
+X	 "\000\000\000\000\000\000\000\000\000\000\000\001"},
+X	{296, "baselist", 0, 3, states_40,
+X	 "\000\040\002\000\000\000\000\000\000\200\072\000"},
+X	{297, "arguments", 0, 4, states_41,
+X	 "\000\000\002\000\000\000\000\000\000\000\000\000"},
 X};
 Xstatic label labels[91] = {
-X {0, "EMPTY"},
-X {256, 0},
-X {4, 0},
-X {265, 0},
-X {275, 0},
-X {257, 0},
-X {264, 0},
-X {0, 0},
-X {258, 0},
-X {294, 0},
-X {259, 0},
-X {260, 0},
-X {1, "def"},
-X {1, 0},
-X {261, 0},
-X {11, 0},
-X {281, 0},
-X {7, 0},
-X {262, 0},
-X {8, 0},
-X {263, 0},
-X {12, 0},
-X {266, 0},
-X {267, 0},
-X {269, 0},
-X {268, 0},
-X {270, 0},
-X {274, 0},
-X {293, 0},
-X {22, 0},
-X {1, "print"},
-X {282, 0},
-X {1, "del"},
-X {1, "pass"},
-X {271, 0},
-X {272, 0},
-X {273, 0},
-X {1, "break"},
-X {1, "return"},
-X {1, "raise"},
-X {287, 0},
-X {1, "import"},
-X {1, "from"},
-X {16, 0},
-X {276, 0},
-X {277, 0},
-X {278, 0},
-X {279, 0},
-X {295, 0},
-X {1, "if"},
-X {1, "elif"},
-X {1, "else"},
-X {1, "while"},
-X {1, "for"},
-X {1, "in"},
-X {1, "try"},
-X {280, 0},
-X {1, "finally"},
-X {1, "except"},
-X {5, 0},
-X {6, 0},
-X {283, 0},
-X {1, "or"},
-X {284, 0},
-X {1, "and"},
-X {1, "not"},
-X {285, 0},
-X {286, 0},
-X {20, 0},
-X {21, 0},
-X {1, "is"},
-X {288, 0},
-X {14, 0},
-X {15, 0},
-X {289, 0},
-X {17, 0},
-X {24, 0},
-X {290, 0},
-X {291, 0},
-X {9, 0},
-X {10, 0},
-X {26, 0},
-X {27, 0},
-X {25, 0},
-X {2, 0},
-X {3, 0},
-X {292, 0},
-X {23, 0},
-X {1, "class"},
-X {296, 0},
-X {297, 0},
+X	{0, "EMPTY"},
+X	{256, 0},
+X	{4, 0},
+X	{265, 0},
+X	{275, 0},
+X	{257, 0},
+X	{264, 0},
+X	{0, 0},
+X	{258, 0},
+X	{294, 0},
+X	{259, 0},
+X	{260, 0},
+X	{1, "def"},
+X	{1, 0},
+X	{261, 0},
+X	{11, 0},
+X	{281, 0},
+X	{7, 0},
+X	{262, 0},
+X	{8, 0},
+X	{263, 0},
+X	{12, 0},
+X	{266, 0},
+X	{267, 0},
+X	{269, 0},
+X	{268, 0},
+X	{270, 0},
+X	{274, 0},
+X	{293, 0},
+X	{22, 0},
+X	{1, "print"},
+X	{282, 0},
+X	{1, "del"},
+X	{1, "pass"},
+X	{271, 0},
+X	{272, 0},
+X	{273, 0},
+X	{1, "break"},
+X	{1, "return"},
+X	{1, "raise"},
+X	{287, 0},
+X	{1, "import"},
+X	{1, "from"},
+X	{16, 0},
+X	{276, 0},
+X	{277, 0},
+X	{278, 0},
+X	{279, 0},
+X	{295, 0},
+X	{1, "if"},
+X	{1, "elif"},
+X	{1, "else"},
+X	{1, "while"},
+X	{1, "for"},
+X	{1, "in"},
+X	{1, "try"},
+X	{280, 0},
+X	{1, "finally"},
+X	{1, "except"},
+X	{5, 0},
+X	{6, 0},
+X	{283, 0},
+X	{1, "or"},
+X	{284, 0},
+X	{1, "and"},
+X	{1, "not"},
+X	{285, 0},
+X	{286, 0},
+X	{20, 0},
+X	{21, 0},
+X	{1, "is"},
+X	{288, 0},
+X	{14, 0},
+X	{15, 0},
+X	{289, 0},
+X	{17, 0},
+X	{24, 0},
+X	{290, 0},
+X	{291, 0},
+X	{9, 0},
+X	{10, 0},
+X	{26, 0},
+X	{27, 0},
+X	{25, 0},
+X	{2, 0},
+X	{3, 0},
+X	{292, 0},
+X	{23, 0},
+X	{1, "class"},
+X	{296, 0},
+X	{297, 0},
 X};
 Xgrammar gram = {
-X 42,
-X dfas,
-X {91, labels},
-X 256
+X	42,
+X	dfas,
+X	{91, labels},
+X	256
 X};
 EOF
 fi
@@ -2892,12 +2892,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -2922,13 +2922,13 @@ XNEWOBJ(type, typeobj) allocates memory for a new object of the given
 Xtype; here 'type' must be the C structure type used to represent the
 Xobject and 'typeobj' the address of the corresponding type object.
 XReference count and type pointer are filled in; the rest of the bytes of
-Xthe object are *undefined*! The resulting expression type is 'type *'.
+Xthe object are *undefined*!  The resulting expression type is 'type *'.
 XThe size of the object is actually determined by the tp_basicsize field
 Xof the type object.
 X
 XNEWVAROBJ(type, typeobj, n) is similar but allocates a variable-size
-Xobject with n extra items. The size is computer as tp_basicsize plus
-Xn * tp_itemsize. This fills in the ob_size field as well.
+Xobject with n extra items.  The size is computer as tp_basicsize plus
+Xn * tp_itemsize.  This fills in the ob_size field as well.
 X*/
 X
 Xextern object *newobject PROTO((typeobject *));

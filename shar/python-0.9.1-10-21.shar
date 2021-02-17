@@ -33,27 +33,27 @@ X# the lightmodel.
 Xmodel = [AMBIENT,0.4,0.4,0.4,LMNULL]
 X
 Xdef bindlight (bool) :
-X # Initializes all settings for a window.
-X if bool <> 0 :
-X mmode(MVIEWING)
-X perspective (900, 1.0, 1.0, 35.0)
-X loadmatrix(idmat)
-X # define materials and lights
-X lmdef(DEFMATERIAL, 1, m1)
-X lmdef(DEFMATERIAL, 2, m2)
-X lmdef(DEFMATERIAL, 3, m3)
-X lmdef(DEFMATERIAL, 4, m4)
-X lmdef(DEFMATERIAL, 5, m5)
-X lmdef(DEFMATERIAL, 6, m6)
-X lmdef(DEFMATERIAL, 7, m7)
-X lmdef(DEFMATERIAL, 8, m8)
-X lmdef(DEFMATERIAL, 9, m9)
-X lmdef(DEFLIGHT, 1, light1)
-X lmdef(DEFLIGHT, 2, light2)
-X lmdef(DEFLMODEL, 1, model)
-X lmbind(LIGHT0,1)
-X lmbind(LIGHT1,2)
-X lmbind(LMODEL,1)
+X	# Initializes all settings for a window.
+X	if bool <> 0 :
+X		mmode(MVIEWING)
+X		perspective (900, 1.0, 1.0, 35.0)
+X		loadmatrix(idmat)
+X	# define materials and lights
+X	lmdef(DEFMATERIAL, 1, m1)
+X	lmdef(DEFMATERIAL, 2, m2)
+X	lmdef(DEFMATERIAL, 3, m3)
+X	lmdef(DEFMATERIAL, 4, m4)
+X	lmdef(DEFMATERIAL, 5, m5)
+X	lmdef(DEFMATERIAL, 6, m6)
+X	lmdef(DEFMATERIAL, 7, m7)
+X	lmdef(DEFMATERIAL, 8, m8)
+X	lmdef(DEFMATERIAL, 9, m9)
+X	lmdef(DEFLIGHT, 1, light1)
+X	lmdef(DEFLIGHT, 2, light2)
+X	lmdef(DEFLMODEL, 1, model)
+X	lmbind(LIGHT0,1)
+X	lmbind(LIGHT1,2)
+X	lmbind(LMODEL,1)
 EOF
 fi
 if test -s 'demo/stdwin/wdiff.py'
@@ -67,17 +67,17 @@ X# A window-oriented recursive diff utility.
 X# NB: This uses undocumented window classing modules.
 X
 X# TO DO:
-X# - faster update after moving/copying one file
-X# - diff flags (-b, etc.) should be global or maintained per window
-X# - use a few fixed windows instead of creating new ones all the time
-X# - ways to specify patterns to skip
-X# (best by pointing at a file and clicking a special menu entry!)
-X# - add rcsdiff menu commands
-X# - add a way to view status of selected files without opening them
-X# - add a way to diff two files with different names
-X# - add a way to rename files
-X# - keep backups of overwritten/deleted files
-X# - a way to mark specified files as uninteresting for dircmp
+X#	- faster update after moving/copying one file
+X#	- diff flags (-b, etc.) should be global or maintained per window
+X#	- use a few fixed windows instead of creating new ones all the time
+X#	- ways to specify patterns to skip
+X#	  (best by pointing at a file and clicking a special menu entry!)
+X#	- add rcsdiff menu commands
+X#	- add a way to view status of selected files without opening them
+X#	- add a way to diff two files with different names
+X#	- add a way to rename files
+X#	- keep backups of overwritten/deleted files
+X#	- a way to mark specified files as uninteresting for dircmp
 X
 Ximport sys
 Ximport posix
@@ -105,439 +105,439 @@ Xskiplist = ['RCS', '.Amake', 'tags', '.', '..']
 X
 X
 Xdef anydiff(a, b, flags): # Display differences between any two objects
-X print 'diff', flags, a, b
-X if path.isdir(a) and path.isdir(b):
-X w = dirdiff(a, b, flags)
-X else:
-X w = filediff(a, b, flags)
-X addstatmenu(w, [a, b])
-X w.original_close = w.close
-X w.close = close_dirwin
-X return w
+X	print 'diff', flags, a, b
+X	if path.isdir(a) and path.isdir(b):
+X		w = dirdiff(a, b, flags)
+X	else:
+X		w = filediff(a, b, flags)
+X	addstatmenu(w, [a, b])
+X	w.original_close = w.close
+X	w.close = close_dirwin
+X	return w
 X
 Xdef close_dirwin(w):
-X close_subwindows(w, (), 0)
-X w.original_close(w)
+X	close_subwindows(w, (), 0)
+X	w.original_close(w)
 X
 Xdef filediff(a, b, flags): # Display differences between two text files
-X diffcmd = 'diff'
-X if flags: diffcmd = diffcmd + mkarg(flags)
-X diffcmd = diffcmd + mkarg(a) + mkarg(b)
-X difftext = commands.getoutput(diffcmd)
-X return textwin.open_readonly(mktitle(a, b), difftext)
+X	diffcmd = 'diff'
+X	if flags: diffcmd = diffcmd + mkarg(flags)
+X	diffcmd = diffcmd + mkarg(a) + mkarg(b)
+X	difftext = commands.getoutput(diffcmd)
+X	return textwin.open_readonly(mktitle(a, b), difftext)
 X
 Xdef dirdiff(a, b, flags): # Display differences between two directories
-X data = diffdata(a, b, flags)
-X w = tablewin.open(mktitle(a, b), data)
-X w.flags = flags
-X w.a = a
-X w.b = b
-X addviewmenu(w)
-X addactionmenu(w)
-X return w
+X	data = diffdata(a, b, flags)
+X	w = tablewin.open(mktitle(a, b), data)
+X	w.flags = flags
+X	w.a = a
+X	w.b = b
+X	addviewmenu(w)
+X	addactionmenu(w)
+X	return w
 X
 Xdef diffdata(a, b, flags): # Compute directory differences.
-X #
-X a_only = [('A only:', header_action), ('', header_action)]
-X b_only = [('B only:', header_action), ('', header_action)]
-X ab_diff = [('A <> B:', header_action), ('', header_action)]
-X ab_same = [('A == B:', header_action), ('', header_action)]
-X data = [a_only, b_only, ab_diff, ab_same]
-X #
-X a_list = dircache.listdir(a)[:]
-X b_list = dircache.listdir(b)[:]
-X dircache.annotate(a, a_list)
-X dircache.annotate(b, b_list)
-X a_list.sort()
-X b_list.sort()
-X #
-X for x in a_list:
-X if x in ['./', '../']:
-X pass
-X elif x not in b_list:
-X a_only.append(x, a_only_action)
-X else:
-X ax = path.cat(a, x)
-X bx = path.cat(b, x)
-X if path.isdir(ax) and path.isdir(bx):
-X if flags = '-r':
-X same = dircmp(ax, bx)
-X else:
-X same = 0
-X else:
-X try:
-X same = cmp.cmp(ax, bx)
-X except posix.error:
-X same = 0
-X if same:
-X ab_same.append(x, ab_same_action)
-X else:
-X ab_diff.append(x, ab_diff_action)
-X #
-X for x in b_list:
-X if x in ['./', '../']:
-X pass
-X elif x not in a_list:
-X b_only.append(x, b_only_action)
-X #
-X return data
+X	#
+X	a_only = [('A only:', header_action), ('', header_action)]
+X	b_only = [('B only:', header_action), ('', header_action)]
+X	ab_diff = [('A <> B:', header_action), ('', header_action)]
+X	ab_same = [('A == B:', header_action), ('', header_action)]
+X	data = [a_only, b_only, ab_diff, ab_same]
+X	#
+X	a_list = dircache.listdir(a)[:]
+X	b_list = dircache.listdir(b)[:]
+X	dircache.annotate(a, a_list)
+X	dircache.annotate(b, b_list)
+X	a_list.sort()
+X	b_list.sort()
+X	#
+X	for x in a_list:
+X		if x in ['./', '../']:
+X			pass
+X		elif x not in b_list:
+X			a_only.append(x, a_only_action)
+X		else:
+X			ax = path.cat(a, x)
+X			bx = path.cat(b, x)
+X			if path.isdir(ax) and path.isdir(bx):
+X				if flags = '-r':
+X					same = dircmp(ax, bx)
+X				else:
+X					same = 0
+X			else:
+X				try:
+X					same = cmp.cmp(ax, bx)
+X				except posix.error:
+X					same = 0
+X			if same:
+X				ab_same.append(x, ab_same_action)
+X			else:
+X				ab_diff.append(x, ab_diff_action)
+X	#
+X	for x in b_list:
+X		if x in ['./', '../']:
+X			pass
+X		elif x not in a_list:
+X			b_only.append(x, b_only_action)
+X	#
+X	return data
 X
 X# Re-read the directory.
 X# Attempt to find the selected item back.
 X
 Xdef update(w):
-X setbusy(w)
-X icol, irow = w.selection
-X if 0 <= icol < len(w.data) and 2 <= irow < len(w.data[icol]):
-X selname = w.data[icol][irow][0]
-X else:
-X selname = ''
-X statcache.forget_dir(w.a)
-X statcache.forget_dir(w.b)
-X tablewin.select(w, (-1, -1))
-X tablewin.update(w, diffdata(w.a, w.b, w.flags))
-X if selname:
-X for icol in range(len(w.data)):
-X for irow in range(2, len(w.data[icol])):
-X if w.data[icol][irow][0] = selname:
-X tablewin.select(w, (icol, irow))
-X break
+X	setbusy(w)
+X	icol, irow = w.selection
+X	if 0 <= icol < len(w.data) and 2 <= irow < len(w.data[icol]):
+X		selname = w.data[icol][irow][0]
+X	else:
+X		selname = ''
+X	statcache.forget_dir(w.a)
+X	statcache.forget_dir(w.b)
+X	tablewin.select(w, (-1, -1))
+X	tablewin.update(w, diffdata(w.a, w.b, w.flags))
+X	if selname:
+X		for icol in range(len(w.data)):
+X			for irow in range(2, len(w.data[icol])):
+X				if w.data[icol][irow][0] = selname:
+X					tablewin.select(w, (icol, irow))
+X					break
 X
 X# Action functions for table items in directory diff windows
 X
 Xdef header_action(w, string, (icol, irow), (pos, clicks, button, mask)):
-X tablewin.select(w, (-1, -1))
+X	tablewin.select(w, (-1, -1))
 X
 Xdef a_only_action(w, string, (icol, irow), (pos, clicks, button, mask)):
-X tablewin.select(w, (icol, irow))
-X if clicks = 2:
-X w2 = anyopen(path.cat(w.a, string))
-X if w2:
-X w2.parent = w
+X	tablewin.select(w, (icol, irow))
+X	if clicks = 2:
+X		w2 = anyopen(path.cat(w.a, string))
+X		if w2:
+X			w2.parent = w
 X
 Xdef b_only_action(w, string, (icol, irow), (pos, clicks, button, mask)):
-X tablewin.select(w, (icol, irow))
-X if clicks = 2:
-X w2 = anyopen(path.cat(w.b, string))
-X if w2:
-X w2.parent = w
+X	tablewin.select(w, (icol, irow))
+X	if clicks = 2:
+X		w2 = anyopen(path.cat(w.b, string))
+X		if w2:
+X			w2.parent = w
 X
 Xdef ab_diff_action(w, string, (icol, irow), (pos, clicks, button, mask)):
-X tablewin.select(w, (icol, irow))
-X if clicks = 2:
-X w2 = anydiff(path.cat(w.a, string), path.cat(w.b, string), '')
-X w2.parent = w
+X	tablewin.select(w, (icol, irow))
+X	if clicks = 2:
+X		w2 = anydiff(path.cat(w.a, string), path.cat(w.b, string), '')
+X		w2.parent = w
 X
 Xdef ab_same_action(w, string, sel, detail):
-X ax = path.cat(w.a, string)
-X if path.isdir(ax):
-X ab_diff_action(w, string, sel, detail)
-X else:
-X a_only_action(w, string, sel, detail)
+X	ax = path.cat(w.a, string)
+X	if path.isdir(ax):
+X		ab_diff_action(w, string, sel, detail)
+X	else:
+X		a_only_action(w, string, sel, detail)
 X
 Xdef anyopen(name): # Open any kind of document, ignore errors
-X try:
-X w = anywin.open(name)
-X except (RuntimeError, posix.error):
-X stdwin.message('Can\'t open ' + name)
-X return 0
-X addstatmenu(w, [name])
-X return w
+X	try:
+X		w = anywin.open(name)
+X	except (RuntimeError, posix.error):
+X		stdwin.message('Can\'t open ' + name)
+X		return 0
+X	addstatmenu(w, [name])
+X	return w
 X
 Xdef dircmp(a, b): # Compare whether two directories are the same
-X # To make this as fast as possible, it uses the statcache
-X print ' dircmp', a, b
-X a_list = dircache.listdir(a)
-X b_list = dircache.listdir(b)
-X for x in a_list:
-X if x in skiplist:
-X pass
-X elif x not in b_list:
-X return 0
-X else:
-X ax = path.cat(a, x)
-X bx = path.cat(b, x)
-X if statcache.isdir(ax) and statcache.isdir(bx):
-X if not dircmp(ax, bx): return 0
-X else:
-X try:
-X if not cmpcache.cmp(ax, bx): return 0
-X except posix.error:
-X return 0
-X for x in b_list:
-X if x in skiplist:
-X pass
-X elif x not in a_list:
-X return 0
-X return 1
+X	# To make this as fast as possible, it uses the statcache
+X	print '  dircmp', a, b
+X	a_list = dircache.listdir(a)
+X	b_list = dircache.listdir(b)
+X	for x in a_list:
+X		if x in skiplist:
+X			pass
+X		elif x not in b_list:
+X			return 0
+X		else:
+X			ax = path.cat(a, x)
+X			bx = path.cat(b, x)
+X			if statcache.isdir(ax) and statcache.isdir(bx):
+X				if not dircmp(ax, bx): return 0
+X			else:
+X				try:
+X					if not cmpcache.cmp(ax, bx): return 0
+X				except posix.error:
+X					return 0
+X	for x in b_list:
+X		if x in skiplist:
+X			pass
+X		elif x not in a_list:
+X			return 0
+X	return 1
 X
 X
 X# View menu (for dir diff windows only)
 X
 Xdef addviewmenu(w):
-X w.viewmenu = m = w.menucreate('View')
-X m.action = []
-X add(m, 'diff -r A B', diffr_ab)
-X add(m, 'diff A B', diff_ab)
-X add(m, 'diff -b A B', diffb_ab)
-X add(m, 'diff -c A B', diffc_ab)
-X add(m, 'gdiff A B', gdiff_ab)
-X add(m, ('Open A ', 'A'), open_a)
-X add(m, ('Open B ', 'B'), open_b)
-X add(m, 'Rescan', rescan)
-X add(m, 'Rescan -r', rescan_r)
+X	w.viewmenu = m = w.menucreate('View')
+X	m.action = []
+X	add(m, 'diff -r A B', diffr_ab)
+X	add(m, 'diff A B', diff_ab)
+X	add(m, 'diff -b A B', diffb_ab)
+X	add(m, 'diff -c A B', diffc_ab)
+X	add(m, 'gdiff A B', gdiff_ab)
+X	add(m, ('Open A   ', 'A'), open_a)
+X	add(m, ('Open B   ', 'B'), open_b)
+X	add(m, 'Rescan', rescan)
+X	add(m, 'Rescan -r', rescan_r)
 X
 X# Action menu (for dir diff windows only)
 X
 Xdef addactionmenu(w):
-X w.actionmenu = m = w.menucreate('Action')
-X m.action = []
-X add(m, 'cp A B', cp_ab)
-X add(m, 'rm B', rm_b)
-X add(m, '', nop)
-X add(m, 'cp B A', cp_ba)
-X add(m, 'rm A', rm_a)
+X	w.actionmenu = m = w.menucreate('Action')
+X	m.action = []
+X	add(m, 'cp A B', cp_ab)
+X	add(m, 'rm B', rm_b)
+X	add(m, '', nop)
+X	add(m, 'cp B A', cp_ba)
+X	add(m, 'rm A', rm_a)
 X
 X# Main menu (global):
 X
 Xdef mainmenu():
-X m = stdwin.menucreate('Wdiff')
-X m.action = []
-X add(m, ('Quit wdiff', 'Q'), quit_wdiff)
-X add(m, 'Close subwindows', close_subwindows)
-X return m
+X	m = stdwin.menucreate('Wdiff')
+X	m.action = []
+X	add(m, ('Quit wdiff', 'Q'), quit_wdiff)
+X	add(m, 'Close subwindows', close_subwindows)
+X	return m
 X
 Xdef add(m, text, action):
-X m.additem(text)
-X m.action.append(action)
+X	m.additem(text)
+X	m.action.append(action)
 X
 Xdef quit_wdiff(w, m, item):
-X if askyesno('Really quit wdiff altogether?', 1):
-X sys.exit(0)
+X	if askyesno('Really quit wdiff altogether?', 1):
+X		sys.exit(0)
 X
 Xdef close_subwindows(w, m, item):
-X while 1:
-X for w2 in gwin.windows:
-X if w2.parent = w:
-X close_subwindows(w2, m, item)
-X w2.close(w2)
-X break # inner loop, continue outer loop
-X else:
-X break # outer loop
+X	while 1:
+X		for w2 in gwin.windows:
+X			if w2.parent = w:
+X				close_subwindows(w2, m, item)
+X				w2.close(w2)
+X				break # inner loop, continue outer loop
+X		else:
+X			break # outer loop
 X
 Xdef diffr_ab(w, m, item):
-X dodiff(w, '-r')
+X	dodiff(w, '-r')
 X
 Xdef diff_ab(w, m, item):
-X dodiff(w, '')
+X	dodiff(w, '')
 X
 Xdef diffb_ab(w, m, item):
-X dodiff(w, '-b')
+X	dodiff(w, '-b')
 X
 Xdef diffc_ab(w, m, item):
-X dodiff(w, '-c')
+X	dodiff(w, '-c')
 X
 Xdef gdiff_ab(w, m, item): # Call SGI's gdiff utility
-X x = getselection(w)
-X if x:
-X a, b = path.cat(w.a, x), path.cat(w.b, x)
-X if path.isdir(a) or path.isdir(b):
-X stdwin.fleep() # This is for files only
-X else:
-X diffcmd = 'gdiff'
-X diffcmd = diffcmd + mkarg(a) + mkarg(b) + ' &'
-X print diffcmd
-X sts = posix.system(diffcmd)
-X if sts: print 'Exit status', sts
+X	x = getselection(w)
+X	if x:
+X		a, b = path.cat(w.a, x), path.cat(w.b, x)
+X		if path.isdir(a) or path.isdir(b):
+X			stdwin.fleep() # This is for files only
+X		else:
+X			diffcmd = 'gdiff'
+X			diffcmd = diffcmd + mkarg(a) + mkarg(b) + ' &'
+X			print diffcmd
+X			sts = posix.system(diffcmd)
+X			if sts: print 'Exit status', sts
 X
 Xdef dodiff(w, flags):
-X x = getselection(w)
-X if x:
-X w2 = anydiff(path.cat(w.a, x), path.cat(w.b, x), flags)
-X w2.parent = w
+X	x = getselection(w)
+X	if x:
+X		w2 = anydiff(path.cat(w.a, x), path.cat(w.b, x), flags)
+X		w2.parent = w
 X
 Xdef open_a(w, m, item):
-X x = getselection(w)
-X if x:
-X w2 = anyopen(path.cat(w.a, x))
-X if w2:
-X w2.parent = w
+X	x = getselection(w)
+X	if x:
+X		w2 = anyopen(path.cat(w.a, x))
+X		if w2:
+X			w2.parent = w
 X
 Xdef open_b(w, m, item):
-X x = getselection(w)
-X if x:
-X w2 = anyopen(path.cat(w.b, x))
-X if w2:
-X w2.parent = w
+X	x = getselection(w)
+X	if x:
+X		w2 = anyopen(path.cat(w.b, x))
+X		if w2:
+X			w2.parent = w
 X
 Xdef rescan(w, m, item):
-X w.flags = ''
-X update(w)
+X	w.flags = ''
+X	update(w)
 X
 Xdef rescan_r(w, m, item):
-X w.flags = '-r'
-X update(w)
+X	w.flags = '-r'
+X	update(w)
 X
 Xdef rm_a(w, m, item):
-X x = getselection(w)
-X if x:
-X if x[-1:] = '/': x = x[:-1]
-X x = path.cat(w.a, x)
-X if path.isdir(x):
-X if askyesno('Recursively remove A directory ' + x, 1):
-X runcmd('rm -rf' + mkarg(x))
-X else:
-X runcmd('rm -f' + mkarg(x))
-X update(w)
+X	x = getselection(w)
+X	if x:
+X		if x[-1:] = '/': x = x[:-1]
+X		x = path.cat(w.a, x)
+X		if path.isdir(x):
+X			if askyesno('Recursively remove A directory ' + x, 1):
+X				runcmd('rm -rf' + mkarg(x))
+X		else:
+X			runcmd('rm -f' + mkarg(x))
+X		update(w)
 X
 Xdef rm_b(w, m, item):
-X x = getselection(w)
-X if x:
-X if x[-1:] = '/': x = x[:-1]
-X x = path.cat(w.b, x)
-X if path.isdir(x):
-X if askyesno('Recursively remove B directory ' + x, 1):
-X runcmd('rm -rf' + mkarg(x))
-X else:
-X runcmd('rm -f' + mkarg(x))
-X update(w)
+X	x = getselection(w)
+X	if x:
+X		if x[-1:] = '/': x = x[:-1]
+X		x = path.cat(w.b, x)
+X		if path.isdir(x):
+X			if askyesno('Recursively remove B directory ' + x, 1):
+X				runcmd('rm -rf' + mkarg(x))
+X		else:
+X			runcmd('rm -f' + mkarg(x))
+X		update(w)
 X
 Xdef cp_ab(w, m, item):
-X x = getselection(w)
-X if x:
-X if x[-1:] = '/': x = x[:-1]
-X ax = path.cat(w.a, x)
-X bx = path.cat(w.b, x)
-X if path.isdir(ax):
-X if path.exists(bx):
-X m = 'Can\'t copy directory to existing target'
-X stdwin.message(m)
-X return
-X runcmd('cp -r' + mkarg(ax) + mkarg(w.b))
-X else:
-X runcmd('cp' + mkarg(ax) + mk2arg(w.b, x))
-X update(w)
+X	x = getselection(w)
+X	if x:
+X		if x[-1:] = '/': x = x[:-1]
+X		ax = path.cat(w.a, x)
+X		bx = path.cat(w.b, x)
+X		if path.isdir(ax):
+X			if path.exists(bx):
+X				m = 'Can\'t copy directory to existing target'
+X				stdwin.message(m)
+X				return
+X			runcmd('cp -r' + mkarg(ax) + mkarg(w.b))
+X		else:
+X			runcmd('cp' + mkarg(ax) + mk2arg(w.b, x))
+X		update(w)
 X
 Xdef cp_ba(w, m, item):
-X x = getselection(w)
-X if x:
-X if x[-1:] = '/': x = x[:-1]
-X ax = path.cat(w.a, x)
-X bx = path.cat(w.b, x)
-X if path.isdir(bx):
-X if path.exists(ax):
-X m = 'Can\'t copy directory to existing target'
-X stdwin.message(m)
-X return
-X runcmd('cp -r' + mkarg(bx) + mkarg(w.a))
-X else:
-X runcmd('cp' + mk2arg(w.b, x) + mkarg(ax))
-X update(w)
+X	x = getselection(w)
+X	if x:
+X		if x[-1:] = '/': x = x[:-1]
+X		ax = path.cat(w.a, x)
+X		bx = path.cat(w.b, x)
+X		if path.isdir(bx):
+X			if path.exists(ax):
+X				m = 'Can\'t copy directory to existing target'
+X				stdwin.message(m)
+X				return
+X			runcmd('cp -r' + mkarg(bx) + mkarg(w.a))
+X		else:
+X			runcmd('cp' + mk2arg(w.b, x) + mkarg(ax))
+X		update(w)
 X
 Xdef nop(args):
-X pass
+X	pass
 X
 Xdef getselection(w):
-X icol, irow = w.selection
-X if 0 <= icol < len(w.data):
-X if 0 <= irow < len(w.data[icol]):
-X return w.data[icol][irow][0]
-X stdwin.message('no selection')
-X return ''
+X	icol, irow = w.selection
+X	if 0 <= icol < len(w.data):
+X		if 0 <= irow < len(w.data[icol]):
+X			return w.data[icol][irow][0]
+X	stdwin.message('no selection')
+X	return ''
 X
 Xdef runcmd(cmd):
-X print cmd
-X sts, output = commands.getstatusoutput(cmd)
-X if sts or output:
-X if not output:
-X output = 'Exit status ' + `sts`
-X stdwin.message(output)
+X	print cmd
+X	sts, output = commands.getstatusoutput(cmd)
+X	if sts or output:
+X		if not output:
+X			output = 'Exit status ' + `sts`
+X		stdwin.message(output)
 X
 X
 X# Status menu (for all kinds of windows)
 X
 Xdef addstatmenu(w, files):
-X w.statmenu = m = w.menucreate('Stat')
-X m.files = files
-X m.action = []
-X for file in files:
-X m.additem(commands.getstatus(file))
-X m.action.append(stataction)
+X	w.statmenu = m = w.menucreate('Stat')
+X	m.files = files
+X	m.action = []
+X	for file in files:
+X		m.additem(commands.getstatus(file))
+X		m.action.append(stataction)
 X
 Xdef stataction(w, m, item): # Menu item action for stat menu
-X file = m.files[item]
-X try:
-X m.setitem(item, commands.getstatus(file))
-X except posix.error:
-X stdwin.message('Can\'t get status for ' + file)
+X	file = m.files[item]
+X	try:
+X		m.setitem(item, commands.getstatus(file))
+X	except posix.error:
+X		stdwin.message('Can\'t get status for ' + file)
 X
 X
 X# Compute a suitable window title from two paths
 X
 Xdef mktitle(a, b):
-X if a = b: return a
-X i = 1
-X while a[-i:] = b[-i:]: i = i+1
-X i = i-1
-X if not i:
-X return a + ' ' + b
-X else:
-X return '{' + a[:-i] + ',' + b[:-i] + '}' + a[-i:]
+X	if a = b: return a
+X	i = 1
+X	while a[-i:] = b[-i:]: i = i+1
+X	i = i-1
+X	if not i:
+X		return a + '  ' + b
+X	else:
+X		return '{' + a[:-i] + ',' + b[:-i] + '}' + a[-i:]
 X
 X
 X# Ask a confirmation question
 X
 Xdef askyesno(prompt, default):
-X try:
-X return stdwin.askync(prompt, default)
-X except KeyboardInterrupt:
-X return 0
+X	try:
+X		return stdwin.askync(prompt, default)
+X	except KeyboardInterrupt:
+X		return 0
 X
 X
 X# Display a message "busy" in a window, and mark it for updating
 X
 Xdef setbusy(w):
-X left, top = w.getorigin()
-X width, height = w.getwinsize()
-X right, bottom = left + width, top + height
-X d = w.begindrawing()
-X d.erase((0, 0), (10000, 10000))
-X text = 'Busy...'
-X textwidth = d.textwidth(text)
-X textheight = d.lineheight()
-X h, v = left + (width-textwidth)/2, top + (height-textheight)/2
-X d.text((h, v), text)
-X del d
-X w.change((0, 0), (10000, 10000))
+X	left, top = w.getorigin()
+X	width, height = w.getwinsize()
+X	right, bottom = left + width, top + height
+X	d = w.begindrawing()
+X	d.erase((0, 0), (10000, 10000))
+X	text = 'Busy...'
+X	textwidth = d.textwidth(text)
+X	textheight = d.lineheight()
+X	h, v = left + (width-textwidth)/2, top + (height-textheight)/2
+X	d.text((h, v), text)
+X	del d
+X	w.change((0, 0), (10000, 10000))
 X
 X
 X# Main function
 X
 Xdef main():
-X print 'wdiff: warning: this version does NOT yet make backups'
-X argv = sys.argv
-X flags = ''
-X if len(argv) >= 2 and argv[1][:1] = '-':
-X flags = argv[1]
-X del argv[1]
-X m = mainmenu() # Create menu earlier than windows
-X if len(argv) = 2: # 1 argument
-X w = anyopen(argv[1])
-X if not w: return
-X elif len(argv) = 3: # 2 arguments
-X w = anydiff(argv[1], argv[2], flags)
-X w.parent = ()
-X else:
-X sys.stdout = sys.stderr
-X print 'usage:', argv[0], '[diff-flags] dir-1 [dir-2]'
-X sys.exit(2)
-X del w # It's preserved in gwin.windows
-X while 1:
-X try:
-X gwin.mainloop()
-X break
-X except KeyboardInterrupt:
-X pass # Just continue...
+X	print 'wdiff: warning: this version does NOT yet make backups'
+X	argv = sys.argv
+X	flags = ''
+X	if len(argv) >= 2 and argv[1][:1] = '-':
+X		flags = argv[1]
+X		del argv[1]
+X	m = mainmenu() # Create menu earlier than windows
+X	if len(argv) = 2: # 1 argument
+X		w = anyopen(argv[1])
+X		if not w: return
+X	elif len(argv) = 3: # 2 arguments
+X		w = anydiff(argv[1], argv[2], flags)
+X		w.parent = ()
+X	else:
+X		sys.stdout = sys.stderr
+X		print 'usage:', argv[0], '[diff-flags] dir-1 [dir-2]'
+X		sys.exit(2)
+X	del w # It's preserved in gwin.windows
+X	while 1:
+X		try:
+X			gwin.mainloop()
+X			break
+X		except KeyboardInterrupt:
+X			pass	# Just continue...
 X
 X# Start the main function (this is a script)
 Xmain()
@@ -555,27 +555,27 @@ X#
 X# Design choices:
 X#
 X# - Names used for functions are not exactly those used by C Tcl.
-X# In Python, names without 'Tcl_' prefix are acceptable because
-X# names are less global than in C (and often they are prefixed
-X# with a module name anyway). Parameter conventions also differ.
+X#   In Python, names without 'Tcl_' prefix are acceptable because
+X#   names are less global than in C (and often they are prefixed
+X#   with a module name anyway).  Parameter conventions also differ.
 X#
 X# - The Tcl Interpreter type is implemented using a Python class.
-X# Almost all functions with an Interpreter as first parameter are
-X# methods of this class.
-X# Applications can create derived classes to add additional commands
-X# or to override specific internal functions.
+X#   Almost all functions with an Interpreter as first parameter are
+X#   methods of this class.
+X#   Applications can create derived classes to add additional commands
+X#   or to override specific internal functions.
 X#
 X# - Tcl errors are mapped to Python exceptions.
-X# (I bet Ousterhout would have done the same in a language with
-X# a proper exception mechanism).
+X#   (I bet Ousterhout would have done the same in a language with
+X#   a proper exception mechanism).
 X#
 X# - Tcl expressions are evaluated by Python's built-in function eval().
-X# This makes Python Tcl scripts incompatible with C Tcl scripts,
-X# but is the only sensible solution for a quick-and-dirty version.
-X# It also makes an escape to Python possible.
+X#   This makes Python Tcl scripts incompatible with C Tcl scripts,
+X#   but is the only sensible solution for a quick-and-dirty version.
+X#   It also makes an escape to Python possible.
 X#
 X# - The Backslash function interprets \<newline>, since it
-X# can return a string instead of a character.
+X#   can return a string instead of a character.
 X
 X
 Xfrom TclUtil import *
@@ -589,59 +589,59 @@ XTclReturn = 'TclReturn'
 X
 X
 Xclass CmdBuf():
-X #
-X def Create(buffer):
-X buffer.string = ''
-X return buffer
-X #
-X def Assemble(buffer, str):
-X buffer.string = buffer.string + str
-X if buffer.string[-1:] = '\n':
-X i, end = 0, len(buffer.string)
-X try:
-X while i < end:
-X list, i = FindNextCommand( \
-X buffer.string, i, end, 0)
-X except TclMatchingError:
-X return ''
-X except TclSyntaxError:
-X pass # Let Eval() return the error
-X ret = buffer.string
-X buffer.string = ''
-X return ret
-X else:
-X return ''
+X	#
+X	def Create(buffer):
+X		buffer.string = ''
+X		return buffer
+X	#
+X	def Assemble(buffer, str):
+X		buffer.string = buffer.string + str
+X		if buffer.string[-1:] = '\n':
+X			i, end = 0, len(buffer.string)
+X			try:
+X				while i < end:
+X					list, i = FindNextCommand( \
+X						buffer.string, i, end, 0)
+X			except TclMatchingError:
+X				return ''
+X			except TclSyntaxError:
+X				pass # Let Eval() return the error
+X			ret = buffer.string
+X			buffer.string = ''
+X			return ret
+X		else:
+X			return ''
 X
 X
 Xclass _Frame():
-X def Create(frame):
-X frame.locals = {}
-X return frame
+X	def Create(frame):
+X		frame.locals = {}
+X		return frame
 X
 Xclass _Proc():
-X #
-X def Create(proc, (interp, args, body)):
-X proc.interp = interp
-X proc.args = SplitList(args) # Do this once here
-X proc.body = body
-X return proc
-X #
-X def Call(proc, argv):
-X if len(argv) <> len(proc.args)+1:
-X raise TclRuntimeError, \
-X 'wrong # args to proc "' + \
-X argv[0] + '"'
-X # XXX No defaults or variable length 'args' yet
-X frame = _Frame().Create()
-X for i in range(len(proc.args)):
-X frame.locals[proc.args[i]] = argv[i+1]
-X proc.interp.stack.append(frame)
-X try:
-X value = proc.interp.Eval(proc.body)
-X except TclReturn, value:
-X pass
-X del proc.interp.stack[-1:]
-X return value
+X	#
+X	def Create(proc, (interp, args, body)):
+X		proc.interp = interp
+X		proc.args = SplitList(args)	# Do this once here
+X		proc.body = body
+X		return proc
+X	#
+X	def Call(proc, argv):
+X		if len(argv) <> len(proc.args)+1:
+X			raise TclRuntimeError, \
+X				'wrong # args to proc "' + \
+X				argv[0] + '"'
+X		# XXX No defaults or variable length 'args' yet
+X		frame = _Frame().Create()
+X		for i in range(len(proc.args)):
+X			frame.locals[proc.args[i]] = argv[i+1]
+X		proc.interp.stack.append(frame)
+X		try:
+X			value = proc.interp.Eval(proc.body)
+X		except TclReturn, value:
+X			pass
+X		del proc.interp.stack[-1:]
+X		return value
 X
 X
 Ximport regexp
@@ -649,311 +649,311 @@ X_expand_prog = regexp.compile('([^[$\\]+|\n)*')
 Xdel regexp
 X
 Xclass Interpreter():
-X #
-X def Create(interp):
-X interp.globals = {}
-X interp.commands = {}
-X interp.stack = []
-X interp.commands['break'] = interp.BreakCmd
-X interp.commands['concat'] = interp.ConcatCmd
-X interp.commands['continue'] = interp.ContinueCmd
-X interp.commands['echo'] = interp.EchoCmd
-X interp.commands['eval'] = interp.EvalCmd
-X interp.commands['expr'] = interp.ExprCmd
-X interp.commands['for'] = interp.ForCmd
-X interp.commands['glob'] = interp.GlobCmd
-X interp.commands['global'] = interp.GlobalCmd
-X interp.commands['if'] = interp.IfCmd
-X interp.commands['index'] = interp.IndexCmd
-X interp.commands['list'] = interp.ListCmd
-X interp.commands['proc'] = interp.ProcCmd
-X interp.commands['rename'] = interp.RenameCmd
-X interp.commands['return'] = interp.ReturnCmd
-X interp.commands['set'] = interp.SetCmd
-X return interp
-X #
-X def Delete(interp):
-X #
-X # Only break circular references here;
-X # most things will be garbage-collected.
-X #
-X for name in interp.commands.keys():
-X del interp.commands[name]
-X #
-X def CreateCommand(interp, (name, proc)):
-X interp.commands[name] = proc
-X #
-X def DeleteCommand(interp, (name)):
-X del interp.commands[name]
-X #
-X # Local variables are maintained on the stack.
-X # A local variable with value "None" is a dummy
-X # meaning that the corresponding global variable
-X # should be used.
-X #
-X def GetVar(interp, varName):
-X dict = interp.globals
-X if interp.stack:
-X d = interp.stack[-1:][0].locals
-X if d.has_key(varName) and d[varName] = None:
-X pass
-X else:
-X dict = d
-X if not dict.has_key(varName):
-X raise TclRuntimeError, \
-X 'Variable "' + varName + '" not found'
-X return dict[varName]
-X #
-X def SetVar(interp, (varName, newValue)):
-X dict = interp.globals
-X if interp.stack:
-X d = interp.stack[-1:][0].locals
-X if d.has_key(varName) and d[varName] = None:
-X pass
-X else:
-X dict = d
-X dict[varName] = newValue
-X #
-X def Expand(interp, (str, i, end)):
-X if end <= i: return ''
-X if str[i] = '{' and str[end-1] = '}':
-X return str[i+1:end-1]
-X if str[i] = '"' and str[end-1] = '"':
-X i, end = i+1, end-1
-X result = ''
-X while i < end:
-X c = str[i]
-X if c = '\\':
-X x, i = Backslash(str, i, end)
-X result = result + x
-X elif c = '[':
-X j = BalanceBrackets(str, i, end)
-X x = interp.EvalBasic(str, i+1, j-1, 1)
-X result = result + x
-X i = j
-X elif c = '$':
-X i = i+1
-X j = FindVarName(str, i, end)
-X name = str[i:j]
-X i = j
-X if not name:
-X result = result + '$'
-X else:
-X if name[:1] = '{' and name[-1:] = '}':
-X name = name[1:-1]
-X result = result + interp.GetVar(name)
-X else:
-X j = _expand_prog.exec(str, i)
-X j = min(j, end)
-X result = result + str[i:j]
-X i = j
-X return result
-X #
-X def EvalBasic(interp, (str, i, end, bracketed)):
-X result = ''
-X while i < end:
-X indexargv, i = FindNextCommand( \
-X str, i, end, bracketed)
-X if indexargv:
-X argv = []
-X for x, y in indexargv:
-X arg = interp.Expand(str, x, y)
-X argv.append(arg)
-X name = argv[0]
-X if not interp.commands.has_key(name):
-X raise TclRuntimeError, \
-X 'Command "' + name + \
-X '" not found'
-X result = interp.commands[name](argv)
-X return result
-X #
-X def Eval(interp, str):
-X return interp.EvalBasic(str, 0, len(str), 0)
-X #
-X def ExprBasic(interp, (str, begin, end)):
-X expr = interp.Expand(str, begin, end)
-X i = SkipSpaces(expr, 0, len(expr))
-X expr = expr[i:]
-X try:
-X return eval(expr, {})
-X except (NameError, TypeError, RuntimeError, EOFError), msg:
-X import sys
-X raise TclRuntimeError, sys.exc_type + ': ' + msg
-X #
-X def Expr(interp, str):
-X return interp.ExprBasic(str, 0, len(str))
-X #
-X # The rest are command implementations
-X #
-X def BreakCmd(interp, argv):
-X if len(argv) <> 1:
-X raise TclRuntimeError, 'usage: break'
-X raise TclBreak
-X #
-X def ConcatCmd(interp, argv):
-X if len(argv) < 2:
-X raise TclRuntimeError, 'usage: concat arg ...'
-X return Concat(argv[1:])
-X #
-X def ContinueCmd(interp, argv):
-X if len(argv) <> 1:
-X raise TclRuntimeError, 'usage: continue'
-X raise TclContinue
-X #
-X def EchoCmd(interp, argv):
-X for arg in argv[1:]: print arg,
-X print
-X return ''
-X #
-X def EvalCmd(interp, argv):
-X if len(argv) < 2:
-X raise TclRuntimeError, 'usage: eval arg [arg ...]'
-X str = Concat(argv[1:])
-X return interp.Eval(str)
-X #
-X def ExprCmd(interp, argv):
-X if len(argv) <> 2:
-X raise TclRuntimeError, 'usage: expr expression'
-X expr = argv[1]
-X result = interp.Expr(expr)
-X if type(result) <> type(''): result = `result`
-X return result
-X #
-X def ForCmd(interp, argv):
-X if len(argv) <> 5:
-X raise TclRuntimeError, \
-X 'usage: for start test next body'
-X x = interp.Eval(argv[1])
-X while interp.Expr(argv[2]):
-X try:
-X x = interp.Eval(argv[4])
-X except TclBreak:
-X break
-X except TclContinue:
-X pass
-X x = interp.Eval(argv[3])
-X return ''
-X #
-X def GlobCmd(interp, argv):
-X import macglob
-X if len(argv) < 2:
-X raise TclRuntimeError, 'usage: glob pattern ...'
-X list = []
-X for pat in argv[1:]:
-X list = list + macglob.glob(pat)
-X if not list:
-X raise TclRuntimeError, 'no match for glob pattern(s)'
-X return BuildList(list)
-X #
-X def GlobalCmd(interp, argv):
-X if len(argv) < 2:
-X raise TclRuntimeError, 'usage: global varname ...'
-X if not interp.stack:
-X raise TclRuntimeError, 'global used outside proc'
-X dict = interp.stack[-1:][0].locals
-X for name in argv[1:]:
-X dict[name] = None
-X return ''
-X #
-X def IfCmd(interp, argv):
-X argv = argv[:]
-X if len(argv) > 2 and argv[2] = 'then': del argv[2]
-X if len(argv) > 3 and argv[3] = 'else': del argv[3]
-X if not 3 <= len(argv) <= 4:
-X raise TclRuntimeError, \
-X 'usage: if test [then] trueBody [else] falseBody'
-X if interp.Expr(argv[1]):
-X return interp.Eval(argv[2])
-X if len(argv) > 3:
-X return interp.Eval(argv[3])
-X return ''
-X #
-X def IndexCmd(interp, argv):
-X if len(argv) <> 3:
-X raise TclRuntimeError, 'usage: index value index'
-X import string
-X try:
-X index = string.atoi(argv[2])
-X if index < 0: raise string.atoi_error
-X except string.atoi_error:
-X raise TclRuntimeError, 'bad index: ' + argv[2]
-X list = SplitList(argv[1])
-X if index >= len(list): return ''
-X return list[index]
-X #
-X def ListCmd(interp, argv):
-X if len(argv) < 2:
-X raise TclRuntimeError, 'usage: list arg ...'
-X return BuildList(argv[1:])
-X #
-X def ProcCmd(interp, argv):
-X if len(argv) <> 4:
-X raise TclRuntimeError, 'usage: proc name args body'
-X x = _Proc().Create(interp, argv[2], argv[3])
-X interp.CreateCommand(argv[1], x.Call)
-X return ''
-X #
-X def RenameCmd(interp, argv):
-X if len(argv) <> 3:
-X raise TclRuntimeError, 'usage: rename oldName newName'
-X oldName, newName = argv[1], argv[2]
-X if not interp.commands.has_key(oldName):
-X raise TclRuntimeError, \
-X 'command "' + oldName + '" not found'
-X if newName: interp.commands[newName] = interp.commands[oldName]
-X del interp.commands[oldName]
-X return ''
-X #
-X def ReturnCmd(interp, argv):
-X if not 1 <= len(argv) <= 2:
-X raise TclRuntimeError, 'usage: return [arg]'
-X if len(argv) = 1: raise TclReturn, ''
-X raise TclReturn, argv[1]
-X #
-X def SetCmd(interp, argv):
-X n = len(argv)
-X if not 2 <= n <= 3:
-X raise TclRuntimeError, 'usage: set varname [newvalue]'
-X if n = 2: return interp.GetVar(argv[1])
-X interp.SetVar(argv[1], argv[2])
-X return ''
+X	#
+X	def Create(interp):
+X		interp.globals = {}
+X		interp.commands = {}
+X		interp.stack = []
+X		interp.commands['break'] = interp.BreakCmd
+X		interp.commands['concat'] = interp.ConcatCmd
+X		interp.commands['continue'] = interp.ContinueCmd
+X		interp.commands['echo'] = interp.EchoCmd
+X		interp.commands['eval'] = interp.EvalCmd
+X		interp.commands['expr'] = interp.ExprCmd
+X		interp.commands['for'] = interp.ForCmd
+X		interp.commands['glob'] = interp.GlobCmd
+X		interp.commands['global'] = interp.GlobalCmd
+X		interp.commands['if'] = interp.IfCmd
+X		interp.commands['index'] = interp.IndexCmd
+X		interp.commands['list'] = interp.ListCmd
+X		interp.commands['proc'] = interp.ProcCmd
+X		interp.commands['rename'] = interp.RenameCmd
+X		interp.commands['return'] = interp.ReturnCmd
+X		interp.commands['set'] = interp.SetCmd
+X		return interp
+X	#
+X	def Delete(interp):
+X		#
+X		# Only break circular references here;
+X		# most things will be garbage-collected.
+X		#
+X		for name in interp.commands.keys():
+X			del interp.commands[name]
+X	#
+X	def CreateCommand(interp, (name, proc)):
+X		interp.commands[name] = proc
+X	#
+X	def DeleteCommand(interp, (name)):
+X		del interp.commands[name]
+X	#
+X	# Local variables are maintained on the stack.
+X	# A local variable with value "None" is a dummy
+X	# meaning that the corresponding global variable
+X	# should be used.
+X	#
+X	def GetVar(interp, varName):
+X		dict = interp.globals
+X		if interp.stack:
+X			d = interp.stack[-1:][0].locals
+X			if d.has_key(varName) and d[varName] = None:
+X				pass
+X			else:
+X				dict = d
+X		if not dict.has_key(varName):
+X			raise TclRuntimeError, \
+X				'Variable "' + varName + '" not found'
+X		return dict[varName]
+X	#
+X	def SetVar(interp, (varName, newValue)):
+X		dict = interp.globals
+X		if interp.stack:
+X			d = interp.stack[-1:][0].locals
+X			if d.has_key(varName) and d[varName] = None:
+X				pass
+X			else:
+X				dict = d
+X		dict[varName] = newValue
+X	#
+X	def Expand(interp, (str, i, end)):
+X		if end <= i: return ''
+X		if str[i] = '{' and str[end-1] = '}':
+X			return str[i+1:end-1]
+X		if str[i] = '"' and str[end-1] = '"':
+X			i, end = i+1, end-1
+X		result = ''
+X		while i < end:
+X			c = str[i]
+X			if c = '\\':
+X				x, i = Backslash(str, i, end)
+X				result = result + x
+X			elif c = '[':
+X				j = BalanceBrackets(str, i, end)
+X				x = interp.EvalBasic(str, i+1, j-1, 1)
+X				result = result + x
+X				i = j
+X			elif c = '$':
+X				i = i+1
+X				j = FindVarName(str, i, end)
+X				name = str[i:j]
+X				i = j
+X				if not name:
+X					result = result + '$'
+X				else:
+X					if name[:1] = '{' and name[-1:] = '}':
+X						name = name[1:-1]
+X					result = result + interp.GetVar(name)
+X			else:
+X				j = _expand_prog.exec(str, i)
+X				j = min(j, end)
+X				result = result + str[i:j]
+X				i = j
+X		return result
+X	#
+X	def EvalBasic(interp, (str, i, end, bracketed)):
+X		result = ''
+X		while i < end:
+X			indexargv, i = FindNextCommand( \
+X					str, i, end, bracketed)
+X			if indexargv:
+X				argv = []
+X				for x, y in indexargv:
+X					arg = interp.Expand(str, x, y)
+X					argv.append(arg)
+X				name = argv[0]
+X				if not interp.commands.has_key(name):
+X					raise TclRuntimeError, \
+X						'Command "' + name + \
+X						'" not found'
+X				result = interp.commands[name](argv)
+X		return result
+X	#
+X	def Eval(interp, str):
+X		return interp.EvalBasic(str, 0, len(str), 0)
+X	#
+X	def ExprBasic(interp, (str, begin, end)):
+X		expr = interp.Expand(str, begin, end)
+X		i = SkipSpaces(expr, 0, len(expr))
+X		expr = expr[i:]
+X		try:
+X			return eval(expr, {})
+X		except (NameError, TypeError, RuntimeError, EOFError), msg:
+X			import sys
+X			raise TclRuntimeError, sys.exc_type + ': ' + msg
+X	#
+X	def Expr(interp, str):
+X		return interp.ExprBasic(str, 0, len(str))
+X	#
+X	# The rest are command implementations
+X	#
+X	def BreakCmd(interp, argv):
+X		if len(argv) <> 1:
+X			raise TclRuntimeError, 'usage: break'
+X		raise TclBreak
+X	#
+X	def ConcatCmd(interp, argv):
+X		if len(argv) < 2:
+X			raise TclRuntimeError, 'usage: concat arg ...'
+X		return Concat(argv[1:])
+X	#
+X	def ContinueCmd(interp, argv):
+X		if len(argv) <> 1:
+X			raise TclRuntimeError, 'usage: continue'
+X		raise TclContinue
+X	#
+X	def EchoCmd(interp, argv):
+X		for arg in argv[1:]: print arg,
+X		print
+X		return ''
+X	#
+X	def EvalCmd(interp, argv):
+X		if len(argv) < 2:
+X			raise TclRuntimeError, 'usage: eval arg [arg ...]'
+X		str = Concat(argv[1:])
+X		return interp.Eval(str)
+X	#
+X	def ExprCmd(interp, argv):
+X		if len(argv) <> 2:
+X			raise TclRuntimeError, 'usage: expr expression'
+X		expr = argv[1]
+X		result = interp.Expr(expr)
+X		if type(result) <> type(''): result = `result`
+X		return result
+X	#
+X	def ForCmd(interp, argv):
+X		if len(argv) <> 5:
+X			raise TclRuntimeError, \
+X				'usage: for start test next body'
+X		x = interp.Eval(argv[1])
+X		while interp.Expr(argv[2]):
+X			try:
+X				x = interp.Eval(argv[4])
+X			except TclBreak:
+X				break
+X			except TclContinue:
+X				pass
+X			x = interp.Eval(argv[3])
+X		return ''
+X	#
+X	def GlobCmd(interp, argv):
+X		import macglob
+X		if len(argv) < 2:
+X			raise TclRuntimeError, 'usage: glob pattern ...'
+X		list = []
+X		for pat in argv[1:]:
+X			list = list + macglob.glob(pat)
+X		if not list:
+X			raise TclRuntimeError, 'no match for glob pattern(s)'
+X		return BuildList(list)
+X	#
+X	def GlobalCmd(interp, argv):
+X		if len(argv) < 2:
+X			raise TclRuntimeError, 'usage: global varname ...'
+X		if not interp.stack:
+X			raise TclRuntimeError, 'global used outside proc'
+X		dict = interp.stack[-1:][0].locals
+X		for name in argv[1:]:
+X			dict[name] = None
+X		return ''
+X	#
+X	def IfCmd(interp, argv):
+X		argv = argv[:]
+X		if len(argv) > 2 and argv[2] = 'then': del argv[2]
+X		if len(argv) > 3 and argv[3] = 'else': del argv[3]
+X		if not 3 <= len(argv) <= 4:
+X			raise TclRuntimeError, \
+X			 'usage: if test [then] trueBody [else] falseBody'
+X		if interp.Expr(argv[1]):
+X			return interp.Eval(argv[2])
+X		if len(argv) > 3:
+X			return interp.Eval(argv[3])
+X		return ''
+X	#
+X	def IndexCmd(interp, argv):
+X		if len(argv) <> 3:
+X			raise TclRuntimeError, 'usage: index value index'
+X		import string
+X		try:
+X			index = string.atoi(argv[2])
+X			if index < 0: raise string.atoi_error
+X		except string.atoi_error:
+X			raise TclRuntimeError, 'bad index: ' + argv[2]
+X		list = SplitList(argv[1])
+X		if index >= len(list): return ''
+X		return list[index]
+X	#
+X	def ListCmd(interp, argv):
+X		if len(argv) < 2:
+X			raise TclRuntimeError, 'usage: list arg ...'
+X		return BuildList(argv[1:])
+X	#
+X	def ProcCmd(interp, argv):
+X		if len(argv) <> 4:
+X			raise TclRuntimeError, 'usage: proc name args body'
+X		x = _Proc().Create(interp, argv[2], argv[3])
+X		interp.CreateCommand(argv[1], x.Call)
+X		return ''
+X	#
+X	def RenameCmd(interp, argv):
+X		if len(argv) <> 3:
+X			raise TclRuntimeError, 'usage: rename oldName newName'
+X		oldName, newName = argv[1], argv[2]
+X		if not interp.commands.has_key(oldName):
+X			raise TclRuntimeError, \
+X				'command "' + oldName + '" not found'
+X		if newName: interp.commands[newName] = interp.commands[oldName]
+X		del interp.commands[oldName]
+X		return ''
+X	#
+X	def ReturnCmd(interp, argv):
+X		if not 1 <= len(argv) <= 2:
+X			raise TclRuntimeError, 'usage: return [arg]'
+X		if len(argv) = 1: raise TclReturn, ''
+X		raise TclReturn, argv[1]
+X	#
+X	def SetCmd(interp, argv):
+X		n = len(argv)
+X		if not 2 <= n <= 3:
+X			raise TclRuntimeError, 'usage: set varname [newvalue]'
+X		if n = 2: return interp.GetVar(argv[1])
+X		interp.SetVar(argv[1], argv[2])
+X		return ''
 X
 X
 X# The rest are just demos:
 X
 Xdef MainLoop(interp):
-X buffer = CmdBuf().Create()
-X if not interp.globals.has_key('ps1'): interp.globals['ps1'] = '% '
-X if not interp.globals.has_key('ps2'): interp.globals['ps2'] = ''
-X psname = 'ps1'
-X while 1:
-X try:
-X line = raw_input(interp.globals[psname])
-X except (EOFError, KeyboardInterrupt):
-X print
-X break
-X line = buffer.Assemble(line + '\n')
-X if not line:
-X psname = 'ps2'
-X else:
-X psname = 'ps1'
-X try:
-X x = interp.Eval(line)
-X if x <> '': print 'Result:', `x`
-X except (TclRuntimeError, TclSyntaxError, \
-X TclMatchingError), msg:
-X print 'Error:', msg
-X except (TclBreak, TclContinue):
-X print 'Error: break or continue outside loop'
-X except TclReturn, value:
-X # Return outside proc returns to main loop
-X if value: print value
+X	buffer = CmdBuf().Create()
+X	if not interp.globals.has_key('ps1'): interp.globals['ps1'] = '% '
+X	if not interp.globals.has_key('ps2'): interp.globals['ps2'] = ''
+X	psname = 'ps1'
+X	while 1:
+X		try:
+X			line = raw_input(interp.globals[psname])
+X		except (EOFError, KeyboardInterrupt):
+X			print
+X			break
+X		line = buffer.Assemble(line + '\n')
+X		if not line:
+X			psname = 'ps2'
+X		else:
+X			psname = 'ps1'
+X			try:
+X				x = interp.Eval(line)
+X				if x <> '': print 'Result:', `x`
+X			except (TclRuntimeError, TclSyntaxError, \
+X				TclMatchingError), msg:
+X				print 'Error:', msg
+X			except (TclBreak, TclContinue):
+X				print 'Error: break or continue outside loop'
+X			except TclReturn, value:
+X				# Return outside proc returns to main loop
+X				if value: print value
 X
 X
 Xthe_interpreter = Interpreter().Create()
 X
 Xdef main():
-X MainLoop(the_interpreter)
+X	MainLoop(the_interpreter)
 X
 X
 X# XXX To do:
@@ -981,12 +981,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1002,86 +1002,86 @@ X
 X******************************************************************/
 X
 X/* Asynchronous audio module for Silicon Graphics 4D/20 under IRIX 3.3
-X Copyright 1990 Stichting Mathematisch Centrum, Amsterdam
-X Author: Guido van Rossum, <gu...@cwi.nl>
-X Last modified: gu...@cwi.nl, Oct 14, 1990
+X   Copyright 1990 Stichting Mathematisch Centrum, Amsterdam
+X   Author: Guido van Rossum, <gu...@cwi.nl>
+X   Last modified: gu...@cwi.nl, Oct 14, 1990
 X
-X Callers should #include "asa.h".
+X   Callers should #include "asa.h".
 X
-X This code is strongly IRIX 3.3 dependent. (Or are sproc() and
-X friends standard SYSV now?)
+X   This code is strongly IRIX 3.3 dependent.  (Or are sproc() and
+X   friends standard SYSV now?)
 X
-X Caution: if you put printf's in the slave for debugging, use "-lmpc"
-X to get the semaphore version of stdio!
-X
-X
-X This file contains two library layers and a test program:
+X   Caution: if you put printf's in the slave for debugging, use "-lmpc"
+X   to get the semaphore version of stdio!
 X
 X
-X The lower layer implements a simple asynchronous execution facility,
-X built directly on the system calls sproc() and [un]blockproc().
-X
-X A slave thread sits in an infinite loop waiting for work assigned to
-X it by the master thread. Work is represented by a function pointer
-X and an argument of type void*. The function returns a void* pointer
-X which is transferred back to the master when it submits the next bit
-X of work. Submitting a NULL function pointer can be used by the
-X master to wait for completion of the previous work. This lower
-X layer could be generally useful, but is currently implemented by
-X static functions, for exclusive by the asynchronous audio layer.
+X   This file contains two library layers and a test program:
 X
 X
-X The higher layer implements an asynchronous interface to the
-X /dev/audio device on the Silicon Graphics 4D/20. It defines the
-X following functions:
+X   The lower layer implements a simple asynchronous execution facility,
+X   built directly on the system calls sproc() and [un]blockproc().
 X
-X int asa_init()
-X Required initialization function. The other functions will call
-X abort() when they are called before asa_init(). It creates the
-X slave process and returns a file descriptor for the audio
-X device which can be used to set the sampling rate and output
-X gain, etc. It prints a message to stderr and returns -1 if the
-X initialization failed. Calling this function more than onece is
-X harmless.
-X
-X void asa_start_read(char *buf, int len)
-X Starts an asynchronous read call on the audio device. This
-X waits for completion of the previous request, if any.
-X
-X void asa_start_write(char *buf, int len)
-X Starts an asynchronous write call on the audio device. This
-X waits for completion of the previous request, if any.
-X
-X int asa_poll()
-X Polls whether the last asynchronous read or write request is
-X finished. Returns -1 if no request was queued, 0 if the request
-X is not yet finished, and 1 if it is finished.
-X
-X int asa_wait()
-X Waits for completion if the last asynchronous read or write
-X request. It returns the result of the read or write request,
-X and sets the error code to the error code set by the request if
-X the result is -1. If no request was queued, this also returns
-X -1 but leaves the error code unchanged. Note: to get the error
-X code, don't inspect the global variable errno but call the
-X function oserror().
-X
-X int asa_cancel()
-X Cancels the last asynchronous read or write request (by sending
-X the slave thread a signal for which it has a handler) then
-X returns its result and error code as asa_wait().
-X
-X void asa_done()
-X Kills the slave process and closes the audio device. After
-X this, if further use of the module is required, asa_init()
-X should be called again. Calling this function when asa_init()
-X has not been called is harmless.
+X   A slave thread sits in an infinite loop waiting for work assigned to
+X   it by the master thread.  Work is represented by a function pointer
+X   and an argument of type void*.  The function returns a void* pointer
+X   which is transferred back to the master when it submits the next bit
+X   of work.  Submitting a NULL function pointer can be used by the
+X   master to wait for completion of the previous work.  This lower
+X   layer could be generally useful, but is currently implemented by
+X   static functions, for exclusive by the asynchronous audio layer.
 X
 X
-X Finally, this file contains a simple test program that is compiled if
-X MAIN is defined (e.g., compile with cc -DMAIN). It makes a recording
-X and plays it back. The user must indicate begin and end of recording
-X and play-back by pressing the Return key.
+X   The higher layer implements an asynchronous interface to the
+X   /dev/audio device on the Silicon Graphics 4D/20.  It defines the
+X   following functions:
+X   
+X   int asa_init()
+X   	Required initialization function.  The other functions will call
+X   	abort() when they are called before asa_init().  It creates the
+X	slave process and returns a file descriptor for the audio
+X	device which can be used to set the sampling rate and output
+X	gain, etc.  It prints a message to stderr and returns -1 if the
+X	initialization failed.  Calling this function more than onece is
+X	harmless.
+X   
+X   void asa_start_read(char *buf, int len)
+X   	Starts an asynchronous read call on the audio device.  This
+X   	waits for completion of the previous request, if any.
+X   
+X   void asa_start_write(char *buf, int len)
+X   	Starts an asynchronous write call on the audio device.  This
+X   	waits for completion of the previous request, if any.
+X   
+X   int asa_poll()
+X   	Polls whether the last asynchronous read or write request is
+X   	finished.  Returns -1 if no request was queued, 0 if the request
+X   	is not yet finished, and 1 if it is finished.
+X   
+X   int asa_wait()
+X   	Waits for completion if the last asynchronous read or write
+X   	request.  It returns the result of the read or write request,
+X   	and sets the error code to the error code set by the request if
+X   	the result is -1.  If no request was queued, this also returns
+X   	-1 but leaves the error code unchanged.  Note: to get the error
+X   	code, don't inspect the global variable errno but call the
+X   	function oserror().
+X   
+X   int asa_cancel()
+X   	Cancels the last asynchronous read or write request (by sending
+X   	the slave thread a signal for which it has a handler) then
+X   	returns its result and error code as asa_wait().
+X   
+X   void asa_done()
+X   	Kills the slave process and closes the audio device.  After
+X   	this, if further use of the module is required, asa_init()
+X   	should be called again.  Calling this function when asa_init()
+X   	has not been called is harmless.
+X
+X
+X   Finally, this file contains a simple test program that is compiled if
+X   MAIN is defined (e.g., compile with cc -DMAIN).  It makes a recording
+X   and plays it back.  The user must indicate begin and end of recording
+X   and play-back by pressing the Return key.
 X*/
 X
 X
@@ -1114,20 +1114,20 @@ X
 X/*ARGSUSED*/
 Xstatic void
 Xhandler(sig)
-X int sig;
+X	int sig;
 X{
-X /* Reinstate the handler (non-BSD signal semantics) */
-X signal(sig, handler);
+X	/* Reinstate the handler (non-BSD signal semantics) */
+X	signal(sig, handler);
 X}
 X
 X/* Subroutine to fiddle signals */
 X
 Xstatic void
 Xdosig(sig)
-X int sig;
+X	int sig;
 X{
-X if (signal(sig, SIG_IGN) != SIG_IGN)
-X signal(sig, SIG_DFL);
+X	if (signal(sig, SIG_IGN) != SIG_IGN)
+X		signal(sig, SIG_DFL);
 X}
 X
 X/* Slave control flow */
@@ -1135,148 +1135,148 @@ X
 X/*ARGSUSED*/
 Xstatic void
 Xslave(arg)
-X void *arg;
+X	void *arg;
 X{
-X void * (*func)();
-X void *arg;
-X void *result;
-X
-X /* Reset signal handlers that interactive programs often catch.
-X The assumption is that if the master has a handler for these
-X signals, it will be a cleanup function. The slave must die
-X from these. */
-X dosig(SIGHUP);
-X dosig(SIGQUIT);
-X dosig(SIGTERM);
-X dosig(SIGPIPE);
-X
-X /* Ignore SIGINT if caught or ignored */
-X if (signal(SIGINT, SIG_IGN) == SIG_DFL)
-X signal(SIGINT, SIG_DFL);
-X
-X /* Let the handler install itself */
-X handler(MYSIG);
-X
-X /* Set slave_pid. This is also done in the master thread, but
-X there is a race condition whereby the slave begins execution
-X before the master has assigned the result of sproc() to
-X slave_pid. So we set it here as well -- since this sets the
-X same value it should be OK. */
-X slave_pid = getpid();
-X
-X /* Set the dummy result returned by the first rendezvous */
-X result = NULL;
-X
-X /* Loop forever, waiting for and executing work */
-X for (;;) {
-X /* First rendezvous: store previous result */
-X if (blockproc(slave_pid) < 0)
-X perror("slave: [result] blockproc(slave_pid)");
-X work_result = result;
-X if (unblockproc(master_pid) < 0)
-X perror("slave: [result] unblockproc(master_pid)");
-X
-X /* Second rendezvous: fetch work */
-X if (blockproc(slave_pid) < 0)
-X perror("slave: [func,arg] blockproc(slave_pid)");
-X func = work_func;
-X arg = work_arg;
-X if (unblockproc(master_pid) < 0)
-X perror("slave: [func,arg] unblockproc(master_pid)");
-X
-X /* Execute work, computing new result */
-X if (func == NULL) {
-X result = arg;
-X }
-X else {
-X result = (*func)(arg);
-X }
-X }
+X	void * (*func)();
+X	void *arg;
+X	void *result;
+X	
+X	/* Reset signal handlers that interactive programs often catch.
+X	   The assumption is that if the master has a handler for these
+X	   signals, it will be a cleanup function.  The slave must die
+X	   from these. */
+X	dosig(SIGHUP);
+X	dosig(SIGQUIT);
+X	dosig(SIGTERM);
+X	dosig(SIGPIPE);
+X	
+X	/* Ignore SIGINT if caught or ignored */
+X	if (signal(SIGINT, SIG_IGN) == SIG_DFL)
+X		signal(SIGINT, SIG_DFL);
+X	
+X	/* Let the handler install itself */
+X	handler(MYSIG);
+X	
+X	/* Set slave_pid.  This is also done in the master thread, but
+X	   there is a race condition whereby the slave begins execution
+X	   before the master has assigned the result of sproc() to
+X	   slave_pid.  So we set it here as well -- since this sets the
+X	   same value it should be OK. */
+X	slave_pid = getpid();
+X	
+X	/* Set the dummy result returned by the first rendezvous */
+X	result = NULL;
+X	
+X	/* Loop forever, waiting for and executing work */
+X	for (;;) {
+X		/* First rendezvous: store previous result */
+X		if (blockproc(slave_pid) < 0)
+X			perror("slave: [result] blockproc(slave_pid)");
+X		work_result = result;
+X		if (unblockproc(master_pid) < 0)
+X			perror("slave: [result] unblockproc(master_pid)");
+X		
+X		/* Second rendezvous: fetch work */
+X		if (blockproc(slave_pid) < 0)
+X			perror("slave: [func,arg] blockproc(slave_pid)");
+X		func = work_func;
+X		arg = work_arg;
+X		if (unblockproc(master_pid) < 0)
+X			perror("slave: [func,arg] unblockproc(master_pid)");
+X		
+X		/* Execute work, computing new result */
+X		if (func == NULL) {
+X			result = arg;
+X		}
+X		else {
+X			result = (*func)(arg);
+X		}
+X	}
 X}
 X
 Xstatic int
 Xslave_init()
 X{
-X if (slave_pid > 0)
-X return slave_pid;
-X master_pid = getpid();
-X
-X /* Reset the queue, in case this is a re-init after asa_done() */
-X work_result = NULL;
-X work_func = NULL;
-X work_arg = NULL;
-X
-X /* Create the slave process, sharing all segments and properties */
-X slave_pid = sproc(slave, PR_SALL, (char *)NULL);
-X if (slave_pid < 0)
-X perror("slave_init: sproc(slave, PR_SALL, NULL)");
-X
-X /* Set up initial conditions---tricky!
-X Both the master and the slave start with one credit, since
-X both the result slot and the work/func slots are initially
-X free.
-X Note that we use setblockproccnt() for the master so a
-X possible indeterminate semaphore value caused by a previous
-X asa_done() at an unfortunate moment doesn't harm us.
-X */
-X setblockproccnt(master_pid, 1);
-X unblockproc(slave_pid);
-X
-X return slave_pid;
+X	if (slave_pid > 0)
+X		return slave_pid;
+X	master_pid = getpid();
+X	
+X	/* Reset the queue, in case this is a re-init after asa_done() */
+X	work_result = NULL;
+X	work_func = NULL;
+X	work_arg = NULL;
+X	
+X	/* Create the slave process, sharing all segments and properties */
+X	slave_pid = sproc(slave, PR_SALL, (char *)NULL);
+X	if (slave_pid < 0)
+X		perror("slave_init: sproc(slave, PR_SALL, NULL)");
+X	
+X	/* Set up initial conditions---tricky!
+X	   Both the master and the slave start with one credit, since
+X	   both the result slot and the work/func slots are initially
+X	   free.
+X	   Note that we use setblockproccnt() for the master so a
+X	   possible indeterminate semaphore value caused by a previous
+X	   asa_done() at an unfortunate moment doesn't harm us.
+X	*/
+X	setblockproccnt(master_pid, 1);
+X	unblockproc(slave_pid);
+X	
+X	return slave_pid;
 X}
 X
 Xstatic void
 Xslave_done()
 X{
-X if (slave_pid > 0) {
-X if (kill(slave_pid, SIGKILL) < 0)
-X perror("slave_done: kill(slave_pid, SIGKILL)");
-X }
-X slave_pid = -1;
+X	if (slave_pid > 0) {
+X		if (kill(slave_pid, SIGKILL) < 0)
+X			perror("slave_done: kill(slave_pid, SIGKILL)");
+X	}
+X	slave_pid = -1;
 X}
 X
 X/* Queue new work and return result of previous work */
 X
 Xstatic void *
 Xrendezvous(func, arg)
-X void * (*func)();
-X void *arg;
+X	void * (*func)();
+X	void *arg;
 X{
-X void *result;
-X
-X if (slave_pid <= 0)
-X abort(); /* Illegal call: not initialized properly */
-X
-X /* First rendezvous: store new work */
-X if (blockproc(master_pid) < 0)
-X perror("rendezvous: [func,arg] blockproc(master_pid)");
-X work_func = func;
-X work_arg = arg;
-X if (unblockproc(slave_pid) < 0)
-X perror("rendezvous: [func,arg] unblockproc(slave_pid)");
-X
-X /* Second rendezvous: fetch previous result */
-X if (blockproc(master_pid) < 0)
-X perror("rendezvous: [result] blockproc(master_pid)");
-X result = work_result;
-X if (unblockproc(slave_pid) < 0)
-X perror("rendezvous: [result] unblockproc(slave_pid)");
-X
-X return result;
+X	void *result;
+X	
+X	if (slave_pid <= 0)
+X		abort(); /* Illegal call: not initialized properly */
+X	
+X	/* First rendezvous: store new work */
+X	if (blockproc(master_pid) < 0)
+X		perror("rendezvous: [func,arg] blockproc(master_pid)");
+X	work_func = func;
+X	work_arg = arg;
+X	if (unblockproc(slave_pid) < 0)
+X		perror("rendezvous: [func,arg] unblockproc(slave_pid)");
+X	
+X	/* Second rendezvous: fetch previous result */
+X	if (blockproc(master_pid) < 0)
+X		perror("rendezvous: [result] blockproc(master_pid)");
+X	result = work_result;
+X	if (unblockproc(slave_pid) < 0)
+X		perror("rendezvous: [result] unblockproc(slave_pid)");
+X	
+X	return result;
 X}
 X
 X
 X/* Asynchronous audio interface (higher layer) */
 X
 X
-Xint audio_fd = -1; /* File descriptor -- not initialized yet */
+Xint audio_fd = -1;	/* File descriptor -- not initialized yet */
 X
 Xstatic struct queue {
-X int func; /* 0 = read, 1 = write */
-X char *buf;
-X int len;
-X int result;
-X int error;
+X	int func;	/* 0 = read, 1 = write */
+X	char *buf;
+X	int len;
+X	int result;
+X	int error;
 X} queue[2];
 X
 Xstatic int qindex = 0;
@@ -1284,135 +1284,135 @@ X
 Xint
 Xasa_init()
 X{
-X int fd;
-X char *p;
-X
-X if (audio_fd >= 0)
-X return audio_fd;
-X fd = open("/dev/audio", 2);
-X if (fd < 0) {
-X perror("asa_init: Can't open /dev/audio");
-X return -1;
-X }
-X if (slave_init() < 0) {
-X perror("asa_init: Can't create slave process");
-X close(fd);
-X return -1;
-X }
-X audio_fd = fd;
-X return fd;
+X	int fd;
+X	char *p;
+X	
+X	if (audio_fd >= 0)
+X		return audio_fd;
+X	fd = open("/dev/audio", 2);
+X	if (fd < 0) {
+X		perror("asa_init: Can't open /dev/audio");
+X		return -1;
+X	}
+X	if (slave_init() < 0) {
+X		perror("asa_init: Can't create slave process");
+X		close(fd);
+X		return -1;
+X	}
+X	audio_fd = fd;
+X	return fd;
 X}
 X
 Xvoid
 Xasa_done()
 X{
-X slave_done();
-X if (audio_fd >= 0) {
-X if (close(audio_fd) < 0)
-X perror("asa_done: close(audio_fd)");
-X }
-X audio_fd = -1;
+X	slave_done();
+X	if (audio_fd >= 0) {
+X		if (close(audio_fd) < 0)
+X			perror("asa_done: close(audio_fd)");
+X	}
+X	audio_fd = -1;
 X}
 X
 Xstatic void *
 Xrunjob(arg)
-X void *arg;
+X	void *arg;
 X{
-X extern int errno;
-X struct queue *q = (struct queue *)arg;
-X char *buf = q->buf;
-X int len = q->len;
-X int n = 0;
-X
-X if (q->func == 0)
-X n = read(audio_fd, buf, len);
-X else
-X n = write(audio_fd, buf, len);
-X if (q->func == 0 && n >= 0) {
-X while (--len >= n && buf[len] == '\0')
-X ;
-X n = len+1;
-X }
-X q->result = n;
-X q->error = oserror();
-X return arg;
+X	extern int errno;
+X	struct queue *q = (struct queue *)arg;
+X	char *buf = q->buf;
+X	int len = q->len;
+X	int n = 0;
+X	
+X	if (q->func == 0)
+X		n = read(audio_fd, buf, len);
+X	else
+X		n = write(audio_fd, buf, len);
+X	if (q->func == 0 && n >= 0) {
+X		while (--len >= n && buf[len] == '\0')
+X			;
+X		n = len+1;
+X	}
+X	q->result = n;
+X	q->error = oserror();
+X	return arg;
 X}
 X
 Xstatic void
 Xstartjob(func, buf, len)
-X int func;
-X char *buf;
-X int len;
+X	int func;
+X	char *buf;
+X	int len;
 X{
-X struct queue *q;
-X
-X q = &queue[qindex];
-X qindex = (qindex+1) & 1;
-X q->func = func;
-X q->buf = buf;
-X q->len = len;
-X (void) rendezvous(runjob, (void *)q);
+X	struct queue *q;
+X	
+X	q = &queue[qindex];
+X	qindex = (qindex+1) & 1;
+X	q->func = func;
+X	q->buf = buf;
+X	q->len = len;
+X	(void) rendezvous(runjob, (void *)q);
 X}
 X
 Xvoid
 Xasa_start_read(buf, len)
-X char *buf;
-X int len;
+X	char *buf;
+X	int len;
 X{
-X memset(buf, '\0', len);
-X startjob(0, buf, len);
+X	memset(buf, '\0', len);
+X	startjob(0, buf, len);
 X}
 X
 Xvoid
 Xasa_start_write(buf, len)
-X char *buf;
-X int len;
+X	char *buf;
+X	int len;
 X{
-X startjob(1, buf, len);
+X	startjob(1, buf, len);
 X}
 X
 Xint
 Xasa_wait()
 X{
-X struct queue *q;
-X
-X q = (struct queue *) rendezvous((void*(*)())NULL, (void *)NULL);
-X if (q == NULL) {
-X setoserror(0);
-X return -1; /* No work was queued */
-X }
-X setoserror(q->error);
-X return q->result;
+X	struct queue *q;
+X	
+X	q = (struct queue *) rendezvous((void*(*)())NULL, (void *)NULL);
+X	if (q == NULL) {
+X		setoserror(0);
+X		return -1; /* No work was queued */
+X	}
+X	setoserror(q->error);
+X	return q->result;
 X}
 X
 Xint
 Xasa_poll()
 X{
-X int err;
-X
-X err = prctl(PR_ISBLOCKED, slave_pid);
-X if (err < 0) {
-X perror("prctl(PR_ISBLOCKED, slave_pid)");
-X return -1;
-X }
-X else if (err == 0)
-X return 0;
-X else if (work_result == NULL) {
-X setoserror(0);
-X return -1;
-X }
-X else
-X return 1;
+X	int err;
+X	
+X	err = prctl(PR_ISBLOCKED, slave_pid);
+X	if (err < 0) {
+X		perror("prctl(PR_ISBLOCKED, slave_pid)");
+X		return -1;
+X	}
+X	else if (err == 0)
+X		return 0;
+X	else if (work_result == NULL) {
+X		setoserror(0);
+X		return -1;
+X	}
+X	else
+X		return 1;
 X}
 X
 Xint
 Xasa_cancel()
 X{
-X int result;
-X
-X kill(slave_pid, MYSIG);
-X result = asa_wait();
-X return result;
+X	int result;
+X	
+X	kill(slave_pid, MYSIG);
+X	result = asa_wait();
+X	return result;
 X}
 X
 X
@@ -1424,50 +1424,50 @@ X#include <sys/audio.h>
 X
 Xmain()
 X{
-X static char buf[10*16*1024]; /* 10 seconds of sound at 16K/sec */
-X int n;
-X int afd;
-X
-X if ((afd = asa_init()) < 0)
-X exit(1);
-X ioctl(afd, AUDIOCSETRATE, 3);
-X ioctl(afd, AUDIOCSETOUTGAIN, 0);
-X printf("Poll returns %d\n", asa_poll());
-X go("Hit enter to start recording:\n");
-X asa_start_read(buf, sizeof buf);
-X go("Hit enter to stop recording:\n");
-X /*printf("Poll returns %d\n", asa_poll());*/
-X n = asa_cancel();
-X if (n < 0)
-X perror("Read failed");
-X else {
-X printf("Got %d bytes\n", n);
-X printf("Poll returns %d\n", asa_poll());
-X go("Hit enter to start playing:\n");
-X ioctl(afd, AUDIOCSETOUTGAIN, 50);
-X asa_start_write(buf, n);
-X go("Hit enter to stop playing:\n");
-X printf("Poll returns %d\n", asa_poll());
-X n = asa_cancel();
-X if (n < 0)
-X perror("Write failed");
-X else
-X printf("Stopped at %d bytes\n", n);
-X }
-X ioctl(afd, AUDIOCSETOUTGAIN, 0);
-X asa_done();
-X exit(n < 0 ? 1 : 0);
+X	static char buf[10*16*1024]; /* 10 seconds of sound at 16K/sec */
+X	int n;
+X	int afd;
+X	
+X	if ((afd = asa_init()) < 0)
+X		exit(1);
+X	ioctl(afd, AUDIOCSETRATE, 3);
+X	ioctl(afd, AUDIOCSETOUTGAIN, 0);
+X	printf("Poll returns %d\n", asa_poll());
+X	go("Hit enter to start recording:\n");
+X	asa_start_read(buf, sizeof buf);
+X	go("Hit enter to stop recording:\n");
+X	/*printf("Poll returns %d\n", asa_poll());*/
+X	n = asa_cancel();
+X	if (n < 0)
+X		perror("Read failed");
+X	else {
+X		printf("Got %d bytes\n", n);
+X		printf("Poll returns %d\n", asa_poll());
+X		go("Hit enter to start playing:\n");
+X		ioctl(afd, AUDIOCSETOUTGAIN, 50);
+X		asa_start_write(buf, n);
+X		go("Hit enter to stop playing:\n");
+X		printf("Poll returns %d\n", asa_poll());
+X		n = asa_cancel();
+X		if (n < 0)
+X			perror("Write failed");
+X		else
+X			printf("Stopped at %d bytes\n", n);
+X	}
+X	ioctl(afd, AUDIOCSETOUTGAIN, 0);
+X	asa_done();
+X	exit(n < 0 ? 1 : 0);
 X}
 X
 Xgo(str)
-X char *str;
+X	char *str;
 X{
-X char line[100];
-X
-X sleep(1);
-X fputs(str, stdout);
-X fflush(stdout);
-X fgets(line, sizeof line, stdin);
+X	char line[100];
+X	
+X	sleep(1);
+X	fputs(str, stdout);
+X	fflush(stdout);
+X	fgets(line, sizeof line, stdin);
 X}
 X
 X#endif /* MAIN */
@@ -1482,12 +1482,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1519,479 +1519,479 @@ X#include "modsupport.h"
 X
 Xstatic object *
 Xbuiltin_abs(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X /* XXX This should be a method in the as_number struct in the type */
-X if (v == NULL) {
-X /* */
-X }
-X else if (is_intobject(v)) {
-X long x = getintvalue(v);
-X if (x < 0)
-X x = -x;
-X return newintobject(x);
-X }
-X else if (is_floatobject(v)) {
-X double x = getfloatvalue(v);
-X if (x < 0)
-X x = -x;
-X return newfloatobject(x);
-X }
-X err_setstr(TypeError, "abs() argument must be float or int");
-X return NULL;
+X	/* XXX This should be a method in the as_number struct in the type */
+X	if (v == NULL) {
+X		/* */
+X	}
+X	else if (is_intobject(v)) {
+X		long x = getintvalue(v);
+X		if (x < 0)
+X			x = -x;
+X		return newintobject(x);
+X	}
+X	else if (is_floatobject(v)) {
+X		double x = getfloatvalue(v);
+X		if (x < 0)
+X			x = -x;
+X		return newfloatobject(x);
+X	}
+X	err_setstr(TypeError, "abs() argument must be float or int");
+X	return NULL;
 X}
 X
 Xstatic object *
 Xbuiltin_chr(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X long x;
-X char s[1];
-X if (v == NULL || !is_intobject(v)) {
-X err_setstr(TypeError, "chr() must have int argument");
-X return NULL;
-X }
-X x = getintvalue(v);
-X if (x < 0 || x >= 256) {
-X err_setstr(RuntimeError, "chr() arg not in range(256)");
-X return NULL;
-X }
-X s[0] = x;
-X return newsizedstringobject(s, 1);
+X	long x;
+X	char s[1];
+X	if (v == NULL || !is_intobject(v)) {
+X		err_setstr(TypeError, "chr() must have int argument");
+X		return NULL;
+X	}
+X	x = getintvalue(v);
+X	if (x < 0 || x >= 256) {
+X		err_setstr(RuntimeError, "chr() arg not in range(256)");
+X		return NULL;
+X	}
+X	s[0] = x;
+X	return newsizedstringobject(s, 1);
 X}
 X
 Xstatic object *
 Xbuiltin_dir(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X object *d;
-X if (v == NULL) {
-X d = getlocals();
-X }
-X else {
-X if (!is_moduleobject(v)) {
-X err_setstr(TypeError,
-X "dir() argument, must be module or absent");
-X return NULL;
-X }
-X d = getmoduledict(v);
-X }
-X v = getdictkeys(d);
-X if (sortlist(v) != 0) {
-X DECREF(v);
-X v = NULL;
-X }
-X return v;
+X	object *d;
+X	if (v == NULL) {
+X		d = getlocals();
+X	}
+X	else {
+X		if (!is_moduleobject(v)) {
+X			err_setstr(TypeError,
+X				"dir() argument, must be module or absent");
+X			return NULL;
+X		}
+X		d = getmoduledict(v);
+X	}
+X	v = getdictkeys(d);
+X	if (sortlist(v) != 0) {
+X		DECREF(v);
+X		v = NULL;
+X	}
+X	return v;
 X}
 X
 Xstatic object *
 Xbuiltin_divmod(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X object *x, *y;
-X long xi, yi, xdivy, xmody;
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
-X err_setstr(TypeError, "divmod() requires 2 int arguments");
-X return NULL;
-X }
-X x = gettupleitem(v, 0);
-X y = gettupleitem(v, 1);
-X if (!is_intobject(x) || !is_intobject(y)) {
-X err_setstr(TypeError, "divmod() requires 2 int arguments");
-X return NULL;
-X }
-X xi = getintvalue(x);
-X yi = getintvalue(y);
-X if (yi == 0) {
-X err_setstr(TypeError, "divmod() division by zero");
-X return NULL;
-X }
-X if (yi < 0) {
-X xdivy = -xi / -yi;
-X }
-X else {
-X xdivy = xi / yi;
-X }
-X xmody = xi - xdivy*yi;
-X if (xmody < 0 && yi > 0 || xmody > 0 && yi < 0) {
-X xmody += yi;
-X xdivy -= 1;
-X }
-X v = newtupleobject(2);
-X x = newintobject(xdivy);
-X y = newintobject(xmody);
-X if (v == NULL || x == NULL || y == NULL ||
-X settupleitem(v, 0, x) != 0 ||
-X settupleitem(v, 1, y) != 0) {
-X XDECREF(v);
-X XDECREF(x);
-X XDECREF(y);
-X return NULL;
-X }
-X return v;
+X	object *x, *y;
+X	long xi, yi, xdivy, xmody;
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
+X		err_setstr(TypeError, "divmod() requires 2 int arguments");
+X		return NULL;
+X	}
+X	x = gettupleitem(v, 0);
+X	y = gettupleitem(v, 1);
+X	if (!is_intobject(x) || !is_intobject(y)) {
+X		err_setstr(TypeError, "divmod() requires 2 int arguments");
+X		return NULL;
+X	}
+X	xi = getintvalue(x);
+X	yi = getintvalue(y);
+X	if (yi == 0) {
+X		err_setstr(TypeError, "divmod() division by zero");
+X		return NULL;
+X	}
+X	if (yi < 0) {
+X		xdivy = -xi / -yi;
+X	}
+X	else {
+X		xdivy = xi / yi;
+X	}
+X	xmody = xi - xdivy*yi;
+X	if (xmody < 0 && yi > 0 || xmody > 0 && yi < 0) {
+X		xmody += yi;
+X		xdivy -= 1;
+X	}
+X	v = newtupleobject(2);
+X	x = newintobject(xdivy);
+X	y = newintobject(xmody);
+X	if (v == NULL || x == NULL || y == NULL ||
+X		settupleitem(v, 0, x) != 0 ||
+X		settupleitem(v, 1, y) != 0) {
+X		XDECREF(v);
+X		XDECREF(x);
+X		XDECREF(y);
+X		return NULL;
+X	}
+X	return v;
 X}
 X
 Xstatic object *
 Xexec_eval(v, start)
-X object *v;
-X int start;
+X	object *v;
+X	int start;
 X{
-X object *str = NULL, *globals = NULL, *locals = NULL;
-X int n;
-X if (v != NULL) {
-X if (is_stringobject(v))
-X str = v;
-X else if (is_tupleobject(v) &&
-X ((n = gettuplesize(v)) == 2 || n == 3)) {
-X str = gettupleitem(v, 0);
-X globals = gettupleitem(v, 1);
-X if (n == 3)
-X locals = gettupleitem(v, 2);
-X }
-X }
-X if (str == NULL || !is_stringobject(str) ||
-X globals != NULL && !is_dictobject(globals) ||
-X locals != NULL && !is_dictobject(locals)) {
-X err_setstr(TypeError,
-X "exec/eval arguments must be string[,dict[,dict]]");
-X return NULL;
-X }
-X return run_string(getstringvalue(str), start, globals, locals);
+X	object *str = NULL, *globals = NULL, *locals = NULL;
+X	int n;
+X	if (v != NULL) {
+X		if (is_stringobject(v))
+X			str = v;
+X		else if (is_tupleobject(v) &&
+X				((n = gettuplesize(v)) == 2 || n == 3)) {
+X			str = gettupleitem(v, 0);
+X			globals = gettupleitem(v, 1);
+X			if (n == 3)
+X				locals = gettupleitem(v, 2);
+X		}
+X	}
+X	if (str == NULL || !is_stringobject(str) ||
+X			globals != NULL && !is_dictobject(globals) ||
+X			locals != NULL && !is_dictobject(locals)) {
+X		err_setstr(TypeError,
+X		    "exec/eval arguments must be string[,dict[,dict]]");
+X		return NULL;
+X	}
+X	return run_string(getstringvalue(str), start, globals, locals);
 X}
 X
 Xstatic object *
 Xbuiltin_eval(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X return exec_eval(v, eval_input);
+X	return exec_eval(v, eval_input);
 X}
 X
 Xstatic object *
 Xbuiltin_exec(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X return exec_eval(v, file_input);
+X	return exec_eval(v, file_input);
 X}
 X
 Xstatic object *
 Xbuiltin_float(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X if (v == NULL) {
-X /* */
-X }
-X else if (is_floatobject(v)) {
-X INCREF(v);
-X return v;
-X }
-X else if (is_intobject(v)) {
-X long x = getintvalue(v);
-X return newfloatobject((double)x);
-X }
-X err_setstr(TypeError, "float() argument must be float or int");
-X return NULL;
+X	if (v == NULL) {
+X		/* */
+X	}
+X	else if (is_floatobject(v)) {
+X		INCREF(v);
+X		return v;
+X	}
+X	else if (is_intobject(v)) {
+X		long x = getintvalue(v);
+X		return newfloatobject((double)x);
+X	}
+X	err_setstr(TypeError, "float() argument must be float or int");
+X	return NULL;
 X}
 X
 Xstatic object *
 Xbuiltin_input(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X FILE *in = sysgetfile("stdin", stdin);
-X FILE *out = sysgetfile("stdout", stdout);
-X node *n;
-X int err;
-X object *m, *d;
-X flushline();
-X if (v != NULL)
-X printobject(v, out, PRINT_RAW);
-X m = add_module("__main__");
-X d = getmoduledict(m);
-X return run_file(in, "<stdin>", expr_input, d, d);
+X	FILE *in = sysgetfile("stdin", stdin);
+X	FILE *out = sysgetfile("stdout", stdout);
+X	node *n;
+X	int err;
+X	object *m, *d;
+X	flushline();
+X	if (v != NULL)
+X		printobject(v, out, PRINT_RAW);
+X	m = add_module("__main__");
+X	d = getmoduledict(m);
+X	return run_file(in, "<stdin>", expr_input, d, d);
 X}
 X
 Xstatic object *
 Xbuiltin_int(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X if (v == NULL) {
-X /* */
-X }
-X else if (is_intobject(v)) {
-X INCREF(v);
-X return v;
-X }
-X else if (is_floatobject(v)) {
-X double x = getfloatvalue(v);
-X return newintobject((long)x);
-X }
-X err_setstr(TypeError, "int() argument must be float or int");
-X return NULL;
+X	if (v == NULL) {
+X		/* */
+X	}
+X	else if (is_intobject(v)) {
+X		INCREF(v);
+X		return v;
+X	}
+X	else if (is_floatobject(v)) {
+X		double x = getfloatvalue(v);
+X		return newintobject((long)x);
+X	}
+X	err_setstr(TypeError, "int() argument must be float or int");
+X	return NULL;
 X}
 X
 Xstatic object *
 Xbuiltin_len(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X long len;
-X typeobject *tp;
-X if (v == NULL) {
-X err_setstr(TypeError, "len() without argument");
-X return NULL;
-X }
-X tp = v->ob_type;
-X if (tp->tp_as_sequence != NULL) {
-X len = (*tp->tp_as_sequence->sq_length)(v);
-X }
-X else if (tp->tp_as_mapping != NULL) {
-X len = (*tp->tp_as_mapping->mp_length)(v);
-X }
-X else {
-X err_setstr(TypeError, "len() of unsized object");
-X return NULL;
-X }
-X return newintobject(len);
+X	long len;
+X	typeobject *tp;
+X	if (v == NULL) {
+X		err_setstr(TypeError, "len() without argument");
+X		return NULL;
+X	}
+X	tp = v->ob_type;
+X	if (tp->tp_as_sequence != NULL) {
+X		len = (*tp->tp_as_sequence->sq_length)(v);
+X	}
+X	else if (tp->tp_as_mapping != NULL) {
+X		len = (*tp->tp_as_mapping->mp_length)(v);
+X	}
+X	else {
+X		err_setstr(TypeError, "len() of unsized object");
+X		return NULL;
+X	}
+X	return newintobject(len);
 X}
 X
 Xstatic object *
 Xmin_max(v, sign)
-X object *v;
-X int sign;
+X	object *v;
+X	int sign;
 X{
-X int i, n, cmp;
-X object *w, *x;
-X sequence_methods *sq;
-X if (v == NULL) {
-X err_setstr(TypeError, "min() or max() without argument");
-X return NULL;
-X }
-X sq = v->ob_type->tp_as_sequence;
-X if (sq == NULL) {
-X err_setstr(TypeError, "min() or max() of non-sequence");
-X return NULL;
-X }
-X n = (*sq->sq_length)(v);
-X if (n == 0) {
-X err_setstr(RuntimeError, "min() or max() of empty sequence");
-X return NULL;
-X }
-X w = (*sq->sq_item)(v, 0); /* Implies INCREF */
-X for (i = 1; i < n; i++) {
-X x = (*sq->sq_item)(v, i); /* Implies INCREF */
-X cmp = cmpobject(x, w);
-X if (cmp * sign > 0) {
-X DECREF(w);
-X w = x;
-X }
-X else
-X DECREF(x);
-X }
-X return w;
+X	int i, n, cmp;
+X	object *w, *x;
+X	sequence_methods *sq;
+X	if (v == NULL) {
+X		err_setstr(TypeError, "min() or max() without argument");
+X		return NULL;
+X	}
+X	sq = v->ob_type->tp_as_sequence;
+X	if (sq == NULL) {
+X		err_setstr(TypeError, "min() or max() of non-sequence");
+X		return NULL;
+X	}
+X	n = (*sq->sq_length)(v);
+X	if (n == 0) {
+X		err_setstr(RuntimeError, "min() or max() of empty sequence");
+X		return NULL;
+X	}
+X	w = (*sq->sq_item)(v, 0); /* Implies INCREF */
+X	for (i = 1; i < n; i++) {
+X		x = (*sq->sq_item)(v, i); /* Implies INCREF */
+X		cmp = cmpobject(x, w);
+X		if (cmp * sign > 0) {
+X			DECREF(w);
+X			w = x;
+X		}
+X		else
+X			DECREF(x);
+X	}
+X	return w;
 X}
 X
 Xstatic object *
 Xbuiltin_min(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X return min_max(v, -1);
+X	return min_max(v, -1);
 X}
 X
 Xstatic object *
 Xbuiltin_max(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X return min_max(v, 1);
+X	return min_max(v, 1);
 X}
 X
 Xstatic object *
 Xbuiltin_open(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X object *name, *mode;
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2 ||
-X !is_stringobject(name = gettupleitem(v, 0)) ||
-X !is_stringobject(mode = gettupleitem(v, 1))) {
-X err_setstr(TypeError, "open() requires 2 string arguments");
-X return NULL;
-X }
-X v = newfileobject(getstringvalue(name), getstringvalue(mode));
-X return v;
+X	object *name, *mode;
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2 ||
+X		!is_stringobject(name = gettupleitem(v, 0)) ||
+X		!is_stringobject(mode = gettupleitem(v, 1))) {
+X		err_setstr(TypeError, "open() requires 2 string arguments");
+X		return NULL;
+X	}
+X	v = newfileobject(getstringvalue(name), getstringvalue(mode));
+X	return v;
 X}
 X
 Xstatic object *
 Xbuiltin_ord(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X if (v == NULL || !is_stringobject(v)) {
-X err_setstr(TypeError, "ord() must have string argument");
-X return NULL;
-X }
-X if (getstringsize(v) != 1) {
-X err_setstr(RuntimeError, "ord() arg must have length 1");
-X return NULL;
-X }
-X return newintobject((long)(getstringvalue(v)[0] & 0xff));
+X	if (v == NULL || !is_stringobject(v)) {
+X		err_setstr(TypeError, "ord() must have string argument");
+X		return NULL;
+X	}
+X	if (getstringsize(v) != 1) {
+X		err_setstr(RuntimeError, "ord() arg must have length 1");
+X		return NULL;
+X	}
+X	return newintobject((long)(getstringvalue(v)[0] & 0xff));
 X}
 X
 Xstatic object *
 Xbuiltin_range(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X static char *errmsg = "range() requires 1-3 int arguments";
-X int i, n;
-X long ilow, ihigh, istep;
-X if (v != NULL && is_intobject(v)) {
-X ilow = 0; ihigh = getintvalue(v); istep = 1;
-X }
-X else if (v == NULL || !is_tupleobject(v)) {
-X err_setstr(TypeError, errmsg);
-X return NULL;
-X }
-X else {
-X n = gettuplesize(v);
-X if (n < 1 || n > 3) {
-X err_setstr(TypeError, errmsg);
-X return NULL;
-X }
-X for (i = 0; i < n; i++) {
-X if (!is_intobject(gettupleitem(v, i))) {
-X err_setstr(TypeError, errmsg);
-X return NULL;
-X }
-X }
-X if (n == 3) {
-X istep = getintvalue(gettupleitem(v, 2));
-X --n;
-X }
-X else
-X istep = 1;
-X ihigh = getintvalue(gettupleitem(v, --n));
-X if (n > 0)
-X ilow = getintvalue(gettupleitem(v, 0));
-X else
-X ilow = 0;
-X }
-X if (istep == 0) {
-X err_setstr(RuntimeError, "zero step for range()");
-X return NULL;
-X }
-X /* XXX ought to check overflow of subtraction */
-X if (istep > 0)
-X n = (ihigh - ilow + istep - 1) / istep;
-X else
-X n = (ihigh - ilow + istep + 1) / istep;
-X if (n < 0)
-X n = 0;
-X v = newlistobject(n);
-X if (v == NULL)
-X return NULL;
-X for (i = 0; i < n; i++) {
-X object *w = newintobject(ilow);
-X if (w == NULL) {
-X DECREF(v);
-X return NULL;
-X }
-X setlistitem(v, i, w);
-X ilow += istep;
-X }
-X return v;
+X	static char *errmsg = "range() requires 1-3 int arguments";
+X	int i, n;
+X	long ilow, ihigh, istep;
+X	if (v != NULL && is_intobject(v)) {
+X		ilow = 0; ihigh = getintvalue(v); istep = 1;
+X	}
+X	else if (v == NULL || !is_tupleobject(v)) {
+X		err_setstr(TypeError, errmsg);
+X		return NULL;
+X	}
+X	else {
+X		n = gettuplesize(v);
+X		if (n < 1 || n > 3) {
+X			err_setstr(TypeError, errmsg);
+X			return NULL;
+X		}
+X		for (i = 0; i < n; i++) {
+X			if (!is_intobject(gettupleitem(v, i))) {
+X				err_setstr(TypeError, errmsg);
+X				return NULL;
+X			}
+X		}
+X		if (n == 3) {
+X			istep = getintvalue(gettupleitem(v, 2));
+X			--n;
+X		}
+X		else
+X			istep = 1;
+X		ihigh = getintvalue(gettupleitem(v, --n));
+X		if (n > 0)
+X			ilow = getintvalue(gettupleitem(v, 0));
+X		else
+X			ilow = 0;
+X	}
+X	if (istep == 0) {
+X		err_setstr(RuntimeError, "zero step for range()");
+X		return NULL;
+X	}
+X	/* XXX ought to check overflow of subtraction */
+X	if (istep > 0)
+X		n = (ihigh - ilow + istep - 1) / istep;
+X	else
+X		n = (ihigh - ilow + istep + 1) / istep;
+X	if (n < 0)
+X		n = 0;
+X	v = newlistobject(n);
+X	if (v == NULL)
+X		return NULL;
+X	for (i = 0; i < n; i++) {
+X		object *w = newintobject(ilow);
+X		if (w == NULL) {
+X			DECREF(v);
+X			return NULL;
+X		}
+X		setlistitem(v, i, w);
+X		ilow += istep;
+X	}
+X	return v;
 X}
 X
 Xstatic object *
 Xbuiltin_raw_input(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X FILE *in = sysgetfile("stdin", stdin);
-X FILE *out = sysgetfile("stdout", stdout);
-X char *p;
-X int err;
-X int n = 1000;
-X flushline();
-X if (v != NULL)
-X printobject(v, out, PRINT_RAW);
-X v = newsizedstringobject((char *)NULL, n);
-X if (v != NULL) {
-X if ((err = fgets_intr(getstringvalue(v), n+1, in)) != E_OK) {
-X err_input(err);
-X DECREF(v);
-X return NULL;
-X }
-X else {
-X n = strlen(getstringvalue(v));
-X if (n > 0 && getstringvalue(v)[n-1] == '\n')
-X n--;
-X resizestring(&v, n);
-X }
-X }
-X return v;
+X	FILE *in = sysgetfile("stdin", stdin);
+X	FILE *out = sysgetfile("stdout", stdout);
+X	char *p;
+X	int err;
+X	int n = 1000;
+X	flushline();
+X	if (v != NULL)
+X		printobject(v, out, PRINT_RAW);
+X	v = newsizedstringobject((char *)NULL, n);
+X	if (v != NULL) {
+X		if ((err = fgets_intr(getstringvalue(v), n+1, in)) != E_OK) {
+X			err_input(err);
+X			DECREF(v);
+X			return NULL;
+X		}
+X		else {
+X			n = strlen(getstringvalue(v));
+X			if (n > 0 && getstringvalue(v)[n-1] == '\n')
+X				n--;
+X			resizestring(&v, n);
+X		}
+X	}
+X	return v;
 X}
 X
 Xstatic object *
 Xbuiltin_reload(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X return reload_module(v);
+X	return reload_module(v);
 X}
 X
 Xstatic object *
 Xbuiltin_type(self, v)
-X object *self;
-X object *v;
+X	object *self;
+X	object *v;
 X{
-X if (v == NULL) {
-X err_setstr(TypeError, "type() requres an argument");
-X return NULL;
-X }
-X v = (object *)v->ob_type;
-X INCREF(v);
-X return v;
+X	if (v == NULL) {
+X		err_setstr(TypeError, "type() requres an argument");
+X		return NULL;
+X	}
+X	v = (object *)v->ob_type;
+X	INCREF(v);
+X	return v;
 X}
 X
 Xstatic struct methodlist builtin_methods[] = {
-X {"abs", builtin_abs},
-X {"chr", builtin_chr},
-X {"dir", builtin_dir},
-X {"divmod", builtin_divmod},
-X {"eval", builtin_eval},
-X {"exec", builtin_exec},
-X {"float", builtin_float},
-X {"input", builtin_input},
-X {"int", builtin_int},
-X {"len", builtin_len},
-X {"max", builtin_max},
-X {"min", builtin_min},
-X {"open", builtin_open}, /* XXX move to OS module */
-X {"ord", builtin_ord},
-X {"range", builtin_range},
-X {"raw_input", builtin_raw_input},
-X {"reload", builtin_reload},
-X {"type", builtin_type},
-X {NULL, NULL},
+X	{"abs", builtin_abs},
+X	{"chr", builtin_chr},
+X	{"dir", builtin_dir},
+X	{"divmod", builtin_divmod},
+X	{"eval", builtin_eval},
+X	{"exec", builtin_exec},
+X	{"float", builtin_float},
+X	{"input", builtin_input},
+X	{"int", builtin_int},
+X	{"len", builtin_len},
+X	{"max", builtin_max},
+X	{"min", builtin_min},
+X	{"open", builtin_open}, /* XXX move to OS module */
+X	{"ord", builtin_ord},
+X	{"range", builtin_range},
+X	{"raw_input", builtin_raw_input},
+X	{"reload", builtin_reload},
+X	{"type", builtin_type},
+X	{NULL, NULL},
 X};
 X
 Xstatic object *builtin_dict;
 X
 Xobject *
 Xgetbuiltin(name)
-X char *name;
+X	char *name;
 X{
-X return dictlookup(builtin_dict, name);
+X	return dictlookup(builtin_dict, name);
 X}
 X
 X/* Predefined exceptions */
@@ -2006,36 +2006,36 @@ Xobject *KeyboardInterrupt;
 X
 Xstatic object *
 Xnewstdexception(name, message)
-X char *name, *message;
+X	char *name, *message;
 X{
-X object *v = newstringobject(message);
-X if (v == NULL || dictinsert(builtin_dict, name, v) != 0)
-X fatal("no mem for new standard exception");
-X return v;
+X	object *v = newstringobject(message);
+X	if (v == NULL || dictinsert(builtin_dict, name, v) != 0)
+X		fatal("no mem for new standard exception");
+X	return v;
 X}
 X
 Xstatic void
 Xiniterrors()
 X{
-X RuntimeError = newstdexception("RuntimeError", "run-time error");
-X EOFError = newstdexception("EOFError", "end-of-file read");
-X TypeError = newstdexception("TypeError", "type error");
-X MemoryError = newstdexception("MemoryError", "out of memory");
-X NameError = newstdexception("NameError", "undefined name");
-X SystemError = newstdexception("SystemError", "system error");
-X KeyboardInterrupt =
-X newstdexception("KeyboardInterrupt", "keyboard interrupt");
+X	RuntimeError = newstdexception("RuntimeError", "run-time error");
+X	EOFError = newstdexception("EOFError", "end-of-file read");
+X	TypeError = newstdexception("TypeError", "type error");
+X	MemoryError = newstdexception("MemoryError", "out of memory");
+X	NameError = newstdexception("NameError", "undefined name");
+X	SystemError = newstdexception("SystemError", "system error");
+X	KeyboardInterrupt =
+X		newstdexception("KeyboardInterrupt", "keyboard interrupt");
 X}
 X
 Xvoid
 Xinitbuiltin()
 X{
-X object *m;
-X m = initmodule("builtin", builtin_methods);
-X builtin_dict = getmoduledict(m);
-X INCREF(builtin_dict);
-X initerrors();
-X (void) dictinsert(builtin_dict, "None", None);
+X	object *m;
+X	m = initmodule("builtin", builtin_methods);
+X	builtin_dict = getmoduledict(m);
+X	INCREF(builtin_dict);
+X	initerrors();
+X	(void) dictinsert(builtin_dict, "None", None);
 X}
 EOF
 fi
@@ -2058,14 +2058,14 @@ X
 X# Function to print to stderr
 X#
 Xdef err(args):
-X savestdout = sys.stdout
-X try:
-X sys.stdout = sys.stderr
-X for i in args:
-X print i,
-X print
-X finally:
-X sys.stdout = savestdout
+X	savestdout = sys.stdout
+X	try:
+X		sys.stdout = sys.stderr
+X		for i in args:
+X			print i,
+X		print
+X	finally:
+X		sys.stdout = savestdout
 X
 X
 X# The set of digits that form a number
@@ -2078,20 +2078,20 @@ X# Returns the leading string of digits and the remaining string.
 X# If no number is found, returns '' and the original string.
 X#
 Xdef getnum(s):
-X n = ''
-X while s and s[0] in digits:
-X n = n + s[0]
-X s = s[1:]
-X return n, s
+X	n = ''
+X	while s and s[0] in digits:
+X		n = n + s[0]
+X		s = s[1:]
+X	return n, s
 X
 X
 X# Function to check if a string is a number
 X#
 Xdef isnum(s):
-X if not s: return 0
-X for c in s:
-X if not c in digits: return 0
-X return 1
+X	if not s: return 0
+X	for c in s:
+X		if not c in digits: return 0
+X	return 1
 X
 X
 X# Allowed function return types
@@ -2105,26 +2105,26 @@ Xarg_types = ['char', 'string', 'short', 'float', 'long', 'double']
 X
 X
 X# Need to classify arguments as follows
-X# simple input variable
-X# simple output variable
-X# input array
-X# output array
-X# input giving size of some array
+X#	simple input variable
+X#	simple output variable
+X#	input array
+X#	output array
+X#	input giving size of some array
 X#
 X# Array dimensions can be specified as follows
-X# constant
-X# argN
-X# constant * argN
-X# retval
-X# constant * retval
+X#	constant
+X#	argN
+X#	constant * argN
+X#	retval
+X#	constant * retval
 X#
 X# The dimensions given as constants * something are really
 X# arrays of points where points are 2- 3- or 4-tuples
 X#
 X# We have to consider three lists:
-X# python input arguments
-X# C stub arguments (in & out)
-X# python output arguments (really return values)
+X#	python input arguments
+X#	C stub arguments (in & out)
+X#	python output arguments (really return values)
 X#
 X# There is a mapping from python input arguments to the input arguments
 X# of the C stub, and a further mapping from C stub arguments to the
@@ -2142,67 +2142,67 @@ X# Raises arg_error if something's wrong.
 X# Return type, mode, factor, rest of subscript; factor and rest may be empty.
 X#
 Xdef checkarg(type, arg):
-X #
-X # Turn "char *x" into "string x".
-X #
-X if type = 'char' and arg[0] = '*':
-X type = 'string'
-X arg = arg[1:]
-X #
-X # Check that the type is supported.
-X #
-X if type not in arg_types:
-X raise arg_error, ('bad type', type)
-X #
-X # Split it in the mode (first character) and the rest.
-X #
-X mode, rest = arg[:1], arg[1:]
-X #
-X # The mode must be 's' for send (= input) or 'r' for return argument.
-X #
-X if mode not in ('r', 's'):
-X raise arg_error, ('bad arg mode', mode)
-X #
-X # Is it a simple argument: if so, we are done.
-X #
-X if not rest:
-X return type, mode, '', ''
-X #
-X # Not a simple argument; must be an array.
-X # The 'rest' must be a subscript enclosed in [ and ].
-X # The subscript must be one of the following forms,
-X # otherwise we don't handle it (where N is a number):
-X # N
-X # argN
-X # retval
-X # N*argN
-X # N*retval
-X #
-X if rest[:1] <> '[' or rest[-1:] <> ']':
-X raise arg_error, ('subscript expected', rest)
-X sub = rest[1:-1]
-X #
-X # Is there a leading number?
-X #
-X num, sub = getnum(sub)
-X if num:
-X # There is a leading number
-X if not sub:
-X # The subscript is just a number
-X return type, mode, num, ''
-X if sub[:1] = '*':
-X # There is a factor prefix
-X sub = sub[1:]
-X else:
-X raise arg_error, ('\'*\' expected', sub)
-X if sub = 'retval':
-X # size is retval -- must be a reply argument
-X if mode <> 'r':
-X raise arg_error, ('non-r mode with [retval]', mode)
-X elif sub[:3] <> 'arg' or not isnum(sub[3:]):
-X raise arg_error, ('bad subscript', sub)
-X #
-X return type, mode, num, sub
+X	#
+X	# Turn "char *x" into "string x".
+X	#
+X	if type = 'char' and arg[0] = '*':
+X		type = 'string'
+X		arg = arg[1:]
+X	#
+X	# Check that the type is supported.
+X	#
+X	if type not in arg_types:
+X		raise arg_error, ('bad type', type)
+X	#
+X	# Split it in the mode (first character) and the rest.
+X	#
+X	mode, rest = arg[:1], arg[1:]
+X	#
+X	# The mode must be 's' for send (= input) or 'r' for return argument.
+X	#
+X	if mode not in ('r', 's'):
+X		raise arg_error, ('bad arg mode', mode)
+X	#
+X	# Is it a simple argument: if so, we are done.
+X	#
+X	if not rest:
+X		return type, mode, '', ''
+X	#	
+X	# Not a simple argument; must be an array.
+X	# The 'rest' must be a subscript enclosed in [ and ].
+X	# The subscript must be one of the following forms,
+X	# otherwise we don't handle it (where N is a number):
+X	#	N
+X	#	argN
+X	#	retval
+X	#	N*argN
+X	#	N*retval
+X	#
+X	if rest[:1] <> '[' or rest[-1:] <> ']':
+X		raise arg_error, ('subscript expected', rest)
+X	sub = rest[1:-1]
+X	#
+X	# Is there a leading number?
+X	#
+X	num, sub = getnum(sub)
+X	if num:
+X		# There is a leading number
+X		if not sub:
+X			# The subscript is just a number
+X			return type, mode, num, ''
+X		if sub[:1] = '*':
+X			# There is a factor prefix
+X			sub = sub[1:]
+X		else:
+X			raise arg_error, ('\'*\' expected', sub)
+X	if sub = 'retval':
+X		# size is retval -- must be a reply argument
+X		if mode <> 'r':
+X			raise arg_error, ('non-r mode with [retval]', mode)
+X	elif sub[:3] <> 'arg' or not isnum(sub[3:]):
+X		raise arg_error, ('bad subscript', sub)
+X	#
+X	return type, mode, num, sub
 X
 X
 X# List of functions for which we have generated stubs
@@ -2214,208 +2214,208 @@ X# Generate the stub for the given function, using the database of argument
 X# information build by successive calls to checkarg()
 X#
 Xdef generate(type, func, database):
-X #
-X # Check that we can handle this case:
-X # no variable size reply arrays yet
-X #
-X n_in_args = 0
-X n_out_args = 0
-X #
-X for a_type, a_mode, a_factor, a_sub in database:
-X if a_mode = 's':
-X n_in_args = n_in_args + 1
-X elif a_mode = 'r':
-X n_out_args = n_out_args + 1
-X else:
-X # Can't happen
-X raise arg_error, ('bad a_mode', a_mode)
-X if (a_mode = 'r' and a_sub) or a_sub = 'retval':
-X e = 'Function', func, 'too complicated:'
-X err(e + (a_type, a_mode, a_factor, a_sub))
-X print '/* XXX Too complicated to generate code for */'
-X return
-X #
-X functions.append(func)
-X #
-X # Stub header
-X #
-X print
-X print 'static object *'
-X print 'gl_' + func + '(self, args)'
-X print '\tobject *self;'
-X print '\tobject *args;'
-X print '{'
-X #
-X # Declare return value if any
-X #
-X if type <> 'void':
-X print '\t' + type, 'retval;'
-X #
-X # Declare arguments
-X #
-X for i in range(len(database)):
-X a_type, a_mode, a_factor, a_sub = database[i]
-X print '\t' + a_type,
-X if a_sub:
-X print '*',
-X print 'arg' + `i+1`,
-X if a_factor and not a_sub:
-X print '[', a_factor, ']',
-X print ';'
-X #
-X # Find input arguments derived from array sizes
-X #
-X for i in range(len(database)):
-X a_type, a_mode, a_factor, a_sub = database[i]
-X if a_mode = 's' and a_sub[:3] = 'arg' and isnum(a_sub[3:]):
-X # Sending a variable-length array
-X n = eval(a_sub[3:])
-X if 1 <= n <= len(database):
-X b_type, b_mode, b_factor, b_sub = database[n-1]
-X if b_mode = 's':
-X database[n-1] = b_type, 'i', a_factor, `i`
-X n_in_args = n_in_args - 1
-X #
-X # Assign argument positions in the Python argument list
-X #
-X in_pos = []
-X i_in = 0
-X for i in range(len(database)):
-X a_type, a_mode, a_factor, a_sub = database[i]
-X if a_mode = 's':
-X in_pos.append(i_in)
-X i_in = i_in + 1
-X else:
-X in_pos.append(-1)
-X #
-X # Get input arguments
-X #
-X for i in range(len(database)):
-X a_type, a_mode, a_factor, a_sub = database[i]
-X if a_mode = 'i':
-X #
-X # Implicit argument;
-X # a_factor is divisor if present,
-X # a_sub indicates which arg (`database index`)
-X #
-X j = eval(a_sub)
-X print '\tif',
-X print '(!geti' + a_type + 'arraysize(args,',
-X print `n_in_args` + ',',
-X print `in_pos[j]` + ',',
-X print '&arg' + `i+1` + '))'
-X print '\t\treturn NULL;'
-X if a_factor:
-X print '\targ' + `i+1`,
-X print '= arg' + `i+1`,
-X print '/', a_factor + ';'
-X elif a_mode = 's':
-X if a_sub: # Allocate memory for varsize array
-X print '\tif ((arg' + `i+1`, '=',
-X print 'NEW(' + a_type + ',',
-X if a_factor: print a_factor, '*',
-X print a_sub, ')) == NULL)'
-X print '\t\treturn err_nomem();'
-X print '\tif',
-X if a_factor or a_sub: # Get a fixed-size array array
-X print '(!geti' + a_type + 'array(args,',
-X print `n_in_args` + ',',
-X print `in_pos[i]` + ',',
-X if a_factor: print a_factor,
-X if a_factor and a_sub: print '*',
-X if a_sub: print a_sub,
-X print ', arg' + `i+1` + '))'
-X else: # Get a simple variable
-X print '(!geti' + a_type + 'arg(args,',
-X print `n_in_args` + ',',
-X print `in_pos[i]` + ',',
-X print '&arg' + `i+1` + '))'
-X print '\t\treturn NULL;'
-X #
-X # Begin of function call
-X #
-X if type <> 'void':
-X print '\tretval =', func + '(',
-X else:
-X print '\t' + func + '(',
-X #
-X # Argument list
-X #
-X for i in range(len(database)):
-X if i > 0: print ',',
-X a_type, a_mode, a_factor, a_sub = database[i]
-X if a_mode = 'r' and not a_factor:
-X print '&',
-X print 'arg' + `i+1`,
-X #
-X # End of function call
-X #
-X print ');'
-X #
-X # Free varsize arrays
-X #
-X for i in range(len(database)):
-X a_type, a_mode, a_factor, a_sub = database[i]
-X if a_mode = 's' and a_sub:
-X print '\tDEL(arg' + `i+1` + ');'
-X #
-X # Return
-X #
-X if n_out_args:
-X #
-X # Multiple return values -- construct a tuple
-X #
-X if type <> 'void':
-X n_out_args = n_out_args + 1
-X if n_out_args = 1:
-X for i in range(len(database)):
-X a_type, a_mode, a_factor, a_sub = database[i]
-X if a_mode = 'r':
-X break
-X else:
-X raise arg_error, 'expected r arg not found'
-X print '\treturn',
-X print mkobject(a_type, 'arg' + `i+1`) + ';'
-X else:
-X print '\t{ object *v = newtupleobject(',
-X print n_out_args, ');'
-X print '\t if (v == NULL) return NULL;'
-X i_out = 0
-X if type <> 'void':
-X print '\t settupleitem(v,',
-X print `i_out` + ',',
-X print mkobject(type, 'retval') + ');'
-X i_out = i_out + 1
-X for i in range(len(database)):
-X a_type, a_mode, a_factor, a_sub = database[i]
-X if a_mode = 'r':
-X print '\t settupleitem(v,',
-X print `i_out` + ',',
-X s = mkobject(a_type, 'arg' + `i+1`)
-X print s + ');'
-X i_out = i_out + 1
-X print '\t return v;'
-X print '\t}'
-X else:
-X #
-X # Simple function return
-X # Return None or return value
-X #
-X if type = 'void':
-X print '\tINCREF(None);'
-X print '\treturn None;'
-X else:
-X print '\treturn', mkobject(type, 'retval') + ';'
-X #
-X # Stub body closing brace
-X #
-X print '}'
+X	#
+X	# Check that we can handle this case:
+X	# no variable size reply arrays yet
+X	#
+X	n_in_args = 0
+X	n_out_args = 0
+X	#
+X	for a_type, a_mode, a_factor, a_sub in database:
+X		if a_mode = 's':
+X			n_in_args = n_in_args + 1
+X		elif a_mode = 'r':
+X			n_out_args = n_out_args + 1
+X		else:
+X			# Can't happen
+X			raise arg_error, ('bad a_mode', a_mode)
+X		if (a_mode = 'r' and a_sub) or a_sub = 'retval':
+X			e = 'Function', func, 'too complicated:'
+X			err(e + (a_type, a_mode, a_factor, a_sub))
+X			print '/* XXX Too complicated to generate code for */'
+X			return
+X	#
+X	functions.append(func)
+X	#
+X	# Stub header
+X	#
+X	print
+X	print 'static object *'
+X	print 'gl_' + func + '(self, args)'
+X	print '\tobject *self;'
+X	print '\tobject *args;'
+X	print '{'
+X	#
+X	# Declare return value if any
+X	#
+X	if type <> 'void':
+X		print '\t' + type, 'retval;'
+X	#
+X	# Declare arguments
+X	#
+X	for i in range(len(database)):
+X		a_type, a_mode, a_factor, a_sub = database[i]
+X		print '\t' + a_type,
+X		if a_sub:
+X			print '*',
+X		print 'arg' + `i+1`,
+X		if a_factor and not a_sub:
+X			print '[', a_factor, ']',
+X		print ';'
+X	#
+X	# Find input arguments derived from array sizes
+X	#
+X	for i in range(len(database)):
+X		a_type, a_mode, a_factor, a_sub = database[i]
+X		if a_mode = 's' and a_sub[:3] = 'arg' and isnum(a_sub[3:]):
+X			# Sending a variable-length array
+X			n = eval(a_sub[3:])
+X			if 1 <= n <= len(database):
+X			    b_type, b_mode, b_factor, b_sub = database[n-1]
+X			    if b_mode = 's':
+X			        database[n-1] = b_type, 'i', a_factor, `i`
+X			        n_in_args = n_in_args - 1
+X	#
+X	# Assign argument positions in the Python argument list
+X	#
+X	in_pos = []
+X	i_in = 0
+X	for i in range(len(database)):
+X		a_type, a_mode, a_factor, a_sub = database[i]
+X		if a_mode = 's':
+X			in_pos.append(i_in)
+X			i_in = i_in + 1
+X		else:
+X			in_pos.append(-1)
+X	#
+X	# Get input arguments
+X	#
+X	for i in range(len(database)):
+X		a_type, a_mode, a_factor, a_sub = database[i]
+X		if a_mode = 'i':
+X			#
+X			# Implicit argument;
+X			# a_factor is divisor if present,
+X			# a_sub indicates which arg (`database index`)
+X			#
+X			j = eval(a_sub)
+X			print '\tif',
+X			print '(!geti' + a_type + 'arraysize(args,',
+X			print `n_in_args` + ',',
+X			print `in_pos[j]` + ',',
+X			print '&arg' + `i+1` + '))'
+X			print '\t\treturn NULL;'
+X			if a_factor:
+X				print '\targ' + `i+1`,
+X				print '= arg' + `i+1`,
+X				print '/', a_factor + ';'
+X		elif a_mode = 's':
+X			if a_sub: # Allocate memory for varsize array
+X				print '\tif ((arg' + `i+1`, '=',
+X				print 'NEW(' + a_type + ',',
+X				if a_factor: print a_factor, '*',
+X				print a_sub, ')) == NULL)'
+X				print '\t\treturn err_nomem();'
+X			print '\tif',
+X			if a_factor or a_sub: # Get a fixed-size array array
+X				print '(!geti' + a_type + 'array(args,',
+X				print `n_in_args` + ',',
+X				print `in_pos[i]` + ',',
+X				if a_factor: print a_factor,
+X				if a_factor and a_sub: print '*',
+X				if a_sub: print a_sub,
+X				print ', arg' + `i+1` + '))'
+X			else: # Get a simple variable
+X				print '(!geti' + a_type + 'arg(args,',
+X				print `n_in_args` + ',',
+X				print `in_pos[i]` + ',',
+X				print '&arg' + `i+1` + '))'
+X			print '\t\treturn NULL;'
+X	#
+X	# Begin of function call
+X	#
+X	if type <> 'void':
+X		print '\tretval =', func + '(',
+X	else:
+X		print '\t' + func + '(',
+X	#
+X	# Argument list
+X	#
+X	for i in range(len(database)):
+X		if i > 0: print ',',
+X		a_type, a_mode, a_factor, a_sub = database[i]
+X		if a_mode = 'r' and not a_factor:
+X			print '&',
+X		print 'arg' + `i+1`,
+X	#
+X	# End of function call
+X	#
+X	print ');'
+X	#
+X	# Free varsize arrays
+X	#
+X	for i in range(len(database)):
+X		a_type, a_mode, a_factor, a_sub = database[i]
+X		if a_mode = 's' and a_sub:
+X			print '\tDEL(arg' + `i+1` + ');'
+X	#
+X	# Return
+X	#
+X	if n_out_args:
+X		#
+X		# Multiple return values -- construct a tuple
+X		#
+X		if type <> 'void':
+X			n_out_args = n_out_args + 1
+X		if n_out_args = 1:
+X			for i in range(len(database)):
+X				a_type, a_mode, a_factor, a_sub = database[i]
+X				if a_mode = 'r':
+X					break
+X			else:
+X				raise arg_error, 'expected r arg not found'
+X			print '\treturn',
+X			print mkobject(a_type, 'arg' + `i+1`) + ';'
+X		else:
+X			print '\t{ object *v = newtupleobject(',
+X			print n_out_args, ');'
+X			print '\t  if (v == NULL) return NULL;'
+X			i_out = 0
+X			if type <> 'void':
+X				print '\t  settupleitem(v,',
+X				print `i_out` + ',',
+X				print mkobject(type, 'retval') + ');'
+X				i_out = i_out + 1
+X			for i in range(len(database)):
+X				a_type, a_mode, a_factor, a_sub = database[i]
+X				if a_mode = 'r':
+X					print '\t  settupleitem(v,',
+X					print `i_out` + ',',
+X					s = mkobject(a_type, 'arg' + `i+1`)
+X					print s + ');'
+X					i_out = i_out + 1
+X			print '\t  return v;'
+X			print '\t}'
+X	else:
+X		#
+X		# Simple function return
+X		# Return None or return value
+X		#
+X		if type = 'void':
+X			print '\tINCREF(None);'
+X			print '\treturn None;'
+X		else:
+X			print '\treturn', mkobject(type, 'retval') + ';'
+X	#
+X	# Stub body closing brace
+X	#
+X	print '}'
 X
 X
 X# Subroutine to return a function call to mknew<type>object(<arg>)
 X#
 Xdef mkobject(type, arg):
-X return 'mknew' + type + 'object(' + arg + ')'
+X	return 'mknew' + type + 'object(' + arg + ')'
 X
 X
 X# Input line number
@@ -2423,8 +2423,8 @@ Xlno = 0
 X
 X
 X# Input is divided in two parts, separated by a line containing '%%'.
-X# <part1> -- literally copied to stdout
-X# <part2> -- stub definitions
+X#	<part1>		-- literally copied to stdout
+X#	<part2>		-- stub definitions
 X
 X# Variable indicating the current input part.
 X#
@@ -2433,68 +2433,68 @@ X
 X# Main loop over the input
 X#
 Xwhile 1:
-X try:
-X line = raw_input()
-X except EOFError:
-X break
-X #
-X lno = lno+1
-X words = string.split(line)
-X #
-X if part = 1:
-X #
-X # In part 1, copy everything literally
-X # except look for a line of just '%%'
-X #
-X if words = ['%%']:
-X part = part + 1
-X else:
-X #
-X # Look for names of manually written
-X # stubs: a single percent followed by the name
-X # of the function in Python.
-X # The stub name is derived by prefixing 'gl_'.
-X #
-X if words and words[0][0] = '%':
-X func = words[0][1:]
-X if (not func) and words[1:]:
-X func = words[1]
-X if func:
-X functions.append(func)
-X else:
-X print line
-X elif not words:
-X pass # skip empty line
-X elif words[0] = '#include':
-X print line
-X elif words[0][:1] = '#':
-X pass # ignore comment
-X elif words[0] not in return_types:
-X err('Line', lno, ': bad return type :', words[0])
-X elif len(words) < 2:
-X err('Line', lno, ': no funcname :', line)
-X else:
-X if len(words) % 2 <> 0:
-X err('Line', lno, ': odd argument list :', words[2:])
-X else:
-X database = []
-X try:
-X for i in range(2, len(words), 2):
-X x = checkarg(words[i], words[i+1])
-X database.append(x)
-X print
-X print '/*',
-X for w in words: print w,
-X print '*/'
-X generate(words[0], words[1], database)
-X except arg_error, msg:
-X err('Line', lno, ':', msg)
+X	try:
+X		line = raw_input()
+X	except EOFError:
+X		break
+X	#
+X	lno = lno+1
+X	words = string.split(line)
+X	#
+X	if part = 1:
+X		#
+X		# In part 1, copy everything literally
+X		# except look for a line of just '%%'
+X		#
+X		if words = ['%%']:
+X			part = part + 1
+X		else:
+X			#
+X			# Look for names of manually written
+X			# stubs: a single percent followed by the name
+X			# of the function in Python.
+X			# The stub name is derived by prefixing 'gl_'.
+X			#
+X			if words and words[0][0] = '%':
+X				func = words[0][1:]
+X				if (not func) and words[1:]:
+X					func = words[1]
+X				if func:
+X					functions.append(func)
+X			else:
+X				print line
+X	elif not words:
+X		pass			# skip empty line
+X	elif words[0] = '#include':
+X		print line
+X	elif words[0][:1] = '#':
+X		pass			# ignore comment
+X	elif words[0] not in return_types:
+X		err('Line', lno, ': bad return type :', words[0])
+X	elif len(words) < 2:
+X		err('Line', lno, ': no funcname :', line)
+X	else:
+X		if len(words) % 2 <> 0:
+X			err('Line', lno, ': odd argument list :', words[2:])
+X		else:
+X			database = []
+X			try:
+X				for i in range(2, len(words), 2):
+X					x = checkarg(words[i], words[i+1])
+X					database.append(x)
+X				print
+X				print '/*',
+X				for w in words: print w,
+X				print '*/'
+X				generate(words[0], words[1], database)
+X			except arg_error, msg:
+X				err('Line', lno, ':', msg)
 X
 X
 Xprint
 Xprint 'static struct methodlist gl_methods[] = {'
 Xfor func in functions:
-X print '\t{"' + func + '", gl_' + func + '},'
+X	print '\t{"' + func + '", gl_' + func + '},'
 Xprint '\t{NULL, NULL} /* Sentinel */'
 Xprint '};'
 Xprint

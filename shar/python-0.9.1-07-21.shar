@@ -39,702 +39,702 @@ Xfrom math import pi
 Ximport math
 Ximport posix
 X
-XFULLC = 3600 # Full circle in 1/10-ths of a degree
-XMIDN = 900 # Angle of the 12 o'clock position
-XR, G, B = 0, 1, 2 # Indices of colors in RGB list
+XFULLC = 3600		# Full circle in 1/10-ths of a degree
+XMIDN = 900		# Angle of the 12 o'clock position
+XR, G, B = 0, 1, 2	# Indices of colors in RGB list
 X
-XHOUR = 3600 # Number of seconds per hour
-XMINUTE = 60 # Number of seconds per minute
+XHOUR = 3600		# Number of seconds per hour
+XMINUTE = 60		# Number of seconds per minute
 X
-Xclass struct(): pass # Class to define featureless structures
-XGl = struct() # Object to hold writable global variables
+Xclass struct(): pass	# Class to define featureless structures
+XGl = struct()		# Object to hold writable global variables
 X
 X# Default constants (used in multiple places)
 X
 XSCREENBG = 127, 156, 191
 XNPARTS = 9
 XTITLE = 'M Clock'
-XTZDIFF = -1*HOUR # <--- change this to reflect your local time zone
+XTZDIFF = -1*HOUR	# <--- change this to reflect your local time zone
 X
 X# Default parameters
 X
-XGl.foreground = 0 # If set, run in the foreground
-XGl.fullscreen = 0 # If set, run on full screen
-XGl.tzdiff = TZDIFF # Seconds west of Greenwich (winter time)
-XGl.nparts = NPARTS # Number of parts each circle is divided in (>= 2)
-XGl.debug = 0 # If set, print debug output
-XGl.doublebuffer = 1 # If set, use double buffering
-XGl.update = 0 # Update interval; seconds hand is suppressed if > 1
-XGl.colorsubset = 0 # If set, display only a subset of the colors
-XGl.cyan = 0 # If set, display cyan overlay (big hand)
-XGl.magenta = 0 # If set, display magenta overlay (little hand)
-XGl.yellow = 0 # If set, display yellow overlay (fixed background)
-XGl.black = 0 # If set, display black overlay (hands)
-XGl.colormap = 0 # If set, use colormap mode instead of RGB mode
-XGl.warnings = 0 # If set, print warnings
-XGl.title = '- - ' # Window title (default set later)
-XGl.border = 1 # If set, use a window border (and title)
-XGl.bg = 0, 0, 0 # Background color R, G, B value
-XGl.iconic = 0 # Set in iconic state
-XGl.fg = 255, 0, 0 # Alarm background RGB (either normal or alarm)
-XGl.ox,Gl.oy = 0,0 # Window origin
-XGl.cx,Gl.cy = 0,0 # Window size
-XGl.alarm_set = 0 # Alarm on or off
-XGl.alarm_on = 0 # Alarm is ringing
-XGl.alarm_time = 0 # Alarm time in seconds after midnight
-XGl.alarm_hours = 0 # Alarm hour setting, 24 hour clock
-XGl.alarm_minutes = 0 # Alarm minutes setting
-XGl.alarm_rgb = 0,0,0 # Alarm display RGB colors
-XGl.alarm_cmd = '' # Command to execute when alarm goes off
-XGl.mouse2down = 0 # Mouse button state
-XGl.mouse3down = 0 # Mouse button state
-XGl.gong_cmd = '' # Command to execute when chimes go off
-XGl.gong_int = 3600 # Gong interval
-XGl.indices = R, G, B # Colors (permuted when alarm is on)
+XGl.foreground = 0	# If set, run in the foreground
+XGl.fullscreen = 0	# If set, run on full screen
+XGl.tzdiff = TZDIFF	# Seconds west of Greenwich (winter time)
+XGl.nparts = NPARTS	# Number of parts each circle is divided in (>= 2)
+XGl.debug = 0		# If set, print debug output
+XGl.doublebuffer = 1	# If set, use double buffering
+XGl.update = 0		# Update interval; seconds hand is suppressed if > 1
+XGl.colorsubset = 0	# If set, display only a subset of the colors
+XGl.cyan = 0		# If set, display cyan overlay (big hand)
+XGl.magenta = 0		# If set, display magenta overlay (little hand)
+XGl.yellow = 0		# If set, display yellow overlay (fixed background)
+XGl.black = 0		# If set, display black overlay (hands)
+XGl.colormap = 0		# If set, use colormap mode instead of RGB mode
+XGl.warnings = 0		# If set, print warnings
+XGl.title = '- - '	# Window title (default set later)
+XGl.border = 1		# If set, use a window border (and title)
+XGl.bg = 0, 0, 0		# Background color R, G, B value
+XGl.iconic = 0		# Set in iconic state
+XGl.fg = 255, 0, 0	# Alarm background RGB (either normal or alarm)
+XGl.ox,Gl.oy = 0,0	# Window origin
+XGl.cx,Gl.cy = 0,0	# Window size
+XGl.alarm_set = 0	# Alarm on or off
+XGl.alarm_on = 0		# Alarm is ringing
+XGl.alarm_time = 0	# Alarm time in seconds after midnight
+XGl.alarm_hours = 0	# Alarm hour setting, 24 hour clock
+XGl.alarm_minutes = 0	# Alarm minutes setting
+XGl.alarm_rgb = 0,0,0	# Alarm display RGB colors
+XGl.alarm_cmd = ''	# Command to execute when alarm goes off
+XGl.mouse2down = 0	# Mouse button state
+XGl.mouse3down = 0	# Mouse button state
+XGl.gong_cmd = ''	# Command to execute when chimes go off
+XGl.gong_int = 3600	# Gong interval
+XGl.indices = R, G, B	# Colors (permuted when alarm is on)
 X
 Xdef main():
-X #
-X sys.stdout = sys.stderr # All output is errors/warnings etc.
-X #
-X try:
-X args = getoptions()
-X except string.atoi_error, value:
-X usage(string.atoi_error, value)
-X except getopt.error, msg:
-X usage(getopt.error, msg)
-X #
-X if args:
-X realtime = 0
-X hours = string.atoi(args[0])
-X minutes = seconds = 0
-X if args[1:]: minutes = string.atoi(args[1])
-X if args[2:]: seconds = string.atoi(args[2])
-X localtime = ((hours*60)+minutes)*60+seconds
-X else:
-X realtime = 1
-X #
-X if Gl.title = '- - ':
-X if realtime:
-X Gl.title = TITLE
-X else:
-X title = ''
-X for arg in args: title = title + ' ' + arg
-X Gl.title = title[1:]
-X del title
-X #
-X wid = makewindow()
-X Gl.ox,Gl.oy = getorigin()
-X Gl.cx,Gl.cy = getsize()
-X initmenu()
-X clearall()
-X #
-X if not Gl.update:
-X Gl.update = 60
-X #
-X if Gl.update <= 1:
-X Gl.timernoise = 6
-X else:
-X Gl.timernoise = 60
-X noise(TIMER0, Gl.timernoise)
-X #
-X qdevice(WINSHUT)
-X qdevice(WINQUIT)
-X qdevice(ESCKEY)
-X if realtime:
-X qdevice(TIMER0)
-X qdevice(REDRAW)
-X qdevice(WINFREEZE)
-X qdevice(WINTHAW)
-X qdevice(MENUBUTTON) # MOUSE1
-X qdevice(MOUSE3) # Left button
-X qdevice(MOUSE2) # Middle button
-X unqdevice(INPUTCHANGE)
-X #
-X lasttime = 0
-X Gl.change = 1
-X while 1:
-X if realtime:
-X localtime = time.time() - Gl.tzdiff
-X if Gl.alarm_set:
-X if localtime%(24*HOUR) = Gl.alarm_time:
-X # Ring the alarm!
-X if Gl.debug:
-X print 'Rrrringg!'
-X Gl.alarm_on = 1
-X if Gl.alarm_cmd <> '':
-X d = posix.system(Gl.alarm_cmd+' '+`Gl.alarm_time/3600`+' '+`(Gl.alarm_time/60)%60` + ' &')
-X Gl.change = 1
-X clearall()
-X if Gl.alarm_on:
-X if (localtime - Gl.alarm_time) % (24*HOUR) > 300:
-X # More than 5 minutes away from alarm
-X Gl.alarm_on = 0
-X if Gl.debug:
-X print 'Alarm turned off'
-X Gl.change = 1
-X clearall()
-X Gl.indices = R, G, B
-X else:
-X if localtime % 2 = 0:
-X # Permute color indices
-X Gl.indices = Gl.indices[2:] + Gl.indices[:2]
-X Gl.change = 1
-X if Gl.gong_cmd <> '' and localtime%Gl.gong_int = 0:
-X d = posix.system(Gl.gong_cmd+' '+`(localtime/3600)%24`+' '+`(localtime/60)%60` + ' &')
-X if localtime/Gl.update <> lasttime/Gl.update:
-X if Gl.debug: print 'new time'
-X Gl.change = 1
-X if Gl.change:
-X if Gl.debug: print 'drawing'
-X doit(localtime)
-X lasttime = localtime
-X Gl.change = 0
-X dev, data = qread()
-X if Gl.debug and dev <> TIMER0:
-X print dev, data
-X if dev = TIMER0:
-X if Gl.debug > 1:
-X print dev, data
-X elif dev = MOUSE3:
-X mousex = getvaluator(MOUSEX)
-X mousey = getvaluator(MOUSEY)
-X if mouseclick(3, data, mousex, mousey):
-X Gl.change = 1
-X elif dev = MOUSE2:
-X mousex = getvaluator(MOUSEX)
-X mousey = getvaluator(MOUSEY)
-X if mouseclick(2, data, mousex, mousey):
-X Gl.change = 1
-X elif dev = MOUSEX:
-X mousex = data
-X if Gl.mouse2down:
-X mouse2track(mousex, mousey)
-X if Gl.mouse3down:
-X mouse3track(mousex, mousey)
-X elif dev = MOUSEY:
-X mousey = data
-X if Gl.mouse2down:
-X mouse2track(mousex, mousey)
-X if Gl.mouse3down:
-X mouse3track(mousex, mousey)
-X elif dev = REDRAW or dev = REDRAWICONIC:
-X if Gl.debug:
-X if dev = REDRAW: print 'REDRAW'
-X else: print 'REDRAWICONIC'
-X reshapeviewport()
-X Gl.ox,Gl.oy = getorigin()
-X Gl.cx,Gl.cy = getsize()
-X Gl.change = 1
-X clearall()
-X elif dev = MENUBUTTON:
-X if Gl.debug: print 'MENUBUTTON'
-X handlemenu()
-X elif dev = WINFREEZE:
-X if Gl.debug: print 'WINFREEZE'
-X Gl.iconic = 1
-X noise(TIMER0, 60*60) # Redraw every 60 seconds only
-X elif dev = WINTHAW:
-X if Gl.debug: print 'WINTHAW'
-X Gl.iconic = 0
-X noise(TIMER0, Gl.timernoise)
-X Gl.change = 1
-X elif dev = ESCKEY or dev = WINSHUT or dev = WINQUIT:
-X if Gl.debug: print 'Exit'
-X sys.exit(0)
+X	#
+X	sys.stdout = sys.stderr		# All output is errors/warnings etc.
+X	#
+X	try:
+X		args = getoptions()
+X	except string.atoi_error, value:
+X		usage(string.atoi_error, value)
+X	except getopt.error, msg:
+X		usage(getopt.error, msg)
+X	#
+X	if args:
+X		realtime = 0
+X		hours = string.atoi(args[0])
+X		minutes = seconds = 0
+X		if args[1:]: minutes = string.atoi(args[1])
+X		if args[2:]: seconds = string.atoi(args[2])
+X		localtime = ((hours*60)+minutes)*60+seconds
+X	else:
+X		realtime = 1
+X	#
+X	if Gl.title = '- - ':
+X		if realtime:
+X			Gl.title = TITLE
+X		else:
+X			title = ''
+X			for arg in args: title = title + ' ' + arg
+X			Gl.title = title[1:]
+X			del title
+X	#
+X	wid = makewindow()
+X	Gl.ox,Gl.oy = getorigin()
+X	Gl.cx,Gl.cy = getsize()
+X	initmenu()
+X	clearall()
+X	#
+X	if not Gl.update:
+X		Gl.update = 60
+X	#
+X	if Gl.update <= 1:
+X		Gl.timernoise = 6
+X	else:
+X		Gl.timernoise = 60
+X	noise(TIMER0, Gl.timernoise)
+X	#
+X	qdevice(WINSHUT)
+X	qdevice(WINQUIT)
+X	qdevice(ESCKEY)
+X	if realtime:
+X		qdevice(TIMER0)
+X	qdevice(REDRAW)
+X	qdevice(WINFREEZE)
+X	qdevice(WINTHAW)
+X	qdevice(MENUBUTTON)	# MOUSE1
+X	qdevice(MOUSE3)		# Left button
+X	qdevice(MOUSE2)		# Middle button
+X	unqdevice(INPUTCHANGE)
+X	#
+X	lasttime = 0
+X	Gl.change = 1
+X	while 1:
+X		if realtime:
+X			localtime = time.time() - Gl.tzdiff
+X		if Gl.alarm_set:
+X			if localtime%(24*HOUR) = Gl.alarm_time:
+X				# Ring the alarm!
+X				if Gl.debug:
+X					print 'Rrrringg!'
+X				Gl.alarm_on = 1
+X				if Gl.alarm_cmd <> '':
+X					d = posix.system(Gl.alarm_cmd+' '+`Gl.alarm_time/3600`+' '+`(Gl.alarm_time/60)%60` + ' &')
+X				Gl.change = 1
+X				clearall()
+X		if Gl.alarm_on:
+X			if (localtime - Gl.alarm_time) % (24*HOUR) > 300:
+X				# More than 5 minutes away from alarm
+X				Gl.alarm_on = 0
+X				if Gl.debug:
+X					print 'Alarm turned off'
+X				Gl.change = 1
+X				clearall()
+X				Gl.indices = R, G, B
+X			else:
+X				if localtime % 2 = 0:
+X				  # Permute color indices
+X				  Gl.indices = Gl.indices[2:] + Gl.indices[:2]
+X				  Gl.change = 1
+X		if Gl.gong_cmd <> '' and localtime%Gl.gong_int = 0:
+X			d = posix.system(Gl.gong_cmd+' '+`(localtime/3600)%24`+' '+`(localtime/60)%60` + ' &')
+X		if localtime/Gl.update <> lasttime/Gl.update:
+X			if Gl.debug: print 'new time'
+X			Gl.change = 1
+X		if Gl.change:
+X			if Gl.debug: print 'drawing'
+X			doit(localtime)
+X			lasttime = localtime
+X			Gl.change = 0
+X		dev, data = qread()
+X		if Gl.debug and dev <> TIMER0:
+X			print dev, data
+X		if dev = TIMER0:
+X			if Gl.debug > 1:
+X				print dev, data
+X		elif dev = MOUSE3:
+X			mousex = getvaluator(MOUSEX)
+X			mousey = getvaluator(MOUSEY)
+X			if mouseclick(3, data, mousex, mousey):
+X				Gl.change = 1
+X		elif dev = MOUSE2:
+X			mousex = getvaluator(MOUSEX)
+X			mousey = getvaluator(MOUSEY)
+X			if mouseclick(2, data, mousex, mousey):
+X				Gl.change = 1
+X		elif dev = MOUSEX:
+X			mousex = data
+X			if Gl.mouse2down:
+X				mouse2track(mousex, mousey)
+X			if Gl.mouse3down:
+X				mouse3track(mousex, mousey)
+X		elif dev = MOUSEY:
+X			mousey = data
+X			if Gl.mouse2down:
+X				mouse2track(mousex, mousey)
+X			if Gl.mouse3down:
+X				mouse3track(mousex, mousey)
+X		elif dev = REDRAW or dev = REDRAWICONIC:
+X			if Gl.debug:
+X				if dev = REDRAW: print 'REDRAW'
+X				else: print 'REDRAWICONIC'
+X			reshapeviewport()
+X			Gl.ox,Gl.oy = getorigin()
+X			Gl.cx,Gl.cy = getsize()
+X			Gl.change = 1
+X			clearall()
+X		elif dev = MENUBUTTON:
+X			if Gl.debug: print 'MENUBUTTON'
+X			handlemenu()
+X		elif dev = WINFREEZE:
+X			if Gl.debug: print 'WINFREEZE'
+X			Gl.iconic = 1
+X			noise(TIMER0, 60*60) # Redraw every 60 seconds only
+X		elif dev = WINTHAW:
+X			if Gl.debug: print 'WINTHAW'
+X			Gl.iconic = 0
+X			noise(TIMER0, Gl.timernoise)
+X			Gl.change = 1
+X		elif dev = ESCKEY or dev = WINSHUT or dev = WINQUIT:
+X			if Gl.debug: print 'Exit'
+X			sys.exit(0)
 X
 Xdef getoptions():
-X optlist, args = getopt.getopt(sys.argv[1:], 'A:a:B:bc:dFfG:g:n:sT:t:u:wCMYK')
-X for optname, optarg in optlist:
-X if optname = '-A':
-X Gl.fg = eval(optarg) # Should be (r,g,b)
-X elif optname = '-a':
-X Gl.alarm_cmd = optarg
-X elif optname = '-B':
-X Gl.bg = eval(optarg) # Should be (r,g,b)
-X elif optname = '-b':
-X Gl.border = 0
-X elif optname = '-c':
-X Gl.colormap = string.atoi(optarg)
-X elif optname = '-d':
-X Gl.debug = Gl.debug + 1
-X Gl.warnings = 1
-X elif optname = '-F':
-X Gl.foreground = 1
-X elif optname = '-f':
-X Gl.fullscreen = 1
-X elif optname = '-G':
-X Gl.gong_int = 60*string.atoi(optarg)
-X elif optname = '-g':
-X Gl.gong_cmd = optarg
-X elif optname = '-n':
-X Gl.nparts = string.atoi(optarg)
-X elif optname = '-s':
-X Gl.doublebuffer = 0
-X elif optname = '-T':
-X Gl.title = optarg
-X elif optname = '-t':
-X Gl.tzdiff = string.atoi(optarg)
-X elif optname = '-u':
-X Gl.update = string.atoi(optarg)
-X elif optname = '-w':
-X Gl.warnings = 1
-X elif optname = '-C':
-X Gl.cyan = Gl.colorsubset = 1
-X elif optname = '-M':
-X Gl.magenta = Gl.colorsubset = 1
-X elif optname = '-Y':
-X Gl.yellow = Gl.colorsubset = 1
-X elif optname = '-K':
-X Gl.black = Gl.colorsubset = 1
-X else:
-X print 'Unsupported option', optname
-X return args
+X	optlist, args = getopt.getopt(sys.argv[1:], 'A:a:B:bc:dFfG:g:n:sT:t:u:wCMYK')
+X	for optname, optarg in optlist:
+X		if optname = '-A':
+X			Gl.fg = eval(optarg)	# Should be (r,g,b)
+X		elif optname = '-a':
+X			Gl.alarm_cmd = optarg
+X		elif optname = '-B':
+X			Gl.bg = eval(optarg)	# Should be (r,g,b)
+X		elif optname = '-b':
+X			Gl.border = 0
+X		elif optname = '-c':
+X			Gl.colormap = string.atoi(optarg)
+X		elif optname = '-d':
+X			Gl.debug = Gl.debug + 1
+X			Gl.warnings = 1
+X		elif optname = '-F':
+X			Gl.foreground = 1
+X		elif optname = '-f':
+X			Gl.fullscreen = 1
+X		elif optname = '-G':
+X			Gl.gong_int = 60*string.atoi(optarg)
+X		elif optname = '-g':
+X			Gl.gong_cmd = optarg
+X		elif optname = '-n':
+X			Gl.nparts = string.atoi(optarg)
+X		elif optname = '-s':
+X			Gl.doublebuffer = 0
+X		elif optname = '-T':
+X			Gl.title = optarg
+X		elif optname = '-t':
+X			Gl.tzdiff = string.atoi(optarg)
+X		elif optname = '-u':
+X			Gl.update = string.atoi(optarg)
+X		elif optname = '-w':
+X			Gl.warnings = 1
+X		elif optname = '-C':
+X			Gl.cyan = Gl.colorsubset = 1
+X		elif optname = '-M':
+X			Gl.magenta = Gl.colorsubset = 1
+X		elif optname = '-Y':
+X			Gl.yellow = Gl.colorsubset = 1
+X		elif optname = '-K':
+X			Gl.black = Gl.colorsubset = 1
+X		else:
+X			print 'Unsupported option', optname
+X	return args
 X
 Xdef usage(exc, msg):
-X if sys.argv:
-X progname = path.basename(sys.argv[0])
-X else:
-X progname = 'mclock'
-X #
-X print progname + ':',
-X if exc = string.atoi_error:
-X print 'non-numeric argument:',
-X print msg
-X #
-X print 'usage:', progname, '[options] [hh [mm [ss]]]'
-X #
-X print '-A r,g,b : alarm background red,green,blue [255,0,0]'
-X print '-a cmd : shell command executed when alarm goes off'
-X print '-B r,g,b : background red,green,blue [0,0,0]'
-X print ' (-B SCREENBG uses the default screen background)'
-X print '-b : suppress window border and title'
-X print '-c cmapid : select explicit colormap'
-X print '-d : more debug output (implies -F, -w)'
-X print '-F : run in foreground'
-X print '-f : use full screen'
-X print '-G intrvl : interval between chimes in minutes [60]'
-X print '-g cmd : shell command executed when chimes go off'
-X print '-s : single buffer mode'
-X print '-w : print various warnings'
-X print '-n nparts : number of parts [' + `NPARTS` + ']'
-X print '-T title : alternate window title [\'' + TITLE + '\']'
-X print '-t tzdiff : time zone difference [' + `TZDIFF` + ']'
-X print '-u update : update interval [60]'
-X print '-CMYK : Cyan, Magenta, Yellow or blacK overlay only'
-X print 'if hh [mm [ss]] is specified, display that time statically'
-X print 'on machines with < 12 bitplanes, -c and -s are forced on'
-X #
-X sys.exit(2)
+X	if sys.argv:
+X		progname = path.basename(sys.argv[0])
+X	else:
+X		progname = 'mclock'
+X	#
+X	print progname + ':',
+X	if exc = string.atoi_error:
+X		print 'non-numeric argument:',
+X	print msg
+X	#
+X	print 'usage:', progname, '[options] [hh [mm [ss]]]'
+X	#
+X	print '-A r,g,b  : alarm background red,green,blue [255,0,0]'
+X	print '-a cmd    : shell command executed when alarm goes off'
+X	print '-B r,g,b  : background red,green,blue [0,0,0]'
+X	print '            (-B SCREENBG uses the default screen background)'
+X	print '-b        : suppress window border and title'
+X	print '-c cmapid : select explicit colormap'
+X	print '-d        : more debug output (implies -F, -w)'
+X	print '-F        : run in foreground'
+X	print '-f        : use full screen'
+X	print '-G intrvl : interval between chimes in minutes [60]'
+X	print '-g cmd    : shell command executed when chimes go off'
+X	print '-s        : single buffer mode'
+X	print '-w        : print various warnings'
+X	print '-n nparts : number of parts [' + `NPARTS` + ']'
+X	print '-T title  : alternate window title [\'' + TITLE + '\']'
+X	print '-t tzdiff : time zone difference [' + `TZDIFF` + ']'
+X	print '-u update : update interval [60]'
+X	print '-CMYK     : Cyan, Magenta, Yellow or blacK overlay only'
+X	print 'if hh [mm [ss]] is specified, display that time statically'
+X	print 'on machines with < 12 bitplanes, -c and -s are forced on'
+X	#
+X	sys.exit(2)
 X
 Xdef doit(localtime):
-X hands = makehands(localtime)
-X list = makelist(hands)
-X render(list, hands)
+X	hands = makehands(localtime)
+X	list = makelist(hands)
+X	render(list, hands)
 X
 Xdef makehands(localtime):
-X localtime = localtime % (12*HOUR)
-X seconds_hand = MIDN + FULLC - (localtime*60) % FULLC
-X big_hand = (MIDN + FULLC - (localtime%HOUR)) % FULLC
-X little_hand = (MIDN + FULLC - ((localtime/12) % HOUR)) % FULLC
-X return little_hand, big_hand, seconds_hand
+X	localtime = localtime % (12*HOUR)
+X	seconds_hand = MIDN + FULLC - (localtime*60) % FULLC
+X	big_hand = (MIDN + FULLC - (localtime%HOUR)) % FULLC
+X	little_hand = (MIDN + FULLC - ((localtime/12) % HOUR)) % FULLC
+X	return little_hand, big_hand, seconds_hand
 X
 Xdef makelist(little_hand, big_hand, seconds_hand):
-X total = []
-X if Gl.cyan or not Gl.colorsubset:
-X total = total + makesublist(big_hand, Gl.indices[0])
-X if Gl.magenta or not Gl.colorsubset:
-X total = total + makesublist(little_hand, Gl.indices[1])
-X if Gl.yellow or not Gl.colorsubset:
-X total = total + makesublist(MIDN, Gl.indices[2])
-X total.sort()
-X return total
+X	total = []
+X	if Gl.cyan or not Gl.colorsubset:
+X		total = total + makesublist(big_hand, Gl.indices[0])
+X	if Gl.magenta or not Gl.colorsubset:
+X		total = total + makesublist(little_hand, Gl.indices[1])
+X	if Gl.yellow or not Gl.colorsubset:
+X		total = total + makesublist(MIDN, Gl.indices[2])
+X	total.sort()
+X	return total
 X
 Xdef makesublist(first, icolor):
-X list = []
-X alpha = FULLC/Gl.nparts
-X a = first - alpha/2
-X for i in range(Gl.nparts):
-X angle = (a + i*alpha + FULLC) % FULLC
-X value = 255*(Gl.nparts-1-i)/(Gl.nparts-1)
-X list.append(angle, icolor, value)
-X list.sort()
-X a, icolor, value = list[0]
-X if a <> 0:
-X a, icolor, value = list[len(list)-1]
-X t = 0, icolor, value
-X list.insert(0, t)
-X return list
+X	list = []
+X	alpha = FULLC/Gl.nparts
+X	a = first - alpha/2
+X	for i in range(Gl.nparts):
+X		angle = (a + i*alpha + FULLC) % FULLC
+X		value = 255*(Gl.nparts-1-i)/(Gl.nparts-1)
+X		list.append(angle, icolor, value)
+X	list.sort()
+X	a, icolor, value = list[0]
+X	if a <> 0:
+X		a, icolor, value = list[len(list)-1]
+X		t = 0, icolor, value
+X		list.insert(0, t)
+X	return list
 X
 Xdef rgb_fg():
-X return Gl.fg
-X # Obsolete code:
-X if Gl.alarm_on:
-X return Gl.bg
-X else:
-X return Gl.fg
+X	return Gl.fg
+X	# Obsolete code:
+X	if Gl.alarm_on:
+X		return Gl.bg
+X	else:
+X		return Gl.fg
 X
 Xdef rgb_bg():
-X return Gl.bg
-X # Obsolete code:
-X if Gl.alarm_on:
-X return Gl.fg
-X else:
-X return Gl.bg
+X	return Gl.bg
+X	# Obsolete code:
+X	if Gl.alarm_on:
+X		return Gl.fg
+X	else:
+X		return Gl.bg
 X
 Xdef clearall():
-X Gl.c3i(rgb_bg())
-X clear()
-X if Gl.doublebuffer:
-X swapbuffers()
-X clear()
+X	Gl.c3i(rgb_bg())
+X	clear()
+X	if Gl.doublebuffer:
+X		swapbuffers()
+X		clear()
 X
 Xdef draw_alarm(color):
-X frontbuffer(TRUE)
-X Gl.c3i(color)
-X pushmatrix()
-X rotate(-((Gl.alarm_time/12)%3600), 'z')
-X bgnpolygon()
-X v2f( 0.00,1.00)
-X v2f( 0.04,1.05)
-X v2f(-0.04,1.05)
-X endpolygon()
-X popmatrix()
-X #
-X pushmatrix()
-X rotate(-((Gl.alarm_time)%3600), 'z')
-X bgnpolygon()
-X v2f( 0.00,1.05)
-X v2f( 0.07,1.10)
-X v2f(-0.07,1.10)
-X endpolygon()
-X popmatrix()
-X #
-X cmov2(-1.06, -1.06)
-X charstr(string.rjust(`Gl.alarm_time/3600`,2))
-X charstr(':')
-X charstr(string.zfill((Gl.alarm_time/60)%60,2))
-X frontbuffer(FALSE)
+X	frontbuffer(TRUE)
+X	Gl.c3i(color)
+X	pushmatrix()
+X	rotate(-((Gl.alarm_time/12)%3600), 'z')
+X	bgnpolygon()
+X	v2f( 0.00,1.00)
+X	v2f( 0.04,1.05)
+X	v2f(-0.04,1.05)
+X	endpolygon()
+X	popmatrix()
+X	#
+X	pushmatrix()
+X	rotate(-((Gl.alarm_time)%3600), 'z')
+X	bgnpolygon()
+X	v2f( 0.00,1.05)
+X	v2f( 0.07,1.10)
+X	v2f(-0.07,1.10)
+X	endpolygon()
+X	popmatrix()
+X	#
+X	cmov2(-1.06, -1.06)
+X	charstr(string.rjust(`Gl.alarm_time/3600`,2))
+X	charstr(':')
+X	charstr(string.zfill((Gl.alarm_time/60)%60,2))
+X	frontbuffer(FALSE)
 X
 Xdef render(list, (little_hand, big_hand, seconds_hand)):
-X #
-X if Gl.colormap:
-X resetindex()
-X #
-X if not list:
-X Gl.c3i(255, 255, 255) # White
-X circf(0.0, 0.0, 1.0)
-X else:
-X list.append(3600, 0, 255) # Sentinel
-X #
-X rgb = [255, 255, 255]
-X a_prev = 0
-X for a, icolor, value in list:
-X if a <> a_prev:
-X [r, g, b] = rgb
-X if Gl.debug > 1:
-X print rgb, a_prev, a
-X Gl.c3i(r, g, b)
-X arcf(0.0, 0.0, 1.0, a_prev, a)
-X rgb[icolor] = value
-X a_prev = a
-X #
-X if Gl.black or not Gl.colorsubset:
-X #
-X # Draw the hands -- in black
-X #
-X Gl.c3i(0, 0, 0)
-X #
-X if Gl.update = 1 and not Gl.iconic:
-X # Seconds hand is only drawn if we update every second
-X pushmatrix()
-X rotate(seconds_hand, 'z')
-X bgnline()
-X v2f(0.0, 0.0)
-X v2f(1.0, 0.0)
-X endline()
-X popmatrix()
-X #
-X pushmatrix()
-X rotate(big_hand, 'z')
-X rectf(0.0, -0.01, 0.97, 0.01)
-X circf(0.0, 0.0, 0.01)
-X circf(0.97, 0.0, 0.01)
-X popmatrix()
-X #
-X pushmatrix()
-X rotate(little_hand, 'z')
-X rectf(0.04, -0.02, 0.63, 0.02)
-X circf(0.04, 0.0, 0.02)
-X circf(0.63, 0.0, 0.02)
-X popmatrix()
-X #
-X # Draw the alarm time, if set or being set
-X #
-X if Gl.alarm_set:
-X draw_alarm(rgb_fg())
-X #
-X if Gl.doublebuffer: swapbuffers()
+X	#
+X	if Gl.colormap:
+X		resetindex()
+X	#
+X	if not list:
+X		Gl.c3i(255, 255, 255) # White
+X		circf(0.0, 0.0, 1.0)
+X	else:
+X		list.append(3600, 0, 255) # Sentinel
+X	#
+X	rgb = [255, 255, 255]
+X	a_prev = 0
+X	for a, icolor, value in list:
+X		if a <> a_prev:
+X			[r, g, b] = rgb
+X			if Gl.debug > 1:
+X				print rgb, a_prev, a
+X			Gl.c3i(r, g, b)
+X			arcf(0.0, 0.0, 1.0, a_prev, a)
+X		rgb[icolor] = value
+X		a_prev = a
+X	#
+X	if Gl.black or not Gl.colorsubset:
+X		#
+X		# Draw the hands -- in black
+X		#
+X		Gl.c3i(0, 0, 0)
+X		#
+X		if Gl.update = 1 and not Gl.iconic:
+X			# Seconds hand is only drawn if we update every second
+X			pushmatrix()
+X			rotate(seconds_hand, 'z')
+X			bgnline()
+X			v2f(0.0, 0.0)
+X			v2f(1.0, 0.0)
+X			endline()
+X			popmatrix()
+X		#
+X		pushmatrix()
+X		rotate(big_hand, 'z')
+X		rectf(0.0, -0.01, 0.97, 0.01)
+X		circf(0.0, 0.0, 0.01)
+X		circf(0.97, 0.0, 0.01)
+X		popmatrix()
+X		#
+X		pushmatrix()
+X		rotate(little_hand, 'z')
+X		rectf(0.04, -0.02, 0.63, 0.02)
+X		circf(0.04, 0.0, 0.02)
+X		circf(0.63, 0.0, 0.02)
+X		popmatrix()
+X		#
+X		# Draw the alarm time, if set or being set
+X		#
+X		if Gl.alarm_set:
+X			draw_alarm(rgb_fg())
+X	#
+X	if Gl.doublebuffer: swapbuffers()
 X
 Xdef makewindow():
-X #
-X if Gl.debug or Gl.foreground:
-X foreground()
-X #
-X if Gl.fullscreen:
-X # XXX Should find out true screen size using getgdesc()
-X prefposition(0, 1279, 0, 1023)
-X else:
-X keepaspect(1, 1)
-X minsize(64, 64)
-X #
-X if not Gl.border:
-X noborder()
-X wid = winopen(Gl.title)
-X #
-X if not Gl.fullscreen:
-X keepaspect(1, 1)
-X minsize(10, 10)
-X maxsize(2000, 2000)
-X iconsize(66, 66)
-X winconstraints()
-X #
-X nplanes = getplanes()
-X nmaps = getgdesc(GD_NMMAPS)
-X if Gl.warnings:
-X print nplanes, 'color planes,', nmaps, 'color maps'
-X #
-X if nplanes < 12 or Gl.colormap:
-X if not Gl.colormap:
-X Gl.colormap = nmaps - 1
-X if Gl.warnings:
-X print 'not enough color planes available',
-X print 'for RGB mode; forcing colormap mode'
-X print 'using color map number', Gl.colormap
-X if not Gl.colorsubset:
-X needed = 3
-X else:
-X needed = Gl.cyan + Gl.magenta + Gl.yellow
-X needed = needed*Gl.nparts
-X if Gl.bg <> (0, 0, 0):
-X needed = needed+1
-X if Gl.fg <> (0, 0, 0):
-X needed = needed+1
-X if Gl.doublebuffer:
-X if needed > available(nplanes/2):
-X Gl.doublebuffer = 0
-X if Gl.warnings:
-X print 'not enough colors available',
-X print 'for double buffer mode;',
-X print 'forcing single buffer mode'
-X else:
-X nplanes = nplanes/2
-X if needed > available(nplanes):
-X # Do this warning always
-X print 'still not enough colors available;',
-X print 'parts will be left white'
-X print '(needed', needed, 'but have only',
-X print available(nplanes), 'colors available)'
-X #
-X if Gl.doublebuffer:
-X doublebuffer()
-X gconfig()
-X #
-X if Gl.colormap:
-X Gl.c3i = pseudo_c3i
-X fixcolormap()
-X else:
-X Gl.c3i = c3i
-X RGBmode()
-X gconfig()
-X #
-X if Gl.fullscreen:
-X # XXX Should find out true screen size using getgdesc()
-X ortho2(-1.1*1.280, 1.1*1.280, -1.1*1.024, 1.1*1.024)
-X else:
-X ortho2(-1.1, 1.1, -1.1, 1.1)
-X #
-X return wid
+X	#
+X	if Gl.debug or Gl.foreground:
+X		foreground()
+X	#
+X	if Gl.fullscreen:
+X		# XXX Should find out true screen size using getgdesc()
+X		prefposition(0, 1279, 0, 1023)
+X	else:
+X		keepaspect(1, 1)
+X		minsize(64, 64)
+X	#
+X	if not Gl.border:
+X		noborder()
+X	wid = winopen(Gl.title)
+X	#
+X	if not Gl.fullscreen:
+X		keepaspect(1, 1)
+X		minsize(10, 10)
+X		maxsize(2000, 2000)
+X		iconsize(66, 66)
+X		winconstraints()
+X	#
+X	nplanes = getplanes()
+X	nmaps = getgdesc(GD_NMMAPS)
+X	if Gl.warnings:
+X		print nplanes, 'color planes,', nmaps, 'color maps'
+X	#
+X	if nplanes < 12 or Gl.colormap:
+X		if not Gl.colormap:
+X			Gl.colormap = nmaps - 1
+X			if Gl.warnings:
+X				print 'not enough color planes available',
+X				print 'for RGB mode; forcing colormap mode'
+X				print 'using color map number', Gl.colormap
+X		if not Gl.colorsubset:
+X			needed = 3
+X		else:
+X			needed = Gl.cyan + Gl.magenta + Gl.yellow
+X		needed = needed*Gl.nparts
+X		if Gl.bg <> (0, 0, 0):
+X			needed = needed+1
+X		if Gl.fg <> (0, 0, 0):
+X			needed = needed+1
+X		if Gl.doublebuffer:
+X			if needed > available(nplanes/2):
+X				Gl.doublebuffer = 0
+X				if Gl.warnings:
+X					print 'not enough colors available',
+X					print 'for double buffer mode;',
+X					print 'forcing single buffer mode'
+X			else:
+X				nplanes = nplanes/2
+X		if needed > available(nplanes):
+X			# Do this warning always
+X			print 'still not enough colors available;',
+X			print 'parts will be left white'
+X			print '(needed', needed, 'but have only',
+X			print available(nplanes), 'colors available)'
+X	#
+X	if Gl.doublebuffer:
+X		doublebuffer()
+X		gconfig()
+X	#
+X	if Gl.colormap:
+X		Gl.c3i = pseudo_c3i
+X		fixcolormap()
+X	else:
+X		Gl.c3i = c3i
+X		RGBmode()
+X		gconfig()
+X	#
+X	if Gl.fullscreen:
+X		# XXX Should find out true screen size using getgdesc()
+X		ortho2(-1.1*1.280, 1.1*1.280, -1.1*1.024, 1.1*1.024)
+X	else:
+X		ortho2(-1.1, 1.1, -1.1, 1.1)
+X	#
+X	return wid
 X
 Xdef available(nplanes):
-X return pow(2, nplanes) - 1 # Reserve one pixel for black
+X	return pow(2, nplanes) - 1	# Reserve one pixel for black
 X
 Xdef fixcolormap():
-X multimap()
-X gconfig()
-X nplanes = getplanes()
-X if Gl.warnings:
-X print 'multimap mode has', nplanes, 'color planes'
-X imap = Gl.colormap
-X Gl.startindex = pow(2, nplanes) - 1
-X Gl.stopindex = 1
-X setmap(imap)
-X mapcolor(0, 0, 0, 0) # Fixed entry for black
-X if Gl.bg <> (0, 0, 0):
-X r, g, b = Gl.bg
-X mapcolor(1, r, g, b) # Fixed entry for Gl.bg
-X Gl.stopindex = 2
-X if Gl.fg <> (0, 0, 0):
-X r, g, b = Gl.fg
-X mapcolor(2, r, g, b) # Fixed entry for Gl.fg
-X Gl.stopindex = 3
-X Gl.overflow_seen = 0
-X resetindex()
+X	multimap()
+X	gconfig()
+X	nplanes = getplanes()
+X	if Gl.warnings:
+X		print 'multimap mode has', nplanes, 'color planes'
+X	imap = Gl.colormap
+X	Gl.startindex = pow(2, nplanes) - 1
+X	Gl.stopindex = 1
+X	setmap(imap)
+X	mapcolor(0, 0, 0, 0) # Fixed entry for black
+X	if Gl.bg <> (0, 0, 0):
+X		r, g, b = Gl.bg
+X		mapcolor(1, r, g, b) # Fixed entry for Gl.bg
+X		Gl.stopindex = 2
+X	if Gl.fg <> (0, 0, 0):
+X		r, g, b = Gl.fg
+X		mapcolor(2, r, g, b) # Fixed entry for Gl.fg
+X		Gl.stopindex = 3
+X	Gl.overflow_seen = 0
+X	resetindex()
 X
 Xdef resetindex():
-X Gl.index = Gl.startindex
+X	Gl.index = Gl.startindex
 X
 Xr0g0b0 = (0, 0, 0)
 X
 Xdef pseudo_c3i(rgb):
-X if rgb = r0g0b0:
-X index = 0
-X elif rgb = Gl.bg:
-X index = 1
-X elif rgb = Gl.fg:
-X index = 2
-X else:
-X index = definecolor(rgb)
-X color(index)
+X	if rgb = r0g0b0:
+X		index = 0
+X	elif rgb = Gl.bg:
+X		index = 1
+X	elif rgb = Gl.fg:
+X		index = 2
+X	else:
+X		index = definecolor(rgb)
+X	color(index)
 X
 Xdef definecolor(rgb):
-X index = Gl.index
-X if index < Gl.stopindex:
-X if Gl.debug: print 'definecolor hard case', rgb
-X # First see if we already have this one...
-X for index in range(Gl.stopindex, Gl.startindex+1):
-X if rgb = getmcolor(index):
-X if Gl.debug: print 'return', index
-X return index
-X # Don't clobber reserverd colormap entries
-X if not Gl.overflow_seen:
-X # Shouldn't happen any more, hence no Gl.warnings test
-X print 'mclock: out of colormap entries'
-X Gl.overflow_seen = 1
-X return Gl.stopindex
-X r, g, b = rgb
-X if Gl.debug > 1: print 'mapcolor', (index, r, g, b)
-X mapcolor(index, r, g, b)
-X Gl.index = index - 1
-X return index
+X	index = Gl.index
+X	if index < Gl.stopindex:
+X		if Gl.debug: print 'definecolor hard case', rgb
+X		# First see if we already have this one...
+X		for index in range(Gl.stopindex, Gl.startindex+1):
+X			if rgb = getmcolor(index):
+X				if Gl.debug: print 'return', index
+X				return index
+X		# Don't clobber reserverd colormap entries
+X		if not Gl.overflow_seen:
+X			# Shouldn't happen any more, hence no Gl.warnings test
+X			print 'mclock: out of colormap entries'
+X			Gl.overflow_seen = 1
+X		return Gl.stopindex
+X	r, g, b = rgb
+X	if Gl.debug > 1: print 'mapcolor', (index, r, g, b)
+X	mapcolor(index, r, g, b)
+X	Gl.index = index - 1
+X	return index
 X
 X# Compute n**i
 Xdef pow(n, i):
-X x = 1
-X for j in range(i): x = x*n
-X return x
+X	x = 1
+X	for j in range(i): x = x*n
+X	return x
 X
 Xdef mouseclick(mouse, updown, x, y):
-X if updown = 1:
-X # mouse button came down, start tracking
-X if Gl.debug:
-X print 'mouse', mouse, 'down at', x, y
-X if mouse = 2:
-X Gl.mouse2down = 1
-X mouse2track(x, y)
-X elif mouse = 3:
-X Gl.mouse3down = 1
-X mouse3track(x, y)
-X else:
-X print 'fatal error'
-X qdevice(MOUSEX)
-X qdevice(MOUSEY)
-X return 0
-X else:
-X # mouse button came up, stop tracking
-X if Gl.debug:
-X print 'mouse', mouse, 'up at', x, y
-X unqdevice(MOUSEX)
-X unqdevice(MOUSEY)
-X if mouse = 2:
-X mouse2track(x, y)
-X Gl.mouse2down = 0
-X elif mouse = 3:
-X mouse3track(x, y)
-X Gl.mouse3down = 0
-X else:
-X print 'fatal error'
-X Gl.alarm_set = 1
-X return 1
+X	if updown = 1:
+X		# mouse button came down, start tracking
+X		if Gl.debug:
+X			print 'mouse', mouse, 'down at', x, y
+X		if mouse = 2:
+X			Gl.mouse2down = 1
+X			mouse2track(x, y)
+X		elif mouse = 3:
+X			Gl.mouse3down = 1
+X			mouse3track(x, y)
+X		else:
+X			print 'fatal error'
+X		qdevice(MOUSEX)
+X		qdevice(MOUSEY)
+X		return 0
+X	else:
+X		# mouse button came up, stop tracking
+X		if Gl.debug:
+X			print 'mouse', mouse, 'up at', x, y
+X		unqdevice(MOUSEX)
+X		unqdevice(MOUSEY)
+X		if mouse = 2:
+X			mouse2track(x, y)
+X			Gl.mouse2down = 0
+X		elif mouse = 3:
+X			mouse3track(x, y)
+X			Gl.mouse3down = 0
+X		else:
+X			print 'fatal error'
+X		Gl.alarm_set = 1
+X		return 1
 X
 Xdef mouse3track(x, y):
-X # first compute polar coordinates from x and y
-X cx, cy = Gl.ox + Gl.cx/2, Gl.oy + Gl.cy/2
-X x, y = x - cx, y - cy
-X if (x, y) = (0, 0): return # would cause an exception
-X minutes = int(30.5 + 30.0*math.atan2(float(-x), float(-y))/pi)
-X if minutes = 60: minutes = 0
-X a,b = Gl.alarm_minutes/15, minutes/15
-X if (a,b) = (0,3):
-X # Moved backward through 12 o'clock:
-X Gl.alarm_hours = Gl.alarm_hours - 1
-X if Gl.alarm_hours < 0: Gl.alarm_hours = Gl.alarm_hours + 24
-X if (a,b) = (3,0):
-X # Moved forward through 12 o'clock:
-X Gl.alarm_hours = Gl.alarm_hours + 1
-X if Gl.alarm_hours >= 24: Gl.alarm_hours = Gl.alarm_hours - 24
-X Gl.alarm_minutes = minutes
-X seconds = Gl.alarm_hours * HOUR + Gl.alarm_minutes * MINUTE
-X if seconds <> Gl.alarm_time:
-X draw_alarm(rgb_bg())
-X Gl.alarm_time = seconds
-X draw_alarm(rgb_fg())
+X	# first compute polar coordinates from x and y
+X	cx, cy = Gl.ox + Gl.cx/2, Gl.oy + Gl.cy/2
+X	x, y = x - cx, y - cy
+X	if (x, y) = (0, 0): return	# would cause an exception
+X	minutes = int(30.5 + 30.0*math.atan2(float(-x), float(-y))/pi)
+X	if minutes = 60: minutes = 0
+X	a,b = Gl.alarm_minutes/15, minutes/15
+X	if (a,b) = (0,3):
+X		# Moved backward through 12 o'clock:
+X		Gl.alarm_hours = Gl.alarm_hours - 1
+X		if Gl.alarm_hours < 0: Gl.alarm_hours = Gl.alarm_hours + 24
+X	if (a,b) = (3,0):
+X		# Moved forward through 12 o'clock:
+X		Gl.alarm_hours = Gl.alarm_hours + 1
+X		if Gl.alarm_hours >= 24: Gl.alarm_hours = Gl.alarm_hours - 24
+X	Gl.alarm_minutes = minutes
+X	seconds = Gl.alarm_hours * HOUR + Gl.alarm_minutes * MINUTE
+X	if seconds <> Gl.alarm_time:
+X		draw_alarm(rgb_bg())
+X		Gl.alarm_time = seconds
+X		draw_alarm(rgb_fg())
 X
 Xdef mouse2track(x, y):
-X # first compute polar coordinates from x and y
-X cx, cy = Gl.ox + Gl.cx/2, Gl.oy + Gl.cy/2
-X x, y = x - cx, y - cy
-X if (x, y) = (0, 0): return # would cause an exception
-X hours = int(6.5 - float(Gl.alarm_minutes)/60.0 + 6.0*math.atan2(float(-x), float(-y))/pi)
-X if hours = 12: hours = 0
-X if (Gl.alarm_hours,hours) = (0,11):
-X # Moved backward through midnight:
-X Gl.alarm_hours = 23
-X elif (Gl.alarm_hours,hours) = (12,11):
-X # Moved backward through noon:
-X Gl.alarm_hours = 11
-X elif (Gl.alarm_hours,hours) = (11,0):
-X # Moved forward through noon:
-X Gl.alarm_hours = 12
-X elif (Gl.alarm_hours,hours) = (23,0):
-X # Moved forward through midnight:
-X Gl.alarm_hours = 0
-X elif Gl.alarm_hours < 12:
-X Gl.alarm_hours = hours
-X else:
-X Gl.alarm_hours = hours + 12
-X seconds = Gl.alarm_hours * HOUR + Gl.alarm_minutes * MINUTE
-X if seconds <> Gl.alarm_time:
-X draw_alarm(rgb_bg())
-X Gl.alarm_time = seconds
-X draw_alarm(rgb_fg())
+X	# first compute polar coordinates from x and y
+X	cx, cy = Gl.ox + Gl.cx/2, Gl.oy + Gl.cy/2
+X	x, y = x - cx, y - cy
+X	if (x, y) = (0, 0): return	# would cause an exception
+X	hours = int(6.5 - float(Gl.alarm_minutes)/60.0 + 6.0*math.atan2(float(-x), float(-y))/pi)
+X	if hours = 12: hours = 0
+X	if (Gl.alarm_hours,hours) = (0,11):
+X		# Moved backward through midnight:
+X		Gl.alarm_hours = 23
+X	elif (Gl.alarm_hours,hours) = (12,11):
+X		# Moved backward through noon:
+X		Gl.alarm_hours = 11
+X	elif (Gl.alarm_hours,hours) = (11,0):
+X		# Moved forward through noon:
+X		Gl.alarm_hours = 12
+X	elif (Gl.alarm_hours,hours) = (23,0):
+X		# Moved forward through midnight:
+X		Gl.alarm_hours = 0
+X	elif Gl.alarm_hours < 12:
+X		Gl.alarm_hours = hours
+X	else:
+X		Gl.alarm_hours = hours + 12
+X	seconds = Gl.alarm_hours * HOUR + Gl.alarm_minutes * MINUTE
+X	if seconds <> Gl.alarm_time:
+X		draw_alarm(rgb_bg())
+X		Gl.alarm_time = seconds
+X		draw_alarm(rgb_fg())
 X
 Xdef initmenu():
-X Gl.pup = pup = newpup()
-X addtopup(pup, 'M Clock%t|Alarm On/Off|Seconds Hand On/Off|Quit', 0)
+X	Gl.pup = pup = newpup()
+X	addtopup(pup, 'M Clock%t|Alarm On/Off|Seconds Hand On/Off|Quit', 0)
 X
 Xdef handlemenu():
-X item = dopup(Gl.pup)
-X if item = 1:
-X # Toggle alarm
-X if Gl.alarm_set:
-X Gl.alarm_set = 0
-X Gl.alarm_on = 0
-X else:
-X Gl.alarm_set = 1
-X Gl.change = 1
-X clearall()
-X elif item = 2:
-X # Toggle Seconds Hand
-X if Gl.update = 1:
-X Gl.update = 60
-X Gl.timernoise = 60
-X else:
-X Gl.update = 1
-X Gl.timernoise = 6
-X Gl.change = 1
-X elif item = 3:
-X if Gl.debug: print 'Exit'
-X sys.exit(0)
+X	item = dopup(Gl.pup)
+X	if item = 1:
+X		# Toggle alarm
+X		if Gl.alarm_set:
+X			Gl.alarm_set = 0
+X			Gl.alarm_on = 0
+X		else:
+X			Gl.alarm_set = 1
+X		Gl.change = 1
+X		clearall()
+X	elif item = 2:
+X		# Toggle Seconds Hand
+X		if Gl.update = 1:
+X			Gl.update = 60
+X			Gl.timernoise = 60
+X		else:
+X			Gl.update = 1
+X			Gl.timernoise = 6
+X		Gl.change = 1
+X	elif item = 3:
+X		if Gl.debug: print 'Exit'
+X		sys.exit(0)
 X
 Xmain()
 EOF
@@ -749,12 +749,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -789,12 +789,12 @@ X
 X#ifdef TRACE
 Xstatic int
 Xprtrace(v, str)
-X object *v;
-X char *str;
+X	object *v;
+X	char *str;
 X{
-X printf("%s ", str);
-X printobject(v, stdout, 0);
-X printf("\n");
+X	printf("%s ", str);
+X	printobject(v, stdout, 0);
+X	printf("\n");
 X}
 X#endif
 X
@@ -803,48 +803,48 @@ X
 Xobject *
 Xgetlocals()
 X{
-X if (current_frame == NULL)
-X return NULL;
-X else
-X return current_frame->f_locals;
+X	if (current_frame == NULL)
+X		return NULL;
+X	else
+X		return current_frame->f_locals;
 X}
 X
 Xobject *
 Xgetglobals()
 X{
-X if (current_frame == NULL)
-X return NULL;
-X else
-X return current_frame->f_globals;
+X	if (current_frame == NULL)
+X		return NULL;
+X	else
+X		return current_frame->f_globals;
 X}
 X
 Xvoid
 Xprinttraceback(fp)
-X FILE *fp;
+X	FILE *fp;
 X{
-X object *v = tb_fetch();
-X if (v != NULL) {
-X fprintf(fp, "Stack backtrace (innermost last):\n");
-X tb_print(v, fp);
-X DECREF(v);
-X }
+X	object *v = tb_fetch();
+X	if (v != NULL) {
+X		fprintf(fp, "Stack backtrace (innermost last):\n");
+X		tb_print(v, fp);
+X		DECREF(v);
+X	}
 X}
 X
 X
 X/* XXX Mixing "print ...," and direct file I/O on stdin/stdout
-X XXX has some bad consequences. The needspace flag should
-X XXX really be part of the file object. */
+X   XXX has some bad consequences.  The needspace flag should
+X   XXX really be part of the file object. */
 X
 Xstatic int needspace;
 X
 Xvoid
 Xflushline()
 X{
-X FILE *fp = sysgetfile("stdout", stdout);
-X if (needspace) {
-X fprintf(fp, "\n");
-X needspace = 0;
-X }
+X	FILE *fp = sysgetfile("stdout", stdout);
+X	if (needspace) {
+X		fprintf(fp, "\n");
+X		needspace = 0;
+X	}
 X}
 X
 X
@@ -852,1334 +852,1334 @@ X/* Test a value used as condition, e.g., in a for or if statement */
 X
 Xstatic int
 Xtestbool(v)
-X object *v;
+X	object *v;
 X{
-X if (is_intobject(v))
-X return getintvalue(v) != 0;
-X if (is_floatobject(v))
-X return getfloatvalue(v) != 0.0;
-X if (v->ob_type->tp_as_sequence != NULL)
-X return (*v->ob_type->tp_as_sequence->sq_length)(v) != 0;
-X if (v->ob_type->tp_as_mapping != NULL)
-X return (*v->ob_type->tp_as_mapping->mp_length)(v) != 0;
-X if (v == None)
-X return 0;
-X /* All other objects are 'true' */
-X return 1;
+X	if (is_intobject(v))
+X		return getintvalue(v) != 0;
+X	if (is_floatobject(v))
+X		return getfloatvalue(v) != 0.0;
+X	if (v->ob_type->tp_as_sequence != NULL)
+X		return (*v->ob_type->tp_as_sequence->sq_length)(v) != 0;
+X	if (v->ob_type->tp_as_mapping != NULL)
+X		return (*v->ob_type->tp_as_mapping->mp_length)(v) != 0;
+X	if (v == None)
+X		return 0;
+X	/* All other objects are 'true' */
+X	return 1;
 X}
 X
 Xstatic object *
 Xadd(v, w)
-X object *v, *w;
+X	object *v, *w;
 X{
-X if (v->ob_type->tp_as_number != NULL)
-X v = (*v->ob_type->tp_as_number->nb_add)(v, w);
-X else if (v->ob_type->tp_as_sequence != NULL)
-X v = (*v->ob_type->tp_as_sequence->sq_concat)(v, w);
-X else {
-X err_setstr(TypeError, "+ not supported by operands");
-X return NULL;
-X }
-X return v;
+X	if (v->ob_type->tp_as_number != NULL)
+X		v = (*v->ob_type->tp_as_number->nb_add)(v, w);
+X	else if (v->ob_type->tp_as_sequence != NULL)
+X		v = (*v->ob_type->tp_as_sequence->sq_concat)(v, w);
+X	else {
+X		err_setstr(TypeError, "+ not supported by operands");
+X		return NULL;
+X	}
+X	return v;
 X}
 X
 Xstatic object *
 Xsub(v, w)
-X object *v, *w;
+X	object *v, *w;
 X{
-X if (v->ob_type->tp_as_number != NULL)
-X return (*v->ob_type->tp_as_number->nb_subtract)(v, w);
-X err_setstr(TypeError, "bad operand type(s) for -");
-X return NULL;
+X	if (v->ob_type->tp_as_number != NULL)
+X		return (*v->ob_type->tp_as_number->nb_subtract)(v, w);
+X	err_setstr(TypeError, "bad operand type(s) for -");
+X	return NULL;
 X}
 X
 Xstatic object *
 Xmul(v, w)
-X object *v, *w;
+X	object *v, *w;
 X{
-X typeobject *tp;
-X if (is_intobject(v) && w->ob_type->tp_as_sequence != NULL) {
-X /* int*sequence -- swap v and w */
-X object *tmp = v;
-X v = w;
-X w = tmp;
-X }
-X tp = v->ob_type;
-X if (tp->tp_as_number != NULL)
-X return (*tp->tp_as_number->nb_multiply)(v, w);
-X if (tp->tp_as_sequence != NULL) {
-X if (!is_intobject(w)) {
-X err_setstr(TypeError,
-X "can't multiply sequence with non-int");
-X return NULL;
-X }
-X if (tp->tp_as_sequence->sq_repeat == NULL) {
-X err_setstr(TypeError, "sequence does not support *");
-X return NULL;
-X }
-X return (*tp->tp_as_sequence->sq_repeat)
-X (v, (int)getintvalue(w));
-X }
-X err_setstr(TypeError, "bad operand type(s) for *");
-X return NULL;
+X	typeobject *tp;
+X	if (is_intobject(v) && w->ob_type->tp_as_sequence != NULL) {
+X		/* int*sequence -- swap v and w */
+X		object *tmp = v;
+X		v = w;
+X		w = tmp;
+X	}
+X	tp = v->ob_type;
+X	if (tp->tp_as_number != NULL)
+X		return (*tp->tp_as_number->nb_multiply)(v, w);
+X	if (tp->tp_as_sequence != NULL) {
+X		if (!is_intobject(w)) {
+X			err_setstr(TypeError,
+X				"can't multiply sequence with non-int");
+X			return NULL;
+X		}
+X		if (tp->tp_as_sequence->sq_repeat == NULL) {
+X			err_setstr(TypeError, "sequence does not support *");
+X			return NULL;
+X		}
+X		return (*tp->tp_as_sequence->sq_repeat)
+X						(v, (int)getintvalue(w));
+X	}
+X	err_setstr(TypeError, "bad operand type(s) for *");
+X	return NULL;
 X}
 X
 Xstatic object *
 Xdivide(v, w)
-X object *v, *w;
+X	object *v, *w;
 X{
-X if (v->ob_type->tp_as_number != NULL)
-X return (*v->ob_type->tp_as_number->nb_divide)(v, w);
-X err_setstr(TypeError, "bad operand type(s) for /");
-X return NULL;
+X	if (v->ob_type->tp_as_number != NULL)
+X		return (*v->ob_type->tp_as_number->nb_divide)(v, w);
+X	err_setstr(TypeError, "bad operand type(s) for /");
+X	return NULL;
 X}
 X
 Xstatic object *
 Xrem(v, w)
-X object *v, *w;
+X	object *v, *w;
 X{
-X if (v->ob_type->tp_as_number != NULL)
-X return (*v->ob_type->tp_as_number->nb_remainder)(v, w);
-X err_setstr(TypeError, "bad operand type(s) for %");
-X return NULL;
+X	if (v->ob_type->tp_as_number != NULL)
+X		return (*v->ob_type->tp_as_number->nb_remainder)(v, w);
+X	err_setstr(TypeError, "bad operand type(s) for %");
+X	return NULL;
 X}
 X
 Xstatic object *
 Xneg(v)
-X object *v;
+X	object *v;
 X{
-X if (v->ob_type->tp_as_number != NULL)
-X return (*v->ob_type->tp_as_number->nb_negative)(v);
-X err_setstr(TypeError, "bad operand type(s) for unary -");
-X return NULL;
+X	if (v->ob_type->tp_as_number != NULL)
+X		return (*v->ob_type->tp_as_number->nb_negative)(v);
+X	err_setstr(TypeError, "bad operand type(s) for unary -");
+X	return NULL;
 X}
 X
 Xstatic object *
 Xpos(v)
-X object *v;
+X	object *v;
 X{
-X if (v->ob_type->tp_as_number != NULL)
-X return (*v->ob_type->tp_as_number->nb_positive)(v);
-X err_setstr(TypeError, "bad operand type(s) for unary +");
-X return NULL;
+X	if (v->ob_type->tp_as_number != NULL)
+X		return (*v->ob_type->tp_as_number->nb_positive)(v);
+X	err_setstr(TypeError, "bad operand type(s) for unary +");
+X	return NULL;
 X}
 X
 Xstatic object *
 Xnot(v)
-X object *v;
+X	object *v;
 X{
-X int outcome = testbool(v);
-X object *w = outcome == 0 ? True : False;
-X INCREF(w);
-X return w;
+X	int outcome = testbool(v);
+X	object *w = outcome == 0 ? True : False;
+X	INCREF(w);
+X	return w;
 X}
 X
 Xstatic object *
 Xcall_builtin(func, arg)
-X object *func;
-X object *arg;
+X	object *func;
+X	object *arg;
 X{
-X if (is_methodobject(func)) {
-X method meth = getmethod(func);
-X object *self = getself(func);
-X return (*meth)(self, arg);
-X }
-X if (is_classobject(func)) {
-X if (arg != NULL) {
-X err_setstr(TypeError,
-X "classobject() allows no arguments");
-X return NULL;
-X }
-X return newclassmemberobject(func);
-X }
-X err_setstr(TypeError, "call of non-function");
-X return NULL;
+X	if (is_methodobject(func)) {
+X		method meth = getmethod(func);
+X		object *self = getself(func);
+X		return (*meth)(self, arg);
+X	}
+X	if (is_classobject(func)) {
+X		if (arg != NULL) {
+X			err_setstr(TypeError,
+X				"classobject() allows no arguments");
+X			return NULL;
+X		}
+X		return newclassmemberobject(func);
+X	}
+X	err_setstr(TypeError, "call of non-function");
+X	return NULL;
 X}
 X
 Xstatic object *
 Xcall_function(func, arg)
-X object *func;
-X object *arg;
+X	object *func;
+X	object *arg;
 X{
-X object *newarg = NULL;
-X object *newlocals, *newglobals;
-X object *co, *v;
-X
-X if (is_classmethodobject(func)) {
-X object *self = classmethodgetself(func);
-X func = classmethodgetfunc(func);
-X if (arg == NULL) {
-X arg = self;
-X }
-X else {
-X newarg = newtupleobject(2);
-X if (newarg == NULL)
-X return NULL;
-X INCREF(self);
-X INCREF(arg);
-X settupleitem(newarg, 0, self);
-X settupleitem(newarg, 1, arg);
-X arg = newarg;
-X }
-X }
-X else {
-X if (!is_funcobject(func)) {
-X err_setstr(TypeError, "call of non-function");
-X return NULL;
-X }
-X }
-X
-X co = getfunccode(func);
-X if (co == NULL) {
-X XDECREF(newarg);
-X return NULL;
-X }
-X if (!is_codeobject(co)) {
-X fprintf(stderr, "XXX Bad code\n");
-X abort();
-X }
-X newlocals = newdictobject();
-X if (newlocals == NULL) {
-X XDECREF(newarg);
-X return NULL;
-X }
-X
-X newglobals = getfuncglobals(func);
-X INCREF(newglobals);
-X
-X v = eval_code((codeobject *)co, newglobals, newlocals, arg);
-X
-X DECREF(newlocals);
-X DECREF(newglobals);
-X
-X XDECREF(newarg);
-X
-X return v;
+X	object *newarg = NULL;
+X	object *newlocals, *newglobals;
+X	object *co, *v;
+X	
+X	if (is_classmethodobject(func)) {
+X		object *self = classmethodgetself(func);
+X		func = classmethodgetfunc(func);
+X		if (arg == NULL) {
+X			arg = self;
+X		}
+X		else {
+X			newarg = newtupleobject(2);
+X			if (newarg == NULL)
+X				return NULL;
+X			INCREF(self);
+X			INCREF(arg);
+X			settupleitem(newarg, 0, self);
+X			settupleitem(newarg, 1, arg);
+X			arg = newarg;
+X		}
+X	}
+X	else {
+X		if (!is_funcobject(func)) {
+X			err_setstr(TypeError, "call of non-function");
+X			return NULL;
+X		}
+X	}
+X	
+X	co = getfunccode(func);
+X	if (co == NULL) {
+X		XDECREF(newarg);
+X		return NULL;
+X	}
+X	if (!is_codeobject(co)) {
+X		fprintf(stderr, "XXX Bad code\n");
+X		abort();
+X	}
+X	newlocals = newdictobject();
+X	if (newlocals == NULL) {
+X		XDECREF(newarg);
+X		return NULL;
+X	}
+X	
+X	newglobals = getfuncglobals(func);
+X	INCREF(newglobals);
+X	
+X	v = eval_code((codeobject *)co, newglobals, newlocals, arg);
+X	
+X	DECREF(newlocals);
+X	DECREF(newglobals);
+X	
+X	XDECREF(newarg);
+X	
+X	return v;
 X}
 X
 Xstatic object *
 Xapply_subscript(v, w)
-X object *v, *w;
+X	object *v, *w;
 X{
-X typeobject *tp = v->ob_type;
-X if (tp->tp_as_sequence == NULL && tp->tp_as_mapping == NULL) {
-X err_setstr(TypeError, "unsubscriptable object");
-X return NULL;
-X }
-X if (tp->tp_as_sequence != NULL) {
-X int i;
-X if (!is_intobject(w)) {
-X err_setstr(TypeError, "sequence subscript not int");
-X return NULL;
-X }
-X i = getintvalue(w);
-X return (*tp->tp_as_sequence->sq_item)(v, i);
-X }
-X return (*tp->tp_as_mapping->mp_subscript)(v, w);
+X	typeobject *tp = v->ob_type;
+X	if (tp->tp_as_sequence == NULL && tp->tp_as_mapping == NULL) {
+X		err_setstr(TypeError, "unsubscriptable object");
+X		return NULL;
+X	}
+X	if (tp->tp_as_sequence != NULL) {
+X		int i;
+X		if (!is_intobject(w)) {
+X			err_setstr(TypeError, "sequence subscript not int");
+X			return NULL;
+X		}
+X		i = getintvalue(w);
+X		return (*tp->tp_as_sequence->sq_item)(v, i);
+X	}
+X	return (*tp->tp_as_mapping->mp_subscript)(v, w);
 X}
 X
 Xstatic object *
 Xloop_subscript(v, w)
-X object *v, *w;
+X	object *v, *w;
 X{
-X sequence_methods *sq = v->ob_type->tp_as_sequence;
-X int i, n;
-X if (sq == NULL) {
-X err_setstr(TypeError, "loop over non-sequence");
-X return NULL;
-X }
-X i = getintvalue(w);
-X n = (*sq->sq_length)(v);
-X if (i >= n)
-X return NULL; /* End of loop */
-X return (*sq->sq_item)(v, i);
+X	sequence_methods *sq = v->ob_type->tp_as_sequence;
+X	int i, n;
+X	if (sq == NULL) {
+X		err_setstr(TypeError, "loop over non-sequence");
+X		return NULL;
+X	}
+X	i = getintvalue(w);
+X	n = (*sq->sq_length)(v);
+X	if (i >= n)
+X		return NULL; /* End of loop */
+X	return (*sq->sq_item)(v, i);
 X}
 X
 Xstatic int
 Xslice_index(v, isize, pi)
-X object *v;
-X int isize;
-X int *pi;
+X	object *v;
+X	int isize;
+X	int *pi;
 X{
-X if (v != NULL) {
-X if (!is_intobject(v)) {
-X err_setstr(TypeError, "slice index must be int");
-X return -1;
-X }
-X *pi = getintvalue(v);
-X if (*pi < 0)
-X *pi += isize;
-X }
-X return 0;
+X	if (v != NULL) {
+X		if (!is_intobject(v)) {
+X			err_setstr(TypeError, "slice index must be int");
+X			return -1;
+X		}
+X		*pi = getintvalue(v);
+X		if (*pi < 0)
+X			*pi += isize;
+X	}
+X	return 0;
 X}
 X
 Xstatic object *
 Xapply_slice(u, v, w) /* return u[v:w] */
-X object *u, *v, *w;
+X	object *u, *v, *w;
 X{
-X typeobject *tp = u->ob_type;
-X int ilow, ihigh, isize;
-X if (tp->tp_as_sequence == NULL) {
-X err_setstr(TypeError, "only sequences can be sliced");
-X return NULL;
-X }
-X ilow = 0;
-X isize = ihigh = (*tp->tp_as_sequence->sq_length)(u);
-X if (slice_index(v, isize, &ilow) != 0)
-X return NULL;
-X if (slice_index(w, isize, &ihigh) != 0)
-X return NULL;
-X return (*tp->tp_as_sequence->sq_slice)(u, ilow, ihigh);
+X	typeobject *tp = u->ob_type;
+X	int ilow, ihigh, isize;
+X	if (tp->tp_as_sequence == NULL) {
+X		err_setstr(TypeError, "only sequences can be sliced");
+X		return NULL;
+X	}
+X	ilow = 0;
+X	isize = ihigh = (*tp->tp_as_sequence->sq_length)(u);
+X	if (slice_index(v, isize, &ilow) != 0)
+X		return NULL;
+X	if (slice_index(w, isize, &ihigh) != 0)
+X		return NULL;
+X	return (*tp->tp_as_sequence->sq_slice)(u, ilow, ihigh);
 X}
 X
 Xstatic int
 Xassign_subscript(w, key, v) /* w[key] = v */
-X object *w;
-X object *key;
-X object *v;
+X	object *w;
+X	object *key;
+X	object *v;
 X{
-X typeobject *tp = w->ob_type;
-X sequence_methods *sq;
-X mapping_methods *mp;
-X int (*func)();
-X if ((sq = tp->tp_as_sequence) != NULL &&
-X (func = sq->sq_ass_item) != NULL) {
-X if (!is_intobject(key)) {
-X err_setstr(TypeError,
-X "sequence subscript must be integer");
-X return -1;
-X }
-X else
-X return (*func)(w, (int)getintvalue(key), v);
-X }
-X else if ((mp = tp->tp_as_mapping) != NULL &&
-X (func = mp->mp_ass_subscript) != NULL) {
-X return (*func)(w, key, v);
-X }
-X else {
-X err_setstr(TypeError,
-X "can't assign to this subscripted object");
-X return -1;
-X }
+X	typeobject *tp = w->ob_type;
+X	sequence_methods *sq;
+X	mapping_methods *mp;
+X	int (*func)();
+X	if ((sq = tp->tp_as_sequence) != NULL &&
+X			(func = sq->sq_ass_item) != NULL) {
+X		if (!is_intobject(key)) {
+X			err_setstr(TypeError,
+X				"sequence subscript must be integer");
+X			return -1;
+X		}
+X		else
+X			return (*func)(w, (int)getintvalue(key), v);
+X	}
+X	else if ((mp = tp->tp_as_mapping) != NULL &&
+X			(func = mp->mp_ass_subscript) != NULL) {
+X		return (*func)(w, key, v);
+X	}
+X	else {
+X		err_setstr(TypeError,
+X				"can't assign to this subscripted object");
+X		return -1;
+X	}
 X}
 X
 Xstatic int
 Xassign_slice(u, v, w, x) /* u[v:w] = x */
-X object *u, *v, *w, *x;
+X	object *u, *v, *w, *x;
 X{
-X sequence_methods *sq = u->ob_type->tp_as_sequence;
-X int ilow, ihigh, isize;
-X if (sq == NULL) {
-X err_setstr(TypeError, "assign to slice of non-sequence");
-X return -1;
-X }
-X if (sq == NULL || sq->sq_ass_slice == NULL) {
-X err_setstr(TypeError, "unassignable slice");
-X return -1;
-X }
-X ilow = 0;
-X isize = ihigh = (*sq->sq_length)(u);
-X if (slice_index(v, isize, &ilow) != 0)
-X return -1;
-X if (slice_index(w, isize, &ihigh) != 0)
-X return -1;
-X return (*sq->sq_ass_slice)(u, ilow, ihigh, x);
+X	sequence_methods *sq = u->ob_type->tp_as_sequence;
+X	int ilow, ihigh, isize;
+X	if (sq == NULL) {
+X		err_setstr(TypeError, "assign to slice of non-sequence");
+X		return -1;
+X	}
+X	if (sq == NULL || sq->sq_ass_slice == NULL) {
+X		err_setstr(TypeError, "unassignable slice");
+X		return -1;
+X	}
+X	ilow = 0;
+X	isize = ihigh = (*sq->sq_length)(u);
+X	if (slice_index(v, isize, &ilow) != 0)
+X		return -1;
+X	if (slice_index(w, isize, &ihigh) != 0)
+X		return -1;
+X	return (*sq->sq_ass_slice)(u, ilow, ihigh, x);
 X}
 X
 Xstatic int
 Xcmp_exception(err, v)
-X object *err, *v;
+X	object *err, *v;
 X{
-X if (is_tupleobject(v)) {
-X int i, n;
-X n = gettuplesize(v);
-X for (i = 0; i < n; i++) {
-X if (err == gettupleitem(v, i))
-X return 1;
-X }
-X return 0;
-X }
-X return err == v;
+X	if (is_tupleobject(v)) {
+X		int i, n;
+X		n = gettuplesize(v);
+X		for (i = 0; i < n; i++) {
+X			if (err == gettupleitem(v, i))
+X				return 1;
+X		}
+X		return 0;
+X	}
+X	return err == v;
 X}
 X
 Xstatic int
 Xcmp_member(v, w)
-X object *v, *w;
+X	object *v, *w;
 X{
-X int i, n, cmp;
-X object *x;
-X sequence_methods *sq;
-X /* Special case for char in string */
-X if (is_stringobject(w)) {
-X register char *s, *end;
-X register char c;
-X if (!is_stringobject(v) || getstringsize(v) != 1) {
-X err_setstr(TypeError,
-X "string member test needs char left operand");
-X return -1;
-X }
-X c = getstringvalue(v)[0];
-X s = getstringvalue(w);
-X end = s + getstringsize(w);
-X while (s < end) {
-X if (c == *s++)
-X return 1;
-X }
-X return 0;
-X }
-X sq = w->ob_type->tp_as_sequence;
-X if (sq == NULL) {
-X err_setstr(TypeError,
-X "'in' or 'not in' needs sequence right argument");
-X return -1;
-X }
-X n = (*sq->sq_length)(w);
-X for (i = 0; i < n; i++) {
-X x = (*sq->sq_item)(w, i);
-X cmp = cmpobject(v, x);
-X XDECREF(x);
-X if (cmp == 0)
-X return 1;
-X }
-X return 0;
+X	int i, n, cmp;
+X	object *x;
+X	sequence_methods *sq;
+X	/* Special case for char in string */
+X	if (is_stringobject(w)) {
+X		register char *s, *end;
+X		register char c;
+X		if (!is_stringobject(v) || getstringsize(v) != 1) {
+X			err_setstr(TypeError,
+X			    "string member test needs char left operand");
+X			return -1;
+X		}
+X		c = getstringvalue(v)[0];
+X		s = getstringvalue(w);
+X		end = s + getstringsize(w);
+X		while (s < end) {
+X			if (c == *s++)
+X				return 1;
+X		}
+X		return 0;
+X	}
+X	sq = w->ob_type->tp_as_sequence;
+X	if (sq == NULL) {
+X		err_setstr(TypeError,
+X			"'in' or 'not in' needs sequence right argument");
+X		return -1;
+X	}
+X	n = (*sq->sq_length)(w);
+X	for (i = 0; i < n; i++) {
+X		x = (*sq->sq_item)(w, i);
+X		cmp = cmpobject(v, x);
+X		XDECREF(x);
+X		if (cmp == 0)
+X			return 1;
+X	}
+X	return 0;
 X}
 X
 Xstatic object *
 Xcmp_outcome(op, v, w)
-X enum cmp_op op;
-X register object *v;
-X register object *w;
+X	enum cmp_op op;
+X	register object *v;
+X	register object *w;
 X{
-X register int cmp;
-X register int res = 0;
-X switch (op) {
-X case IS:
-X case IS_NOT:
-X res = (v == w);
-X if (op == IS_NOT)
-X res = !res;
-X break;
-X case IN:
-X case NOT_IN:
-X res = cmp_member(v, w);
-X if (res < 0)
-X return NULL;
-X if (op == NOT_IN)
-X res = !res;
-X break;
-X case EXC_MATCH:
-X res = cmp_exception(v, w);
-X break;
-X default:
-X cmp = cmpobject(v, w);
-X switch (op) {
-X case LT: res = cmp < 0; break;
-X case LE: res = cmp <= 0; break;
-X case EQ: res = cmp == 0; break;
-X case NE: res = cmp != 0; break;
-X case GT: res = cmp > 0; break;
-X case GE: res = cmp >= 0; break;
-X /* XXX no default? (res is initialized to 0 though) */
-X }
-X }
-X v = res ? True : False;
-X INCREF(v);
-X return v;
+X	register int cmp;
+X	register int res = 0;
+X	switch (op) {
+X	case IS:
+X	case IS_NOT:
+X		res = (v == w);
+X		if (op == IS_NOT)
+X			res = !res;
+X		break;
+X	case IN:
+X	case NOT_IN:
+X		res = cmp_member(v, w);
+X		if (res < 0)
+X			return NULL;
+X		if (op == NOT_IN)
+X			res = !res;
+X		break;
+X	case EXC_MATCH:
+X		res = cmp_exception(v, w);
+X		break;
+X	default:
+X		cmp = cmpobject(v, w);
+X		switch (op) {
+X		case LT: res = cmp <  0; break;
+X		case LE: res = cmp <= 0; break;
+X		case EQ: res = cmp == 0; break;
+X		case NE: res = cmp != 0; break;
+X		case GT: res = cmp >  0; break;
+X		case GE: res = cmp >= 0; break;
+X		/* XXX no default? (res is initialized to 0 though) */
+X		}
+X	}
+X	v = res ? True : False;
+X	INCREF(v);
+X	return v;
 X}
 X
 Xstatic int
 Ximport_from(locals, v, name)
-X object *locals;
-X object *v;
-X char *name;
+X	object *locals;
+X	object *v;
+X	char *name;
 X{
-X object *w, *x;
-X w = getmoduledict(v);
-X if (name[0] == '*') {
-X int i;
-X int n = getdictsize(w);
-X for (i = 0; i < n; i++) {
-X name = getdictkey(w, i);
-X if (name == NULL || name[0] == '_')
-X continue;
-X x = dictlookup(w, name);
-X if (x == NULL) {
-X /* XXX can't happen? */
-X err_setstr(NameError, name);
-X return -1;
-X }
-X if (dictinsert(locals, name, x) != 0)
-X return -1;
-X }
-X return 0;
-X }
-X else {
-X x = dictlookup(w, name);
-X if (x == NULL) {
-X err_setstr(NameError, name);
-X return -1;
-X }
-X else
-X return dictinsert(locals, name, x);
-X }
+X	object *w, *x;
+X	w = getmoduledict(v);
+X	if (name[0] == '*') {
+X		int i;
+X		int n = getdictsize(w);
+X		for (i = 0; i < n; i++) {
+X			name = getdictkey(w, i);
+X			if (name == NULL || name[0] == '_')
+X				continue;
+X			x = dictlookup(w, name);
+X			if (x == NULL) {
+X				/* XXX can't happen? */
+X				err_setstr(NameError, name);
+X				return -1;
+X			}
+X			if (dictinsert(locals, name, x) != 0)
+X				return -1;
+X		}
+X		return 0;
+X	}
+X	else {
+X		x = dictlookup(w, name);
+X		if (x == NULL) {
+X			err_setstr(NameError, name);
+X			return -1;
+X		}
+X		else
+X			return dictinsert(locals, name, x);
+X	}
 X}
 X
 Xstatic object *
 Xbuild_class(v, w)
-X object *v; /* None or tuple containing base classes */
-X object *w; /* dictionary */
+X	object *v; /* None or tuple containing base classes */
+X	object *w; /* dictionary */
 X{
-X if (is_tupleobject(v)) {
-X int i;
-X for (i = gettuplesize(v); --i >= 0; ) {
-X object *x = gettupleitem(v, i);
-X if (!is_classobject(x)) {
-X err_setstr(TypeError,
-X "base is not a class object");
-X return NULL;
-X }
-X }
-X }
-X else {
-X v = NULL;
-X }
-X if (!is_dictobject(w)) {
-X err_setstr(SystemError, "build_class with non-dictionary");
-X return NULL;
-X }
-X return newclassobject(v, w);
+X	if (is_tupleobject(v)) {
+X		int i;
+X		for (i = gettuplesize(v); --i >= 0; ) {
+X			object *x = gettupleitem(v, i);
+X			if (!is_classobject(x)) {
+X				err_setstr(TypeError,
+X					"base is not a class object");
+X				return NULL;
+X			}
+X		}
+X	}
+X	else {
+X		v = NULL;
+X	}
+X	if (!is_dictobject(w)) {
+X		err_setstr(SystemError, "build_class with non-dictionary");
+X		return NULL;
+X	}
+X	return newclassobject(v, w);
 X}
 X
 X
 X/* Status code for main loop (reason for stack unwind) */
 X
 Xenum why_code {
-X WHY_NOT, /* No error */
-X WHY_EXCEPTION, /* Exception occurred */
-X WHY_RERAISE, /* Exception re-raised by 'finally' */
-X WHY_RETURN, /* 'return' statement */
-X WHY_BREAK /* 'break' statement */
+X		WHY_NOT,	/* No error */
+X		WHY_EXCEPTION,	/* Exception occurred */
+X		WHY_RERAISE,	/* Exception re-raised by 'finally' */
+X		WHY_RETURN,	/* 'return' statement */
+X		WHY_BREAK	/* 'break' statement */
 X};
 X
 X/* Interpreter main loop */
 X
 Xobject *
 Xeval_code(co, globals, locals, arg)
-X codeobject *co;
-X object *globals;
-X object *locals;
-X object *arg;
+X	codeobject *co;
+X	object *globals;
+X	object *locals;
+X	object *arg;
 X{
-X register unsigned char *next_instr;
-X register int opcode; /* Current opcode */
-X register int oparg; /* Current opcode argument, if any */
-X register object **stack_pointer;
-X register enum why_code why; /* Reason for block stack unwind */
-X register int err; /* Error status -- nonzero if error */
-X register object *x; /* Result object -- NULL if error */
-X register object *v; /* Temporary objects popped off stack */
-X register object *w;
-X register object *u;
-X register object *t;
-X register frameobject *f; /* Current frame */
-X int lineno; /* Current line number */
-X object *retval; /* Return value iff why == WHY_RETURN */
-X char *name; /* Name used by some instructions */
-X FILE *fp; /* Used by print operations */
+X	register unsigned char *next_instr;
+X	register int opcode;	/* Current opcode */
+X	register int oparg;	/* Current opcode argument, if any */
+X	register object **stack_pointer;
+X	register enum why_code why; /* Reason for block stack unwind */
+X	register int err;	/* Error status -- nonzero if error */
+X	register object *x;	/* Result object -- NULL if error */
+X	register object *v;	/* Temporary objects popped off stack */
+X	register object *w;
+X	register object *u;
+X	register object *t;
+X	register frameobject *f; /* Current frame */
+X	int lineno;		/* Current line number */
+X	object *retval;		/* Return value iff why == WHY_RETURN */
+X	char *name;		/* Name used by some instructions */
+X	FILE *fp;		/* Used by print operations */
 X#ifdef TRACE
-X int trace = dictlookup(globals, "__trace__") != NULL;
+X	int trace = dictlookup(globals, "__trace__") != NULL;
 X#endif
 X
 X/* Code access macros */
 X
-X#define GETCONST(i) Getconst(f, i)
-X#define GETNAME(i) Getname(f, i)
-X#define FIRST_INSTR() (GETUSTRINGVALUE(f->f_code->co_code))
-X#define INSTR_OFFSET() (next_instr - FIRST_INSTR())
-X#define NEXTOP() (*next_instr++)
-X#define NEXTARG() (next_instr += 2, (next_instr[-1]<<8) + next_instr[-2])
-X#define JUMPTO(x) (next_instr = FIRST_INSTR() + (x))
-X#define JUMPBY(x) (next_instr += (x))
+X#define GETCONST(i)	Getconst(f, i)
+X#define GETNAME(i)	Getname(f, i)
+X#define FIRST_INSTR()	(GETUSTRINGVALUE(f->f_code->co_code))
+X#define INSTR_OFFSET()	(next_instr - FIRST_INSTR())
+X#define NEXTOP()	(*next_instr++)
+X#define NEXTARG()	(next_instr += 2, (next_instr[-1]<<8) + next_instr[-2])
+X#define JUMPTO(x)	(next_instr = FIRST_INSTR() + (x))
+X#define JUMPBY(x)	(next_instr += (x))
 X
 X/* Stack manipulation macros */
 X
-X#define STACK_LEVEL() (stack_pointer - f->f_valuestack)
-X#define EMPTY() (STACK_LEVEL() == 0)
-X#define TOP() (stack_pointer[-1])
-X#define BASIC_PUSH(v) (*stack_pointer++ = (v))
-X#define BASIC_POP() (*--stack_pointer)
+X#define STACK_LEVEL()	(stack_pointer - f->f_valuestack)
+X#define EMPTY()		(STACK_LEVEL() == 0)
+X#define TOP()		(stack_pointer[-1])
+X#define BASIC_PUSH(v)	(*stack_pointer++ = (v))
+X#define BASIC_POP()	(*--stack_pointer)
 X
 X#ifdef TRACE
-X#define PUSH(v) (BASIC_PUSH(v), trace && prtrace(TOP(), "push"))
-X#define POP() (trace && prtrace(TOP(), "pop"), BASIC_POP())
+X#define PUSH(v)		(BASIC_PUSH(v), trace && prtrace(TOP(), "push"))
+X#define POP()		(trace && prtrace(TOP(), "pop"), BASIC_POP())
 X#else
-X#define PUSH(v) BASIC_PUSH(v)
-X#define POP() BASIC_POP()
+X#define PUSH(v)		BASIC_PUSH(v)
+X#define POP()		BASIC_POP()
 X#endif
 X
-X f = newframeobject(
-X current_frame, /*back*/
-X co, /*code*/
-X globals, /*globals*/
-X locals, /*locals*/
-X 50, /*nvalues*/
-X 20); /*nblocks*/
-X if (f == NULL)
-X return NULL;
-X
-X current_frame = f;
-X
-X next_instr = GETUSTRINGVALUE(f->f_code->co_code);
-X
-X stack_pointer = f->f_valuestack;
-X
-X if (arg != NULL) {
-X INCREF(arg);
-X PUSH(arg);
-X }
-X
-X why = WHY_NOT;
-X err = 0;
-X x = None; /* Not a reference, just anything non-NULL */
-X lineno = -1;
-X
-X for (;;) {
-X static ticker;
-X
-X /* Do periodic things */
-X
-X if (--ticker < 0) {
-X ticker = 100;
-X if (intrcheck()) {
-X err_set(KeyboardInterrupt);
-X why = WHY_EXCEPTION;
-X tb_here(f, INSTR_OFFSET(), lineno);
-X break;
-X }
-X }
-X
-X /* Extract opcode and argument */
-X
-X opcode = NEXTOP();
-X if (HAS_ARG(opcode))
-X oparg = NEXTARG();
+X	f = newframeobject(
+X			current_frame,		/*back*/
+X			co,			/*code*/
+X			globals,		/*globals*/
+X			locals,			/*locals*/
+X			50,			/*nvalues*/
+X			20);			/*nblocks*/
+X	if (f == NULL)
+X		return NULL;
+X	
+X	current_frame = f;
+X	
+X	next_instr = GETUSTRINGVALUE(f->f_code->co_code);
+X	
+X	stack_pointer = f->f_valuestack;
+X	
+X	if (arg != NULL) {
+X		INCREF(arg);
+X		PUSH(arg);
+X	}
+X	
+X	why = WHY_NOT;
+X	err = 0;
+X	x = None;	/* Not a reference, just anything non-NULL */
+X	lineno = -1;
+X	
+X	for (;;) {
+X		static ticker;
+X		
+X		/* Do periodic things */
+X		
+X		if (--ticker < 0) {
+X			ticker = 100;
+X			if (intrcheck()) {
+X				err_set(KeyboardInterrupt);
+X				why = WHY_EXCEPTION;
+X				tb_here(f, INSTR_OFFSET(), lineno);
+X				break;
+X			}
+X		}
+X		
+X		/* Extract opcode and argument */
+X		
+X		opcode = NEXTOP();
+X		if (HAS_ARG(opcode))
+X			oparg = NEXTARG();
 X
 X#ifdef TRACE
-X /* Instruction tracing */
-X
-X if (trace) {
-X if (HAS_ARG(opcode)) {
-X printf("%d: %d, %d\n",
-X (int) (INSTR_OFFSET() - 3),
-X opcode, oparg);
-X }
-X else {
-X printf("%d: %d\n",
-X (int) (INSTR_OFFSET() - 1), opcode);
-X }
-X }
+X		/* Instruction tracing */
+X		
+X		if (trace) {
+X			if (HAS_ARG(opcode)) {
+X				printf("%d: %d, %d\n",
+X					(int) (INSTR_OFFSET() - 3),
+X					opcode, oparg);
+X			}
+X			else {
+X				printf("%d: %d\n",
+X					(int) (INSTR_OFFSET() - 1), opcode);
+X			}
+X		}
 X#endif
 X
-X /* Main switch on opcode */
-X
-X switch (opcode) {
-X
-X /* BEWARE!
-X It is essential that any operation that fails sets either
-X x to NULL, err to nonzero, or why to anything but WHY_NOT,
-X and that no operation that succeeds does this! */
-X
-X /* case STOP_CODE: this is an error! */
-X
-X case POP_TOP:
-X v = POP();
-X DECREF(v);
-X break;
-X
-X case ROT_TWO:
-X v = POP();
-X w = POP();
-X PUSH(v);
-X PUSH(w);
-X break;
-X
-X case ROT_THREE:
-X v = POP();
-X w = POP();
-X x = POP();
-X PUSH(v);
-X PUSH(x);
-X PUSH(w);
-X break;
-X
-X case DUP_TOP:
-X v = TOP();
-X INCREF(v);
-X PUSH(v);
-X break;
-X
-X case UNARY_POSITIVE:
-X v = POP();
-X x = pos(v);
-X DECREF(v);
-X PUSH(x);
-X break;
-X
-X case UNARY_NEGATIVE:
-X v = POP();
-X x = neg(v);
-X DECREF(v);
-X PUSH(x);
-X break;
-X
-X case UNARY_NOT:
-X v = POP();
-X x = not(v);
-X DECREF(v);
-X PUSH(x);
-X break;
-X
-X case UNARY_CONVERT:
-X v = POP();
-X x = reprobject(v);
-X DECREF(v);
-X PUSH(x);
-X break;
-X
-X case UNARY_CALL:
-X v = POP();
-X if (is_classmethodobject(v) || is_funcobject(v))
-X x = call_function(v, (object *)NULL);
-X else
-X x = call_builtin(v, (object *)NULL);
-X DECREF(v);
-X PUSH(x);
-X break;
-X
-X case BINARY_MULTIPLY:
-X w = POP();
-X v = POP();
-X x = mul(v, w);
-X DECREF(v);
-X DECREF(w);
-X PUSH(x);
-X break;
-X
-X case BINARY_DIVIDE:
-X w = POP();
-X v = POP();
-X x = divide(v, w);
-X DECREF(v);
-X DECREF(w);
-X PUSH(x);
-X break;
-X
-X case BINARY_MODULO:
-X w = POP();
-X v = POP();
-X x = rem(v, w);
-X DECREF(v);
-X DECREF(w);
-X PUSH(x);
-X break;
-X
-X case BINARY_ADD:
-X w = POP();
-X v = POP();
-X x = add(v, w);
-X DECREF(v);
-X DECREF(w);
-X PUSH(x);
-X break;
-X
-X case BINARY_SUBTRACT:
-X w = POP();
-X v = POP();
-X x = sub(v, w);
-X DECREF(v);
-X DECREF(w);
-X PUSH(x);
-X break;
-X
-X case BINARY_SUBSCR:
-X w = POP();
-X v = POP();
-X x = apply_subscript(v, w);
-X DECREF(v);
-X DECREF(w);
-X PUSH(x);
-X break;
-X
-X case BINARY_CALL:
-X w = POP();
-X v = POP();
-X if (is_classmethodobject(v) || is_funcobject(v))
-X x = call_function(v, w);
-X else
-X x = call_builtin(v, w);
-X DECREF(v);
-X DECREF(w);
-X PUSH(x);
-X break;
-X
-X case SLICE+0:
-X case SLICE+1:
-X case SLICE+2:
-X case SLICE+3:
-X if ((opcode-SLICE) & 2)
-X w = POP();
-X else
-X w = NULL;
-X if ((opcode-SLICE) & 1)
-X v = POP();
-X else
-X v = NULL;
-X u = POP();
-X x = apply_slice(u, v, w);
-X DECREF(u);
-X XDECREF(v);
-X XDECREF(w);
-X PUSH(x);
-X break;
-X
-X case STORE_SLICE+0:
-X case STORE_SLICE+1:
-X case STORE_SLICE+2:
-X case STORE_SLICE+3:
-X if ((opcode-STORE_SLICE) & 2)
-X w = POP();
-X else
-X w = NULL;
-X if ((opcode-STORE_SLICE) & 1)
-X v = POP();
-X else
-X v = NULL;
-X u = POP();
-X t = POP();
-X err = assign_slice(u, v, w, t); /* u[v:w] = t */
-X DECREF(t);
-X DECREF(u);
-X XDECREF(v);
-X XDECREF(w);
-X break;
-X
-X case DELETE_SLICE+0:
-X case DELETE_SLICE+1:
-X case DELETE_SLICE+2:
-X case DELETE_SLICE+3:
-X if ((opcode-DELETE_SLICE) & 2)
-X w = POP();
-X else
-X w = NULL;
-X if ((opcode-DELETE_SLICE) & 1)
-X v = POP();
-X else
-X v = NULL;
-X u = POP();
-X err = assign_slice(u, v, w, (object *)NULL);
-X /* del u[v:w] */
-X DECREF(u);
-X XDECREF(v);
-X XDECREF(w);
-X break;
-X
-X case STORE_SUBSCR:
-X w = POP();
-X v = POP();
-X u = POP();
-X /* v[w] = u */
-X err = assign_subscript(v, w, u);
-X DECREF(u);
-X DECREF(v);
-X DECREF(w);
-X break;
-X
-X case DELETE_SUBSCR:
-X w = POP();
-X v = POP();
-X /* del v[w] */
-X err = assign_subscript(v, w, (object *)NULL);
-X DECREF(v);
-X DECREF(w);
-X break;
-X
-X case PRINT_EXPR:
-X v = POP();
-X fp = sysgetfile("stdout", stdout);
-X /* Print value except if procedure result */
-X if (v != None) {
-X flushline();
-X printobject(v, fp, 0);
-X fprintf(fp, "\n");
-X }
-X DECREF(v);
-X break;
-X
-X case PRINT_ITEM:
-X v = POP();
-X fp = sysgetfile("stdout", stdout);
-X if (needspace)
-X fprintf(fp, " ");
-X if (is_stringobject(v)) {
-X char *s = getstringvalue(v);
-X int len = getstringsize(v);
-X fwrite(s, 1, len, fp);
-X if (len > 0 && s[len-1] == '\n')
-X needspace = 0;
-X else
-X needspace = 1;
-X }
-X else {
-X printobject(v, fp, 0);
-X needspace = 1;
-X }
-X DECREF(v);
-X break;
-X
-X case PRINT_NEWLINE:
-X fp = sysgetfile("stdout", stdout);
-X fprintf(fp, "\n");
-X needspace = 0;
-X break;
-X
-X case BREAK_LOOP:
-X why = WHY_BREAK;
-X break;
-X
-X case RAISE_EXCEPTION:
-X v = POP();
-X w = POP();
-X if (!is_stringobject(w))
-X err_setstr(TypeError,
-X "exceptions must be strings");
-X else
-X err_setval(w, v);
-X DECREF(v);
-X DECREF(w);
-X why = WHY_EXCEPTION;
-X break;
-X
-X case LOAD_LOCALS:
-X v = f->f_locals;
-X INCREF(v);
-X PUSH(v);
-X break;
-X
-X case RETURN_VALUE:
-X retval = POP();
-X why = WHY_RETURN;
-X break;
-X
-X case REQUIRE_ARGS:
-X if (EMPTY()) {
-X err_setstr(TypeError,
-X "function expects argument(s)");
-X why = WHY_EXCEPTION;
-X }
-X break;
-X
-X case REFUSE_ARGS:
-X if (!EMPTY()) {
-X err_setstr(TypeError,
-X "function expects no argument(s)");
-X why = WHY_EXCEPTION;
-X }
-X break;
-X
-X case BUILD_FUNCTION:
-X v = POP();
-X x = newfuncobject(v, f->f_globals);
-X DECREF(v);
-X PUSH(x);
-X break;
-X
-X case POP_BLOCK:
-X {
-X block *b = pop_block(f);
-X while (STACK_LEVEL() > b->b_level) {
-X v = POP();
-X DECREF(v);
-X }
-X }
-X break;
-X
-X case END_FINALLY:
-X v = POP();
-X if (is_intobject(v)) {
-X why = (enum why_code) getintvalue(v);
-X if (why == WHY_RETURN)
-X retval = POP();
-X }
-X else if (is_stringobject(v)) {
-X w = POP();
-X err_setval(v, w);
-X DECREF(w);
-X w = POP();
-X tb_store(w);
-X DECREF(w);
-X why = WHY_RERAISE;
-X }
-X else if (v != None) {
-X err_setstr(SystemError,
-X "'finally' pops bad exception");
-X why = WHY_EXCEPTION;
-X }
-X DECREF(v);
-X break;
-X
-X case BUILD_CLASS:
-X w = POP();
-X v = POP();
-X x = build_class(v, w);
-X PUSH(x);
-X DECREF(v);
-X DECREF(w);
-X break;
-X
-X case STORE_NAME:
-X name = GETNAME(oparg);
-X v = POP();
-X err = dictinsert(f->f_locals, name, v);
-X DECREF(v);
-X break;
-X
-X case DELETE_NAME:
-X name = GETNAME(oparg);
-X if ((err = dictremove(f->f_locals, name)) != 0)
-X err_setstr(NameError, name);
-X break;
-X
-X case UNPACK_TUPLE:
-X v = POP();
-X if (!is_tupleobject(v)) {
-X err_setstr(TypeError, "unpack non-tuple");
-X why = WHY_EXCEPTION;
-X }
-X else if (gettuplesize(v) != oparg) {
-X err_setstr(RuntimeError,
-X "unpack tuple of wrong size");
-X why = WHY_EXCEPTION;
-X }
-X else {
-X for (; --oparg >= 0; ) {
-X w = gettupleitem(v, oparg);
-X INCREF(w);
-X PUSH(w);
-X }
-X }
-X DECREF(v);
-X break;
-X
-X case UNPACK_LIST:
-X v = POP();
-X if (!is_listobject(v)) {
-X err_setstr(TypeError, "unpack non-list");
-X why = WHY_EXCEPTION;
-X }
-X else if (getlistsize(v) != oparg) {
-X err_setstr(RuntimeError,
-X "unpack list of wrong size");
-X why = WHY_EXCEPTION;
-X }
-X else {
-X for (; --oparg >= 0; ) {
-X w = getlistitem(v, oparg);
-X INCREF(w);
-X PUSH(w);
-X }
-X }
-X DECREF(v);
-X break;
-X
-X case STORE_ATTR:
-X name = GETNAME(oparg);
-X v = POP();
-X u = POP();
-X err = setattr(v, name, u); /* v.name = u */
-X DECREF(v);
-X DECREF(u);
-X break;
-X
-X case DELETE_ATTR:
-X name = GETNAME(oparg);
-X v = POP();
-X err = setattr(v, name, (object *)NULL);
-X /* del v.name */
-X DECREF(v);
-X break;
-X
-X case LOAD_CONST:
-X x = GETCONST(oparg);
-X INCREF(x);
-X PUSH(x);
-X break;
-X
-X case LOAD_NAME:
-X name = GETNAME(oparg);
-X x = dictlookup(f->f_locals, name);
-X if (x == NULL) {
-X x = dictlookup(f->f_globals, name);
-X if (x == NULL)
-X x = getbuiltin(name);
-X }
-X if (x == NULL)
-X err_setstr(NameError, name);
-X else
-X INCREF(x);
-X PUSH(x);
-X break;
-X
-X case BUILD_TUPLE:
-X x = newtupleobject(oparg);
-X if (x != NULL) {
-X for (; --oparg >= 0;) {
-X w = POP();
-X err = settupleitem(x, oparg, w);
-X if (err != 0)
-X break;
-X }
-X PUSH(x);
-X }
-X break;
-X
-X case BUILD_LIST:
-X x = newlistobject(oparg);
-X if (x != NULL) {
-X for (; --oparg >= 0;) {
-X w = POP();
-X err = setlistitem(x, oparg, w);
-X if (err != 0)
-X break;
-X }
-X PUSH(x);
-X }
-X break;
-X
-X case BUILD_MAP:
-X x = newdictobject();
-X PUSH(x);
-X break;
-X
-X case LOAD_ATTR:
-X name = GETNAME(oparg);
-X v = POP();
-X x = getattr(v, name);
-X DECREF(v);
-X PUSH(x);
-X break;
-X
-X case COMPARE_OP:
-X w = POP();
-X v = POP();
-X x = cmp_outcome((enum cmp_op)oparg, v, w);
-X DECREF(v);
-X DECREF(w);
-X PUSH(x);
-X break;
-X
-X case IMPORT_NAME:
-X name = GETNAME(oparg);
-X x = import_module(name);
-X XINCREF(x);
-X PUSH(x);
-X break;
-X
-X case IMPORT_FROM:
-X name = GETNAME(oparg);
-X v = TOP();
-X err = import_from(f->f_locals, v, name);
-X break;
-X
-X case JUMP_FORWARD:
-X JUMPBY(oparg);
-X break;
-X
-X case JUMP_IF_FALSE:
-X if (!testbool(TOP()))
-X JUMPBY(oparg);
-X break;
-X
-X case JUMP_IF_TRUE:
-X if (testbool(TOP()))
-X JUMPBY(oparg);
-X break;
-X
-X case JUMP_ABSOLUTE:
-X JUMPTO(oparg);
-X break;
-X
-X case FOR_LOOP:
-X /* for v in s: ...
-X On entry: stack contains s, i.
-X On exit: stack contains s, i+1, s[i];
-X but if loop exhausted:
-X s, i are popped, and we jump */
-X w = POP(); /* Loop index */
-X v = POP(); /* Sequence object */
-X u = loop_subscript(v, w);
-X if (u != NULL) {
-X PUSH(v);
-X x = newintobject(getintvalue(w)+1);
-X PUSH(x);
-X DECREF(w);
-X PUSH(u);
-X }
-X else {
-X DECREF(v);
-X DECREF(w);
-X /* A NULL can mean "s exhausted"
-X but also an error: */
-X if (err_occurred())
-X why = WHY_EXCEPTION;
-X else
-X JUMPBY(oparg);
-X }
-X break;
-X
-X case SETUP_LOOP:
-X case SETUP_EXCEPT:
-X case SETUP_FINALLY:
-X setup_block(f, opcode, INSTR_OFFSET() + oparg,
-X STACK_LEVEL());
-X break;
-X
-X case SET_LINENO:
+X		/* Main switch on opcode */
+X		
+X		switch (opcode) {
+X		
+X		/* BEWARE!
+X		   It is essential that any operation that fails sets either
+X		   x to NULL, err to nonzero, or why to anything but WHY_NOT,
+X		   and that no operation that succeeds does this! */
+X		
+X		/* case STOP_CODE: this is an error! */
+X		
+X		case POP_TOP:
+X			v = POP();
+X			DECREF(v);
+X			break;
+X		
+X		case ROT_TWO:
+X			v = POP();
+X			w = POP();
+X			PUSH(v);
+X			PUSH(w);
+X			break;
+X		
+X		case ROT_THREE:
+X			v = POP();
+X			w = POP();
+X			x = POP();
+X			PUSH(v);
+X			PUSH(x);
+X			PUSH(w);
+X			break;
+X		
+X		case DUP_TOP:
+X			v = TOP();
+X			INCREF(v);
+X			PUSH(v);
+X			break;
+X		
+X		case UNARY_POSITIVE:
+X			v = POP();
+X			x = pos(v);
+X			DECREF(v);
+X			PUSH(x);
+X			break;
+X		
+X		case UNARY_NEGATIVE:
+X			v = POP();
+X			x = neg(v);
+X			DECREF(v);
+X			PUSH(x);
+X			break;
+X		
+X		case UNARY_NOT:
+X			v = POP();
+X			x = not(v);
+X			DECREF(v);
+X			PUSH(x);
+X			break;
+X		
+X		case UNARY_CONVERT:
+X			v = POP();
+X			x = reprobject(v);
+X			DECREF(v);
+X			PUSH(x);
+X			break;
+X		
+X		case UNARY_CALL:
+X			v = POP();
+X			if (is_classmethodobject(v) || is_funcobject(v))
+X				x = call_function(v, (object *)NULL);
+X			else
+X				x = call_builtin(v, (object *)NULL);
+X			DECREF(v);
+X			PUSH(x);
+X			break;
+X		
+X		case BINARY_MULTIPLY:
+X			w = POP();
+X			v = POP();
+X			x = mul(v, w);
+X			DECREF(v);
+X			DECREF(w);
+X			PUSH(x);
+X			break;
+X		
+X		case BINARY_DIVIDE:
+X			w = POP();
+X			v = POP();
+X			x = divide(v, w);
+X			DECREF(v);
+X			DECREF(w);
+X			PUSH(x);
+X			break;
+X		
+X		case BINARY_MODULO:
+X			w = POP();
+X			v = POP();
+X			x = rem(v, w);
+X			DECREF(v);
+X			DECREF(w);
+X			PUSH(x);
+X			break;
+X		
+X		case BINARY_ADD:
+X			w = POP();
+X			v = POP();
+X			x = add(v, w);
+X			DECREF(v);
+X			DECREF(w);
+X			PUSH(x);
+X			break;
+X		
+X		case BINARY_SUBTRACT:
+X			w = POP();
+X			v = POP();
+X			x = sub(v, w);
+X			DECREF(v);
+X			DECREF(w);
+X			PUSH(x);
+X			break;
+X		
+X		case BINARY_SUBSCR:
+X			w = POP();
+X			v = POP();
+X			x = apply_subscript(v, w);
+X			DECREF(v);
+X			DECREF(w);
+X			PUSH(x);
+X			break;
+X		
+X		case BINARY_CALL:
+X			w = POP();
+X			v = POP();
+X			if (is_classmethodobject(v) || is_funcobject(v))
+X				x = call_function(v, w);
+X			else
+X				x = call_builtin(v, w);
+X			DECREF(v);
+X			DECREF(w);
+X			PUSH(x);
+X			break;
+X		
+X		case SLICE+0:
+X		case SLICE+1:
+X		case SLICE+2:
+X		case SLICE+3:
+X			if ((opcode-SLICE) & 2)
+X				w = POP();
+X			else
+X				w = NULL;
+X			if ((opcode-SLICE) & 1)
+X				v = POP();
+X			else
+X				v = NULL;
+X			u = POP();
+X			x = apply_slice(u, v, w);
+X			DECREF(u);
+X			XDECREF(v);
+X			XDECREF(w);
+X			PUSH(x);
+X			break;
+X		
+X		case STORE_SLICE+0:
+X		case STORE_SLICE+1:
+X		case STORE_SLICE+2:
+X		case STORE_SLICE+3:
+X			if ((opcode-STORE_SLICE) & 2)
+X				w = POP();
+X			else
+X				w = NULL;
+X			if ((opcode-STORE_SLICE) & 1)
+X				v = POP();
+X			else
+X				v = NULL;
+X			u = POP();
+X			t = POP();
+X			err = assign_slice(u, v, w, t); /* u[v:w] = t */
+X			DECREF(t);
+X			DECREF(u);
+X			XDECREF(v);
+X			XDECREF(w);
+X			break;
+X		
+X		case DELETE_SLICE+0:
+X		case DELETE_SLICE+1:
+X		case DELETE_SLICE+2:
+X		case DELETE_SLICE+3:
+X			if ((opcode-DELETE_SLICE) & 2)
+X				w = POP();
+X			else
+X				w = NULL;
+X			if ((opcode-DELETE_SLICE) & 1)
+X				v = POP();
+X			else
+X				v = NULL;
+X			u = POP();
+X			err = assign_slice(u, v, w, (object *)NULL);
+X							/* del u[v:w] */
+X			DECREF(u);
+X			XDECREF(v);
+X			XDECREF(w);
+X			break;
+X		
+X		case STORE_SUBSCR:
+X			w = POP();
+X			v = POP();
+X			u = POP();
+X			/* v[w] = u */
+X			err = assign_subscript(v, w, u);
+X			DECREF(u);
+X			DECREF(v);
+X			DECREF(w);
+X			break;
+X		
+X		case DELETE_SUBSCR:
+X			w = POP();
+X			v = POP();
+X			/* del v[w] */
+X			err = assign_subscript(v, w, (object *)NULL);
+X			DECREF(v);
+X			DECREF(w);
+X			break;
+X		
+X		case PRINT_EXPR:
+X			v = POP();
+X			fp = sysgetfile("stdout", stdout);
+X			/* Print value except if procedure result */
+X			if (v != None) {
+X				flushline();
+X				printobject(v, fp, 0);
+X				fprintf(fp, "\n");
+X			}
+X			DECREF(v);
+X			break;
+X		
+X		case PRINT_ITEM:
+X			v = POP();
+X			fp = sysgetfile("stdout", stdout);
+X			if (needspace)
+X				fprintf(fp, " ");
+X			if (is_stringobject(v)) {
+X				char *s = getstringvalue(v);
+X				int len = getstringsize(v);
+X				fwrite(s, 1, len, fp);
+X				if (len > 0 && s[len-1] == '\n')
+X					needspace = 0;
+X				else
+X					needspace = 1;
+X			}
+X			else {
+X				printobject(v, fp, 0);
+X				needspace = 1;
+X			}
+X			DECREF(v);
+X			break;
+X		
+X		case PRINT_NEWLINE:
+X			fp = sysgetfile("stdout", stdout);
+X			fprintf(fp, "\n");
+X			needspace = 0;
+X			break;
+X		
+X		case BREAK_LOOP:
+X			why = WHY_BREAK;
+X			break;
+X		
+X		case RAISE_EXCEPTION:
+X			v = POP();
+X			w = POP();
+X			if (!is_stringobject(w))
+X				err_setstr(TypeError,
+X					"exceptions must be strings");
+X			else
+X				err_setval(w, v);
+X			DECREF(v);
+X			DECREF(w);
+X			why = WHY_EXCEPTION;
+X			break;
+X		
+X		case LOAD_LOCALS:
+X			v = f->f_locals;
+X			INCREF(v);
+X			PUSH(v);
+X			break;
+X		
+X		case RETURN_VALUE:
+X			retval = POP();
+X			why = WHY_RETURN;
+X			break;
+X		
+X		case REQUIRE_ARGS:
+X			if (EMPTY()) {
+X				err_setstr(TypeError,
+X					"function expects argument(s)");
+X				why = WHY_EXCEPTION;
+X			}
+X			break;
+X		
+X		case REFUSE_ARGS:
+X			if (!EMPTY()) {
+X				err_setstr(TypeError,
+X					"function expects no argument(s)");
+X				why = WHY_EXCEPTION;
+X			}
+X			break;
+X		
+X		case BUILD_FUNCTION:
+X			v = POP();
+X			x = newfuncobject(v, f->f_globals);
+X			DECREF(v);
+X			PUSH(x);
+X			break;
+X		
+X		case POP_BLOCK:
+X			{
+X				block *b = pop_block(f);
+X				while (STACK_LEVEL() > b->b_level) {
+X					v = POP();
+X					DECREF(v);
+X				}
+X			}
+X			break;
+X		
+X		case END_FINALLY:
+X			v = POP();
+X			if (is_intobject(v)) {
+X				why = (enum why_code) getintvalue(v);
+X				if (why == WHY_RETURN)
+X					retval = POP();
+X			}
+X			else if (is_stringobject(v)) {
+X				w = POP();
+X				err_setval(v, w);
+X				DECREF(w);
+X				w = POP();
+X				tb_store(w);
+X				DECREF(w);
+X				why = WHY_RERAISE;
+X			}
+X			else if (v != None) {
+X				err_setstr(SystemError,
+X					"'finally' pops bad exception");
+X				why = WHY_EXCEPTION;
+X			}
+X			DECREF(v);
+X			break;
+X		
+X		case BUILD_CLASS:
+X			w = POP();
+X			v = POP();
+X			x = build_class(v, w);
+X			PUSH(x);
+X			DECREF(v);
+X			DECREF(w);
+X			break;
+X		
+X		case STORE_NAME:
+X			name = GETNAME(oparg);
+X			v = POP();
+X			err = dictinsert(f->f_locals, name, v);
+X			DECREF(v);
+X			break;
+X		
+X		case DELETE_NAME:
+X			name = GETNAME(oparg);
+X			if ((err = dictremove(f->f_locals, name)) != 0)
+X				err_setstr(NameError, name);
+X			break;
+X		
+X		case UNPACK_TUPLE:
+X			v = POP();
+X			if (!is_tupleobject(v)) {
+X				err_setstr(TypeError, "unpack non-tuple");
+X				why = WHY_EXCEPTION;
+X			}
+X			else if (gettuplesize(v) != oparg) {
+X				err_setstr(RuntimeError,
+X					"unpack tuple of wrong size");
+X				why = WHY_EXCEPTION;
+X			}
+X			else {
+X				for (; --oparg >= 0; ) {
+X					w = gettupleitem(v, oparg);
+X					INCREF(w);
+X					PUSH(w);
+X				}
+X			}
+X			DECREF(v);
+X			break;
+X		
+X		case UNPACK_LIST:
+X			v = POP();
+X			if (!is_listobject(v)) {
+X				err_setstr(TypeError, "unpack non-list");
+X				why = WHY_EXCEPTION;
+X			}
+X			else if (getlistsize(v) != oparg) {
+X				err_setstr(RuntimeError,
+X					"unpack list of wrong size");
+X				why = WHY_EXCEPTION;
+X			}
+X			else {
+X				for (; --oparg >= 0; ) {
+X					w = getlistitem(v, oparg);
+X					INCREF(w);
+X					PUSH(w);
+X				}
+X			}
+X			DECREF(v);
+X			break;
+X		
+X		case STORE_ATTR:
+X			name = GETNAME(oparg);
+X			v = POP();
+X			u = POP();
+X			err = setattr(v, name, u); /* v.name = u */
+X			DECREF(v);
+X			DECREF(u);
+X			break;
+X		
+X		case DELETE_ATTR:
+X			name = GETNAME(oparg);
+X			v = POP();
+X			err = setattr(v, name, (object *)NULL);
+X							/* del v.name */
+X			DECREF(v);
+X			break;
+X		
+X		case LOAD_CONST:
+X			x = GETCONST(oparg);
+X			INCREF(x);
+X			PUSH(x);
+X			break;
+X		
+X		case LOAD_NAME:
+X			name = GETNAME(oparg);
+X			x = dictlookup(f->f_locals, name);
+X			if (x == NULL) {
+X				x = dictlookup(f->f_globals, name);
+X				if (x == NULL)
+X					x = getbuiltin(name);
+X			}
+X			if (x == NULL)
+X				err_setstr(NameError, name);
+X			else
+X				INCREF(x);
+X			PUSH(x);
+X			break;
+X		
+X		case BUILD_TUPLE:
+X			x = newtupleobject(oparg);
+X			if (x != NULL) {
+X				for (; --oparg >= 0;) {
+X					w = POP();
+X					err = settupleitem(x, oparg, w);
+X					if (err != 0)
+X						break;
+X				}
+X				PUSH(x);
+X			}
+X			break;
+X		
+X		case BUILD_LIST:
+X			x =  newlistobject(oparg);
+X			if (x != NULL) {
+X				for (; --oparg >= 0;) {
+X					w = POP();
+X					err = setlistitem(x, oparg, w);
+X					if (err != 0)
+X						break;
+X				}
+X				PUSH(x);
+X			}
+X			break;
+X		
+X		case BUILD_MAP:
+X			x = newdictobject();
+X			PUSH(x);
+X			break;
+X		
+X		case LOAD_ATTR:
+X			name = GETNAME(oparg);
+X			v = POP();
+X			x = getattr(v, name);
+X			DECREF(v);
+X			PUSH(x);
+X			break;
+X		
+X		case COMPARE_OP:
+X			w = POP();
+X			v = POP();
+X			x = cmp_outcome((enum cmp_op)oparg, v, w);
+X			DECREF(v);
+X			DECREF(w);
+X			PUSH(x);
+X			break;
+X		
+X		case IMPORT_NAME:
+X			name = GETNAME(oparg);
+X			x = import_module(name);
+X			XINCREF(x);
+X			PUSH(x);
+X			break;
+X		
+X		case IMPORT_FROM:
+X			name = GETNAME(oparg);
+X			v = TOP();
+X			err = import_from(f->f_locals, v, name);
+X			break;
+X		
+X		case JUMP_FORWARD:
+X			JUMPBY(oparg);
+X			break;
+X		
+X		case JUMP_IF_FALSE:
+X			if (!testbool(TOP()))
+X				JUMPBY(oparg);
+X			break;
+X		
+X		case JUMP_IF_TRUE:
+X			if (testbool(TOP()))
+X				JUMPBY(oparg);
+X			break;
+X		
+X		case JUMP_ABSOLUTE:
+X			JUMPTO(oparg);
+X			break;
+X		
+X		case FOR_LOOP:
+X			/* for v in s: ...
+X			   On entry: stack contains s, i.
+X			   On exit: stack contains s, i+1, s[i];
+X			   but if loop exhausted:
+X			   	s, i are popped, and we jump */
+X			w = POP(); /* Loop index */
+X			v = POP(); /* Sequence object */
+X			u = loop_subscript(v, w);
+X			if (u != NULL) {
+X				PUSH(v);
+X				x = newintobject(getintvalue(w)+1);
+X				PUSH(x);
+X				DECREF(w);
+X				PUSH(u);
+X			}
+X			else {
+X				DECREF(v);
+X				DECREF(w);
+X				/* A NULL can mean "s exhausted"
+X				   but also an error: */
+X				if (err_occurred())
+X					why = WHY_EXCEPTION;
+X				else
+X					JUMPBY(oparg);
+X			}
+X			break;
+X		
+X		case SETUP_LOOP:
+X		case SETUP_EXCEPT:
+X		case SETUP_FINALLY:
+X			setup_block(f, opcode, INSTR_OFFSET() + oparg,
+X						STACK_LEVEL());
+X			break;
+X		
+X		case SET_LINENO:
 X#ifdef TRACE
-X if (trace)
-X printf("--- Line %d ---\n", oparg);
+X			if (trace)
+X				printf("--- Line %d ---\n", oparg);
 X#endif
-X lineno = oparg;
-X break;
+X			lineno = oparg;
+X			break;
+X		
+X		default:
+X			fprintf(stderr,
+X				"XXX lineno: %d, opcode: %d\n",
+X				lineno, opcode);
+X			err_setstr(SystemError, "eval_code: unknown opcode");
+X			why = WHY_EXCEPTION;
+X			break;
+X		
+X		} /* switch */
 X
-X default:
-X fprintf(stderr,
-X "XXX lineno: %d, opcode: %d\n",
-X lineno, opcode);
-X err_setstr(SystemError, "eval_code: unknown opcode");
-X why = WHY_EXCEPTION;
-X break;
-X
-X } /* switch */
-X
-X
-X /* Quickly continue if no error occurred */
-X
-X if (why == WHY_NOT) {
-X if (err == 0 && x != NULL)
-X continue; /* Normal, fast path */
-X why = WHY_EXCEPTION;
-X x = None;
-X err = 0;
-X }
+X		
+X		/* Quickly continue if no error occurred */
+X		
+X		if (why == WHY_NOT) {
+X			if (err == 0 && x != NULL)
+X				continue; /* Normal, fast path */
+X			why = WHY_EXCEPTION;
+X			x = None;
+X			err = 0;
+X		}
 X
 X#ifndef NDEBUG
-X /* Double-check exception status */
-X
-X if (why == WHY_EXCEPTION || why == WHY_RERAISE) {
-X if (!err_occurred()) {
-X fprintf(stderr, "XXX ghost error\n");
-X err_setstr(SystemError, "ghost error");
-X why = WHY_EXCEPTION;
-X }
-X }
-X else {
-X if (err_occurred()) {
-X fprintf(stderr, "XXX undetected error\n");
-X why = WHY_EXCEPTION;
-X }
-X }
+X		/* Double-check exception status */
+X		
+X		if (why == WHY_EXCEPTION || why == WHY_RERAISE) {
+X			if (!err_occurred()) {
+X				fprintf(stderr, "XXX ghost error\n");
+X				err_setstr(SystemError, "ghost error");
+X				why = WHY_EXCEPTION;
+X			}
+X		}
+X		else {
+X			if (err_occurred()) {
+X				fprintf(stderr, "XXX undetected error\n");
+X				why = WHY_EXCEPTION;
+X			}
+X		}
 X#endif
 X
-X /* Log traceback info if this is a real exception */
+X		/* Log traceback info if this is a real exception */
+X		
+X		if (why == WHY_EXCEPTION) {
+X			int lasti = INSTR_OFFSET() - 1;
+X			if (HAS_ARG(opcode))
+X				lasti -= 2;
+X			tb_here(f, lasti, lineno);
+X		}
+X		
+X		/* For the rest, treat WHY_RERAISE as WHY_EXCEPTION */
+X		
+X		if (why == WHY_RERAISE)
+X			why = WHY_EXCEPTION;
 X
-X if (why == WHY_EXCEPTION) {
-X int lasti = INSTR_OFFSET() - 1;
-X if (HAS_ARG(opcode))
-X lasti -= 2;
-X tb_here(f, lasti, lineno);
-X }
-X
-X /* For the rest, treat WHY_RERAISE as WHY_EXCEPTION */
-X
-X if (why == WHY_RERAISE)
-X why = WHY_EXCEPTION;
-X
-X /* Unwind stacks if a (pseudo) exception occurred */
-X
-X while (why != WHY_NOT && f->f_iblock > 0) {
-X block *b = pop_block(f);
-X while (STACK_LEVEL() > b->b_level) {
-X v = POP();
-X XDECREF(v);
-X }
-X if (b->b_type == SETUP_LOOP && why == WHY_BREAK) {
-X why = WHY_NOT;
-X JUMPTO(b->b_handler);
-X break;
-X }
-X if (b->b_type == SETUP_FINALLY ||
-X b->b_type == SETUP_EXCEPT &&
-X why == WHY_EXCEPTION) {
-X if (why == WHY_EXCEPTION) {
-X object *exc, *val;
-X err_get(&exc, &val);
-X if (val == NULL) {
-X val = None;
-X INCREF(val);
-X }
-X v = tb_fetch();
-X /* Make the raw exception data
-X available to the handler,
-X so a program can emulate the
-X Python main loop. Don't do
-X this for 'finally'. */
-X if (b->b_type == SETUP_EXCEPT) {
+X		/* Unwind stacks if a (pseudo) exception occurred */
+X		
+X		while (why != WHY_NOT && f->f_iblock > 0) {
+X			block *b = pop_block(f);
+X			while (STACK_LEVEL() > b->b_level) {
+X				v = POP();
+X				XDECREF(v);
+X			}
+X			if (b->b_type == SETUP_LOOP && why == WHY_BREAK) {
+X				why = WHY_NOT;
+X				JUMPTO(b->b_handler);
+X				break;
+X			}
+X			if (b->b_type == SETUP_FINALLY ||
+X					b->b_type == SETUP_EXCEPT &&
+X					why == WHY_EXCEPTION) {
+X				if (why == WHY_EXCEPTION) {
+X					object *exc, *val;
+X					err_get(&exc, &val);
+X					if (val == NULL) {
+X						val = None;
+X						INCREF(val);
+X					}
+X					v = tb_fetch();
+X					/* Make the raw exception data
+X					   available to the handler,
+X					   so a program can emulate the
+X					   Python main loop.  Don't do
+X					   this for 'finally'. */
+X					if (b->b_type == SETUP_EXCEPT) {
 X#if 0 /* Oops, this breaks too many things */
-X sysset("exc_traceback", v);
+X						sysset("exc_traceback", v);
 X#endif
-X sysset("exc_value", val);
-X sysset("exc_type", exc);
-X err_clear();
-X }
-X PUSH(v);
-X PUSH(val);
-X PUSH(exc);
-X }
-X else {
-X if (why == WHY_RETURN)
-X PUSH(retval);
-X v = newintobject((long)why);
-X PUSH(v);
-X }
-X why = WHY_NOT;
-X JUMPTO(b->b_handler);
-X break;
-X }
-X } /* unwind stack */
+X						sysset("exc_value", val);
+X						sysset("exc_type", exc);
+X						err_clear();
+X					}
+X					PUSH(v);
+X					PUSH(val);
+X					PUSH(exc);
+X				}
+X				else {
+X					if (why == WHY_RETURN)
+X						PUSH(retval);
+X					v = newintobject((long)why);
+X					PUSH(v);
+X				}
+X				why = WHY_NOT;
+X				JUMPTO(b->b_handler);
+X				break;
+X			}
+X		} /* unwind stack */
 X
-X /* End the loop if we still have an error (or return) */
-X
-X if (why != WHY_NOT)
-X break;
-X
-X } /* main loop */
-X
-X /* Pop remaining stack entries */
-X
-X while (!EMPTY()) {
-X v = POP();
-X XDECREF(v);
-X }
-X
-X /* Restore previous frame and release the current one */
-X
-X current_frame = f->f_back;
-X DECREF(f);
-X
-X if (why == WHY_RETURN)
-X return retval;
-X else
-X return NULL;
+X		/* End the loop if we still have an error (or return) */
+X		
+X		if (why != WHY_NOT)
+X			break;
+X		
+X	} /* main loop */
+X	
+X	/* Pop remaining stack entries */
+X	
+X	while (!EMPTY()) {
+X		v = POP();
+X		XDECREF(v);
+X	}
+X	
+X	/* Restore previous frame and release the current one */
+X	
+X	current_frame = f->f_back;
+X	DECREF(f);
+X	
+X	if (why == WHY_RETURN)
+X		return retval;
+X	else
+X		return NULL;
 X}
 EOF
 fi
@@ -2192,12 +2192,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -2218,10 +2218,10 @@ X
 X/*
 X123456789-123456789-123456789-123456789-123456789-123456789-123456789-12
 X
-XObjects are structures allocated on the heap. Special rules apply to
+XObjects are structures allocated on the heap.  Special rules apply to
 Xthe use of objects to ensure they are properly garbage-collected.
 XObjects are never allocated statically or on the stack; they must be
-Xaccessed through special macros and functions only. (Type objects are
+Xaccessed through special macros and functions only.  (Type objects are
 Xexceptions to the first rule; the standard types are represented by
 Xstatically initialized type objects.)
 X
@@ -2231,28 +2231,28 @@ Xreaches zero there are no references to the object left and it can be
 Xremoved from the heap.
 X
 XAn object has a 'type' that determines what it represents and what kind
-Xof data it contains. An object's type is fixed when it is created.
+Xof data it contains.  An object's type is fixed when it is created.
 XTypes themselves are represented as objects; an object contains a
-Xpointer to the corresponding type object. The type itself has a type
+Xpointer to the corresponding type object.  The type itself has a type
 Xpointer pointing to the object representing the type 'type', which
 Xcontains a pointer to itself!).
 X
 XObjects do not float around in memory; once allocated an object keeps
-Xthe same size and address. Objects that must hold variable-size data
-Xcan contain pointers to variable-size parts of the object. Not all
+Xthe same size and address.  Objects that must hold variable-size data
+Xcan contain pointers to variable-size parts of the object.  Not all
 Xobjects of the same type have the same size; but the size cannot change
-Xafter allocation. (These restrictions are made so a reference to an
+Xafter allocation.  (These restrictions are made so a reference to an
 Xobject can be simply a pointer -- moving an object would require
 Xupdating all the pointers, and changing an object's size would require
 Xmoving it if there was another object right next to it.)
 X
 XObjects are always accessed through pointers of the type 'object *'.
 XThe type 'object' is a structure that only contains the reference count
-Xand the type pointer. The actual memory allocated for an object
+Xand the type pointer.  The actual memory allocated for an object
 Xcontains other data that can only be accessed after casting the pointer
-Xto a pointer to a longer structure type. This longer type must start
+Xto a pointer to a longer structure type.  This longer type must start
 Xwith the reference count and type fields; the macro OB_HEAD should be
-Xused for this (to accomodate for future changes). The implementation
+Xused for this (to accomodate for future changes).  The implementation
 Xof a particular object type can cast the object pointer to the proper
 Xtype and back.
 X
@@ -2274,27 +2274,27 @@ X#endif /* NDEBUG */
 X
 X#ifdef TRACE_REFS
 X#define OB_HEAD \
-X struct _object *_ob_next, *_ob_prev; \
-X int ob_refcnt; \
-X struct _typeobject *ob_type;
+X	struct _object *_ob_next, *_ob_prev; \
+X	int ob_refcnt; \
+X	struct _typeobject *ob_type;
 X#define OB_HEAD_INIT(type) 0, 0, 1, type,
 X#else
 X#define OB_HEAD \
-X unsigned int ob_refcnt; \
-X struct _typeobject *ob_type;
+X	unsigned int ob_refcnt; \
+X	struct _typeobject *ob_type;
 X#define OB_HEAD_INIT(type) 1, type,
 X#endif
 X
 X#define OB_VARHEAD \
-X OB_HEAD \
-X unsigned int ob_size; /* Number of items in variable part */
-X
+X	OB_HEAD \
+X	unsigned int ob_size; /* Number of items in variable part */
+X 
 Xtypedef struct _object {
-X OB_HEAD
+X	OB_HEAD
 X} object;
 X
 Xtypedef struct {
-X OB_VARHEAD
+X	OB_VARHEAD
 X} varobject;
 X
 X
@@ -2303,9 +2303,9 @@ X123456789-123456789-123456789-123456789-123456789-123456789-123456789-12
 X
 XType objects contain a string containing the type name (to help somewhat
 Xin debugging), the allocation parameters (see newobj() and newvarobj()),
-Xand methods for accessing objects of the type. Methods are optional,a
+Xand methods for accessing objects of the type.  Methods are optional,a
 Xnil pointer meaning that particular kind of access is not available for
-Xthis type. The DECREF() macro uses the tp_dealloc method without
+Xthis type.  The DECREF() macro uses the tp_dealloc method without
 Xchecking for a nil pointer; it should always be implemented except if
 Xthe implementation can guarantee that the reference count will never
 Xreach zero (e.g., for type objects).
@@ -2315,51 +2315,51 @@ Xmethod blocks.
 X*/
 X
 Xtypedef struct {
-X object *(*nb_add) FPROTO((object *, object *));
-X object *(*nb_subtract) FPROTO((object *, object *));
-X object *(*nb_multiply) FPROTO((object *, object *));
-X object *(*nb_divide) FPROTO((object *, object *));
-X object *(*nb_remainder) FPROTO((object *, object *));
-X object *(*nb_power) FPROTO((object *, object *));
-X object *(*nb_negative) FPROTO((object *));
-X object *(*nb_positive) FPROTO((object *));
+X	object *(*nb_add) FPROTO((object *, object *));
+X	object *(*nb_subtract) FPROTO((object *, object *));
+X	object *(*nb_multiply) FPROTO((object *, object *));
+X	object *(*nb_divide) FPROTO((object *, object *));
+X	object *(*nb_remainder) FPROTO((object *, object *));
+X	object *(*nb_power) FPROTO((object *, object *));
+X	object *(*nb_negative) FPROTO((object *));
+X	object *(*nb_positive) FPROTO((object *));
 X} number_methods;
 X
 Xtypedef struct {
-X int (*sq_length) FPROTO((object *));
-X object *(*sq_concat) FPROTO((object *, object *));
-X object *(*sq_repeat) FPROTO((object *, int));
-X object *(*sq_item) FPROTO((object *, int));
-X object *(*sq_slice) FPROTO((object *, int, int));
-X int (*sq_ass_item) FPROTO((object *, int, object *));
-X int (*sq_ass_slice) FPROTO((object *, int, int, object *));
+X	int (*sq_length) FPROTO((object *));
+X	object *(*sq_concat) FPROTO((object *, object *));
+X	object *(*sq_repeat) FPROTO((object *, int));
+X	object *(*sq_item) FPROTO((object *, int));
+X	object *(*sq_slice) FPROTO((object *, int, int));
+X	int (*sq_ass_item) FPROTO((object *, int, object *));
+X	int (*sq_ass_slice) FPROTO((object *, int, int, object *));
 X} sequence_methods;
 X
 Xtypedef struct {
-X int (*mp_length) FPROTO((object *));
-X object *(*mp_subscript) FPROTO((object *, object *));
-X int (*mp_ass_subscript) FPROTO((object *, object *, object *));
+X	int (*mp_length) FPROTO((object *));
+X	object *(*mp_subscript) FPROTO((object *, object *));
+X	int (*mp_ass_subscript) FPROTO((object *, object *, object *));
 X} mapping_methods;
 X
 Xtypedef struct _typeobject {
-X OB_VARHEAD
-X char *tp_name; /* For printing */
-X unsigned int tp_basicsize, tp_itemsize; /* For allocation */
-X
-X /* Methods to implement standard operations */
-X
-X void (*tp_dealloc) FPROTO((object *));
-X void (*tp_print) FPROTO((object *, FILE *, int));
-X object *(*tp_getattr) FPROTO((object *, char *));
-X int (*tp_setattr) FPROTO((object *, char *, object *));
-X int (*tp_compare) FPROTO((object *, object *));
-X object *(*tp_repr) FPROTO((object *));
-X
-X /* Method suites for standard classes */
-X
-X number_methods *tp_as_number;
-X sequence_methods *tp_as_sequence;
-X mapping_methods *tp_as_mapping;
+X	OB_VARHEAD
+X	char *tp_name; /* For printing */
+X	unsigned int tp_basicsize, tp_itemsize; /* For allocation */
+X	
+X	/* Methods to implement standard operations */
+X	
+X	void (*tp_dealloc) FPROTO((object *));
+X	void (*tp_print) FPROTO((object *, FILE *, int));
+X	object *(*tp_getattr) FPROTO((object *, char *));
+X	int (*tp_setattr) FPROTO((object *, char *, object *));
+X	int (*tp_compare) FPROTO((object *, object *));
+X	object *(*tp_repr) FPROTO((object *));
+X	
+X	/* Method suites for standard classes */
+X	
+X	number_methods *tp_as_number;
+X	sequence_methods *tp_as_sequence;
+X	mapping_methods *tp_as_mapping;
 X} typeobject;
 X
 Xextern typeobject Typetype; /* The type of type objects */
@@ -2374,32 +2374,32 @@ Xextern object *getattr PROTO((object *, char *));
 Xextern int setattr PROTO((object *, char *, object *));
 X
 X/* Flag bits for printing: */
-X#define PRINT_RAW 1 /* No string quotes etc. */
+X#define PRINT_RAW	1	/* No string quotes etc. */
 X
 X/*
 X123456789-123456789-123456789-123456789-123456789-123456789-123456789-12
 X
 XThe macros INCREF(op) and DECREF(op) are used to increment or decrement
-Xreference counts. DECREF calls the object's deallocator function; for
+Xreference counts.  DECREF calls the object's deallocator function; for
 Xobjects that don't contain references to other objects or heap memory
-Xthis can be the standard function free(). Both macros can be used
-Xwhereever a void expression is allowed. The argument shouldn't be a
-XNIL pointer. The macro NEWREF(op) is used only to initialize reference
+Xthis can be the standard function free().  Both macros can be used
+Xwhereever a void expression is allowed.  The argument shouldn't be a
+XNIL pointer.  The macro NEWREF(op) is used only to initialize reference
 Xcounts to 1; it is defined here for convenience.
 X
 XWe assume that the reference count field can never overflow; this can
 Xbe proven when the size of the field is the same as the pointer size
 Xbut even with a 16-bit reference count field it is pretty unlikely so
-Xwe ignore the possibility. (If you are paranoid, make it a long.)
+Xwe ignore the possibility.  (If you are paranoid, make it a long.)
 X
 XType objects should never be deallocated; the type pointer in an object
 Xis not considered to be a reference to the type object, to save
-Xcomplications in the deallocation function. (This is actually a
+Xcomplications in the deallocation function.  (This is actually a
 Xdecision that's up to the implementer of each new type so if you want,
 Xyou can count such references to the type object.)
 X
 X*** WARNING*** The DECREF macro must have a side-effect-free argument
-Xsince it may evaluate its argument multiple times. (The alternative
+Xsince it may evaluate its argument multiple times.  (The alternative
 Xwould be to mace it a proper function or assign it to a global temporary
 Xvariable first, both of which are slower; and in a multi-threaded
 Xenvironment the global variable trick is not safe.)
@@ -2423,18 +2423,18 @@ X#define NEWREF(op) (ref_total++, (op)->ob_refcnt = 1)
 X#endif
 X#define INCREF(op) (ref_total++, (op)->ob_refcnt++)
 X#define DECREF(op) \
-X if (--ref_total, --(op)->ob_refcnt > 0) \
-X ; \
-X else \
-X DELREF(op)
+X	if (--ref_total, --(op)->ob_refcnt > 0) \
+X		; \
+X	else \
+X		DELREF(op)
 X#else
 X#define NEWREF(op) ((op)->ob_refcnt = 1)
 X#define INCREF(op) ((op)->ob_refcnt++)
 X#define DECREF(op) \
-X if (--(op)->ob_refcnt > 0) \
-X ; \
-X else \
-X DELREF(op)
+X	if (--(op)->ob_refcnt > 0) \
+X		; \
+X	else \
+X		DELREF(op)
 X#endif
 X
 X/* Macros to use in case the object pointer may be NULL: */
@@ -2478,7 +2478,7 @@ XFailure Modes
 X-------------
 X
 XFunctions may fail for a variety of reasons, including running out of
-Xmemory. This is communicated to the caller in two ways: an error string
+Xmemory.  This is communicated to the caller in two ways: an error string
 Xis set (see errors.h), and the function result differs: functions that
 Xnormally return a pointer return NULL for failure, functions returning
 Xan integer return -1 (which could be a legal return value too!), and
@@ -2494,10 +2494,10 @@ XFunctions that create an object set the reference count to 1; such new
 Xobjects must be stored somewhere or destroyed again with DECREF().
 XFunctions that 'store' objects such as settupleitem() and dictinsert()
 Xdon't increment the reference count of the object, since the most
-Xfrequent use is to store a fresh object. Functions that 'retrieve'
+Xfrequent use is to store a fresh object.  Functions that 'retrieve'
 Xobjects such as gettupleitem() and dictlookup() also don't increment
 Xthe reference count, since most frequently the object is only looked at
-Xquickly. Thus, to retrieve an object and store it again, the caller
+Xquickly.  Thus, to retrieve an object and store it again, the caller
 Xmust call INCREF() explicitly.
 X
 XNOTE: functions that 'consume' a reference count like dictinsert() even
@@ -2506,7 +2506,7 @@ Xhandling.
 X
 XIt seems attractive to make other functions that take an object as
 Xargument consume a reference count; however this may quickly get
-Xconfusing (even the current practice is already confusing). Consider
+Xconfusing (even the current practice is already confusing).  Consider
 Xit carefully, it may safe lots of calls to INCREF() and DECREF() at
 Xtimes.
 X

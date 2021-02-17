@@ -17,370 +17,370 @@ Ximport DEVICE, time
 Ximport objectdef, light, panel, material
 X
 Xdef fixmatact (p) :
-X p.diffR.fixact ()
-X p.diffG.fixact ()
-X p.diffB.fixact ()
-X p.specR.fixact ()
-X p.specG.fixact ()
-X p.specB.fixact ()
-X p.shine.fixact ()
+X	p.diffR.fixact ()
+X	p.diffG.fixact ()
+X	p.diffB.fixact ()
+X	p.specR.fixact ()
+X	p.specG.fixact ()
+X	p.specB.fixact ()
+X	p.shine.fixact ()
 X
 Xdef fixlichtact (p) :
-X p.R.fixact ()
-X p.G.fixact ()
-X p.B.fixact ()
-X p.X.fixact ()
-X p.Y.fixact ()
-X p.Z.fixact ()
-X p.local.fixact ()
+X	p.R.fixact ()
+X	p.G.fixact ()
+X	p.B.fixact ()
+X	p.X.fixact ()
+X	p.Y.fixact ()
+X	p.Z.fixact ()
+X	p.local.fixact ()
 X
 Xdef cbsetlight (a) :
-X p = a.back
-X setlight (p, a.label)
+X	p = a.back
+X	setlight (p, a.label)
 X
 Xdef cbsetmaterial (a) :
-X p = a.back
-X setmaterial (p, a.label)
+X	p = a.back
+X	setmaterial (p, a.label)
 X
 Xmater = [0]
 Xlicht = [0]
 X
 Xdef setmaterial (p, mname) :
-X #
-X mater [0:1] = [material.materdict [mname]]
-X #
-X p.diffR.val = mater [0][1]
-X p.diffG.val = mater [0][2]
-X p.diffB.val = mater [0][3]
-X #
-X p.specR.val = mater [0][5]
-X p.specG.val = mater [0][6]
-X p.specB.val = mater [0][7]
-X #
-X p.shine.val = mater [0][9] / 128.0
-X fixmatact (p)
+X	#
+X	mater [0:1] = [material.materdict [mname]]
+X	#
+X	p.diffR.val = mater [0][1]
+X	p.diffG.val = mater [0][2]
+X	p.diffB.val = mater [0][3]
+X	#
+X	p.specR.val = mater [0][5]
+X	p.specG.val = mater [0][6]
+X	p.specB.val = mater [0][7]
+X	#
+X	p.shine.val = mater [0][9] / 128.0
+X	fixmatact (p)
 X
 Xdef setlight (p, mname) :
-X #
-X licht [0:1] = [material.lichtdict [mname]]
-X #
-X p.R.val = licht [0][1]
-X p.G.val = licht [0][2]
-X p.B.val = licht [0][3]
-X #
-X p.X.val = (licht [0][5] + 10.0) / 20.0
-X p.Y.val = (licht [0][6] + 10.0) / 20.0
-X p.Z.val = (licht [0][7] + 10.0) / 20.0
-X #
-X p.local.val = licht [0][8]
-X #
-X fixlichtact (p)
+X	#
+X	licht [0:1] = [material.lichtdict [mname]]
+X	#
+X	p.R.val = licht [0][1]
+X	p.G.val = licht [0][2]
+X	p.B.val = licht [0][3]
+X	#
+X	p.X.val = (licht [0][5] + 10.0) / 20.0 
+X	p.Y.val = (licht [0][6] + 10.0) / 20.0
+X	p.Z.val = (licht [0][7] + 10.0) / 20.0
+X	#
+X	p.local.val = licht [0][8]
+X	#
+X	fixlichtact (p)
 X
 Xdef cbmaterial (a) :
-X #
-X if mater[0] = 0 : return
-X #
-X p = a.back
-X mater [0][5:8] = [p.diffR.val, p.diffG.val, p.diffB.val]
-X mater [0][1:4] = [p.specR.val, p.specG.val, p.specB.val]
-X mater [0][9:10] = [128.0 * p.shine.val]
-X light.bindlight (0)
+X	#
+X	if mater[0] = 0 : return
+X	#
+X	p = a.back
+X	mater [0][5:8] = [p.diffR.val, p.diffG.val, p.diffB.val]
+X	mater [0][1:4] = [p.specR.val, p.specG.val, p.specB.val]
+X	mater [0][9:10] = [128.0 * p.shine.val]
+X	light.bindlight (0)
 X
 Xdef cblight (a) :
-X #
-X if licht[0] = 0 : return
-X #
-X p = a.back
-X licht [0][1:4] = [p.R.val, p.G.val, p.B.val]
-X licht [0][5:8] = [20.0 * p.X.val - 10.0, 20.0 * p.Y.val - 10.0, 20.0 * p.Z.val - 10.0]
-X if p.local.val = 0.0 :
-X licht [0][8:9] = [0.0]
-X else:
-X licht [0][8:9] = [1.0]
-X #
-X light.bindlight (0)
+X	#
+X	if licht[0] = 0 : return
+X	#
+X	p = a.back
+X	licht [0][1:4] = [p.R.val, p.G.val, p.B.val]
+X	licht [0][5:8] = [20.0 * p.X.val - 10.0, 20.0 * p.Y.val - 10.0, 20.0 * p.Z.val - 10.0]
+X	if p.local.val = 0.0 :
+X		licht [0][8:9] = [0.0]
+X	else:
+X		licht [0][8:9] = [1.0]
+X	#
+X	light.bindlight (0)
 X
 X#
 X# initgl : initialize window, pipeline, light, viewing
 X#
 Xdef initgl () :
-X #
-X # init window
-X #
-X foreground ()
-X keepaspect (1, 1)
-X prefposition (100, 500, 100, 500)
-X w = winopen ('flying objects')
-X keepaspect (1, 1)
-X winconstraints ()
-X #
-X # configure pipline
-X #
-X doublebuffer ()
-X shademodel (GOURAUD)
-X zbuffer (1)
-X RGBmode ()
-X gconfig ()
-X #
-X # init lighting
-X #
-X light.bindlight (1)
-X #
-X # set viewing
-X #
-X lookat (0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0)
-X #
+X	#
+X	# init window
+X	#
+X	foreground ()
+X	keepaspect (1, 1)
+X	prefposition (100, 500, 100, 500)
+X	w = winopen ('flying objects')
+X	keepaspect (1, 1)
+X	winconstraints ()
+X	#
+X	# configure pipline 
+X	#
+X	doublebuffer ()
+X	shademodel (GOURAUD)
+X	zbuffer (1)
+X	RGBmode ()
+X	gconfig ()
+X	#
+X	# init lighting
+X	#
+X	light.bindlight (1)
+X	#
+X	# set viewing
+X	#
+X	lookat (0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0)
+X	#
 X
 X#
 X# drawit : draws the object with the given attributes.
 X#
 X# rfac : the rotation factor.
-X# mat : the material identification
-X# attr : a list of attributes :
+X# mat  : the material identification
+X# attr : a list of attributes : 
 X#
-X# [[rotate vector ], [tranlate vector], [scale vector]]
-X# i.e :
-X# [[rX, rY, rZ], [tX, tY, tZ], [sX, sY, sZ]]
+X#	[[rotate vector ], [tranlate vector], [scale vector]]
+X#	i.e :
+X#	[[rX, rY, rZ], [tX, tY, tZ], [sX, sY, sZ]]
 X#
 Xdef drawit(object, rfac, attr, mat) :
-X pushmatrix()
-X rot (attr[0][0] * float (rfac), 'X')
-X rot (attr[0][1] * float (rfac), 'Y')
-X rot (attr[0][2] * float (rfac), 'Z')
-X translate(attr[1][0], attr[1][1], attr[1][2])
-X scale(attr[2][0], attr[2][1], attr[2][2])
-X lmbind(MATERIAL, mat)
-X objectdef.drawobject(object)
-X popmatrix()
+X	pushmatrix()
+X	rot (attr[0][0] * float (rfac), 'X')
+X	rot (attr[0][1] * float (rfac), 'Y')
+X	rot (attr[0][2] * float (rfac), 'Z')
+X	translate(attr[1][0], attr[1][1], attr[1][2])
+X	scale(attr[2][0], attr[2][1], attr[2][2])
+X	lmbind(MATERIAL, mat)
+X	objectdef.drawobject(object)
+X	popmatrix()
 X
 Xdef callbacksphere (a) :
-X putDict (objects, 'sphere', int (a.val))
+X	putDict (objects, 'sphere', int (a.val))
 X
 Xdef callbackcylinder (a) :
-X putDict (objects, 'cylinder', int (a.val))
+X	putDict (objects, 'cylinder', int (a.val))
 X
 Xdef callbackcube (a) :
-X putDict (objects, 'cube', int (a.val))
+X	putDict (objects, 'cube', int (a.val))
 X
 Xdef callbackicecream (a) :
-X putDict (objects, 'icecream', int (a.val))
+X	putDict (objects, 'icecream', int (a.val))
 X
 Xdef callbackdisk (a) :
-X putDict (objects, 'disk', int (a.val))
+X	putDict (objects, 'disk', int (a.val))
 X
 Xdef callbackdiamond (a) :
-X putDict (objects, 'diamond', int (a.val))
+X	putDict (objects, 'diamond', int (a.val))
 X
 Xdef callbackglass (a) :
-X putDict (objects, 'glass', int (a.val))
+X	putDict (objects, 'glass', int (a.val))
 X
 Xdef callbackpyramid (a) :
-X putDict (objects, 'pyramid', int (a.val))
+X	putDict (objects, 'pyramid', int (a.val))
 X
 Xdef callbacktable (a) :
-X putDict (objects, 'table', int (a.val))
+X	putDict (objects, 'table', int (a.val))
 X
 Xdef callbackflat (a) :
-X shademodel(FLAT)
+X	shademodel(FLAT)
 X
 Xdef callbackgouraud (a) :
-X shademodel(GOURAUD)
+X	shademodel(GOURAUD)
 X
 Xdef callbackwire (a) :
-X objectdef.putFunc ([bgnclosedline, endclosedline])
+X	objectdef.putFunc ([bgnclosedline, endclosedline])
 X
 Xdef callbackfilled (a) :
-X objectdef.putFunc ([bgnpolygon, endpolygon])
+X	objectdef.putFunc ([bgnpolygon, endpolygon])
 X
 Xdef callbackquit (a) :
-X import sys
-X sys.exit (-1)
+X	import sys
+X	sys.exit (-1)
 X
 Xdef allObjects(p, val) :
-X p.sphere.val = val
-X p.sphere.fixact ()
-X p.cube.val = val
-X p.cube.fixact ()
-X p.cylinder.val = val
-X p.cylinder.fixact ()
-X p.pyramid.val = val
-X p.pyramid.fixact ()
-X p.disk.val = val
-X p.disk.fixact ()
-X p.diamond.val = val
-X p.diamond.fixact ()
-X p.icecream.val = val
-X p.icecream.fixact ()
-X p.table.val = val
-X p.table.fixact ()
-X p.fixpanel()
-X
+X	p.sphere.val = val
+X	p.sphere.fixact ()
+X	p.cube.val = val
+X	p.cube.fixact ()
+X	p.cylinder.val = val
+X	p.cylinder.fixact ()
+X	p.pyramid.val = val
+X	p.pyramid.fixact ()
+X	p.disk.val = val
+X	p.disk.fixact ()
+X	p.diamond.val = val
+X	p.diamond.fixact ()
+X	p.icecream.val = val
+X	p.icecream.fixact ()
+X	p.table.val = val
+X	p.table.fixact ()
+X	p.fixpanel()
+X	
 X
 Xdef callbackshowall (a) :
-X #print objects
-X for key in objects.keys () :
-X #print key
-X putDict (objects, key, 1)
-X allObjects (a.back, 1.0)
+X	#print objects
+X	for key in objects.keys () :
+X		#print key
+X		putDict (objects, key, 1)
+X	allObjects (a.back, 1.0)
 X
 Xdef callbackshownone (a) :
-X for key in objects.keys () :
-X putDict (objects, key, 0)
-X allObjects (a.back, 0.0)
+X	for key in objects.keys () :
+X		putDict (objects, key, 0)
+X	allObjects (a.back, 0.0)
 X
 X#
 X# main : makeobjects, initialze graphics, and loop continuously.
 X#
 Xdef main () :
-X #
-X # iter keeps track of the iterations. It is used as the
-X # (x, y, z) rotation increments to which the objects rotate.
-X iter = 0
-X #
-X # make the objects. the objects are put in the odict dictionary
-X #
-X od = objectdef.makeobjects ()
-X #
-X # initialize gl
-X #
-X initgl ()
-X #
-X # initialize time and iterations per second
-X #
-X time0 = time.time () # epoch-time of previous second
-X fps = 0 # frames per second
-X #
-X # initialize panels
-X #
-X panel.needredraw()
-X panels = panel.defpanellist('flying.s') #XXX
-X p = panels[0]
-X p.sphere.upfunc = callbacksphere
-X p.cylinder.upfunc = callbackcylinder
-X p.cube.upfunc = callbackcube
-X p.icecream.upfunc = callbackicecream
-X p.disk.upfunc = callbackdisk
-X p.diamond.upfunc = callbackdiamond
-X # NOT YET IMPLEMENTED p.glass.upfunc = callbackglass
-X p.pyramid.upfunc = callbackpyramid
-X p.table.upfunc = callbacktable
-X p.wire.upfunc = callbackwire
-X p.filled.upfunc = callbackfilled
-X p.flat.upfunc = callbackflat
-X p.gouraud.upfunc = callbackgouraud
-X p.quit.upfunc = callbackquit
-X p.showall.upfunc = callbackshowall
-X p.shownone.upfunc = callbackshownone
-X p.showall.back = p
-X p.shownone.back = p
-X #
-X qanels = panel.defpanellist('freeze.s') #XXX
-X q = qanels[0]
-X #
-X ranels = panel.defpanellist('materials.s') #XXX
-X r = ranels[0]
-X r.m9.upfunc = cbsetmaterial
-X r.m8.upfunc = cbsetmaterial
-X r.m7.upfunc = cbsetmaterial
-X r.m6.upfunc = cbsetmaterial
-X r.m5.upfunc = cbsetmaterial
-X r.m4.upfunc = cbsetmaterial
-X r.m3.upfunc = cbsetmaterial
-X r.m2.upfunc = cbsetmaterial
-X r.m1.upfunc = cbsetmaterial
-X r.specR.activefunc = cbmaterial
-X r.specG.activefunc = cbmaterial
-X r.specB.activefunc = cbmaterial
-X r.diffR.activefunc = cbmaterial
-X r.diffG.activefunc = cbmaterial
-X r.diffB.activefunc = cbmaterial
-X r.shine.activefunc = cbmaterial
-X r.m9.back = r
-X r.m8.back = r
-X r.m7.back = r
-X r.m6.back = r
-X r.m5.back = r
-X r.m4.back = r
-X r.m3.back = r
-X r.m2.back = r
-X r.m1.back = r
-X r.diffR.back = r
-X r.diffG.back = r
-X r.diffB.back = r
-X r.specR.back = r
-X r.specG.back = r
-X r.specB.back = r
-X r.shine.back = r
-X #
-X sanels = panel.defpanellist('light.s') #XXX
-X s = sanels[0]
-X s.X.back = s
-X s.Y.back = s
-X s.Z.back = s
-X s.R.back = s
-X s.G.back = s
-X s.B.back = s
-X s.light1.back = s
-X s.light2.back = s
-X s.local.back = s
-X s.light1.upfunc = cbsetlight
-X s.light2.upfunc = cbsetlight
-X s.R.activefunc = cblight
-X s.G.activefunc = cblight
-X s.B.activefunc = cblight
-X s.X.activefunc = cblight
-X s.Y.activefunc = cblight
-X s.Z.activefunc = cblight
-X #
-X while 1 :
-X #
-X act = panel.dopanel()
-X #
-X wid = panel.userredraw ()
-X if wid :
-X winset (wid)
-X reshapeviewport()
-X #
-X # increment iter
-X #
-X if int (q.freeze.val) = 0 :
-X iter = iter + 1
-X fps = fps + 1
-X if time.time() - time0 >= 1 :
-X f = float(fps)/float(time.time()-time0)
-X q.mystrip.val = f
-X q.mystrip.fixact ()
-X q.fixpanel()
-X time0 = time.time()
-X fps = 0
-X #
-X # clear the zbuffer and make the background light blue
-X #
-X zclear()
-X c3i (LightBlue)
-X clear()
-X #
-X # for each object in the objects dictionary
-X #
-X for key in objects.keys() :
-X #
-X # if the object should be displayed
-X #
-X if getDict (objects, key, 0) = ONE :
-X loo = getDict (objects, key, 1)
-X for o in loo :
-X #
-X # get attributes and materail
-X #
-X attr = o [1]
-X mat = o [2]
-X #
-X # display the object
-X #
-X drawit(od[o[0]],iter,attr,mat)
-X #
-X swapbuffers()
-X #
+X	#
+X	# iter keeps track of the iterations. It is used as the 
+X	# (x, y, z) rotation increments to which the objects rotate.
+X	iter = 0
+X	#
+X	# make the objects. the objects are put in the odict dictionary
+X	#
+X	od =  objectdef.makeobjects ()
+X	#
+X	# initialize gl
+X	#
+X	initgl ()
+X	#
+X	# initialize time and iterations per second
+X	#
+X	time0 = time.time () # epoch-time of previous second
+X	fps = 0 # frames per second
+X	#
+X	# initialize panels
+X	#
+X	panel.needredraw()
+X	panels = panel.defpanellist('flying.s') #XXX
+X	p = panels[0]
+X	p.sphere.upfunc = callbacksphere
+X	p.cylinder.upfunc = callbackcylinder
+X	p.cube.upfunc = callbackcube
+X	p.icecream.upfunc = callbackicecream
+X	p.disk.upfunc = callbackdisk
+X	p.diamond.upfunc = callbackdiamond
+X	# NOT YET IMPLEMENTED  p.glass.upfunc = callbackglass
+X	p.pyramid.upfunc = callbackpyramid
+X	p.table.upfunc = callbacktable
+X	p.wire.upfunc = callbackwire
+X	p.filled.upfunc = callbackfilled
+X	p.flat.upfunc = callbackflat
+X	p.gouraud.upfunc = callbackgouraud
+X	p.quit.upfunc = callbackquit
+X	p.showall.upfunc = callbackshowall
+X	p.shownone.upfunc = callbackshownone
+X	p.showall.back = p
+X	p.shownone.back = p
+X	#
+X	qanels = panel.defpanellist('freeze.s') #XXX
+X	q = qanels[0]
+X	#
+X	ranels = panel.defpanellist('materials.s') #XXX
+X	r = ranels[0]
+X	r.m9.upfunc = cbsetmaterial
+X	r.m8.upfunc = cbsetmaterial
+X	r.m7.upfunc = cbsetmaterial
+X	r.m6.upfunc = cbsetmaterial
+X	r.m5.upfunc = cbsetmaterial
+X	r.m4.upfunc = cbsetmaterial
+X	r.m3.upfunc = cbsetmaterial
+X	r.m2.upfunc = cbsetmaterial
+X	r.m1.upfunc = cbsetmaterial
+X	r.specR.activefunc = cbmaterial
+X	r.specG.activefunc = cbmaterial
+X	r.specB.activefunc = cbmaterial
+X	r.diffR.activefunc = cbmaterial
+X	r.diffG.activefunc = cbmaterial
+X	r.diffB.activefunc = cbmaterial
+X	r.shine.activefunc = cbmaterial
+X	r.m9.back = r
+X	r.m8.back = r
+X	r.m7.back = r
+X	r.m6.back = r
+X	r.m5.back = r
+X	r.m4.back = r
+X	r.m3.back = r
+X	r.m2.back = r
+X	r.m1.back = r
+X	r.diffR.back = r
+X	r.diffG.back = r
+X	r.diffB.back = r
+X	r.specR.back = r
+X	r.specG.back = r
+X	r.specB.back = r
+X	r.shine.back = r
+X	#
+X	sanels = panel.defpanellist('light.s') #XXX
+X	s = sanels[0]
+X	s.X.back = s
+X	s.Y.back = s
+X	s.Z.back = s
+X	s.R.back = s
+X	s.G.back = s
+X	s.B.back = s
+X	s.light1.back = s
+X	s.light2.back = s
+X	s.local.back = s
+X	s.light1.upfunc = cbsetlight
+X	s.light2.upfunc = cbsetlight
+X	s.R.activefunc = cblight
+X	s.G.activefunc = cblight
+X	s.B.activefunc = cblight
+X	s.X.activefunc = cblight
+X	s.Y.activefunc = cblight
+X	s.Z.activefunc = cblight
+X	#
+X	while 1 :
+X		#
+X		act = panel.dopanel()
+X		#
+X		wid =  panel.userredraw ()
+X		if wid :
+X			winset (wid)
+X			reshapeviewport()
+X		#
+X		# increment iter
+X		#
+X		if int (q.freeze.val) = 0 :
+X			iter = iter +  1
+X			fps = fps + 1
+X			if time.time() - time0 >= 1 :
+X				f = float(fps)/float(time.time()-time0)
+X				q.mystrip.val = f
+X				q.mystrip.fixact ()
+X				q.fixpanel()
+X				time0 = time.time()
+X				fps = 0
+X		#
+X		# clear the zbuffer and make the background light blue
+X		#
+X		zclear()
+X		c3i (LightBlue)
+X		clear()
+X		#
+X		# for each object in the objects dictionary
+X		#
+X		for key in objects.keys() :
+X			#
+X			# if the object should be displayed
+X			#
+X			if getDict (objects, key, 0) = ONE :
+X				loo = getDict (objects, key, 1)
+X				for o in loo :
+X					#
+X					# get attributes and materail
+X					#
+X					attr = o [1]
+X					mat  = o [2]
+X					#
+X					#  display the object
+X					#
+X					drawit(od[o[0]],iter,attr,mat)
+X		#
+X		swapbuffers()
+X		#
 X
 Xmain()
 EOF
@@ -406,16 +406,16 @@ X# Copy of string.split() (to avoid loading all of string.py)
 X
 Xwhitespace = ' \t\n'
 Xdef split(s):
-X res = []
-X i, n = 0, len(s)
-X while i < n:
-X while i < n and s[i] in whitespace: i = i+1
-X if i = n: break
-X j = i
-X while j < n and s[j] not in whitespace: j = j+1
-X res.append(s[i:j])
-X i = j
-X return res
+X	res = []
+X	i, n = 0, len(s)
+X	while i < n:
+X		while i < n and s[i] in whitespace: i = i+1
+X		if i = n: break
+X		j = i
+X		while j < n and s[j] not in whitespace: j = j+1
+X		res.append(s[i:j])
+X		i = j
+X	return res
 X
 X
 X# Constants to name directions
@@ -461,76 +461,76 @@ X
 X# Normalize a command, in place: truncate words to 6 chars, and expand aliases.
 X
 Xdef normalize(cmd):
-X for i in range(len(cmd)):
-X word = cmd[i][:6]
-X if alias.has_key(word):
-X word = alias[word]
-X cmd[i] = word
+X	for i in range(len(cmd)):
+X		word = cmd[i][:6]
+X		if alias.has_key(word):
+X			word = alias[word]
+X		cmd[i] = word
 X
 X
 X# The Object class describes objects that the player can carry around.
 X
 Xclass Object():
-X def init(this, name):
-X this.name = name
-X return this
-X def describe(this):
-X print 'A', this.name + '.'
-X def get(this, (player, room)):
-X del room.objects[this.name]
-X player.objects[this.name] = this
-X def put(this, (player, room)):
-X del player.objects[this.name]
-X room.objects[this.name] = this
+X	def init(this, name):
+X		this.name = name
+X		return this
+X	def describe(this):
+X		print 'A', this.name + '.'
+X	def get(this, (player, room)):
+X		del room.objects[this.name]
+X		player.objects[this.name] = this
+X	def put(this, (player, room)):
+X		del player.objects[this.name]
+X		room.objects[this.name] = this
 X
 X
 X# The Player class embodies first person control.
 X
 Xclass Player():
-X # Set initial state, except current room.
-X def init(self, initial_room):
-X self.blind = 0
-X self.here = initial_room
-X self.prev = nil
-X self.objects = {}
-X return self
-X # Read and execute commands forever.
-X def play(self):
-X self.here.casualdescribe()
-X while 1:
-X self.move()
-X # Read and execute one command.
-X def move(self):
-X next = self.here.parser()
-X if next and next <> self.here:
-X self.prev = self.here
-X self.here = next
-X if not self.blind:
-X self.here.casualdescribe()
-X # Print inventory.
-X def inventory(self):
-X if not self.objects:
-X print 'You aren\'t carrying anything.'
-X return
-X print 'You are carrying:'
-X for key in self.objects.keys():
-X self.objects[key].describe()
-X # Go back to previous room.
-X def back(self):
-X if self.prev: return self.prev
-X print 'You can\'t go back now.'
-X # Get an object from the room.
-X def get(self, name):
-X if self.here.objects.has_key(name):
-X self.here.objects[name].get(self, self.here)
-X else:
-X print 'I see no', name, 'here.'
-X # Put an object in the room.
-X def put(self, name):
-X if self.objects.has_key(name):
-X self.objects[name].put(self, self.here)
-X else:
-X print 'You have no', name, 'with you.'
+X	# Set initial state, except current room.
+X	def init(self, initial_room):
+X		self.blind = 0
+X		self.here = initial_room
+X		self.prev = nil
+X		self.objects = {}
+X		return self
+X	# Read and execute commands forever.
+X	def play(self):
+X		self.here.casualdescribe()
+X		while 1:
+X			self.move()
+X	# Read and execute one command.
+X	def move(self):
+X		next = self.here.parser()
+X		if next and next <> self.here:
+X			self.prev = self.here
+X			self.here = next
+X			if not self.blind:
+X				self.here.casualdescribe()
+X	# Print inventory.
+X	def inventory(self):
+X		if not self.objects:
+X			print 'You aren\'t carrying anything.'
+X			return
+X		print 'You are carrying:'
+X		for key in self.objects.keys():
+X			self.objects[key].describe()
+X	# Go back to previous room.
+X	def back(self):
+X		if self.prev: return self.prev
+X		print 'You can\'t go back now.'
+X	# Get an object from the room.
+X	def get(self, name):
+X		if self.here.objects.has_key(name):
+X			self.here.objects[name].get(self, self.here)
+X		else:
+X			print 'I see no', name, 'here.'
+X	# Put an object in the room.
+X	def put(self, name):
+X		if self.objects.has_key(name):
+X			self.objects[name].put(self, self.here)
+X		else:
+X			print 'You have no', name, 'with you.'
 X
 X
 X# The Room class describes a generic room.
@@ -538,120 +538,120 @@ X# Rooms with special properties are defined by derived classes
 X# that override certain operations.
 X
 Xclass Room():
-X # Initialize a featureless room.
-X def init(here, name):
-X here.seen = 0
-X here.name = name
-X here.exits = {}
-X here.objects = {}
-X here.description = []
-X return here
-X # Add an object to the room. Used during initialization.
-X def add(here, obj):
-X here.objects[obj.name] = obj
-X # Print a casual description.
-X def casualdescribe(here):
-X if here.seen:
-X print here.name + '.'
-X here.listobjects()
-X return
-X here.seen = 1
-X here.describe()
-X # Print a full description, including all exits and objects seen.
-X def describe(here):
-X if not here.description:
-X print here.name + '.'
-X here.listexits()
-X else:
-X for line in here.description: print line
-X here.listobjects()
-X # List exits.
-X def listexits(here):
-X there = here.exits.keys()
-X if there:
-X if len(there) = 1:
-X print 'There is an exit leading',
-X else:
-X print 'There are exits leading',
-X for name in there[:-2]:
-X print name + ',',
-X print there[len(there)-2], 'and',
-X print there[len(there)-1] + '.'
-X # List objects
-X def listobjects(here):
-X if here.objects:
-X print 'I see:'
-X for key in here.objects.keys():
-X here.objects[key].describe()
-X # Default parser. Returns next room (possibly the same) or nil.
-X def parser(here):
-X cmd = here.getcmd(here.prompt())
-X return here.decide(cmd)
-X # Return default prompt string.
-X def prompt(here): return '> '
-X # Default input routine. Returns a non-empty list of words.
-X def getcmd(here, prompt):
-X # Loop until non-empty command gotten
-X # EOFError and KeyboardInterrupt may be caught elsewhere
-X while 1:
-X line = raw_input(prompt)
-X cmd = split(line)
-X if cmd:
-X normalize(cmd)
-X return cmd
-X # Default decision routine. Override for room-specific commands.
-X def decide(here, cmd):
-X key, args = cmd[0], cmd[1:]
-X if not args:
-X if key = N: return here.north()
-X if key = S: return here.south()
-X if key = E: return here.east()
-X if key = W: return here.west()
-X if key = U: return here.up()
-X if key = D: return here.down()
-X if key = NW: return here.nw()
-X if key = NE: return here.ne()
-X if key = SW: return here.sw()
-X if key = SE: return here.se()
-X if key = LOOK: return here.look()
-X if key = INVENT: return here.inventory()
-X if key = BACK: return here.back()
-X if here.objects.has_key(key):
-X print 'What do you want to do with the', key+'?'
-X else:
-X print 'Huh?'
-X return
-X if key = GET:
-X for arg in args:
-X player.get(arg)
-X return
-X if key = PUT:
-X for arg in args:
-X player.put(arg)
-X # Standard commands.
-X def look(here):
-X here.describe()
-X def inventory(here):
-X player.inventory()
-X def back(here):
-X return player.back()
-X # Standard exits.
-X def north(here): return here.take_exit(N)
-X def south(here): return here.take_exit(S)
-X def west(here): return here.take_exit(W)
-X def east(here): return here.take_exit(E)
-X def up(here): return here.take_exit(U)
-X def down(here): return here.take_exit(D)
-X def nw(here): return here.take_exit(NW)
-X def ne(here): return here.take_exit(NE)
-X def sw(here): return here.take_exit(SW)
-X def se(here): return here.take_exit(SE)
-X # Subroutine for standard exits.
-X def take_exit(here, key):
-X if here.exits.has_key(key):
-X return here.exits[key]
-X print 'You cannot go in that direction.'
-X return here
+X	# Initialize a featureless room.
+X	def init(here, name):
+X		here.seen = 0
+X		here.name = name
+X		here.exits = {}
+X		here.objects = {}
+X		here.description = []
+X		return here
+X	# Add an object to the room.  Used during initialization.
+X	def add(here, obj):
+X		here.objects[obj.name] = obj
+X	# Print a casual description.
+X	def casualdescribe(here):
+X		if here.seen:
+X			print here.name + '.'
+X			here.listobjects()
+X			return
+X		here.seen = 1
+X		here.describe()
+X	# Print a full description, including all exits and objects seen.
+X	def describe(here):
+X		if not here.description:
+X			print here.name + '.'
+X			here.listexits()
+X		else:
+X			for line in here.description: print line
+X		here.listobjects()
+X	# List exits.
+X	def listexits(here):
+X		there = here.exits.keys()
+X		if there:
+X			if len(there) = 1:
+X				print 'There is an exit leading',
+X			else:
+X				print 'There are exits leading',
+X				for name in there[:-2]:
+X					print name + ',',
+X				print there[len(there)-2], 'and',
+X			print there[len(there)-1] + '.'
+X	# List objects
+X	def listobjects(here):
+X		if here.objects:
+X			print 'I see:'
+X			for key in here.objects.keys():
+X				here.objects[key].describe()
+X	# Default parser.  Returns next room (possibly the same) or nil.
+X	def parser(here):
+X		cmd = here.getcmd(here.prompt())
+X		return here.decide(cmd)
+X	# Return default prompt string.
+X	def prompt(here): return '> '
+X	# Default input routine.  Returns a non-empty list of words.
+X	def getcmd(here, prompt):
+X		# Loop until non-empty command gotten
+X		# EOFError and KeyboardInterrupt may be caught elsewhere
+X		while 1:
+X			line = raw_input(prompt)
+X			cmd = split(line)
+X			if cmd:
+X				normalize(cmd)
+X				return cmd
+X	# Default decision routine.  Override for room-specific commands.
+X	def decide(here, cmd):
+X		key, args = cmd[0], cmd[1:]
+X		if not args:
+X			if key = N:		return here.north()
+X			if key = S:		return here.south()
+X			if key = E:		return here.east()
+X			if key = W:		return here.west()
+X			if key = U:		return here.up()
+X			if key = D:		return here.down()
+X			if key = NW:		return here.nw()
+X			if key = NE:		return here.ne()
+X			if key = SW:		return here.sw()
+X			if key = SE:		return here.se()
+X			if key = LOOK:		return here.look()
+X			if key = INVENT:	return here.inventory()
+X			if key = BACK:		return here.back()
+X			if here.objects.has_key(key):
+X				print 'What do you want to do with the', key+'?'
+X			else:
+X				print 'Huh?'
+X			return
+X		if key = GET:
+X			for arg in args:
+X				player.get(arg)
+X			return
+X		if key = PUT:
+X			for arg in args:
+X				player.put(arg)
+X	# Standard commands.
+X	def look(here):
+X		here.describe()
+X	def inventory(here):
+X		player.inventory()
+X	def back(here):
+X		return player.back()
+X	# Standard exits.
+X	def north(here):	return here.take_exit(N)
+X	def south(here):	return here.take_exit(S)
+X	def west(here):		return here.take_exit(W)
+X	def east(here):		return here.take_exit(E)
+X	def up(here):		return here.take_exit(U)
+X	def down(here):		return here.take_exit(D)
+X	def nw(here):		return here.take_exit(NW)
+X	def ne(here):		return here.take_exit(NE)
+X	def sw(here):		return here.take_exit(SW)
+X	def se(here):		return here.take_exit(SE)
+X	# Subroutine for standard exits.
+X	def take_exit(here, key):
+X		if here.exits.has_key(key):
+X			return here.exits[key]
+X		print 'You cannot go in that direction.'
+X		return here
 X
 X
 X# Create the objects we know about.
@@ -664,10 +664,10 @@ X
 X# Subroutine to connect two rooms.
 X
 Xdef connect(rm1, rm2, dir1, dir2):
-X if dir1:
-X rm1.exits[dir1] = rm2
-X if dir2:
-X rm2.exits[dir2] = rm1
+X	if dir1:
+X		rm1.exits[dir1] = rm2
+X	if dir2:
+X		rm2.exits[dir2] = rm1
 X
 X
 X# Create the rooms and connect them together.
@@ -676,34 +676,34 @@ X
 Xr_front = Room().init('Front of building')
 Xr_initial = r_front
 Xr_front.description = [ \
-X 'You are standing in front of a large, desolate building.', \
-X 'Huge neon letters spell "CWI". The "I" is blinking.', \
-X 'There are entrances north and west from where you are standing.', \
-X ]
+X	'You are standing in front of a large, desolate building.', \
+X	'Huge neon letters spell "CWI".  The "I" is blinking.', \
+X	'There are entrances north and west from where you are standing.', \
+X	]
 X
 Xr_entrance = Room().init('Entrance')
 Xr_entrance.description = [ \
-X 'You are standing in a small entrance room.', \
-X 'On the east side is a window to a reception room.', \
-X 'South is a door leading outside the building.', \
-X 'North is a large hall.' \
-X ]
+X	'You are standing in a small entrance room.', \
+X	'On the east side is a window to a reception room.', \
+X	'South is a door leading outside the building.', \
+X	'North is a large hall.' \
+X	] 
 X
 Xr_hall_s = Room().init('South of hall')
 Xr_hall_s.description = [ \
-X 'You are standing at the south side of a very large hall.', \
-X 'There are doors leading west, southwest, south and southeast,', \
-X 'and a corridor leads east.', \
-X 'The hall continues to the north.' \
-X ]
+X	'You are standing at the south side of a very large hall.', \
+X	'There are doors leading west, southwest, south and southeast,', \
+X	'and a corridor leads east.', \
+X	'The hall continues to the north.' \
+X	]
 X
 Xr_hall_n = Room().init('North of hall')
 Xr_hall_n.description = [ \
-X 'You are stanting at the north side of a very large hall.', \
-X 'There are corridors leading west, northwest, northeast,', \
-X 'an elevator door north, and a door leading outside east.', \
-X 'There are stairs leading up, and the hall continues to the south.' \
-X ]
+X	'You are stanting at the north side of a very large hall.', \
+X	'There are corridors leading west, northwest, northeast,', \
+X	'an elevator door north, and a door leading outside east.', \
+X	'There are stairs leading up, and the hall continues to the south.' \
+X	]
 X
 Xr_reception = Room().init('Reception')
 X
@@ -742,7 +742,7 @@ Xr_reception.add(o_lamp)
 X
 X# Create an uninitialized player object.
 X# It is initialized by main(), but must be created here (as global)
-X# since some Room methods reference it. (Though maybe they shouldn't?)
+X# since some Room methods reference it.  (Though maybe they shouldn't?)
 X
 Xplayer = Player()
 X
@@ -750,11 +750,11 @@ X
 X# Play the game from the beginning.
 X
 Xdef main():
-X x = player.init(r_initial)
-X try:
-X player.play()
-X except (EOFError, KeyboardInterrupt):
-X pass
+X	x = player.init(r_initial)
+X	try:
+X		player.play()
+X	except (EOFError, KeyboardInterrupt):
+X		pass
 X
 Xmain()
 EOF
@@ -769,11 +769,11 @@ X#
 X# Efficiently compare files, boolean outcome only (equal / not equal).
 X#
 X# Tricks (used in this order):
-X# - Use the statcache module to avoid statting files more than once
-X# - Files with identical type, size & mtime are assumed to be clones
-X# - Files with different type or size cannot be identical
-X# - We keep a cache of outcomes of earlier comparisons
-X# - We don't fork a process to run 'cmp' but read the files ourselves
+X#	- Use the statcache module to avoid statting files more than once
+X#	- Files with identical type, size & mtime are assumed to be clones
+X#	- Files with different type or size cannot be identical
+X#	- We keep a cache of outcomes of earlier comparisons
+X#	- We don't fork a process to run 'cmp' but read the files ourselves
 X
 Ximport posix
 Xfrom stat import *
@@ -789,49 +789,49 @@ X# Compare two files, use the cache if possible.
 X# May raise posix.error if a stat or open of either fails.
 X#
 Xdef cmp(f1, f2):
-X # Return 1 for identical files, 0 for different.
-X # Raise exceptions if either file could not be statted, read, etc.
-X s1, s2 = sig(statcache.stat(f1)), sig(statcache.stat(f2))
-X if not S_ISREG(s1[0]) or not S_ISREG(s2[0]):
-X # Either is a not a plain file -- always report as different
-X return 0
-X if s1 = s2:
-X # type, size & mtime match -- report same
-X return 1
-X if s1[:2] <> s2[:2]: # Types or sizes differ, don't bother
-X # types or sizes differ -- report different
-X return 0
-X # same type and size -- look in the cache
-X key = f1 + ' ' + f2
-X if cache.has_key(key):
-X cs1, cs2, outcome = cache[key]
-X # cache hit
-X if s1 = cs1 and s2 = cs2:
-X # cached signatures match
-X return outcome
-X # stale cached signature(s)
-X # really compare
-X outcome = do_cmp(f1, f2)
-X cache[key] = s1, s2, outcome
-X return outcome
+X	# Return 1 for identical files, 0 for different.
+X	# Raise exceptions if either file could not be statted, read, etc.
+X	s1, s2 = sig(statcache.stat(f1)), sig(statcache.stat(f2))
+X	if not S_ISREG(s1[0]) or not S_ISREG(s2[0]):
+X		# Either is a not a plain file -- always report as different
+X		return 0
+X	if s1 = s2:
+X		# type, size & mtime match -- report same
+X		return 1
+X	if s1[:2] <> s2[:2]: # Types or sizes differ, don't bother
+X		# types or sizes differ -- report different
+X		return 0
+X	# same type and size -- look in the cache
+X	key = f1 + ' ' + f2
+X	if cache.has_key(key):
+X		cs1, cs2, outcome = cache[key]
+X		# cache hit
+X		if s1 = cs1 and s2 = cs2:
+X			# cached signatures match
+X			return outcome
+X		# stale cached signature(s)
+X	# really compare
+X	outcome = do_cmp(f1, f2)
+X	cache[key] = s1, s2, outcome
+X	return outcome
 X
 X# Return signature (i.e., type, size, mtime) from raw stat data.
 X#
 Xdef sig(st):
-X return S_IFMT(st[ST_MODE]), st[ST_SIZE], st[ST_MTIME]
+X	return S_IFMT(st[ST_MODE]), st[ST_SIZE], st[ST_MTIME]
 X
 X# Compare two files, really.
 X#
 Xdef do_cmp(f1, f2):
-X #print ' cmp', f1, f2 # XXX remove when debugged
-X bufsize = 8096 # Could be tuned
-X fp1 = open(f1, 'r')
-X fp2 = open(f2, 'r')
-X while 1:
-X b1 = fp1.read(bufsize)
-X b2 = fp2.read(bufsize)
-X if b1 <> b2: return 0
-X if not b1: return 1
+X	#print '    cmp', f1, f2 # XXX remove when debugged
+X	bufsize = 8096 # Could be tuned
+X	fp1 = open(f1, 'r')
+X	fp2 = open(f2, 'r')
+X	while 1:
+X		b1 = fp1.read(bufsize)
+X		b2 = fp2.read(bufsize)
+X		if b1 <> b2: return 0
+X		if not b1: return 1
 EOF
 fi
 if test -s 'lib/macshell.py'
@@ -862,379 +862,379 @@ Xclass Struct(): pass
 XG = Struct()
 X
 Xdef reset():
-X G.debug = 0
-X G.ps1 = '$ '
-X G.homedir = mac.getcwd()
-X G.commands = mkcmdtab()
-X G.aliases = {}
+X	G.debug = 0
+X	G.ps1 = '$ '
+X	G.homedir = mac.getcwd()
+X	G.commands = mkcmdtab()
+X	G.aliases = {}
 X
 Xdef mkcmdtab():
-X tab = {}
-X tab['alias'] = do_alias
-X tab['cd'] = do_cd
-X tab['debug'] = do_debug
-X tab['grep'] = do_grep
-X tab['help'] = do_help
-X tab['ls'] = do_ls
-X tab['mkdir'] = do_mkdir
-X tab['mv'] = do_mv
-X tab['page'] = do_page
-X tab['pwd'] = do_pwd
-X tab['reset'] = do_reset
-X tab['rm'] = do_rm
-X tab['rmdir'] = do_rmdir
-X tab['sync'] = do_sync
-X tab['unalias'] = do_unalias
-X return tab
+X	tab = {}
+X	tab['alias'] = do_alias
+X	tab['cd'] = do_cd
+X	tab['debug'] = do_debug
+X	tab['grep'] = do_grep
+X	tab['help'] = do_help
+X	tab['ls'] = do_ls
+X	tab['mkdir'] = do_mkdir
+X	tab['mv'] = do_mv
+X	tab['page'] = do_page
+X	tab['pwd'] = do_pwd
+X	tab['reset'] = do_reset
+X	tab['rm'] = do_rm
+X	tab['rmdir'] = do_rmdir
+X	tab['sync'] = do_sync
+X	tab['unalias'] = do_unalias
+X	return tab
 X
 Xdef main():
-X while 1:
-X try:
-X line = raw_input(G.ps1)
-X except EOFError:
-X print '[EOF]'
-X break
-X except KeyboardInterrupt:
-X print '[Intr]'
-X line = ''
-X if G.debug:
-X print 'line:', `line`
-X words = TclUtil.SplitList(line)
-X if G.debug:
-X print 'words:', words
-X if words and words[0][0] <> '#':
-X run(words)
+X	while 1:
+X		try:
+X			line = raw_input(G.ps1)
+X		except EOFError:
+X			print '[EOF]'
+X			break
+X		except KeyboardInterrupt:
+X			print '[Intr]'
+X			line = ''
+X		if G.debug:
+X			print 'line:', `line`
+X		words = TclUtil.SplitList(line)
+X		if G.debug:
+X			print 'words:', words
+X		if words and words[0][0] <> '#':
+X			run(words)
 X
 Xdef run(words):
-X expandaliases(words)
-X cmd = words[0]
-X args = words[1:]
-X if G.commands.has_key(cmd):
-X if args:
-X try:
-X args = expandgloblist(args)
-X except glob_error, msg:
-X print cmd, ': glob error :', msg
-X return
-X G.commands[cmd](args)
-X return
-X if hasglobchar(cmd):
-X if args:
-X print cmd, ': cannot glob pattern with arguments'
-X return
-X try:
-X words = expandglobword(cmd)
-X except glob_error, msg:
-X print cmd, ': glob error :', msg
-X return
-X if len(words) > 1:
-X columnize(words)
-X return
-X cmd = words[0]
-X print cmd
-X if isfile(cmd):
-X if args:
-X print cmd, ': file command expects no arguments'
-X return
-X do_page([cmd])
-X elif isdir(cmd):
-X if args:
-X print cmd, ': directory command expects no arguments'
-X return
-X do_cd([cmd])
-X else:
-X print cmd, ': no such command, file or directory'
+X	expandaliases(words)
+X	cmd = words[0]
+X	args = words[1:]
+X	if G.commands.has_key(cmd):
+X		if args:
+X			try:
+X				args = expandgloblist(args)
+X			except glob_error, msg:
+X				print cmd, ': glob error :', msg
+X				return
+X		G.commands[cmd](args)
+X		return
+X	if hasglobchar(cmd):
+X		if args:
+X			print cmd, ': cannot glob pattern with arguments'
+X			return
+X		try:
+X			words = expandglobword(cmd)
+X		except glob_error, msg:
+X			print cmd, ': glob error :', msg
+X			return
+X		if len(words) > 1:
+X			columnize(words)
+X			return
+X		cmd = words[0]
+X		print cmd
+X	if isfile(cmd):
+X		if args:
+X			print cmd, ': file command expects no arguments'
+X			return
+X		do_page([cmd])
+X	elif isdir(cmd):
+X		if args:
+X			print cmd, ': directory command expects no arguments'
+X			return
+X		do_cd([cmd])
+X	else:
+X		print cmd, ': no such command, file or directory'
 X
 Xglob_error = 'glob error'
 X
 Xdef expandgloblist(words):
-X res = []
-X for word in words:
-X if hasglobchar(word):
-X res = res + expandglobword(word)
-X else:
-X res.append(word)
-X return res
+X	res = []
+X	for word in words:
+X		if hasglobchar(word):
+X			res = res + expandglobword(word)
+X		else:
+X			res.append(word)
+X	return res
 X
 Xdef expandglobword(word):
-X names = glob.globlist(mac.listdir(':'), word)
-X if not names: raise glob_error, 'no match for pattern ' + word
-X return names
+X	names = glob.globlist(mac.listdir(':'), word)
+X	if not names: raise glob_error, 'no match for pattern ' + word
+X	return names
 X
 Xdef hasglobchar(word):
-X return '*' in word or '?' in word
+X	return '*' in word or '?' in word
 X
 Xdef expandaliases(words):
-X seen = []
-X cmd = words[0]
-X while cmd not in seen and G.aliases.has_key(cmd):
-X seen.append(cmd)
-X words[:1] = G.aliases[cmd]
-X cmd = words[0]
+X	seen = []
+X	cmd = words[0]
+X	while cmd not in seen and G.aliases.has_key(cmd):
+X		seen.append(cmd)
+X		words[:1] = G.aliases[cmd]
+X		cmd = words[0]
 X
 Xdef do_alias(args):
-X if not args:
-X listaliases()
-X elif len(args) = 1:
-X listalias(args[0])
-X else:
-X defalias(args[0], args[1:])
+X	if not args:
+X		listaliases()
+X	elif len(args) = 1:
+X		listalias(args[0])
+X	else:
+X		defalias(args[0], args[1:])
 X
 Xdef listaliases():
-X names = G.aliases.keys()
-X names.sort()
-X for name in names: listalias(name)
+X	names = G.aliases.keys()
+X	names.sort()
+X	for name in names: listalias(name)
 X
 Xdef listalias(name):
-X if not G.aliases.has_key(name):
-X print name, ': no such alias'
-X return
-X print 'alias', name,
-X printlist(G.aliases[name])
-X print
+X	if not G.aliases.has_key(name):
+X		print name, ': no such alias'
+X		return
+X	print 'alias', name,
+X	printlist(G.aliases[name])
+X	print
 X
 Xdef defalias(name, expansion):
-X G.aliases[name] = expansion
+X	G.aliases[name] = expansion
 X
 Xdef do_cd(args):
-X if len(args) > 1:
-X print 'usage: cd [dirname]'
-X elif args:
-X chdirto(args[0])
-X else:
-X chdirto(G.homedir)
+X	if len(args) > 1:
+X		print 'usage: cd [dirname]'
+X	elif args:
+X		chdirto(args[0])
+X	else:
+X		chdirto(G.homedir)
 X
 Xdef chdirto(dirname):
-X try:
-X mac.chdir(dirname)
-X except mac.error, msg:
-X print dirname, ':', msg
-X return
+X	try:
+X		mac.chdir(dirname)
+X	except mac.error, msg:
+X		print dirname, ':', msg
+X		return
 X
 Xdef do_debug(args):
-X G.debug = (not G.debug)
+X	G.debug = (not G.debug)
 X
 Xdef do_grep(args):
-X if len(args) < 2:
-X print 'usage: grep regexp file ...'
-X return
-X import regexp
-X try:
-X prog = regexp.compile(args[0])
-X except regexp.error, msg:
-X print 'regexp.compile error for', args[0], ':', msg
-X return
-X for file in args[1:]:
-X grepfile(prog, file)
+X	if len(args) < 2:
+X		print 'usage: grep regexp file ...'
+X		return
+X	import regexp
+X	try:
+X		prog = regexp.compile(args[0])
+X	except regexp.error, msg:
+X		print 'regexp.compile error for', args[0], ':', msg
+X		return
+X	for file in args[1:]:
+X		grepfile(prog, file)
 X
 Xdef grepfile(prog, file):
-X try:
-X fp = open(file, 'r')
-X except RuntimeError, msg:
-X print file, ': cannot open :', msg
-X return
-X lineno = 0
-X while 1:
-X line = fp.readline()
-X if not line: break
-X lineno = lineno+1
-X if prog.exec(line):
-X print file+'('+`lineno`+'):', line,
+X	try:
+X		fp = open(file, 'r')
+X	except RuntimeError, msg:
+X		print file, ': cannot open :', msg
+X		return
+X	lineno = 0
+X	while 1:
+X		line = fp.readline()
+X		if not line: break
+X		lineno = lineno+1
+X		if prog.exec(line):
+X			print file+'('+`lineno`+'):', line,
 X
 Xdef do_help(args):
-X if args:
-X print 'usage: help'
-X return
-X names = G.commands.keys()
-X names.sort()
-X columnize(names)
+X	if args:
+X		print 'usage: help'
+X		return
+X	names = G.commands.keys()
+X	names.sort()
+X	columnize(names)
 X
 Xdef do_ls(args):
-X if not args:
-X lsdir(':')
-X else:
-X for dirname in args:
-X lsdir(dirname)
+X	if not args:
+X		lsdir(':')
+X	else:
+X		for dirname in args:
+X			lsdir(dirname)
 X
 Xdef lsdir(dirname):
-X if not isdir(dirname):
-X print dirname, ': no such directory'
-X return
-X names = mac.listdir(dirname)
-X lsfiles(names, dirname)
+X	if not isdir(dirname):
+X		print dirname, ': no such directory'
+X		return
+X	names = mac.listdir(dirname)
+X	lsfiles(names, dirname)
 X
 Xdef lsfiles(names, dirname):
-X names = names[:] # Make a copy so we can modify it
-X for i in range(len(names)):
-X name = names[i]
-X if G.debug: print i, name
-X if isdir(macpath.cat(dirname, name)):
-X names[i] = ':' + name + ':'
-X columnize(names)
+X	names = names[:] # Make a copy so we can modify it
+X	for i in range(len(names)):
+X		name = names[i]
+X		if G.debug: print i, name
+X		if isdir(macpath.cat(dirname, name)):
+X			names[i] = ':' + name + ':'
+X	columnize(names)
 X
 Xdef columnize(list):
-X COLUMNS = 80-1
-X n = len(list)
-X colwidth = maxwidth(list)
-X ncols = (COLUMNS + 1) / (colwidth + 1)
-X if ncols < 1: ncols = 1
-X nrows = (n + ncols - 1) / ncols
-X for irow in range(nrows):
-X line = ''
-X for icol in range(ncols):
-X i = irow + nrows*icol
-X if 0 <= i < n:
-X word = list[i]
-X if i+nrows < n:
-X word = string.ljust(word, colwidth)
-X if icol > 0:
-X word = ' ' + word
-X line = line + word
-X print line
+X	COLUMNS = 80-1
+X	n = len(list)
+X	colwidth = maxwidth(list)
+X	ncols = (COLUMNS + 1) / (colwidth + 1)
+X	if ncols < 1: ncols = 1
+X	nrows = (n + ncols - 1) / ncols
+X	for irow in range(nrows):
+X		line = ''
+X		for icol in range(ncols):
+X			i = irow + nrows*icol
+X			if 0 <= i < n:
+X				word = list[i]
+X				if i+nrows < n:
+X					word = string.ljust(word, colwidth)
+X				if icol > 0:
+X					word = ' ' + word
+X				line = line + word
+X		print line
 X
 Xdef maxwidth(list):
-X width = 0
-X for word in list:
-X if len(word) > width:
-X width = len(word)
-X return width
+X	width = 0
+X	for word in list:
+X		if len(word) > width:
+X			width = len(word)
+X	return width
 X
 Xdef do_mv(args):
-X if len(args) <> 2:
-X print 'usage: mv src dst'
-X return
-X src, dst = args[0], args[1]
-X if not exists(src):
-X print src, ': source does not exist'
-X return
-X if exists(dst):
-X print src, ': destination already exists'
-X return
-X try:
-X mac.rename(src, dst)
-X except mac.error, msg:
-X print src, dst, ': rename failed:', msg
+X	if len(args) <> 2:
+X		print 'usage: mv src dst'
+X		return
+X	src, dst = args[0], args[1]
+X	if not exists(src):
+X		print src, ': source does not exist'
+X		return
+X	if exists(dst):
+X		print src, ': destination already exists'
+X		return
+X	try:
+X		mac.rename(src, dst)
+X	except mac.error, msg:
+X		print src, dst, ': rename failed:', msg
 X
 Xdef do_mkdir(args):
-X if not args:
-X print 'usage: mkdir name ...'
-X return
-X for name in args:
-X makedir(name)
+X	if not args:
+X		print 'usage: mkdir name ...'
+X		return
+X	for name in args:
+X		makedir(name)
 X
 Xdef makedir(name):
-X if exists(name):
-X print name, ': already exists'
-X return
-X try:
-X mac.mkdir(name, 0777)
-X except mac.error, msg:
-X print name, ': mkdir failed:', msg
+X	if exists(name):
+X		print name, ': already exists'
+X		return
+X	try:
+X		mac.mkdir(name, 0777)
+X	except mac.error, msg:
+X		print name, ': mkdir failed:', msg
 X
 Xdef do_page(args):
-X if not args:
-X print 'usage: page file ...'
-X return
-X for name in args:
-X pagefile(name)
+X	if not args:
+X		print 'usage: page file ...'
+X		return
+X	for name in args:
+X		pagefile(name)
 X
 Xdef pagefile(name):
-X if not isfile(name):
-X print name, ': no such file'
-X return
-X LINES = 24 - 1
-X # For THINK C 3.0, make the path absolute:
-X # if not macpath.isabs(name):
-X # name = macpath.cat(mac.getcwd(), name)
-X try:
-X fp = open(name, 'r')
-X except:
-X print name, ': cannot open'
-X return
-X line = fp.readline()
-X while line:
-X for i in range(LINES):
-X print line,
-X line = fp.readline()
-X if not line: break
-X if line:
-X try:
-X more = raw_input('[more]')
-X except (EOFError, KeyboardInterrupt):
-X print
-X break
-X if string.strip(more)[:1] in ('q', 'Q'):
-X break
+X	if not isfile(name):
+X		print name, ': no such file'
+X		return
+X	LINES = 24 - 1
+X	# For THINK C 3.0, make the path absolute:
+X	# if not macpath.isabs(name):
+X	# 	name = macpath.cat(mac.getcwd(), name)
+X	try:
+X		fp = open(name, 'r')
+X	except:
+X		print name, ': cannot open'
+X		return
+X	line = fp.readline()
+X	while line:
+X		for i in range(LINES):
+X			print line,
+X			line = fp.readline()
+X			if not line: break
+X		if line:
+X			try:
+X				more = raw_input('[more]')
+X			except (EOFError, KeyboardInterrupt):
+X				print
+X				break
+X			if string.strip(more)[:1] in ('q', 'Q'):
+X				break
 X
 Xdef do_pwd(args):
-X if args:
-X print 'usage: pwd'
-X else:
-X print mac.getcwd()
+X	if args:
+X		print 'usage: pwd'
+X	else:
+X		print mac.getcwd()
 X
 Xdef do_reset(args):
-X if args:
-X print 'usage: reset'
-X else:
-X reset()
+X	if args:
+X		print 'usage: reset'
+X	else:
+X		reset()
 X
 Xdef do_rm(args):
-X if not args:
-X print 'usage: rm file ...'
-X return
-X for name in args:
-X remove(name)
+X	if not args:
+X		print 'usage: rm file ...'
+X		return
+X	for name in args:
+X		remove(name)
 X
 Xdef remove(name):
-X if not isfile(name):
-X print name, ': no such file'
-X return
-X try:
-X mac.unlink(name)
-X except mac.error, msg:
-X print name, ': unlink failed:', msg
+X	if not isfile(name):
+X		print name, ': no such file'
+X		return
+X	try:
+X		mac.unlink(name)
+X	except mac.error, msg:
+X		print name, ': unlink failed:', msg
 X
 Xdef do_rmdir(args):
-X if not args:
-X print 'usage: rmdir dir ...'
-X return
-X for name in args:
-X rmdir(name)
+X	if not args:
+X		print 'usage: rmdir dir ...'
+X		return
+X	for name in args:
+X		rmdir(name)
 X
 Xdef rmdir(name):
-X if not isdir(name):
-X print name, ': no such directory'
-X return
-X try:
-X mac.rmdir(name)
-X except mac.error, msg:
-X print name, ': rmdir failed:', msg
+X	if not isdir(name):
+X		print name, ': no such directory'
+X		return
+X	try:
+X		mac.rmdir(name)
+X	except mac.error, msg:
+X		print name, ': rmdir failed:', msg
 X
 Xdef do_sync(args):
-X if args:
-X print 'usage: sync'
-X return
-X try:
-X mac.sync()
-X except mac.error, msg:
-X print 'sync failed:', msg
+X	if args:
+X		print 'usage: sync'
+X		return
+X	try:
+X		mac.sync()
+X	except mac.error, msg:
+X		print 'sync failed:', msg
 X
 Xdef do_unalias(args):
-X if not args:
-X print 'usage: unalias name ...'
-X return
-X for name in args:
-X unalias(name)
+X	if not args:
+X		print 'usage: unalias name ...'
+X		return
+X	for name in args:
+X		unalias(name)
 X
 Xdef unalias(name):
-X if not G.aliases.has_key(name):
-X print name, ': no such alias'
-X return
-X del G.aliases[name]
+X	if not G.aliases.has_key(name):
+X		print name, ': no such alias'
+X		return
+X	del G.aliases[name]
 X
 Xdef printlist(list):
-X for word in list:
-X print word,
+X	for word in list:
+X		print word,
 X
 Xreset()
 Xmain()
@@ -1249,12 +1249,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1292,351 +1292,351 @@ X/* Functions to construct return values */
 X
 Xobject *
 Xmknewcharobject(c)
-X int c;
+X	int c;
 X{
-X char ch[1];
-X ch[0] = c;
-X return newsizedstringobject(ch, 1);
+X	char ch[1];
+X	ch[0] = c;
+X	return newsizedstringobject(ch, 1);
 X}
 X
 X/* Functions to extract arguments.
-X These needs to know the total number of arguments supplied,
-X since the argument list is a tuple only of there is more than
-X one argument. */
+X   These needs to know the total number of arguments supplied,
+X   since the argument list is a tuple only of there is more than
+X   one argument. */
 X
 Xint
 Xgetiobjectarg(args, nargs, i, p_arg)
-X register object *args;
-X int nargs, i;
-X object **p_arg;
+X	register object *args;
+X	int nargs, i;
+X	object **p_arg;
 X{
-X if (nargs != 1) {
-X if (args == NULL || !is_tupleobject(args) ||
-X nargs != gettuplesize(args) ||
-X i < 0 || i >= nargs) {
-X return err_badarg();
-X }
-X else {
-X args = gettupleitem(args, i);
-X }
-X }
-X if (args == NULL) {
-X return err_badarg();
-X }
-X *p_arg = args;
-X return 1;
+X	if (nargs != 1) {
+X		if (args == NULL || !is_tupleobject(args) ||
+X				nargs != gettuplesize(args) ||
+X				i < 0 || i >= nargs) {
+X			return err_badarg();
+X		}
+X		else {
+X			args = gettupleitem(args, i);
+X		}
+X	}
+X	if (args == NULL) {
+X		return err_badarg();
+X	}
+X	*p_arg = args;
+X	return 1;
 X}
 X
 Xint
 Xgetilongarg(args, nargs, i, p_arg)
-X register object *args;
-X int nargs, i;
-X long *p_arg;
+X	register object *args;
+X	int nargs, i;
+X	long *p_arg;
 X{
-X if (nargs != 1) {
-X if (args == NULL || !is_tupleobject(args) ||
-X nargs != gettuplesize(args) ||
-X i < 0 || i >= nargs) {
-X return err_badarg();
-X }
-X args = gettupleitem(args, i);
-X }
-X if (args == NULL || !is_intobject(args)) {
-X return err_badarg();
-X }
-X *p_arg = getintvalue(args);
-X return 1;
+X	if (nargs != 1) {
+X		if (args == NULL || !is_tupleobject(args) ||
+X				nargs != gettuplesize(args) ||
+X				i < 0 || i >= nargs) {
+X			return err_badarg();
+X		}
+X		args = gettupleitem(args, i);
+X	}
+X	if (args == NULL || !is_intobject(args)) {
+X		return err_badarg();
+X	}
+X	*p_arg = getintvalue(args);
+X	return 1;
 X}
 X
 Xint
 Xgetishortarg(args, nargs, i, p_arg)
-X register object *args;
-X int nargs, i;
-X short *p_arg;
+X	register object *args;
+X	int nargs, i;
+X	short *p_arg;
 X{
-X long x;
-X if (!getilongarg(args, nargs, i, &x))
-X return 0;
-X *p_arg = x;
-X return 1;
+X	long x;
+X	if (!getilongarg(args, nargs, i, &x))
+X		return 0;
+X	*p_arg = x;
+X	return 1;
 X}
 X
 Xstatic int
 Xextractdouble(v, p_arg)
-X register object *v;
-X double *p_arg;
+X	register object *v;
+X	double *p_arg;
 X{
-X if (v == NULL) {
-X /* Fall through to error return at end of function */
-X }
-X else if (is_floatobject(v)) {
-X *p_arg = GETFLOATVALUE((floatobject *)v);
-X return 1;
-X }
-X else if (is_intobject(v)) {
-X *p_arg = GETINTVALUE((intobject *)v);
-X return 1;
-X }
-X return err_badarg();
+X	if (v == NULL) {
+X		/* Fall through to error return at end of function */
+X	}
+X	else if (is_floatobject(v)) {
+X		*p_arg = GETFLOATVALUE((floatobject *)v);
+X		return 1;
+X	}
+X	else if (is_intobject(v)) {
+X		*p_arg = GETINTVALUE((intobject *)v);
+X		return 1;
+X	}
+X	return err_badarg();
 X}
 X
 Xstatic int
 Xextractfloat(v, p_arg)
-X register object *v;
-X float *p_arg;
+X	register object *v;
+X	float *p_arg;
 X{
-X if (v == NULL) {
-X /* Fall through to error return at end of function */
-X }
-X else if (is_floatobject(v)) {
-X *p_arg = GETFLOATVALUE((floatobject *)v);
-X return 1;
-X }
-X else if (is_intobject(v)) {
-X *p_arg = GETINTVALUE((intobject *)v);
-X return 1;
-X }
-X return err_badarg();
+X	if (v == NULL) {
+X		/* Fall through to error return at end of function */
+X	}
+X	else if (is_floatobject(v)) {
+X		*p_arg = GETFLOATVALUE((floatobject *)v);
+X		return 1;
+X	}
+X	else if (is_intobject(v)) {
+X		*p_arg = GETINTVALUE((intobject *)v);
+X		return 1;
+X	}
+X	return err_badarg();
 X}
 X
 Xint
 Xgetifloatarg(args, nargs, i, p_arg)
-X register object *args;
-X int nargs, i;
-X float *p_arg;
+X	register object *args;
+X	int nargs, i;
+X	float *p_arg;
 X{
-X object *v;
-X float x;
-X if (!getiobjectarg(args, nargs, i, &v))
-X return 0;
-X if (!extractfloat(v, &x))
-X return 0;
-X *p_arg = x;
-X return 1;
+X	object *v;
+X	float x;
+X	if (!getiobjectarg(args, nargs, i, &v))
+X		return 0;
+X	if (!extractfloat(v, &x))
+X		return 0;
+X	*p_arg = x;
+X	return 1;
 X}
 X
 Xint
 Xgetistringarg(args, nargs, i, p_arg)
-X object *args;
-X int nargs, i;
-X string *p_arg;
+X	object *args;
+X	int nargs, i;
+X	string *p_arg;
 X{
-X object *v;
-X if (!getiobjectarg(args, nargs, i, &v))
-X return NULL;
-X if (!is_stringobject(v)) {
-X return err_badarg();
-X }
-X *p_arg = getstringvalue(v);
-X return 1;
+X	object *v;
+X	if (!getiobjectarg(args, nargs, i, &v))
+X		return NULL;
+X	if (!is_stringobject(v)) {
+X		return err_badarg();
+X	}
+X	*p_arg = getstringvalue(v);
+X	return 1;
 X}
 X
 Xint
 Xgetichararg(args, nargs, i, p_arg)
-X object *args;
-X int nargs, i;
-X char *p_arg;
+X	object *args;
+X	int nargs, i;
+X	char *p_arg;
 X{
-X string x;
-X if (!getistringarg(args, nargs, i, &x))
-X return 0;
-X if (x[0] == '\0' || x[1] != '\0') {
-X /* Not exactly one char */
-X return err_badarg();
-X }
-X *p_arg = x[0];
-X return 1;
+X	string x;
+X	if (!getistringarg(args, nargs, i, &x))
+X		return 0;
+X	if (x[0] == '\0' || x[1] != '\0') {
+X		/* Not exactly one char */
+X		return err_badarg();
+X	}
+X	*p_arg = x[0];
+X	return 1;
 X}
 X
 Xint
 Xgetilongarraysize(args, nargs, i, p_arg)
-X object *args;
-X int nargs, i;
-X long *p_arg;
+X	object *args;
+X	int nargs, i;
+X	long *p_arg;
 X{
-X object *v;
-X if (!getiobjectarg(args, nargs, i, &v))
-X return 0;
-X if (is_tupleobject(v)) {
-X *p_arg = gettuplesize(v);
-X return 1;
-X }
-X if (is_listobject(v)) {
-X *p_arg = getlistsize(v);
-X return 1;
-X }
-X return err_badarg();
+X	object *v;
+X	if (!getiobjectarg(args, nargs, i, &v))
+X		return 0;
+X	if (is_tupleobject(v)) {
+X		*p_arg = gettuplesize(v);
+X		return 1;
+X	}
+X	if (is_listobject(v)) {
+X		*p_arg = getlistsize(v);
+X		return 1;
+X	}
+X	return err_badarg();
 X}
 X
 Xint
 Xgetishortarraysize(args, nargs, i, p_arg)
-X object *args;
-X int nargs, i;
-X short *p_arg;
+X	object *args;
+X	int nargs, i;
+X	short *p_arg;
 X{
-X long x;
-X if (!getilongarraysize(args, nargs, i, &x))
-X return 0;
-X *p_arg = x;
-X return 1;
+X	long x;
+X	if (!getilongarraysize(args, nargs, i, &x))
+X		return 0;
+X	*p_arg = x;
+X	return 1;
 X}
 X
-X/* XXX The following four are too similar. Should share more code. */
+X/* XXX The following four are too similar.  Should share more code. */
 X
 Xint
 Xgetilongarray(args, nargs, i, n, p_arg)
-X object *args;
-X int nargs, i;
-X int n;
-X long *p_arg; /* [n] */
+X	object *args;
+X	int nargs, i;
+X	int n;
+X	long *p_arg; /* [n] */
 X{
-X object *v, *w;
-X if (!getiobjectarg(args, nargs, i, &v))
-X return 0;
-X if (is_tupleobject(v)) {
-X if (gettuplesize(v) != n) {
-X return err_badarg();
-X }
-X for (i = 0; i < n; i++) {
-X w = gettupleitem(v, i);
-X if (!is_intobject(w)) {
-X return err_badarg();
-X }
-X p_arg[i] = getintvalue(w);
-X }
-X return 1;
-X }
-X else if (is_listobject(v)) {
-X if (getlistsize(v) != n) {
-X return err_badarg();
-X }
-X for (i = 0; i < n; i++) {
-X w = getlistitem(v, i);
-X if (!is_intobject(w)) {
-X return err_badarg();
-X }
-X p_arg[i] = getintvalue(w);
-X }
-X return 1;
-X }
-X else {
-X return err_badarg();
-X }
+X	object *v, *w;
+X	if (!getiobjectarg(args, nargs, i, &v))
+X		return 0;
+X	if (is_tupleobject(v)) {
+X		if (gettuplesize(v) != n) {
+X			return err_badarg();
+X		}
+X		for (i = 0; i < n; i++) {
+X			w = gettupleitem(v, i);
+X			if (!is_intobject(w)) {
+X				return err_badarg();
+X			}
+X			p_arg[i] = getintvalue(w);
+X		}
+X		return 1;
+X	}
+X	else if (is_listobject(v)) {
+X		if (getlistsize(v) != n) {
+X			return err_badarg();
+X		}
+X		for (i = 0; i < n; i++) {
+X			w = getlistitem(v, i);
+X			if (!is_intobject(w)) {
+X				return err_badarg();
+X			}
+X			p_arg[i] = getintvalue(w);
+X		}
+X		return 1;
+X	}
+X	else {
+X		return err_badarg();
+X	}
 X}
 X
 Xint
 Xgetishortarray(args, nargs, i, n, p_arg)
-X object *args;
-X int nargs, i;
-X int n;
-X short *p_arg; /* [n] */
+X	object *args;
+X	int nargs, i;
+X	int n;
+X	short *p_arg; /* [n] */
 X{
-X object *v, *w;
-X if (!getiobjectarg(args, nargs, i, &v))
-X return 0;
-X if (is_tupleobject(v)) {
-X if (gettuplesize(v) != n) {
-X return err_badarg();
-X }
-X for (i = 0; i < n; i++) {
-X w = gettupleitem(v, i);
-X if (!is_intobject(w)) {
-X return err_badarg();
-X }
-X p_arg[i] = getintvalue(w);
-X }
-X return 1;
-X }
-X else if (is_listobject(v)) {
-X if (getlistsize(v) != n) {
-X return err_badarg();
-X }
-X for (i = 0; i < n; i++) {
-X w = getlistitem(v, i);
-X if (!is_intobject(w)) {
-X return err_badarg();
-X }
-X p_arg[i] = getintvalue(w);
-X }
-X return 1;
-X }
-X else {
-X return err_badarg();
-X }
+X	object *v, *w;
+X	if (!getiobjectarg(args, nargs, i, &v))
+X		return 0;
+X	if (is_tupleobject(v)) {
+X		if (gettuplesize(v) != n) {
+X			return err_badarg();
+X		}
+X		for (i = 0; i < n; i++) {
+X			w = gettupleitem(v, i);
+X			if (!is_intobject(w)) {
+X				return err_badarg();
+X			}
+X			p_arg[i] = getintvalue(w);
+X		}
+X		return 1;
+X	}
+X	else if (is_listobject(v)) {
+X		if (getlistsize(v) != n) {
+X			return err_badarg();
+X		}
+X		for (i = 0; i < n; i++) {
+X			w = getlistitem(v, i);
+X			if (!is_intobject(w)) {
+X				return err_badarg();
+X			}
+X			p_arg[i] = getintvalue(w);
+X		}
+X		return 1;
+X	}
+X	else {
+X		return err_badarg();
+X	}
 X}
 X
 Xint
 Xgetidoublearray(args, nargs, i, n, p_arg)
-X object *args;
-X int nargs, i;
-X int n;
-X double *p_arg; /* [n] */
+X	object *args;
+X	int nargs, i;
+X	int n;
+X	double *p_arg; /* [n] */
 X{
-X object *v, *w;
-X if (!getiobjectarg(args, nargs, i, &v))
-X return 0;
-X if (is_tupleobject(v)) {
-X if (gettuplesize(v) != n) {
-X return err_badarg();
-X }
-X for (i = 0; i < n; i++) {
-X w = gettupleitem(v, i);
-X if (!extractdouble(w, &p_arg[i]))
-X return 0;
-X }
-X return 1;
-X }
-X else if (is_listobject(v)) {
-X if (getlistsize(v) != n) {
-X return err_badarg();
-X }
-X for (i = 0; i < n; i++) {
-X w = getlistitem(v, i);
-X if (!extractdouble(w, &p_arg[i]))
-X return 0;
-X }
-X return 1;
-X }
-X else {
-X return err_badarg();
-X }
+X	object *v, *w;
+X	if (!getiobjectarg(args, nargs, i, &v))
+X		return 0;
+X	if (is_tupleobject(v)) {
+X		if (gettuplesize(v) != n) {
+X			return err_badarg();
+X		}
+X		for (i = 0; i < n; i++) {
+X			w = gettupleitem(v, i);
+X			if (!extractdouble(w, &p_arg[i]))
+X				return 0;
+X		}
+X		return 1;
+X	}
+X	else if (is_listobject(v)) {
+X		if (getlistsize(v) != n) {
+X			return err_badarg();
+X		}
+X		for (i = 0; i < n; i++) {
+X			w = getlistitem(v, i);
+X			if (!extractdouble(w, &p_arg[i]))
+X				return 0;
+X		}
+X		return 1;
+X	}
+X	else {
+X		return err_badarg();
+X	}
 X}
 X
 Xint
 Xgetifloatarray(args, nargs, i, n, p_arg)
-X object *args;
-X int nargs, i;
-X int n;
-X float *p_arg; /* [n] */
+X	object *args;
+X	int nargs, i;
+X	int n;
+X	float *p_arg; /* [n] */
 X{
-X object *v, *w;
-X if (!getiobjectarg(args, nargs, i, &v))
-X return 0;
-X if (is_tupleobject(v)) {
-X if (gettuplesize(v) != n) {
-X return err_badarg();
-X }
-X for (i = 0; i < n; i++) {
-X w = gettupleitem(v, i);
-X if (!extractfloat(w, &p_arg[i]))
-X return 0;
-X }
-X return 1;
-X }
-X else if (is_listobject(v)) {
-X if (getlistsize(v) != n) {
-X return err_badarg();
-X }
-X for (i = 0; i < n; i++) {
-X w = getlistitem(v, i);
-X if (!extractfloat(w, &p_arg[i]))
-X return 0;
-X }
-X return 1;
-X }
-X else {
-X return err_badarg();
-X }
+X	object *v, *w;
+X	if (!getiobjectarg(args, nargs, i, &v))
+X		return 0;
+X	if (is_tupleobject(v)) {
+X		if (gettuplesize(v) != n) {
+X			return err_badarg();
+X		}
+X		for (i = 0; i < n; i++) {
+X			w = gettupleitem(v, i);
+X			if (!extractfloat(w, &p_arg[i]))
+X				return 0;
+X		}
+X		return 1;
+X	}
+X	else if (is_listobject(v)) {
+X		if (getlistsize(v) != n) {
+X			return err_badarg();
+X		}
+X		for (i = 0; i < n; i++) {
+X			w = getlistitem(v, i);
+X			if (!extractfloat(w, &p_arg[i]))
+X				return 0;
+X		}
+X		return 1;
+X	}
+X	else {
+X		return err_badarg();
+X	}
 X}
 EOF
 fi
@@ -1649,12 +1649,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -1678,353 +1678,353 @@ X
 X
 Xobject *
 Xinitmodule(name, methods)
-X char *name;
-X struct methodlist *methods;
+X	char *name;
+X	struct methodlist *methods;
 X{
-X object *m, *d, *v;
-X struct methodlist *ml;
-X char namebuf[256];
-X if ((m = add_module(name)) == NULL) {
-X fprintf(stderr, "initializing module: %s\n", name);
-X fatal("can't create a module");
-X }
-X d = getmoduledict(m);
-X for (ml = methods; ml->ml_name != NULL; ml++) {
-X sprintf(namebuf, "%s.%s", name, ml->ml_name);
-X v = newmethodobject(strdup(namebuf), ml->ml_meth,
-X (object *)NULL);
-X /* XXX The strdup'ed memory is never freed */
-X if (v == NULL || dictinsert(d, ml->ml_name, v) != 0) {
-X fprintf(stderr, "initializing module: %s\n", name);
-X fatal("can't initialize module");
-X }
-X DECREF(v);
-X }
-X return m;
+X	object *m, *d, *v;
+X	struct methodlist *ml;
+X	char namebuf[256];
+X	if ((m = add_module(name)) == NULL) {
+X		fprintf(stderr, "initializing module: %s\n", name);
+X		fatal("can't create a module");
+X	}
+X	d = getmoduledict(m);
+X	for (ml = methods; ml->ml_name != NULL; ml++) {
+X		sprintf(namebuf, "%s.%s", name, ml->ml_name);
+X		v = newmethodobject(strdup(namebuf), ml->ml_meth,
+X						(object *)NULL);
+X		/* XXX The strdup'ed memory is never freed */
+X		if (v == NULL || dictinsert(d, ml->ml_name, v) != 0) {
+X			fprintf(stderr, "initializing module: %s\n", name);
+X			fatal("can't initialize module");
+X		}
+X		DECREF(v);
+X	}
+X	return m;
 X}
 X
 X
 X/* Argument list handling tools.
-X All return 1 for success, or call err_set*() and return 0 for failure */
+X   All return 1 for success, or call err_set*() and return 0 for failure */
 X
 Xint
 Xgetnoarg(v)
-X object *v;
+X	object *v;
 X{
-X if (v != NULL) {
-X return err_badarg();
-X }
-X return 1;
+X	if (v != NULL) {
+X		return err_badarg();
+X	}
+X	return 1;
 X}
 X
 Xint
 Xgetintarg(v, a)
-X object *v;
-X int *a;
+X	object *v;
+X	int *a;
 X{
-X if (v == NULL || !is_intobject(v)) {
-X return err_badarg();
-X }
-X *a = getintvalue(v);
-X return 1;
+X	if (v == NULL || !is_intobject(v)) {
+X		return err_badarg();
+X	}
+X	*a = getintvalue(v);
+X	return 1;
 X}
 X
 Xint
 Xgetintintarg(v, a, b)
-X object *v;
-X int *a;
-X int *b;
+X	object *v;
+X	int *a;
+X	int *b;
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
-X return err_badarg();
-X }
-X return getintarg(gettupleitem(v, 0), a) &&
-X getintarg(gettupleitem(v, 1), b);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
+X		return err_badarg();
+X	}
+X	return getintarg(gettupleitem(v, 0), a) &&
+X		getintarg(gettupleitem(v, 1), b);
 X}
 X
 Xint
 Xgetlongarg(v, a)
-X object *v;
-X long *a;
+X	object *v;
+X	long *a;
 X{
-X if (v == NULL || !is_intobject(v)) {
-X return err_badarg();
-X }
-X *a = getintvalue(v);
-X return 1;
+X	if (v == NULL || !is_intobject(v)) {
+X		return err_badarg();
+X	}
+X	*a = getintvalue(v);
+X	return 1;
 X}
 X
 Xint
 Xgetlonglongargs(v, a, b)
-X object *v;
-X long *a, *b;
+X	object *v;
+X	long *a, *b;
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
-X return err_badarg();
-X }
-X return getlongarg(gettupleitem(v, 0), a) &&
-X getlongarg(gettupleitem(v, 1), b);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
+X		return err_badarg();
+X	}
+X	return getlongarg(gettupleitem(v, 0), a) &&
+X		getlongarg(gettupleitem(v, 1), b);
 X}
 X
 Xint
 Xgetlonglongobjectargs(v, a, b, c)
-X object *v;
-X long *a, *b;
-X object **c;
+X	object *v;
+X	long *a, *b;
+X	object **c;
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 3) {
-X return err_badarg();
-X }
-X if (getlongarg(gettupleitem(v, 0), a) &&
-X getlongarg(gettupleitem(v, 1), b)) {
-X *c = gettupleitem(v, 2);
-X return 1;
-X }
-X else {
-X return err_badarg();
-X }
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 3) {
+X		return err_badarg();
+X	}
+X	if (getlongarg(gettupleitem(v, 0), a) &&
+X		getlongarg(gettupleitem(v, 1), b)) {
+X		*c = gettupleitem(v, 2);
+X		return 1;
+X	}
+X	else {
+X		return err_badarg();
+X	}
 X}
 X
 Xint
 Xgetstrarg(v, a)
-X object *v;
-X object **a;
+X	object *v;
+X	object **a;
 X{
-X if (v == NULL || !is_stringobject(v)) {
-X return err_badarg();
-X }
-X *a = v;
-X return 1;
+X	if (v == NULL || !is_stringobject(v)) {
+X		return err_badarg();
+X	}
+X	*a = v;
+X	return 1;
 X}
 X
 Xint
 Xgetstrstrarg(v, a, b)
-X object *v;
-X object **a;
-X object **b;
+X	object *v;
+X	object **a;
+X	object **b;
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
-X return err_badarg();
-X }
-X return getstrarg(gettupleitem(v, 0), a) &&
-X getstrarg(gettupleitem(v, 1), b);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
+X		return err_badarg();
+X	}
+X	return getstrarg(gettupleitem(v, 0), a) &&
+X		getstrarg(gettupleitem(v, 1), b);
 X}
 X
 Xint
 Xgetstrstrintarg(v, a, b, c)
-X object *v;
-X object **a;
-X object **b;
-X int *c;
+X	object *v;
+X	object **a;
+X	object **b;
+X	int *c;
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 3) {
-X return err_badarg();
-X }
-X return getstrarg(gettupleitem(v, 0), a) &&
-X getstrarg(gettupleitem(v, 1), b) &&
-X getintarg(gettupleitem(v, 2), c);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 3) {
+X		return err_badarg();
+X	}
+X	return getstrarg(gettupleitem(v, 0), a) &&
+X		getstrarg(gettupleitem(v, 1), b) &&
+X		getintarg(gettupleitem(v, 2), c);
 X}
 X
 Xint
 Xgetstrintarg(v, a, b)
-X object *v;
-X object **a;
-X int *b;
+X	object *v;
+X	object **a;
+X	int *b;
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
-X return err_badarg();
-X }
-X return getstrarg(gettupleitem(v, 0), a) &&
-X getintarg(gettupleitem(v, 1), b);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
+X		return err_badarg();
+X	}
+X	return getstrarg(gettupleitem(v, 0), a) &&
+X		getintarg(gettupleitem(v, 1), b);
 X}
 X
 Xint
 Xgetintstrarg(v, a, b)
-X object *v;
-X int *a;
-X object **b;
+X	object *v;
+X	int *a;
+X	object **b;
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
-X return err_badarg();
-X }
-X return getintarg(gettupleitem(v, 0), a) &&
-X getstrarg(gettupleitem(v, 1), b);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
+X		return err_badarg();
+X	}
+X	return getintarg(gettupleitem(v, 0), a) &&
+X		getstrarg(gettupleitem(v, 1), b);
 X}
 X
 Xint
 Xgetpointarg(v, a)
-X object *v;
-X int *a; /* [2] */
+X	object *v;
+X	int *a; /* [2] */
 X{
-X return getintintarg(v, a, a+1);
+X	return getintintarg(v, a, a+1);
 X}
 X
 Xint
 Xget3pointarg(v, a)
-X object *v;
-X int *a; /* [6] */
+X	object *v;
+X	int *a; /* [6] */
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 3) {
-X return err_badarg();
-X }
-X return getpointarg(gettupleitem(v, 0), a) &&
-X getpointarg(gettupleitem(v, 1), a+2) &&
-X getpointarg(gettupleitem(v, 2), a+4);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 3) {
+X		return err_badarg();
+X	}
+X	return getpointarg(gettupleitem(v, 0), a) &&
+X		getpointarg(gettupleitem(v, 1), a+2) &&
+X		getpointarg(gettupleitem(v, 2), a+4);
 X}
 X
 Xint
 Xgetrectarg(v, a)
-X object *v;
-X int *a; /* [2+2] */
+X	object *v;
+X	int *a; /* [2+2] */
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
-X return err_badarg();
-X }
-X return getpointarg(gettupleitem(v, 0), a) &&
-X getpointarg(gettupleitem(v, 1), a+2);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
+X		return err_badarg();
+X	}
+X	return getpointarg(gettupleitem(v, 0), a) &&
+X		getpointarg(gettupleitem(v, 1), a+2);
 X}
 X
 Xint
 Xgetrectintarg(v, a)
-X object *v;
-X int *a; /* [4+1] */
+X	object *v;
+X	int *a; /* [4+1] */
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
-X return err_badarg();
-X }
-X return getrectarg(gettupleitem(v, 0), a) &&
-X getintarg(gettupleitem(v, 1), a+4);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
+X		return err_badarg();
+X	}
+X	return getrectarg(gettupleitem(v, 0), a) &&
+X		getintarg(gettupleitem(v, 1), a+4);
 X}
 X
 Xint
 Xgetpointintarg(v, a)
-X object *v;
-X int *a; /* [2+1] */
+X	object *v;
+X	int *a; /* [2+1] */
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
-X return err_badarg();
-X }
-X return getpointarg(gettupleitem(v, 0), a) &&
-X getintarg(gettupleitem(v, 1), a+2);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
+X		return err_badarg();
+X	}
+X	return getpointarg(gettupleitem(v, 0), a) &&
+X		getintarg(gettupleitem(v, 1), a+2);
 X}
 X
 Xint
 Xgetpointstrarg(v, a, b)
-X object *v;
-X int *a; /* [2] */
-X object **b;
+X	object *v;
+X	int *a; /* [2] */
+X	object **b;
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
-X return err_badarg();
-X }
-X return getpointarg(gettupleitem(v, 0), a) &&
-X getstrarg(gettupleitem(v, 1), b);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
+X		return err_badarg();
+X	}
+X	return getpointarg(gettupleitem(v, 0), a) &&
+X		getstrarg(gettupleitem(v, 1), b);
 X}
 X
 Xint
 Xgetstrintintarg(v, a, b, c)
-X object *v;
-X object *a;
-X int *b, *c;
+X	object *v;
+X	object *a;
+X	int *b, *c;
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 3) {
-X return err_badarg();
-X }
-X return getstrarg(gettupleitem(v, 0), a) &&
-X getintarg(gettupleitem(v, 1), b) &&
-X getintarg(gettupleitem(v, 2), c);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 3) {
+X		return err_badarg();
+X	}
+X	return getstrarg(gettupleitem(v, 0), a) &&
+X		getintarg(gettupleitem(v, 1), b) &&
+X		getintarg(gettupleitem(v, 2), c);
 X}
 X
 Xint
 Xgetrectpointarg(v, a)
-X object *v;
-X int *a; /* [4+2] */
+X	object *v;
+X	int *a; /* [4+2] */
 X{
-X if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
-X return err_badarg();
-X }
-X return getrectarg(gettupleitem(v, 0), a) &&
-X getpointarg(gettupleitem(v, 1), a+4);
+X	if (v == NULL || !is_tupleobject(v) || gettuplesize(v) != 2) {
+X		return err_badarg();
+X	}
+X	return getrectarg(gettupleitem(v, 0), a) &&
+X		getpointarg(gettupleitem(v, 1), a+4);
 X}
 X
 Xint
 Xgetlongtuplearg(args, a, n)
-X object *args;
-X long *a; /* [n] */
-X int n;
+X	object *args;
+X	long *a; /* [n] */
+X	int n;
 X{
-X int i;
-X if (!is_tupleobject(args) || gettuplesize(args) != n) {
-X return err_badarg();
-X }
-X for (i = 0; i < n; i++) {
-X object *v = gettupleitem(args, i);
-X if (!is_intobject(v)) {
-X return err_badarg();
-X }
-X a[i] = getintvalue(v);
-X }
-X return 1;
+X	int i;
+X	if (!is_tupleobject(args) || gettuplesize(args) != n) {
+X		return err_badarg();
+X	}
+X	for (i = 0; i < n; i++) {
+X		object *v = gettupleitem(args, i);
+X		if (!is_intobject(v)) {
+X			return err_badarg();
+X		}
+X		a[i] = getintvalue(v);
+X	}
+X	return 1;
 X}
 X
 Xint
 Xgetshorttuplearg(args, a, n)
-X object *args;
-X short *a; /* [n] */
-X int n;
+X	object *args;
+X	short *a; /* [n] */
+X	int n;
 X{
-X int i;
-X if (!is_tupleobject(args) || gettuplesize(args) != n) {
-X return err_badarg();
-X }
-X for (i = 0; i < n; i++) {
-X object *v = gettupleitem(args, i);
-X if (!is_intobject(v)) {
-X return err_badarg();
-X }
-X a[i] = getintvalue(v);
-X }
-X return 1;
+X	int i;
+X	if (!is_tupleobject(args) || gettuplesize(args) != n) {
+X		return err_badarg();
+X	}
+X	for (i = 0; i < n; i++) {
+X		object *v = gettupleitem(args, i);
+X		if (!is_intobject(v)) {
+X			return err_badarg();
+X		}
+X		a[i] = getintvalue(v);
+X	}
+X	return 1;
 X}
 X
 Xint
 Xgetlonglistarg(args, a, n)
-X object *args;
-X long *a; /* [n] */
-X int n;
+X	object *args;
+X	long *a; /* [n] */
+X	int n;
 X{
-X int i;
-X if (!is_listobject(args) || getlistsize(args) != n) {
-X return err_badarg();
-X }
-X for (i = 0; i < n; i++) {
-X object *v = getlistitem(args, i);
-X if (!is_intobject(v)) {
-X return err_badarg();
-X }
-X a[i] = getintvalue(v);
-X }
-X return 1;
+X	int i;
+X	if (!is_listobject(args) || getlistsize(args) != n) {
+X		return err_badarg();
+X	}
+X	for (i = 0; i < n; i++) {
+X		object *v = getlistitem(args, i);
+X		if (!is_intobject(v)) {
+X			return err_badarg();
+X		}
+X		a[i] = getintvalue(v);
+X	}
+X	return 1;
 X}
 X
 Xint
 Xgetshortlistarg(args, a, n)
-X object *args;
-X short *a; /* [n] */
-X int n;
+X	object *args;
+X	short *a; /* [n] */
+X	int n;
 X{
-X int i;
-X if (!is_listobject(args) || getlistsize(args) != n) {
-X return err_badarg();
-X }
-X for (i = 0; i < n; i++) {
-X object *v = getlistitem(args, i);
-X if (!is_intobject(v)) {
-X return err_badarg();
-X }
-X a[i] = getintvalue(v);
-X }
-X return 1;
+X	int i;
+X	if (!is_listobject(args) || getlistsize(args) != n) {
+X		return err_badarg();
+X	}
+X	for (i = 0; i < n; i++) {
+X		object *v = getlistitem(args, i);
+X		if (!is_intobject(v)) {
+X			return err_badarg();
+X		}
+X		a[i] = getintvalue(v);
+X	}
+X	return 1;
 X}
 EOF
 fi
@@ -2037,12 +2037,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -2083,32 +2083,32 @@ Xint debugging; /* Needed by parser.c */
 X#endif
 X
 Xmain(argc, argv)
-X int argc;
-X char **argv;
+X	int argc;
+X	char **argv;
 X{
-X char *filename = NULL;
-X FILE *fp = stdin;
-X
-X initargs(&argc, &argv);
-X
-X if (argc > 1 && strcmp(argv[1], "-") != 0)
-X filename = argv[1];
-X
-X if (filename != NULL) {
-X if ((fp = fopen(filename, "r")) == NULL) {
-X fprintf(stderr, "python: can't open file '%s'\n",
-X filename);
-X exit(2);
-X }
-X }
-X
-X initall();
-X
-X setpythonpath(getpythonpath());
-X setpythonargv(argc-1, argv+1);
-X
-X goaway(run(fp, filename == NULL ? "<stdin>" : filename));
-X /*NOTREACHED*/
+X	char *filename = NULL;
+X	FILE *fp = stdin;
+X	
+X	initargs(&argc, &argv);
+X	
+X	if (argc > 1 && strcmp(argv[1], "-") != 0)
+X		filename = argv[1];
+X	
+X	if (filename != NULL) {
+X		if ((fp = fopen(filename, "r")) == NULL) {
+X			fprintf(stderr, "python: can't open file '%s'\n",
+X				filename);
+X			exit(2);
+X		}
+X	}
+X	
+X	initall();
+X	
+X	setpythonpath(getpythonpath());
+X	setpythonargv(argc-1, argv+1);
+X	
+X	goaway(run(fp, filename == NULL ? "<stdin>" : filename));
+X	/*NOTREACHED*/
 X}
 X
 X/* Initialize all */
@@ -2116,321 +2116,321 @@ X
 Xvoid
 Xinitall()
 X{
-X static int inited;
-X
-X if (inited)
-X return;
-X inited = 1;
-X
-X initimport();
-X
-X /* Modules 'builtin' and 'sys' are initialized here,
-X they are needed by random bits of the interpreter.
-X All other modules are optional and should be initialized
-X by the initcalls() of a specific configuration. */
-X
-X initbuiltin(); /* Also initializes builtin exceptions */
-X initsys();
-X
-X initcalls(); /* Configuration-dependent initializations */
-X
-X initintr(); /* For intrcheck() */
+X	static int inited;
+X	
+X	if (inited)
+X		return;
+X	inited = 1;
+X	
+X	initimport();
+X	
+X	/* Modules 'builtin' and 'sys' are initialized here,
+X	   they are needed by random bits of the interpreter.
+X	   All other modules are optional and should be initialized
+X	   by the initcalls() of a specific configuration. */
+X	
+X	initbuiltin(); /* Also initializes builtin exceptions */
+X	initsys();
+X	
+X	initcalls(); /* Configuration-dependent initializations */
+X	
+X	initintr(); /* For intrcheck() */
 X}
 X
 X/* Parse input from a file and execute it */
 X
 Xint
 Xrun(fp, filename)
-X FILE *fp;
-X char *filename;
+X	FILE *fp;
+X	char *filename;
 X{
-X if (filename == NULL)
-X filename = "???";
-X if (isatty(fileno(fp)))
-X return run_tty_loop(fp, filename);
-X else
-X return run_script(fp, filename);
+X	if (filename == NULL)
+X		filename = "???";
+X	if (isatty(fileno(fp)))
+X		return run_tty_loop(fp, filename);
+X	else
+X		return run_script(fp, filename);
 X}
 X
 Xint
 Xrun_tty_loop(fp, filename)
-X FILE *fp;
-X char *filename;
+X	FILE *fp;
+X	char *filename;
 X{
-X object *v;
-X int ret;
-X v = sysget("ps1");
-X if (v == NULL) {
-X sysset("ps1", v = newstringobject(">>> "));
-X XDECREF(v);
-X }
-X v = sysget("ps2");
-X if (v == NULL) {
-X sysset("ps2", v = newstringobject("... "));
-X XDECREF(v);
-X }
-X for (;;) {
-X ret = run_tty_1(fp, filename);
+X	object *v;
+X	int ret;
+X	v = sysget("ps1");
+X	if (v == NULL) {
+X		sysset("ps1", v = newstringobject(">>> "));
+X		XDECREF(v);
+X	}
+X	v = sysget("ps2");
+X	if (v == NULL) {
+X		sysset("ps2", v = newstringobject("... "));
+X		XDECREF(v);
+X	}
+X	for (;;) {
+X		ret = run_tty_1(fp, filename);
 X#ifdef REF_DEBUG
-X fprintf(stderr, "[%ld refs]\n", ref_total);
+X		fprintf(stderr, "[%ld refs]\n", ref_total);
 X#endif
-X if (ret == E_EOF)
-X return 0;
-X /*
-X if (ret == E_NOMEM)
-X return -1;
-X */
-X }
+X		if (ret == E_EOF)
+X			return 0;
+X		/*
+X		if (ret == E_NOMEM)
+X			return -1;
+X		*/
+X	}
 X}
 X
 Xint
 Xrun_tty_1(fp, filename)
-X FILE *fp;
-X char *filename;
+X	FILE *fp;
+X	char *filename;
 X{
-X object *m, *d, *v, *w;
-X node *n;
-X char *ps1, *ps2;
-X int err;
-X v = sysget("ps1");
-X w = sysget("ps2");
-X if (v != NULL && is_stringobject(v)) {
-X INCREF(v);
-X ps1 = getstringvalue(v);
-X }
-X else {
-X v = NULL;
-X ps1 = "";
-X }
-X if (w != NULL && is_stringobject(w)) {
-X INCREF(w);
-X ps2 = getstringvalue(w);
-X }
-X else {
-X w = NULL;
-X ps2 = "";
-X }
-X err = parsefile(fp, filename, &gram, single_input, ps1, ps2, &n);
-X XDECREF(v);
-X XDECREF(w);
-X if (err == E_EOF)
-X return E_EOF;
-X if (err != E_DONE) {
-X err_input(err);
-X print_error();
-X return err;
-X }
-X m = add_module("__main__");
-X if (m == NULL)
-X return -1;
-X d = getmoduledict(m);
-X v = run_node(n, filename, d, d);
-X flushline();
-X if (v == NULL) {
-X print_error();
-X return -1;
-X }
-X DECREF(v);
-X return 0;
+X	object *m, *d, *v, *w;
+X	node *n;
+X	char *ps1, *ps2;
+X	int err;
+X	v = sysget("ps1");
+X	w = sysget("ps2");
+X	if (v != NULL && is_stringobject(v)) {
+X		INCREF(v);
+X		ps1 = getstringvalue(v);
+X	}
+X	else {
+X		v = NULL;
+X		ps1 = "";
+X	}
+X	if (w != NULL && is_stringobject(w)) {
+X		INCREF(w);
+X		ps2 = getstringvalue(w);
+X	}
+X	else {
+X		w = NULL;
+X		ps2 = "";
+X	}
+X	err = parsefile(fp, filename, &gram, single_input, ps1, ps2, &n);
+X	XDECREF(v);
+X	XDECREF(w);
+X	if (err == E_EOF)
+X		return E_EOF;
+X	if (err != E_DONE) {
+X		err_input(err);
+X		print_error();
+X		return err;
+X	}
+X	m = add_module("__main__");
+X	if (m == NULL)
+X		return -1;
+X	d = getmoduledict(m);
+X	v = run_node(n, filename, d, d);
+X	flushline();
+X	if (v == NULL) {
+X		print_error();
+X		return -1;
+X	}
+X	DECREF(v);
+X	return 0;
 X}
 X
 Xint
 Xrun_script(fp, filename)
-X FILE *fp;
-X char *filename;
+X	FILE *fp;
+X	char *filename;
 X{
-X object *m, *d, *v;
-X m = add_module("__main__");
-X if (m == NULL)
-X return -1;
-X d = getmoduledict(m);
-X v = run_file(fp, filename, file_input, d, d);
-X flushline();
-X if (v == NULL) {
-X print_error();
-X return -1;
-X }
-X DECREF(v);
-X return 0;
+X	object *m, *d, *v;
+X	m = add_module("__main__");
+X	if (m == NULL)
+X		return -1;
+X	d = getmoduledict(m);
+X	v = run_file(fp, filename, file_input, d, d);
+X	flushline();
+X	if (v == NULL) {
+X		print_error();
+X		return -1;
+X	}
+X	DECREF(v);
+X	return 0;
 X}
 X
 Xvoid
 Xprint_error()
 X{
-X object *exception, *v;
-X err_get(&exception, &v);
-X fprintf(stderr, "Unhandled exception: ");
-X printobject(exception, stderr, PRINT_RAW);
-X if (v != NULL && v != None) {
-X fprintf(stderr, ": ");
-X printobject(v, stderr, PRINT_RAW);
-X }
-X fprintf(stderr, "\n");
-X XDECREF(exception);
-X XDECREF(v);
-X printtraceback(stderr);
+X	object *exception, *v;
+X	err_get(&exception, &v);
+X	fprintf(stderr, "Unhandled exception: ");
+X	printobject(exception, stderr, PRINT_RAW);
+X	if (v != NULL && v != None) {
+X		fprintf(stderr, ": ");
+X		printobject(v, stderr, PRINT_RAW);
+X	}
+X	fprintf(stderr, "\n");
+X	XDECREF(exception);
+X	XDECREF(v);
+X	printtraceback(stderr);
 X}
 X
 Xobject *
 Xrun_string(str, start, globals, locals)
-X char *str;
-X int start;
-X /*dict*/object *globals, *locals;
+X	char *str;
+X	int start;
+X	/*dict*/object *globals, *locals;
 X{
-X node *n;
-X int err;
-X err = parse_string(str, start, &n);
-X return run_err_node(err, n, "<string>", globals, locals);
+X	node *n;
+X	int err;
+X	err = parse_string(str, start, &n);
+X	return run_err_node(err, n, "<string>", globals, locals);
 X}
 X
 Xobject *
 Xrun_file(fp, filename, start, globals, locals)
-X FILE *fp;
-X char *filename;
-X int start;
-X /*dict*/object *globals, *locals;
+X	FILE *fp;
+X	char *filename;
+X	int start;
+X	/*dict*/object *globals, *locals;
 X{
-X node *n;
-X int err;
-X err = parse_file(fp, filename, start, &n);
-X return run_err_node(err, n, filename, globals, locals);
+X	node *n;
+X	int err;
+X	err = parse_file(fp, filename, start, &n);
+X	return run_err_node(err, n, filename, globals, locals);
 X}
 X
 Xobject *
 Xrun_err_node(err, n, filename, globals, locals)
-X int err;
-X node *n;
-X char *filename;
-X /*dict*/object *globals, *locals;
+X	int err;
+X	node *n;
+X	char *filename;
+X	/*dict*/object *globals, *locals;
 X{
-X if (err != E_DONE) {
-X err_input(err);
-X return NULL;
-X }
-X return run_node(n, filename, globals, locals);
+X	if (err != E_DONE) {
+X		err_input(err);
+X		return NULL;
+X	}
+X	return run_node(n, filename, globals, locals);
 X}
 X
 Xobject *
 Xrun_node(n, filename, globals, locals)
-X node *n;
-X char *filename;
-X /*dict*/object *globals, *locals;
+X	node *n;
+X	char *filename;
+X	/*dict*/object *globals, *locals;
 X{
-X if (globals == NULL) {
-X globals = getglobals();
-X if (locals == NULL)
-X locals = getlocals();
-X }
-X else {
-X if (locals == NULL)
-X locals = globals;
-X }
-X return eval_node(n, filename, globals, locals);
+X	if (globals == NULL) {
+X		globals = getglobals();
+X		if (locals == NULL)
+X			locals = getlocals();
+X	}
+X	else {
+X		if (locals == NULL)
+X			locals = globals;
+X	}
+X	return eval_node(n, filename, globals, locals);
 X}
 X
 Xobject *
 Xeval_node(n, filename, globals, locals)
-X node *n;
-X char *filename;
-X object *globals;
-X object *locals;
+X	node *n;
+X	char *filename;
+X	object *globals;
+X	object *locals;
 X{
-X codeobject *co;
-X object *v;
-X co = compile(n, filename);
-X freetree(n);
-X if (co == NULL)
-X return NULL;
-X v = eval_code(co, globals, locals, (object *)NULL);
-X DECREF(co);
-X return v;
+X	codeobject *co;
+X	object *v;
+X	co = compile(n, filename);
+X	freetree(n);
+X	if (co == NULL)
+X		return NULL;
+X	v = eval_code(co, globals, locals, (object *)NULL);
+X	DECREF(co);
+X	return v;
 X}
 X
 X/* Simplified interface to parsefile */
 X
 Xint
 Xparse_file(fp, filename, start, n_ret)
-X FILE *fp;
-X char *filename;
-X int start;
-X node **n_ret;
+X	FILE *fp;
+X	char *filename;
+X	int start;
+X	node **n_ret;
 X{
-X return parsefile(fp, filename, &gram, start,
-X (char *)0, (char *)0, n_ret);
+X	return parsefile(fp, filename, &gram, start,
+X				(char *)0, (char *)0, n_ret);
 X}
 X
 X/* Simplified interface to parsestring */
 X
 Xint
 Xparse_string(str, start, n_ret)
-X char *str;
-X int start;
-X node **n_ret;
+X	char *str;
+X	int start;
+X	node **n_ret;
 X{
-X int err = parsestring(str, &gram, start, n_ret);
-X /* Don't confuse early end of string with early end of input */
-X if (err == E_EOF)
-X err = E_SYNTAX;
-X return err;
+X	int err = parsestring(str, &gram, start, n_ret);
+X	/* Don't confuse early end of string with early end of input */
+X	if (err == E_EOF)
+X		err = E_SYNTAX;
+X	return err;
 X}
 X
 X/* Print fatal error message and abort */
 X
 Xvoid
 Xfatal(msg)
-X char *msg;
+X	char *msg;
 X{
-X fprintf(stderr, "Fatal error: %s\n", msg);
-X abort();
+X	fprintf(stderr, "Fatal error: %s\n", msg);
+X	abort();
 X}
 X
 X/* Clean up and exit */
 X
 Xvoid
 Xgoaway(sts)
-X int sts;
+X	int sts;
 X{
-X flushline();
-X
-X /* XXX Call doneimport() before donecalls(), since donecalls()
-X calls wdone(), and doneimport() may close windows */
-X doneimport();
-X donecalls();
-X
-X err_clear();
+X	flushline();
+X	
+X	/* XXX Call doneimport() before donecalls(), since donecalls()
+X	   calls wdone(), and doneimport() may close windows */
+X	doneimport();
+X	donecalls();
+X	
+X	err_clear();
 X
 X#ifdef REF_DEBUG
-X fprintf(stderr, "[%ld refs]\n", ref_total);
+X	fprintf(stderr, "[%ld refs]\n", ref_total);
 X#endif
 X
 X#ifdef THINK_C_3_0
-X if (sts == 0)
-X Click_On(0);
+X	if (sts == 0)
+X		Click_On(0);
 X#endif
 X
 X#ifdef TRACE_REFS
-X if (askyesno("Print left references?")) {
+X	if (askyesno("Print left references?")) {
 X#ifdef THINK_C_3_0
-X Click_On(1);
+X		Click_On(1);
 X#endif
-X printrefs(stderr);
-X }
+X		printrefs(stderr);
+X	}
 X#endif /* TRACE_REFS */
 X
-X exit(sts);
-X /*NOTREACHED*/
+X	exit(sts);
+X	/*NOTREACHED*/
 X}
 X
 Xstatic
 Xfinaloutput()
 X{
 X#ifdef TRACE_REFS
-X if (!askyesno("Print left references?"))
-X return;
+X	if (!askyesno("Print left references?"))
+X		return;
 X#ifdef THINK_C_3_0
-X Click_On(1);
+X	Click_On(1);
 X#endif
-X printrefs(stderr);
+X	printrefs(stderr);
 X#endif /* TRACE_REFS */
 X}
 X
@@ -2438,38 +2438,38 @@ X/* Ask a yes/no question */
 X
 Xstatic int
 Xaskyesno(prompt)
-X char *prompt;
+X	char *prompt;
 X{
-X char buf[256];
-X
-X printf("%s [ny] ", prompt);
-X if (fgets(buf, sizeof buf, stdin) == NULL)
-X return 0;
-X return buf[0] == 'y' || buf[0] == 'Y';
+X	char buf[256];
+X	
+X	printf("%s [ny] ", prompt);
+X	if (fgets(buf, sizeof buf, stdin) == NULL)
+X		return 0;
+X	return buf[0] == 'y' || buf[0] == 'Y';
 X}
 X
 X#ifdef THINK_C_3_0
 X
 X/* Check for file descriptor connected to interactive device.
-X Pretend that stdin is always interactive, other files never. */
+X   Pretend that stdin is always interactive, other files never. */
 X
 Xint
 Xisatty(fd)
-X int fd;
+X	int fd;
 X{
-X return fd == fileno(stdin);
+X	return fd == fileno(stdin);
 X}
 X
 X#endif
 X
-X/* XXX WISH LIST
+X/*	XXX WISH LIST
 X
-X - possible new types:
-X - iterator (for range, keys, ...)
-X - improve interpreter error handling, e.g., true tracebacks
-X - save precompiled modules on file?
-X - fork threads, locking
-X - allow syntax extensions
+X	- possible new types:
+X		- iterator (for range, keys, ...)
+X	- improve interpreter error handling, e.g., true tracebacks
+X	- save precompiled modules on file?
+X	- fork threads, locking
+X	- allow syntax extensions
 X*/
 X
 X/* "Floccinaucinihilipilification" */
@@ -2484,12 +2484,12 @@ X/***********************************************************
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 XNetherlands.
 X
-X All Rights Reserved
+X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -2510,322 +2510,322 @@ X#include "allobjects.h"
 X
 Xobject *
 Xnewsizedstringobject(str, size)
-X char *str;
-X int size;
+X	char *str;
+X	int size;
 X{
-X register stringobject *op = (stringobject *)
-X malloc(sizeof(stringobject) + size * sizeof(char));
-X if (op == NULL)
-X return err_nomem();
-X NEWREF(op);
-X op->ob_type = &Stringtype;
-X op->ob_size = size;
-X if (str != NULL)
-X memcpy(op->ob_sval, str, size);
-X op->ob_sval[size] = '\0';
-X return (object *) op;
+X	register stringobject *op = (stringobject *)
+X		malloc(sizeof(stringobject) + size * sizeof(char));
+X	if (op == NULL)
+X		return err_nomem();
+X	NEWREF(op);
+X	op->ob_type = &Stringtype;
+X	op->ob_size = size;
+X	if (str != NULL)
+X		memcpy(op->ob_sval, str, size);
+X	op->ob_sval[size] = '\0';
+X	return (object *) op;
 X}
 X
 Xobject *
 Xnewstringobject(str)
-X char *str;
+X	char *str;
 X{
-X register unsigned int size = strlen(str);
-X register stringobject *op = (stringobject *)
-X malloc(sizeof(stringobject) + size * sizeof(char));
-X if (op == NULL)
-X return err_nomem();
-X NEWREF(op);
-X op->ob_type = &Stringtype;
-X op->ob_size = size;
-X strcpy(op->ob_sval, str);
-X return (object *) op;
+X	register unsigned int size = strlen(str);
+X	register stringobject *op = (stringobject *)
+X		malloc(sizeof(stringobject) + size * sizeof(char));
+X	if (op == NULL)
+X		return err_nomem();
+X	NEWREF(op);
+X	op->ob_type = &Stringtype;
+X	op->ob_size = size;
+X	strcpy(op->ob_sval, str);
+X	return (object *) op;
 X}
 X
 Xunsigned int
 Xgetstringsize(op)
-X register object *op;
+X	register object *op;
 X{
-X if (!is_stringobject(op)) {
-X err_badcall();
-X return -1;
-X }
-X return ((stringobject *)op) -> ob_size;
+X	if (!is_stringobject(op)) {
+X		err_badcall();
+X		return -1;
+X	}
+X	return ((stringobject *)op) -> ob_size;
 X}
 X
 X/*const*/ char *
 Xgetstringvalue(op)
-X register object *op;
+X	register object *op;
 X{
-X if (!is_stringobject(op)) {
-X err_badcall();
-X return NULL;
-X }
-X return ((stringobject *)op) -> ob_sval;
+X	if (!is_stringobject(op)) {
+X		err_badcall();
+X		return NULL;
+X	}
+X	return ((stringobject *)op) -> ob_sval;
 X}
 X
 X/* Methods */
 X
 Xstatic void
 Xstringprint(op, fp, flags)
-X stringobject *op;
-X FILE *fp;
-X int flags;
+X	stringobject *op;
+X	FILE *fp;
+X	int flags;
 X{
-X int i;
-X char c;
-X if (flags & PRINT_RAW) {
-X fwrite(op->ob_sval, 1, (int) op->ob_size, fp);
-X return;
-X }
-X fprintf(fp, "'");
-X for (i = 0; i < op->ob_size; i++) {
-X c = op->ob_sval[i];
-X if (c == '\'' || c == '\\')
-X fprintf(fp, "\\%c", c);
-X else if (c < ' ' || c >= 0177)
-X fprintf(fp, "\\%03o", c&0377);
-X else
-X putc(c, fp);
-X }
-X fprintf(fp, "'");
+X	int i;
+X	char c;
+X	if (flags & PRINT_RAW) {
+X		fwrite(op->ob_sval, 1, (int) op->ob_size, fp);
+X		return;
+X	}
+X	fprintf(fp, "'");
+X	for (i = 0; i < op->ob_size; i++) {
+X		c = op->ob_sval[i];
+X		if (c == '\'' || c == '\\')
+X			fprintf(fp, "\\%c", c);
+X		else if (c < ' ' || c >= 0177)
+X			fprintf(fp, "\\%03o", c&0377);
+X		else
+X			putc(c, fp);
+X	}
+X	fprintf(fp, "'");
 X}
 X
 Xstatic object *
 Xstringrepr(op)
-X register stringobject *op;
+X	register stringobject *op;
 X{
-X /* XXX overflow? */
-X int newsize = 2 + 4 * op->ob_size * sizeof(char);
-X object *v = newsizedstringobject((char *)NULL, newsize);
-X if (v == NULL) {
-X return err_nomem();
-X }
-X else {
-X register int i;
-X register char c;
-X register char *p;
-X NEWREF(v);
-X v->ob_type = &Stringtype;
-X ((stringobject *)v)->ob_size = newsize;
-X p = ((stringobject *)v)->ob_sval;
-X *p++ = '\'';
-X for (i = 0; i < op->ob_size; i++) {
-X c = op->ob_sval[i];
-X if (c == '\'' || c == '\\')
-X *p++ = '\\', *p++ = c;
-X else if (c < ' ' || c >= 0177) {
-X sprintf(p, "\\%03o", c&0377);
-X while (*p != '\0')
-X p++;
-X
-X }
-X else
-X *p++ = c;
-X }
-X *p++ = '\'';
-X *p = '\0';
-X resizestring(&v, (int) (p - ((stringobject *)v)->ob_sval));
-X return v;
-X }
+X	/* XXX overflow? */
+X	int newsize = 2 + 4 * op->ob_size * sizeof(char);
+X	object *v = newsizedstringobject((char *)NULL, newsize);
+X	if (v == NULL) {
+X		return err_nomem();
+X	}
+X	else {
+X		register int i;
+X		register char c;
+X		register char *p;
+X		NEWREF(v);
+X		v->ob_type = &Stringtype;
+X		((stringobject *)v)->ob_size = newsize;
+X		p = ((stringobject *)v)->ob_sval;
+X		*p++ = '\'';
+X		for (i = 0; i < op->ob_size; i++) {
+X			c = op->ob_sval[i];
+X			if (c == '\'' || c == '\\')
+X				*p++ = '\\', *p++ = c;
+X			else if (c < ' ' || c >= 0177) {
+X				sprintf(p, "\\%03o", c&0377);
+X				while (*p != '\0')
+X					p++;
+X				
+X			}
+X			else
+X				*p++ = c;
+X		}
+X		*p++ = '\'';
+X		*p = '\0';
+X		resizestring(&v, (int) (p - ((stringobject *)v)->ob_sval));
+X		return v;
+X	}
 X}
 X
 Xstatic int
 Xstringlength(a)
-X stringobject *a;
+X	stringobject *a;
 X{
-X return a->ob_size;
+X	return a->ob_size;
 X}
 X
 Xstatic object *
 Xstringconcat(a, bb)
-X register stringobject *a;
-X register object *bb;
+X	register stringobject *a;
+X	register object *bb;
 X{
-X register unsigned int size;
-X register stringobject *op;
-X if (!is_stringobject(bb)) {
-X err_badarg();
-X return NULL;
-X }
+X	register unsigned int size;
+X	register stringobject *op;
+X	if (!is_stringobject(bb)) {
+X		err_badarg();
+X		return NULL;
+X	}
 X#define b ((stringobject *)bb)
-X /* Optimize cases with empty left or right operand */
-X if (a->ob_size == 0) {
-X INCREF(bb);
-X return bb;
-X }
-X if (b->ob_size == 0) {
-X INCREF(a);
-X return (object *)a;
-X }
-X size = a->ob_size + b->ob_size;
-X op = (stringobject *)
-X malloc(sizeof(stringobject) + size * sizeof(char));
-X if (op == NULL)
-X return err_nomem();
-X NEWREF(op);
-X op->ob_type = &Stringtype;
-X op->ob_size = size;
-X memcpy(op->ob_sval, a->ob_sval, (int) a->ob_size);
-X memcpy(op->ob_sval + a->ob_size, b->ob_sval, (int) b->ob_size);
-X op->ob_sval[size] = '\0';
-X return (object *) op;
+X	/* Optimize cases with empty left or right operand */
+X	if (a->ob_size == 0) {
+X		INCREF(bb);
+X		return bb;
+X	}
+X	if (b->ob_size == 0) {
+X		INCREF(a);
+X		return (object *)a;
+X	}
+X	size = a->ob_size + b->ob_size;
+X	op = (stringobject *)
+X		malloc(sizeof(stringobject) + size * sizeof(char));
+X	if (op == NULL)
+X		return err_nomem();
+X	NEWREF(op);
+X	op->ob_type = &Stringtype;
+X	op->ob_size = size;
+X	memcpy(op->ob_sval, a->ob_sval, (int) a->ob_size);
+X	memcpy(op->ob_sval + a->ob_size, b->ob_sval, (int) b->ob_size);
+X	op->ob_sval[size] = '\0';
+X	return (object *) op;
 X#undef b
 X}
 X
 Xstatic object *
 Xstringrepeat(a, n)
-X register stringobject *a;
-X register int n;
+X	register stringobject *a;
+X	register int n;
 X{
-X register int i;
-X register unsigned int size;
-X register stringobject *op;
-X if (n < 0)
-X n = 0;
-X size = a->ob_size * n;
-X if (size == a->ob_size) {
-X INCREF(a);
-X return (object *)a;
-X }
-X op = (stringobject *)
-X malloc(sizeof(stringobject) + size * sizeof(char));
-X if (op == NULL)
-X return err_nomem();
-X NEWREF(op);
-X op->ob_type = &Stringtype;
-X op->ob_size = size;
-X for (i = 0; i < size; i += a->ob_size)
-X memcpy(op->ob_sval+i, a->ob_sval, (int) a->ob_size);
-X op->ob_sval[size] = '\0';
-X return (object *) op;
+X	register int i;
+X	register unsigned int size;
+X	register stringobject *op;
+X	if (n < 0)
+X		n = 0;
+X	size = a->ob_size * n;
+X	if (size == a->ob_size) {
+X		INCREF(a);
+X		return (object *)a;
+X	}
+X	op = (stringobject *)
+X		malloc(sizeof(stringobject) + size * sizeof(char));
+X	if (op == NULL)
+X		return err_nomem();
+X	NEWREF(op);
+X	op->ob_type = &Stringtype;
+X	op->ob_size = size;
+X	for (i = 0; i < size; i += a->ob_size)
+X		memcpy(op->ob_sval+i, a->ob_sval, (int) a->ob_size);
+X	op->ob_sval[size] = '\0';
+X	return (object *) op;
 X}
 X
 X/* String slice a[i:j] consists of characters a[i] ... a[j-1] */
 X
 Xstatic object *
 Xstringslice(a, i, j)
-X register stringobject *a;
-X register int i, j; /* May be negative! */
+X	register stringobject *a;
+X	register int i, j; /* May be negative! */
 X{
-X if (i < 0)
-X i = 0;
-X if (j < 0)
-X j = 0; /* Avoid signed/unsigned bug in next line */
-X if (j > a->ob_size)
-X j = a->ob_size;
-X if (i == 0 && j == a->ob_size) { /* It's the same as a */
-X INCREF(a);
-X return (object *)a;
-X }
-X if (j < i)
-X j = i;
-X return newsizedstringobject(a->ob_sval + i, (int) (j-i));
+X	if (i < 0)
+X		i = 0;
+X	if (j < 0)
+X		j = 0; /* Avoid signed/unsigned bug in next line */
+X	if (j > a->ob_size)
+X		j = a->ob_size;
+X	if (i == 0 && j == a->ob_size) { /* It's the same as a */
+X		INCREF(a);
+X		return (object *)a;
+X	}
+X	if (j < i)
+X		j = i;
+X	return newsizedstringobject(a->ob_sval + i, (int) (j-i));
 X}
 X
 Xstatic object *
 Xstringitem(a, i)
-X stringobject *a;
-X register int i;
+X	stringobject *a;
+X	register int i;
 X{
-X if (i < 0 || i >= a->ob_size) {
-X err_setstr(IndexError, "string index out of range");
-X return NULL;
-X }
-X return stringslice(a, i, i+1);
+X	if (i < 0 || i >= a->ob_size) {
+X		err_setstr(IndexError, "string index out of range");
+X		return NULL;
+X	}
+X	return stringslice(a, i, i+1);
 X}
 X
 Xstatic int
 Xstringcompare(a, b)
-X stringobject *a, *b;
+X	stringobject *a, *b;
 X{
-X int len_a = a->ob_size, len_b = b->ob_size;
-X int min_len = (len_a < len_b) ? len_a : len_b;
-X int cmp = memcmp(a->ob_sval, b->ob_sval, min_len);
-X if (cmp != 0)
-X return cmp;
-X return (len_a < len_b) ? -1 : (len_a > len_b) ? 1 : 0;
+X	int len_a = a->ob_size, len_b = b->ob_size;
+X	int min_len = (len_a < len_b) ? len_a : len_b;
+X	int cmp = memcmp(a->ob_sval, b->ob_sval, min_len);
+X	if (cmp != 0)
+X		return cmp;
+X	return (len_a < len_b) ? -1 : (len_a > len_b) ? 1 : 0;
 X}
 X
 Xstatic sequence_methods string_as_sequence = {
-X stringlength, /*tp_length*/
-X stringconcat, /*tp_concat*/
-X stringrepeat, /*tp_repeat*/
-X stringitem, /*tp_item*/
-X stringslice, /*tp_slice*/
-X 0, /*tp_ass_item*/
-X 0, /*tp_ass_slice*/
+X	stringlength,	/*tp_length*/
+X	stringconcat,	/*tp_concat*/
+X	stringrepeat,	/*tp_repeat*/
+X	stringitem,	/*tp_item*/
+X	stringslice,	/*tp_slice*/
+X	0,	/*tp_ass_item*/
+X	0,	/*tp_ass_slice*/
 X};
 X
 Xtypeobject Stringtype = {
-X OB_HEAD_INIT(&Typetype)
-X 0,
-X "string",
-X sizeof(stringobject),
-X sizeof(char),
-X free, /*tp_dealloc*/
-X stringprint, /*tp_print*/
-X 0, /*tp_getattr*/
-X 0, /*tp_setattr*/
-X stringcompare, /*tp_compare*/
-X stringrepr, /*tp_repr*/
-X 0, /*tp_as_number*/
-X &string_as_sequence, /*tp_as_sequence*/
-X 0, /*tp_as_mapping*/
+X	OB_HEAD_INIT(&Typetype)
+X	0,
+X	"string",
+X	sizeof(stringobject),
+X	sizeof(char),
+X	free,		/*tp_dealloc*/
+X	stringprint,	/*tp_print*/
+X	0,		/*tp_getattr*/
+X	0,		/*tp_setattr*/
+X	stringcompare,	/*tp_compare*/
+X	stringrepr,	/*tp_repr*/
+X	0,		/*tp_as_number*/
+X	&string_as_sequence,	/*tp_as_sequence*/
+X	0,		/*tp_as_mapping*/
 X};
 X
 Xvoid
 Xjoinstring(pv, w)
-X register object **pv;
-X register object *w;
+X	register object **pv;
+X	register object *w;
 X{
-X register object *v;
-X if (*pv == NULL || w == NULL || !is_stringobject(*pv))
-X return;
-X v = stringconcat((stringobject *) *pv, w);
-X DECREF(*pv);
-X *pv = v;
+X	register object *v;
+X	if (*pv == NULL || w == NULL || !is_stringobject(*pv))
+X		return;
+X	v = stringconcat((stringobject *) *pv, w);
+X	DECREF(*pv);
+X	*pv = v;
 X}
 X
 X/* The following function breaks the notion that strings are immutable:
-X it changes the size of a string. We get away with this only if there
-X is only one module referencing the object. You can also think of it
-X as creating a new string object and destroying the old one, only
-X more efficiently. In any case, don't use this if the string may
-X already be known to some other part of the code... */
+X   it changes the size of a string.  We get away with this only if there
+X   is only one module referencing the object.  You can also think of it
+X   as creating a new string object and destroying the old one, only
+X   more efficiently.  In any case, don't use this if the string may
+X   already be known to some other part of the code... */
 X
 Xint
 Xresizestring(pv, newsize)
-X object **pv;
-X int newsize;
+X	object **pv;
+X	int newsize;
 X{
-X register object *v;
-X register stringobject *sv;
-X v = *pv;
-X if (!is_stringobject(v) || v->ob_refcnt != 1) {
-X *pv = 0;
-X DECREF(v);
-X err_badcall();
-X return -1;
-X }
-X /* XXX UNREF/NEWREF interface should be more symmetrical */
+X	register object *v;
+X	register stringobject *sv;
+X	v = *pv;
+X	if (!is_stringobject(v) || v->ob_refcnt != 1) {
+X		*pv = 0;
+X		DECREF(v);
+X		err_badcall();
+X		return -1;
+X	}
+X	/* XXX UNREF/NEWREF interface should be more symmetrical */
 X#ifdef REF_DEBUG
-X --ref_total;
+X	--ref_total;
 X#endif
-X UNREF(v);
-X *pv = (object *)
-X realloc((char *)v,
-X sizeof(stringobject) + newsize * sizeof(char));
-X if (*pv == NULL) {
-X DEL(v);
-X err_nomem();
-X return -1;
-X }
-X NEWREF(*pv);
-X sv = (stringobject *) *pv;
-X sv->ob_size = newsize;
-X sv->ob_sval[newsize] = '\0';
-X return 0;
+X	UNREF(v);
+X	*pv = (object *)
+X		realloc((char *)v,
+X			sizeof(stringobject) + newsize * sizeof(char));
+X	if (*pv == NULL) {
+X		DEL(v);
+X		err_nomem();
+X		return -1;
+X	}
+X	NEWREF(*pv);
+X	sv = (stringobject *) *pv;
+X	sv->ob_size = newsize;
+X	sv->ob_sval[newsize] = '\0';
+X	return 0;
 X}
 EOF
 fi
