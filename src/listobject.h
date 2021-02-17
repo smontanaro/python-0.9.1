@@ -2,12 +2,12 @@
 Copyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 Netherlands.
 
- All Rights Reserved
+                        All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
+Permission to use, copy, modify, and distribute this software and its 
+documentation for any purpose and without fee is hereby granted, 
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
+both that copyright notice and this permission notice appear in 
 supporting documentation, and that the names of Stichting Mathematisch
 Centrum or CWI not be used in advertising or publicity pertaining to
 distribution of the software without specific, written prior permission.
@@ -29,18 +29,18 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 Another generally useful object type is an list of object pointers.
 This is a mutable type: the list items can be changed, and items can be
-added or removed. Out-of-range indices or non-list objects are ignored.
+added or removed.  Out-of-range indices or non-list objects are ignored.
 
 *** WARNING *** setlistitem does not increment the new item's reference
 count, but does decrement the reference count of the item it replaces,
-if not nil. It does *decrement* the reference count if it is *not*
-inserted in the list. Similarly, getlistitem does not increment the
+if not nil.  It does *decrement* the reference count if it is *not*
+inserted in the list.  Similarly, getlistitem does not increment the
 returned item's reference count.
 */
 
 typedef struct {
- OB_VARHEAD
- object **ob_item;
+	OB_VARHEAD
+	object **ob_item;
 } listobject;
 
 extern typeobject Listtype;

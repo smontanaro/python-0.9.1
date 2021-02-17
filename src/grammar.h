@@ -2,12 +2,12 @@
 Copyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 Netherlands.
 
- All Rights Reserved
+                        All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
+Permission to use, copy, modify, and distribute this software and its 
+documentation for any purpose and without fee is hereby granted, 
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
+both that copyright notice and this permission notice appear in 
 supporting documentation, and that the names of Stichting Mathematisch
 Centrum or CWI not be used in advertising or publicity pertaining to
 distribution of the software without specific, written prior permission.
@@ -29,58 +29,58 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 /* A label of an arc */
 
 typedef struct _label {
- int lb_type;
- char *lb_str;
+	int	lb_type;
+	char	*lb_str;
 } label;
 
-#define EMPTY 0 /* Label number 0 is by definition the empty label */
+#define EMPTY 0		/* Label number 0 is by definition the empty label */
 
 /* A list of labels */
 
 typedef struct _labellist {
- int ll_nlabels;
- label *ll_label;
+	int	ll_nlabels;
+	label	*ll_label;
 } labellist;
 
 /* An arc from one state to another */
 
 typedef struct _arc {
- short a_lbl; /* Label of this arc */
- short a_arrow; /* State where this arc goes to */
+	short		a_lbl;		/* Label of this arc */
+	short		a_arrow;	/* State where this arc goes to */
 } arc;
 
 /* A state in a DFA */
 
 typedef struct _state {
- int s_narcs;
- arc *s_arc; /* Array of arcs */
-
- /* Optional accelerators */
- int s_lower; /* Lowest label index */
- int s_upper; /* Highest label index */
- int *s_accel; /* Accelerator */
- int s_accept; /* Nonzero for accepting state */
+	int		 s_narcs;
+	arc		*s_arc;		/* Array of arcs */
+	
+	/* Optional accelerators */
+	int		 s_lower;	/* Lowest label index */
+	int		 s_upper;	/* Highest label index */
+	int		*s_accel;	/* Accelerator */
+	int		 s_accept;	/* Nonzero for accepting state */
 } state;
 
 /* A DFA */
 
 typedef struct _dfa {
- int d_type; /* Non-terminal this represents */
- char *d_name; /* For printing */
- int d_initial; /* Initial state */
- int d_nstates;
- state *d_state; /* Array of states */
- bitset d_first;
+	int		 d_type;	/* Non-terminal this represents */
+	char		*d_name;	/* For printing */
+	int		 d_initial;	/* Initial state */
+	int		 d_nstates;
+	state		*d_state;	/* Array of states */
+	bitset		 d_first;
 } dfa;
 
 /* A grammar */
 
 typedef struct _grammar {
- int g_ndfas;
- dfa *g_dfa; /* Array of DFAs */
- labellist g_ll;
- int g_start; /* Start symbol of the grammar */
- int g_accel; /* Set if accelerators present */
+	int		 g_ndfas;
+	dfa		*g_dfa;		/* Array of DFAs */
+	labellist	 g_ll;
+	int		 g_start;	/* Start symbol of the grammar */
+	int		 g_accel;	/* Set if accelerators present */
 } grammar;
 
 /* FUNCTIONS */

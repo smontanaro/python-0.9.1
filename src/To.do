@@ -5,7 +5,7 @@
 - why do reads from stdin fail when I suspend the process?
 
 - introduce macros to set/inspect errno for syscalls, to support things
- like getoserr()
+  like getoserr()
 
 - fix interrupt handling (interruptable system calls should call
- intrcheck() to clear the interrupt status)
+  intrcheck() to clear the interrupt status)

@@ -7,23 +7,23 @@
 import posix, path, sys
 
 def visit(pattern, dirname, names):
- if path.islink(dirname):
- names[:] = []
- return
- if path.ismount(dirname):
- print 'descend into', dirname
- n = len(pattern)
- for name in names:
- name = path.cat(dirname, name)
- try:
- linkto = posix.readlink(name)
- if linkto[:n] = pattern:
- print name, '->', linkto
- except posix.error:
- pass
+	if path.islink(dirname):
+		names[:] = []
+		return
+	if path.ismount(dirname):
+		print 'descend into', dirname
+	n = len(pattern)
+	for name in names:
+		name = path.cat(dirname, name)
+		try:
+			linkto = posix.readlink(name)
+			if linkto[:n] = pattern:
+				print name, '->', linkto
+		except posix.error:
+			pass
 
 def main(pattern, args):
- for dirname in args:
- path.walk(dirname, visit, pattern)
+	for dirname in args:
+		path.walk(dirname, visit, pattern)
 
 main(sys.argv[1], sys.argv[2:])

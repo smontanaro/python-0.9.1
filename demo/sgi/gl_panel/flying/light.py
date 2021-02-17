@@ -23,24 +23,24 @@ light2 = [LCOLOR,1.0,1.0,1.0,POSITION,-10.0,10.0,5.0,0.0,LMNULL]
 model = [AMBIENT,0.4,0.4,0.4,LMNULL]
 
 def bindlight (bool) :
- # Initializes all settings for a window.
- if bool <> 0 :
- mmode(MVIEWING)
- perspective (900, 1.0, 1.0, 35.0)
- loadmatrix(idmat)
- # define materials and lights
- lmdef(DEFMATERIAL, 1, m1)
- lmdef(DEFMATERIAL, 2, m2)
- lmdef(DEFMATERIAL, 3, m3)
- lmdef(DEFMATERIAL, 4, m4)
- lmdef(DEFMATERIAL, 5, m5)
- lmdef(DEFMATERIAL, 6, m6)
- lmdef(DEFMATERIAL, 7, m7)
- lmdef(DEFMATERIAL, 8, m8)
- lmdef(DEFMATERIAL, 9, m9)
- lmdef(DEFLIGHT, 1, light1)
- lmdef(DEFLIGHT, 2, light2)
- lmdef(DEFLMODEL, 1, model)
- lmbind(LIGHT0,1)
- lmbind(LIGHT1,2)
- lmbind(LMODEL,1)
+	# Initializes all settings for a window.
+	if bool <> 0 :
+		mmode(MVIEWING)
+		perspective (900, 1.0, 1.0, 35.0)
+		loadmatrix(idmat)
+	# define materials and lights
+	lmdef(DEFMATERIAL, 1, m1)
+	lmdef(DEFMATERIAL, 2, m2)
+	lmdef(DEFMATERIAL, 3, m3)
+	lmdef(DEFMATERIAL, 4, m4)
+	lmdef(DEFMATERIAL, 5, m5)
+	lmdef(DEFMATERIAL, 6, m6)
+	lmdef(DEFMATERIAL, 7, m7)
+	lmdef(DEFMATERIAL, 8, m8)
+	lmdef(DEFMATERIAL, 9, m9)
+	lmdef(DEFLIGHT, 1, light1)
+	lmdef(DEFLIGHT, 2, light2)
+	lmdef(DEFLMODEL, 1, model)
+	lmbind(LIGHT0,1)
+	lmbind(LIGHT1,2)
+	lmbind(LMODEL,1)

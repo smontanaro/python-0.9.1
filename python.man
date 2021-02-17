@@ -51,7 +51,7 @@ Python Library Reference
 Guido van Rossum
 CWI, dept. CST
 Kruislaan 413
-1098 SJ Amsterdam
+1098 SJ  Amsterdam
 The Netherlands
 .PP
 E-mail: gu...@cwi.nl

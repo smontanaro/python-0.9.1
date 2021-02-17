@@ -1,47 +1,47 @@
 # Makefile for Python documentation.
 
-LATEX= latex
-DVIPS= dvips
-TEXPREVIEW= xdvi
+LATEX=		latex
+DVIPS=		dvips
+TEXPREVIEW=	xdvi
 
-PRINT= lpr
+PRINT=		lpr
 
-tut: tut.dvi
- $(TEXPREVIEW) tut
+tut:		tut.dvi
+		$(TEXPREVIEW) tut
 
-tut.dvi tut.ps: tut.toc tut.tex myformat.sty
+tut.dvi tut.ps:	tut.toc tut.tex myformat.sty
 
-mod: mod.dvi
- $(TEXPREVIEW) mod
+mod:		mod.dvi
+		$(TEXPREVIEW) mod
 
-mod.dvi mod.ps: mod.toc mod.tex mod1.tex mod2.tex mod3.tex myformat.sty
+mod.dvi mod.ps:	mod.toc mod.tex mod1.tex mod2.tex mod3.tex myformat.sty
 
-ALL= tut.ps mod.ps
+ALL=		tut.ps mod.ps
 
-all: $(ALL)
+all:		$(ALL)
 
-print: $(ALL)
- $(PRINT) $(ALL)
+print:		$(ALL)
+		$(PRINT) $(ALL)
 
 clean:
- rm -f *.dvi *.aux *.toc *.log *.ps core [#@,]* *~
+		rm -f *.dvi *.aux *.toc *.log *.ps core [#@,]* *~
 
-.SUFFIXES: # Remove default suffixes
+.SUFFIXES:	# Remove default suffixes
 
-.SUFFIXES: .tex .aux .toc .dvi .ps
+.SUFFIXES:	.tex .aux .toc .dvi .ps
 
 .tex.aux:
- $(LATEX) $*
+		$(LATEX) $*
 
 .tex.toc:
- $(LATEX) $*
+		$(LATEX) $*
 
 .tex.dvi:
- $(LATEX) $*
+		$(LATEX) $*
 
 .dvi.ps:
- $(DVIPS) $* >$*.ps
+		$(DVIPS) $* >$*.ps
 
 .tex.ps:
- $(LATEX) $*
- $(DVIPS) $* >$*.ps
+		$(LATEX) $*
+		$(DVIPS) $* >$*.ps

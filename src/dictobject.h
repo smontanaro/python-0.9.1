@@ -2,12 +2,12 @@
 Copyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 Netherlands.
 
- All Rights Reserved
+                        All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
+Permission to use, copy, modify, and distribute this software and its 
+documentation for any purpose and without fee is hereby granted, 
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
+both that copyright notice and this permission notice appear in 
 supporting documentation, and that the names of Stichting Mathematisch
 Centrum or CWI not be used in advertising or publicity pertaining to
 distribution of the software without specific, written prior permission.
@@ -25,9 +25,9 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 /*
 Dictionary object type -- mapping from char * to object.
 NB: the key is given as a char *, not as a stringobject.
-These functions set errno for errors. Functions dictremove() and
+These functions set errno for errors.  Functions dictremove() and
 dictinsert() return nonzero for errors, getdictsize() returns -1,
-the others NULL. A successful call to dictinsert() calls INCREF()
+the others NULL.  A successful call to dictinsert() calls INCREF()
 for the inserted item.
 */
 

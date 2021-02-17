@@ -2,12 +2,12 @@
 Copyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 Netherlands.
 
- All Rights Reserved
+                        All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
+Permission to use, copy, modify, and distribute this software and its 
+documentation for any purpose and without fee is hereby granted, 
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
+both that copyright notice and this permission notice appear in 
 supporting documentation, and that the names of Stichting Mathematisch
 Centrum or CWI not be used in advertising or publicity pertaining to
 distribution of the software without specific, written prior permission.
@@ -25,21 +25,21 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 /*
  * Definitions etc. for regexp(3) routines.
  *
- * Caveat: this is V8 regexp(3) [actually, a reimplementation thereof],
+ * Caveat:  this is V8 regexp(3) [actually, a reimplementation thereof],
  * not the System V one.
  */
 
 #define MULTILINE
 
-#define NSUBEXP 10
+#define NSUBEXP  10
 typedef struct regexp {
- char *startp[NSUBEXP];
- char *endp[NSUBEXP];
- char regstart; /* Internal use only. */
- char reganch; /* Internal use only. */
- char *regmust; /* Internal use only. */
- int regmlen; /* Internal use only. */
- char program[1]; /* Unwarranted chumminess with compiler. */
+	char *startp[NSUBEXP];
+	char *endp[NSUBEXP];
+	char regstart;		/* Internal use only. */
+	char reganch;		/* Internal use only. */
+	char *regmust;		/* Internal use only. */
+	int regmlen;		/* Internal use only. */
+	char program[1];	/* Unwarranted chumminess with compiler. */
 } regexp;
 
 extern regexp *regcomp();

@@ -87,12 +87,12 @@ They are:
 {\tt exp(x)},
 {\tt fabs(x)},
 {\tt floor(x)},
-%{\tt fmod(...)} XXX not yet
+%{\tt fmod(...)}  XXX not yet
 %{\tt frexp(...)} XXX not yet
 %{\tt ldexp(...)} XXX not yet
 {\tt log(x)},
 {\tt log10(x)},
-%{\tt modf(...)} XXX not yet
+%{\tt modf(...)}  XXX not yet
 {\tt pow(x,y)},
 {\tt sin(x)},
 {\tt sinh(x)},
@@ -193,7 +193,7 @@ For example:
 '--b--'
 >>> s[3:4] # The subpattern
 'b'
->>>
+>>> 
 \end{verbatim}\ecode
 
 \subsection{Built-in Module {\tt posix}}
@@ -693,16 +693,16 @@ import stdwin
 from stdwinevents import *
 
 def main():
- mywin = stdwin.open('Hello')
- #
- while 1:
- (type, win, detail) = stdwin.getevent()
- if type = WE_DRAW:
- draw = win.begindrawing()
- draw.text((0, 0), 'Hello, world')
- del draw
- elif type = WE_CLOSE:
- break
+    mywin = stdwin.open('Hello')
+    #
+    while 1:
+        (type, win, detail) = stdwin.getevent()
+        if type = WE_DRAW:
+            draw = win.begindrawing()
+            draw.text((0, 0), 'Hello, world')
+            del draw
+        elif type = WE_CLOSE:
+            break
 
 main()
 \end{verbatim}\ecode
@@ -780,7 +780,7 @@ For example:
 \bcode\begin{verbatim}
 >>> amoeba.name_lookup('/profile/cap')
 aa:1c:95:52:6a:fa/14(ff)/8e:ba:5b:8:11:1a
->>>
+>>> 
 \end{verbatim}\ecode
 The following methods are defined for capability objects.
 \begin{description}
@@ -879,7 +879,7 @@ implemented in C for efficiency:
 Amplifies a chunk of samples by a variable factor changing from
 {\tt f1}/256 to {\tt f2}/256.
 Negative factors are allowed.
-Resulting values that are to large to fit in a byte are clipped.
+Resulting values that are to large to fit in a byte are clipped.         
 \funcitem{reverse}{buf}
 %.br
 Returns a chunk of samples backwards.
@@ -1000,7 +1000,7 @@ is called for the normal, and then
 {\tt v3f()}
 is called for the point.
 \funcitem{vnarray}{}
-Similar to
+Similar to 
 {\tt nvarray()}
 but the pairs have the point first and the normal second.
 \funcitem{nurbssurface}{s\_k[], t\_k[], ctl[][], s\_ord, t\_ord, type}
@@ -1042,22 +1042,22 @@ Here is a tiny but complete example GL program in {\Python}:
 import gl, GL, time
 
 def main():
- gl.foreground()
- gl.prefposition(500, 900, 500, 900)
- w = gl.winopen('CrissCross')
- gl.ortho2(0.0, 400.0, 0.0, 400.0)
- gl.color(GL.WHITE)
- gl.clear()
- gl.color(GL.RED)
- gl.bgnline()
- gl.v2f(0.0, 0.0)
- gl.v2f(400.0, 400.0)
- gl.endline()
- gl.bgnline()
- gl.v2f(400.0, 0.0)
- gl.v2f(0.0, 400.0)
- gl.endline()
- time.sleep(5)
+    gl.foreground()
+    gl.prefposition(500, 900, 500, 900)
+    w = gl.winopen('CrissCross')
+    gl.ortho2(0.0, 400.0, 0.0, 400.0)
+    gl.color(GL.WHITE)
+    gl.clear()
+    gl.color(GL.RED)
+    gl.bgnline()
+    gl.v2f(0.0, 0.0)
+    gl.v2f(400.0, 400.0)
+    gl.endline()
+    gl.bgnline()
+    gl.v2f(400.0, 0.0)
+    gl.v2f(0.0, 400.0)
+    gl.endline()
+    time.sleep(5)
 
 main()
 \end{verbatim}\ecode

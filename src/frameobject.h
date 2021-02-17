@@ -2,12 +2,12 @@
 Copyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 Netherlands.
 
- All Rights Reserved
+                        All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
+Permission to use, copy, modify, and distribute this software and its 
+documentation for any purpose and without fee is hereby granted, 
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
+both that copyright notice and this permission notice appear in 
 supporting documentation, and that the names of Stichting Mathematisch
 Centrum or CWI not be used in advertising or publicity pertaining to
 distribution of the software without specific, written prior permission.
@@ -25,22 +25,22 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 /* Frame object interface */
 
 typedef struct {
- int b_type; /* what kind of block this is */
- int b_handler; /* where to jump to find handler */
- int b_level; /* value stack level to pop to */
+	int b_type;		/* what kind of block this is */
+	int b_handler;		/* where to jump to find handler */
+	int b_level;		/* value stack level to pop to */
 } block;
 
 typedef struct _frame {
- OB_HEAD
- struct _frame *f_back; /* previous frame, or NULL */
- codeobject *f_code; /* code segment */
- object *f_globals; /* global symbol table (dictobject) */
- object *f_locals; /* local symbol table (dictobject) */
- object **f_valuestack; /* malloc'ed array */
- block *f_blockstack; /* malloc'ed array */
- int f_nvalues; /* size of f_valuestack */
- int f_nblocks; /* size of f_blockstack */
- int f_iblock; /* index in f_blockstack */
+	OB_HEAD
+	struct _frame *f_back;	/* previous frame, or NULL */
+	codeobject *f_code;	/* code segment */
+	object *f_globals;	/* global symbol table (dictobject) */
+	object *f_locals;	/* local symbol table (dictobject) */
+	object **f_valuestack;	/* malloc'ed array */
+	block *f_blockstack;	/* malloc'ed array */
+	int f_nvalues;		/* size of f_valuestack */
+	int f_nblocks;		/* size of f_blockstack */
+	int f_iblock;		/* index in f_blockstack */
 } frameobject;
 
 
@@ -51,7 +51,7 @@ extern typeobject Frametype;
 #define is_frameobject(op) ((op)->ob_type == &Frametype)
 
 frameobject * newframeobject PROTO(
- (frameobject *, codeobject *, object *, object *, int, int));
+	(frameobject *, codeobject *, object *, object *, int, int));
 
 
 /* The rest of the interface is specific for frame objects */
@@ -70,8 +70,8 @@ frameobject * newframeobject PROTO(
 
 /* Code access macros */
 
-#define Getconst(f, i) (GETITEM((f)->f_code->co_consts, (i)))
-#define Getname(f, i) (GETITEMNAME((f)->f_code->co_names, (i)))
+#define Getconst(f, i)	(GETITEM((f)->f_code->co_consts, (i)))
+#define Getname(f, i)	(GETITEMNAME((f)->f_code->co_names, (i)))
 
 
 /* Block management functions */

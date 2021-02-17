@@ -10,86 +10,86 @@ import stat
 # (begins with '/').
 #
 def cat(a, b):
- if b[:1] = '/': return b
- if a = '' or a[-1:] = '/': return a + b
- return a + '/' + b
+	if b[:1] = '/': return b
+	if a = '' or a[-1:] = '/': return a + b
+	return a + '/' + b
 
 
 # Split a path in head (empty or ending in '/') and tail (no '/').
 # The tail will be empty if the path ends in '/'.
 #
 def split(p):
- head, tail = '', ''
- for c in p:
- tail = tail + c
- if c = '/':
- head, tail = head + tail, ''
- return head, tail
+	head, tail = '', ''
+	for c in p:
+		tail = tail + c
+		if c = '/':
+			head, tail = head + tail, ''
+	return head, tail
 
 
 # Return the tail (basename) part of a path.
 #
 def basename(p):
- return split(p)[1]
+	return split(p)[1]
 
 
 # Return the longest prefix of all list elements.
 #
 def commonprefix(m):
- if not m: return ''
- prefix = m[0]
- for item in m:
- for i in range(len(prefix)):
- if prefix[:i+1] <> item[:i+1]:
- prefix = prefix[:i]
- if i = 0: return ''
- break
- return prefix
+	if not m: return ''
+	prefix = m[0]
+	for item in m:
+		for i in range(len(prefix)):
+			if prefix[:i+1] <> item[:i+1]:
+				prefix = prefix[:i]
+				if i = 0: return ''
+				break
+	return prefix
 
 
 # Does a file/directory exist?
 #
 def exists(path):
- try:
- st = posix.stat(path)
- except posix.error:
- return 0
- return 1
+	try:
+		st = posix.stat(path)
+	except posix.error:
+		return 0
+	return 1
 
 
 # Is a path a posix directory?
 #
 def isdir(path):
- try:
- st = posix.stat(path)
- except posix.error:
- return 0
- return stat.S_ISDIR(st[stat.ST_MODE])
+	try:
+		st = posix.stat(path)
+	except posix.error:
+		return 0
+	return stat.S_ISDIR(st[stat.ST_MODE])
 
 
 # Is a path a symbolic link?
 # This will always return false on systems where posix.lstat doesn't exist.
 #
 def islink(path):
- try:
- st = posix.lstat(path)
- except (posix.error, NameError):
- return 0
- return stat.S_ISLNK(st[stat.ST_MODE])
+	try:
+		st = posix.lstat(path)
+	except (posix.error, NameError):
+		return 0
+	return stat.S_ISLNK(st[stat.ST_MODE])
 
 
 _mounts = []
 
 def _getmounts():
- import commands, string
- mounts = []
- data = commands.getoutput('/etc/mount')
- lines = string.splitfields(data, '\n')
- for line in lines:
- words = string.split(line)
- if len(words) >= 3 and words[1] = 'on':
- mounts.append(words[2])
- return mounts
+	import commands, string
+	mounts = []
+	data = commands.getoutput('/etc/mount')
+	lines = string.splitfields(data, '\n')
+	for line in lines:
+		words = string.split(line)
+		if len(words) >= 3 and words[1] = 'on':
+			mounts.append(words[2])
+	return mounts
 
 
 # Is a path a mount point?
@@ -98,9 +98,9 @@ def _getmounts():
 # Sorry.
 #
 def ismount(path):
- if not _mounts:
- _mounts[:] = _getmounts()
- return path in _mounts
+	if not _mounts:
+		_mounts[:] = _getmounts()
+	return path in _mounts
 
 
 # Directory tree walk.
@@ -112,14 +112,14 @@ def ismount(path):
 # or to impose a different order of visiting.
 #
 def walk(top, func, arg):
- try:
- names = posix.listdir(top)
- except posix.error:
- return
- func(arg, top, names)
- exceptions = ('.', '..')
- for name in names:
- if name not in exceptions:
- name = cat(top, name)
- if isdir(name):
- walk(name, func, arg)
+	try:
+		names = posix.listdir(top)
+	except posix.error:
+		return
+	func(arg, top, names)
+	exceptions = ('.', '..')
+	for name in names:
+		if name not in exceptions:
+			name = cat(top, name)
+			if isdir(name):
+				walk(name, func, arg)

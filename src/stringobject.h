@@ -2,12 +2,12 @@
 Copyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 Netherlands.
 
- All Rights Reserved
+                        All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
+Permission to use, copy, modify, and distribute this software and its 
+documentation for any purpose and without fee is hereby granted, 
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
+both that copyright notice and this permission notice appear in 
 supporting documentation, and that the names of Stichting Mathematisch
 Centrum or CWI not be used in advertising or publicity pertaining to
 distribution of the software without specific, written prior permission.
@@ -27,25 +27,25 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 /*
 123456789-123456789-123456789-123456789-123456789-123456789-123456789-12
 
-Type stringobject represents a character string. An extra zero byte is
+Type stringobject represents a character string.  An extra zero byte is
 reserved at the end to ensure it is zero-terminated, but a size is
-present so strings with null bytes in them can be represented. This
+present so strings with null bytes in them can be represented.  This
 is an immutable object type.
 
 There are functions to create new string objects, to test
 an object for string-ness, and to get the
-string value. The latter function returns a null pointer
+string value.  The latter function returns a null pointer
 if the object is not of the proper type.
 There is a variant that takes an explicit size as well as a
-variant that assumes a zero-terminated string. Note that none of the
+variant that assumes a zero-terminated string.  Note that none of the
 functions should be applied to nil objects.
 */
 
 /* NB The type is revealed here only because it is used in dictobject.c */
 
 typedef struct {
- OB_VARHEAD
- char ob_sval[1];
+	OB_VARHEAD
+	char ob_sval[1];
 } stringobject;
 
 extern typeobject Stringtype;

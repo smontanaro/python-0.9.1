@@ -2,12 +2,12 @@
 Copyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 Netherlands.
 
- All Rights Reserved
+                        All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
+Permission to use, copy, modify, and distribute this software and its 
+documentation for any purpose and without fee is hereby granted, 
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
+both that copyright notice and this permission notice appear in 
 supporting documentation, and that the names of Stichting Mathematisch
 Centrum or CWI not be used in advertising or publicity pertaining to
 distribution of the software without specific, written prior permission.
@@ -28,12 +28,12 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 char *
 strdup(str)
- const char *str;
+	const char *str;
 {
- if (str != NULL) {
- register char *copy = NEW(char, strlen(str) + 1);
- if (copy != NULL)
- return strcpy(copy, str);
- }
- return NULL;
+	if (str != NULL) {
+		register char *copy = NEW(char, strlen(str) + 1);
+		if (copy != NULL)
+			return strcpy(copy, str);
+	}
+	return NULL;
 }

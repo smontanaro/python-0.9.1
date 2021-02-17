@@ -101,15 +101,15 @@ Operation & Result & Notes \\
 {\tt min}({\em s}) & smallest item of {\em s} & \\
 {\tt max}({\em s}) & largest item of {\em s} & \\
 {\em x} {\tt in} {\em s} &
- true if an item of {\em s} is equal to {\em x} & \\
+	true if an item of {\em s} is equal to {\em x} & \\
 {\em x} {\tt not} {\tt in} {\em s} &
- false if an item of {\em s} is equal to {\em x} & \\
+	false if an item of {\em s} is equal to {\em x} & \\
 {\em s}{\tt +}{\em t} & the concatenation of {\em s} and {\em t} & \\
 {\em s}{\tt *}{\em n}, {\em n}*{\em s} &
- {\em n} copies of {\em s} concatenated & (1) \\
+	{\em n} copies of {\em s} concatenated & (1) \\
 {\em s}[{\em i}] & {\em i}'th item of {\em s} & \\
 {\em s}[{\em i}:{\em j}] &
- slice of {\em s} from {\em i} to {\em j} & (2) \\
+	slice of {\em s} from {\em i} to {\em j} & (2) \\
 \hline
 \end{tabular}
 \end{center}
@@ -143,19 +143,19 @@ The following operations are defined on mutable sequence types (where
 Operation & Result \\
 \hline
 {\em s}[{\em i}] = {\em x} &
- item {\em i} of {\em s} is replaced by {\em x} \\
+	item {\em i} of {\em s} is replaced by {\em x} \\
 {\em s}[{\em i}:{\em j}] = {\em t} &
- slice of {\em s} from {\em i} to {\em j} is replaced by {\em t} \\
+	slice of {\em s} from {\em i} to {\em j} is replaced by {\em t} \\
 {\tt del} {\em s}[{\em i}:{\em j}] &
- same as {\em s}[{\em i}:{\em j}] = [] \\
+	same as {\em s}[{\em i}:{\em j}] = [] \\
 {\em s}.{\tt append}({\em x}) &
- same as {\em s}[{\tt len}({\em x}):{\tt len}({\em x})] = [{\em x}] \\
+	same as {\em s}[{\tt len}({\em x}):{\tt len}({\em x})] = [{\em x}] \\
 {\em s}.{\tt insert}({\em i}, {\em x}) &
- same as {\em s}[{\em i}:{\em i}] = [{\em x}] \\
+	same as {\em s}[{\em i}:{\em i}] = [{\em x}] \\
 {\em s}.{\tt sort}() &
- the items of {\em s} are permuted to satisfy \\
- &
- $s[i] \leq s[j]$ for $i < j$\\
+	the items of {\em s} are permuted to satisfy \\
+	&
+	$s[i] \leq s[j]$ for $i < j$\\
 \hline
 \end{tabular}
 \end{center}
@@ -216,7 +216,7 @@ A small example using a dictionary:
 ['guido', 'irv', 'jack']
 >>> tel.has_key('guido')
 1
->>>
+>>> 
 \end{verbatim}\ecode
 \subsubsection{Other Built-in Types}
 
@@ -372,7 +372,7 @@ For example:
 ['sys']
 >>> dir(sys)
 ['argv', 'exit', 'modules', 'path', 'stderr', 'stdin', 'stdout']
->>>
+>>> 
 \end{verbatim}\ecode
 \funcitem{divmod}{a, b}
 %.br
@@ -398,7 +398,7 @@ For example:
 (-15, -5)
 >>> divmod(-100, -7)
 (14, -2)
->>>
+>>> 
 \end{verbatim}\ecode
 \funcitem{eval}{s}
 Takes a string as argument and parses and evaluates it as a {\Python}
@@ -411,7 +411,7 @@ For example:
 >>> x = 1
 >>> eval('x+1')
 2
->>>
+>>> 
 \end{verbatim}\ecode
 \funcitem{exec}{s}
 Takes a string as argument and parses and evaluates it as a sequence of
@@ -426,7 +426,7 @@ For example:
 >>> exec('x = x+1\n')
 >>> x
 2
->>>
+>>> 
 \end{verbatim}\ecode
 \funcitem{float}{x}
 Converts a number to floating point.
@@ -494,7 +494,7 @@ For example:
 []
 >>> range(1, 0)
 []
->>>
+>>> 
 \end{verbatim}\ecode
 \funcitem{raw\_input}{s}
 %.br
@@ -508,7 +508,7 @@ For example:
 >>> raw_input('Type anything: ')
 Type anything: Mutant Teenage Ninja Turtles
 'Mutant Teenage Ninja Turtles'
->>>
+>>> 
 \end{verbatim}\ecode
 \funcitem{reload}{module}
 Causes an already imported module to be re-parsed and re-initialized.

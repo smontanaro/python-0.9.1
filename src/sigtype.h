@@ -2,12 +2,12 @@
 Copyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 Netherlands.
 
- All Rights Reserved
+                        All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
+Permission to use, copy, modify, and distribute this software and its 
+documentation for any purpose and without fee is hereby granted, 
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
+both that copyright notice and this permission notice appear in 
 supporting documentation, and that the names of Stichting Mathematisch
 Centrum or CWI not be used in advertising or publicity pertaining to
 distribution of the software without specific, written prior permission.
@@ -23,10 +23,10 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************/
 
 /* The type of signal handlers is somewhat problematic.
- This file encapsulates my knowledge about it:
- - on the Mac (THINK C), it's int for 3.0, void for 4.0
- - on other systems, it's usually void, except it's int on vax Ultrix.
- Pass -DSIGTYPE=... to cc if you know better. */
+   This file encapsulates my knowledge about it:
+   - on the Mac (THINK C), it's int for 3.0, void for 4.0
+   - on other systems, it's usually void, except it's int on vax Ultrix.
+   Pass -DSIGTYPE=... to cc if you know better. */
 
 #ifndef SIGTYPE
 

@@ -23,14 +23,14 @@ objects['table'] = [ZERO, o8]
 
 # 'putDict' sets the value of entry 'key' of dictionary 'dict'
 def putDict(dict, key, val) :
- dict[key][0] = val
+	dict[key][0] = val
 
 #
-# 'getDict' get the contents of entry i of key 'key'
+# 'getDict' get the contents of entry i of key  'key'
 # of dictionary 'dict'
 #
 def getDict(dict, key, i) :
- return dict[key][i]
+	return dict[key][i]
 
 # the 'options' dictionary contains the strings of the menu items
 # that denote the options

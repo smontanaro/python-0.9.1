@@ -2,12 +2,12 @@
 Copyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 Netherlands.
 
- All Rights Reserved
+                        All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
+Permission to use, copy, modify, and distribute this software and its 
+documentation for any purpose and without fee is hereby granted, 
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
+both that copyright notice and this permission notice appear in 
 supporting documentation, and that the names of Stichting Mathematisch
 Centrum or CWI not be used in advertising or publicity pertaining to
 distribution of the software without specific, written prior permission.
@@ -27,21 +27,21 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #define MAXSTACK 100
 
 typedef struct _stackentry {
- int s_state; /* State in current DFA */
- dfa *s_dfa; /* Current DFA */
- struct _node *s_parent; /* Where to add next node */
+	int		 s_state;	/* State in current DFA */
+	dfa		*s_dfa;		/* Current DFA */
+	struct _node	*s_parent;	/* Where to add next node */
 } stackentry;
 
 typedef struct _stack {
- stackentry *s_top; /* Top entry */
- stackentry s_base[MAXSTACK];/* Array of stack entries */
- /* NB The stack grows down */
+	stackentry	*s_top;		/* Top entry */
+	stackentry	 s_base[MAXSTACK];/* Array of stack entries */
+					/* NB The stack grows down */
 } stack;
 
 typedef struct {
- struct _stack p_stack; /* Stack of parser states */
- struct _grammar *p_grammar; /* Grammar to use */
- struct _node *p_tree; /* Top of parse tree */
+	struct _stack	 p_stack;	/* Stack of parser states */
+	struct _grammar	*p_grammar;	/* Grammar to use */
+	struct _node	*p_tree;	/* Top of parse tree */
 } parser_state;
 
 parser_state *newparser PROTO((struct _grammar *g, int start));

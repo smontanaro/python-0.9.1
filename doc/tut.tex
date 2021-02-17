@@ -9,10 +9,10 @@
 }
 
 \author{
- Guido van Rossum \\
- Dept. CST, CWI, Kruislaan 413 \\
- 1098 SJ Amsterdam, The Netherlands \\
- E-mail: {\tt gu...@cwi.nl}
+	Guido van Rossum \\
+	Dept. CST, CWI, Kruislaan 413 \\
+	1098 SJ Amsterdam, The Netherlands \\
+	E-mail: {\tt gu...@cwi.nl}
 }
 
 \begin{document}
@@ -154,15 +154,15 @@ installation option, other places instead of
 are possible; check with your local \Python\ guru or system
 administrator.%
 \footnote{
- At CWI, at the time of writing, the interpreter can be found in
- the following places:
- On the Amoeba Ultrix machines, use the standard path,
- {\tt /usr/local/python}.
- On the Sun file servers, use
- {\tt /ufs/guido/bin/}{\em arch}{\tt /python},
- where {\em arch} can be {\tt sgi} or {\tt sun4}.
- On piring, use {\tt /userfs3/amoeba/bin/python}.
- (If you can't find a binary advertised here, get in touch with me.)
+	At CWI, at the time of writing, the interpreter can be found in
+	the following places:
+	On the Amoeba Ultrix machines, use the standard path,
+	{\tt /usr/local/python}.
+	On the Sun file servers, use
+	{\tt /ufs/guido/bin/}{\em arch}{\tt /python},
+	where {\em arch} can be {\tt sgi} or {\tt sun4}.
+	On piring, use {\tt /userfs3/amoeba/bin/python}.
+	(If you can't find a binary advertised here, get in touch with me.)
 }
 
 The interpreter operates somewhat like the \UNIX\ shell: when called with
@@ -172,13 +172,13 @@ standard input, it reads and executes a
 {\em script}
 from that file.%
 \footnote{
- There is a difference between ``{\tt python file}'' and
- ``{\tt python $<$file}''. In the latter case {\tt input()} and
- {\tt raw\_input()} are satisfied from {\em file}, which has
- already been read until the end by the parser, so they will read
- EOF immediately. In the former case (which is usually what
- you want) they are satisfied from whatever file or device is
- connected to standard input of the \Python\ interpreter.
+	There is a difference between ``{\tt python file}'' and
+	``{\tt python $<$file}''.  In the latter case {\tt input()} and
+	{\tt raw\_input()} are satisfied from {\em file}, which has
+	already been read until the end by the parser, so they will read
+	EOF immediately.  In the former case (which is usually what
+	you want) they are satisfied from whatever file or device is
+	connected to standard input of the \Python\ interpreter.
 }
 If available, the script name and additional arguments thereafter are
 passed to the script in the variable
@@ -232,10 +232,10 @@ When
 is not set, an installation-dependent default path is used, usually
 {\tt .:/usr/local/lib/python}.%
 \footnote{
- Modules are really searched in the list of directories given by
- the variable {\tt sys.path} which is initialized from
- {\tt PYTHONPATH} or from the installation-dependent default.
- See the section on Standard Modules later.
+	Modules are really searched in the list of directories given by
+	the variable {\tt sys.path} which is initialized from
+	{\tt PYTHONPATH} or from the installation-dependent default.
+	See the section on Standard Modules later.
 }
 
 On BSD'ish \UNIX\ systems, \Python\ scripts can be made directly executable,
@@ -262,10 +262,10 @@ however, the basics are easily explained.
 
 If supported,%
 \footnote{
- Perhaps the quickest check to see whether command line editing
- is supported is typing Control-P to the first \Python\ prompt
- you get. If it beeps, you have command line editing.
- If not, you can skip the rest of this section.
+	Perhaps the quickest check to see whether command line editing
+	is supported is typing Control-P to the first \Python\ prompt
+	you get.  If it beeps, you have command line editing.
+	If not, you can skip the rest of this section.
 }
 input line editing is active whenever the interpreter prints a primary
 or secondary prompt.
@@ -423,9 +423,9 @@ notation: two subscripts (indices) separated by a colon.
 >>> word[2:4]
 'lp'
 >>> # Slice indices have useful defaults:
->>> word[:2] # Take first two characters
+>>> word[:2]    # Take first two characters
 'He'
->>> word[2:] # Drop first two characters
+>>> word[2:]    # Drop first two characters
 'lpA'
 >>> # A useful invariant: s[:i] + s[i:] = s
 >>> word[:3] + word[3:]
@@ -448,12 +448,12 @@ Slice indices (but not simple subscripts) may be negative numbers, to
 start counting from the right.
 For example:
 \bcode\begin{verbatim}
->>> word[-2:] # Take last two characters
+>>> word[-2:]    # Take last two characters
 'pA'
->>> word[:-2] # Drop last two characters
+>>> word[:-2]    # Drop last two characters
 'Hel'
 >>> # But -0 does not count from the right!
->>> word[-0:] # (since -0 equals 0)
+>>> word[-0:]    # (since -0 equals 0)
 'HelpA'
 >>>
 \end{verbatim}\ecode
@@ -470,8 +470,8 @@ for example:
  +---+---+---+---+---+
  | H | e | l | p | A |
  +---+---+---+---+---+
- 0 1 2 3 4 5
--5 -4 -3 -2 -1
+ 0   1   2   3   4   5
+-5  -4  -3  -2  -1
 \end{verbatim}\ecode
 The first row of numbers gives the position of the indices 0...5 in the
 string; the second row gives the corresponding negative indices.
@@ -570,8 +570,8 @@ series as follows:
 >>> # the sum of two elements defines the next
 >>> a, b = 0, 1
 >>> while b < 100:
-... print b
-... a, b = b, a+b
+...       print b
+...       a, b = b, a+b
 ...
 1
 1
@@ -616,9 +616,9 @@ The standard comparison operators are written as
 and
 {\tt <>}.%
 \footnote{
- The ambiguity of using {\tt =}
- for both assignment and equality is resolved by disallowing
- unparenthesized conditions at the right hand side of assignments.
+	The ambiguity of using {\tt =}
+	for both assignment and equality is resolved by disallowing
+	unparenthesized conditions at the right hand side of assignments.
 }
 \item
 The
@@ -651,8 +651,8 @@ A trailing comma avoids the newline after the output:
 \bcode\begin{verbatim}
 >>> a, b = 0, 1
 >>> while b < 1000:
-... print b,
-... a, b = b, a+b
+...     print b,
+...     a, b = b, a+b
 ...
 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987
 >>>
@@ -673,14 +673,14 @@ Perhaps the most well-known statement type is the {\tt if} statement.
 For example:
 \bcode\begin{verbatim}
 >>> if x < 0:
-... x = 0
-... print 'Negative changed to zero'
+...      x = 0
+...      print 'Negative changed to zero'
 ... elif x = 0:
-... print 'Zero'
+...      print 'Zero'
 ... elif x = 1:
-... print 'Single'
+...      print 'Single'
 ... else:
-... print 'More'
+...      print 'More'
 ...
 \end{verbatim}\ecode
 There can be zero or more {\tt elif} parts, and the {\tt else} part is
@@ -703,7 +703,7 @@ For example (no pun intended):
 >>> # Measure some strings:
 >>> a = ['cat', 'window', 'defenestrate']
 >>> for x in a:
-... print x, len(x)
+...     print x, len(x)
 ...
 cat 3
 window 6
@@ -741,7 +741,7 @@ and {\tt len()} as follows:
 \bcode\begin{verbatim}
 >>> a = ['Mary', 'had', 'a', 'little', 'boy']
 >>> for i in range(len(a)):
-... print i, a[i]
+...     print i, a[i]
 ...
 0 Mary
 1 had
@@ -763,12 +763,12 @@ This is exemplified by the following loop, which searches for a list
 item of value 0:
 \bcode\begin{verbatim}
 >>> for n in range(2, 10):
-... for x in range(2, n):
-... if n % x = 0:
-... print n, 'equals', x, '*', n/x
-... break
-... else:
-... print n, 'is a prime number'
+...     for x in range(2, n):
+...         if n % x = 0:
+...            print n, 'equals', x, '*', n/x
+...            break
+...     else:
+...          print n, 'is a prime number'
 ...
 2 is a prime number
 3 is a prime number
@@ -789,7 +789,7 @@ program requires no action.
 For example:
 \bcode\begin{verbatim}
 >>> while 1:
-... pass # Busy-wait for keyboard interrupt
+...       pass # Busy-wait for keyboard interrupt
 ...
 \end{verbatim}\ecode
 
@@ -802,11 +802,11 @@ XXX To Be Done.
 We can create a function that writes the Fibonacci series to an
 arbitrary boundary:
 \bcode\begin{verbatim}
->>> def fib(n): # write Fibonacci series up to n
-... a, b = 0, 1
-... while b <= n:
-... print b,
-... a, b = b, a+b
+>>> def fib(n):    # write Fibonacci series up to n
+...     a, b = 0, 1
+...     while b <= n:
+...           print b,
+...           a, b = b, a+b
 ...
 >>> # Now call the function we just defined:
 >>> fib(2000)
@@ -837,10 +837,10 @@ the local symbol table of the called function when it is called;
 thus, arguments are passed using
 {\em call\ by\ value}.%
 \footnote{
- Actually, {\em call by object reference} would be a better
- description, since if a mutable object is passed, the caller
- will see any changes the callee makes to it (e.g., items
- inserted into a list).
+	 Actually, {\em call  by  object reference} would be a better
+	 description, since if a mutable object is passed, the caller
+	 will see any changes the callee makes to it (e.g., items
+	 inserted into a list).
 }
 When a function calls another function, a new local symbol table is
 created for that call.
@@ -880,15 +880,15 @@ It is simple to write a function that returns a list of the numbers of
 the Fibonacci series, instead of printing it:
 \bcode\begin{verbatim}
 >>> def fib2(n): # return Fibonacci series up to n
-... result = []
-... a, b = 0, 1
-... while b <= n:
-... result.append(b) # see below
-... a, b = b, a+b
-... return result
+...     result = []
+...     a, b = 0, 1
+...     while b <= n:
+...           result.append(b)    # see below
+...           a, b = b, a+b
+...     return result
 ...
->>> f100 = fib2(100) # call it
->>> f100 # write the result
+>>> f100 = fib2(100)    # call it
+>>> f100                # write the result
 [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
 >>>
 \end{verbatim}\ecode
@@ -928,8 +928,8 @@ In this case it is equivalent to
 {\tt ret = ret + [b]},
 but more efficient.%
 \footnote{
- There is a subtle semantic difference if the object
- is referenced from more than one place.
+	There is a subtle semantic difference if the object
+	is referenced from more than one place.
 }
 \end{itemize}
 The list object type has two more methods:
@@ -993,19 +993,19 @@ in the current directory with the following contents:
 \bcode\begin{verbatim}
 # Fibonacci numbers module
 
-def fib(n): # write Fibonacci series up to n
- a, b = 0, 1
- while b <= n:
- print b,
- a, b = b, a+b
+def fib(n):    # write Fibonacci series up to n
+    a, b = 0, 1
+    while b <= n:
+          print b,
+          a, b = b, a+b
 
 def fib2(n): # return Fibonacci series up to n
- ret = []
- a, b = 0, 1
- while b <= n:
- ret.append(b)
- a, b = b, a+b
- return ret
+    ret = []
+    a, b = 0, 1
+    while b <= n:
+          ret.append(b)
+          a, b = b, a+b
+    return ret
 \end{verbatim}\ecode
 Now enter the \Python\ interpreter and import this module with the
 following command:
@@ -1043,9 +1043,9 @@ They are executed only the
 {\em first}
 time the module is imported somewhere.%
 \footnote{
- In fact function definitions are also `statements' that are
- `executed'; the execution enters the function name in the
- module's global symbol table.
+	In fact function definitions are also `statements' that are
+	`executed'; the execution enters the function name in the
+	module's global symbol table.
 }
 
 Each module has its own private symbol table, which is used as the
@@ -1157,7 +1157,7 @@ kind of complaint you get while you are still learning \Python:
 >>> while 1 print 'Hello world'
 Parsing error: file <stdin>, line 1:
 while 1 print 'Hello world'
- ^
+             ^
 Unhandled exception: run-time error: syntax error
 >>>
 \end{verbatim}\ecode
@@ -1178,15 +1178,15 @@ an error when an attempt is made to execute it:
 >>> 10 * (1/0)
 Unhandled exception: run-time error: integer division by zero
 Stack backtrace (innermost last):
- File "<stdin>", line 1
+  File "<stdin>", line 1
 >>> 4 + foo*3
 Unhandled exception: undefined name: foo
 Stack backtrace (innermost last):
- File "<stdin>", line 1
+  File "<stdin>", line 1
 >>> '2' + 2
 Unhandled exception: type error: illegal argument type for built-in operation
 Stack backtrace (innermost last):
- File "<stdin>", line 1
+  File "<stdin>", line 1
 >>>
 \end{verbatim}\ecode
 Errors detected during execution are called
@@ -1223,9 +1223,9 @@ The detail states the cause of the error in more detail.
 errors are more serious: these are usually caused by misspelled
 identifiers.%
 \footnote{
- The parser does not check whether names used in a program are at
- all defined elsewhere in the program, so such checks are
- postponed until run-time. The same holds for type checking.
+	The parser does not check whether names used in a program are at
+	all defined elsewhere in the program, so such checks are
+	postponed until run-time.  The same holds for type checking.
 }
 The detail is the offending identifier.
 \item
@@ -1244,11 +1244,11 @@ some floating point numbers:
 \bcode\begin{verbatim}
 >>> numbers = [0.3333, 2.5, 0.0, 10.0]
 >>> for x in numbers:
-... print x,
-... try:
-... print 1.0 / x
-... except RuntimeError:
-... print '*** has no inverse ***'
+...     print x,
+...     try:
+...         print 1.0 / x
+...     except RuntimeError:
+...         print '*** has no inverse ***'
 ...
 0.3333 3.00030003
 2.5 0.4
@@ -1288,7 +1288,7 @@ An except clause may name multiple exceptions as a parenthesized list,
 e.g.:
 \bcode\begin{verbatim}
 ... except (RuntimeError, TypeError, NameError):
-... pass
+...     pass
 \end{verbatim}\ecode
 The last except clause may omit the exception name(s), to serve as a
 wildcard.
@@ -1303,9 +1303,9 @@ specify a variable after the exception name (or list) to receive the
 argument's value, as follows:
 \bcode\begin{verbatim}
 >>> try:
-... foo()
+...     foo()
 ... except NameError, x:
-... print 'name', x, 'undefined'
+...     print 'name', x, 'undefined'
 ...
 name foo undefined
 >>>
@@ -1319,21 +1319,21 @@ These are in fact string objects whose
 {\em object\ identity}
 (not their value!) identifies the exceptions.%
 \footnote{
- There should really be a separate exception type; it is pure
- laziness that exceptions are identified by strings, and this may
- be fixed in the future.
+	There should really be a separate exception type; it is pure
+	laziness that exceptions are identified by strings, and this may
+	be fixed in the future.
 }
 The string is printed as the second part of the message for unhandled
 exceptions.
 Their names and values are:
 \bcode\begin{verbatim}
-EOFError 'end-of-file read'
-KeyboardInterrupt 'keyboard interrupt'
-MemoryError 'out of memory' *
-NameError 'undefined name' *
-RuntimeError 'run-time error' *
-SystemError 'system error' *
-TypeError 'type error' *
+EOFError              'end-of-file read'
+KeyboardInterrupt     'keyboard interrupt'
+MemoryError           'out of memory'           *
+NameError             'undefined name'          *
+RuntimeError          'run-time error'          *
+SystemError           'system error'            *
+TypeError             'type error'              *
 \end{verbatim}\ecode
 The meanings should be clear enough.
 Those exceptions with a {\tt *} in the third column have an argument.
@@ -1344,12 +1344,12 @@ that are called (even indirectly) in the try clause.
 For example:
 \bcode\begin{verbatim}
 >>> def this_fails():
-... x = 1/0
+...     x = 1/0
 ...
 >>> try:
-... this_fails()
+...     this_fails()
 ... except RuntimeError, detail:
-... print 'Handling run-time error:', detail
+...     print 'Handling run-time error:', detail
 ...
 Handling run-time error: domain error or zero division
 >>>
@@ -1364,7 +1364,7 @@ For example:
 >>> raise NameError, 'Hi There!'
 Unhandled exception: undefined name: Hi There!
 Stack backtrace (innermost last):
- File "<stdin>", line 1
+  File "<stdin>", line 1
 >>>
 \end{verbatim}\ecode
 The first argument to {\tt raise} names the exception to be raised.
@@ -1378,15 +1378,15 @@ For example:
 \bcode\begin{verbatim}
 >>> my_exc = 'nobody likes me!'
 >>> try:
-... raise my_exc, 2*2
+...     raise my_exc, 2*2
 ... except my_exc, val:
-... print 'My exception occured, value:', val
+...     print 'My exception occured, value:', val
 ...
 My exception occured, value: 4
 >>> raise my_exc, 1
 Unhandled exception: nobody likes me!: 1
 Stack backtrace (innermost last):
- File "<stdin>", line 7
+  File "<stdin>", line 7
 >>>
 \end{verbatim}\ecode
 Many standard modules use this to report errors that may occur in
@@ -1399,14 +1399,14 @@ define clean-up actions that must be executed under all circumstances.
 For example:
 \bcode\begin{verbatim}
 >>> try:
-... raise KeyboardInterrupt
+...     raise KeyboardInterrupt
 ... finally:
-... print 'Goodbye, world!'
+...     print 'Goodbye, world!'
 ...
 Goodbye, world!
 Unhandled exception: keyboard interrupt
 Stack backtrace (innermost last):
- File "<stdin>", line 2
+  File "<stdin>", line 2
 >>>
 \end{verbatim}\ecode
 The
@@ -1456,11 +1456,11 @@ Also, like Modula-3 but unlike C++, the built-in operators with special
 syntax (arithmetic operators, subscripting etc.) cannot be redefined for
 class members.%
 \footnote{
- They can be redefined for new object types implemented in C in
- extensions to the interpreter, however. It would require only a
- naming convention and a relatively small change to the
- interpreter to allow operator overloading for classes, so
- perhaps someday...
+	They can be redefined for new object types implemented in C in
+	extensions to the interpreter, however.  It would require only a
+	naming convention and a relatively small change to the
+	interpreter to allow operator overloading for classes, so
+	perhaps someday...
 }
 
 \subsubsection{A Simple Example}
@@ -1471,22 +1471,22 @@ remove elements, a membership test, and a request for the size of the
 set.
 \bcode\begin{verbatim}
 class Set():
- def new(self):
- self.elements = []
- return self
- def add(self, e):
- if e not in self.elements:
- self.elements.append(e)
- def remove(self, e):
- if e in self.elements:
- for i in range(len(self.elements)):
- if self.elements[i] = e:
- del self.elements[i]
- break
- def is_element(self, e):
- return e in self.elements
- def size(self):
- return len(self.elements)
+    def new(self):
+        self.elements = []
+        return self
+    def add(self, e):
+        if e not in self.elements:
+            self.elements.append(e)
+    def remove(self, e):
+        if e in self.elements:
+            for i in range(len(self.elements)):
+                if self.elements[i] = e:
+                    del self.elements[i]
+                    break
+    def is_element(self, e):
+        return e in self.elements
+    def size(self):
+        return len(self.elements)
 \end{verbatim}\ecode
 Note that the class definition looks like a big compound statement,
 with all the function definitons indented repective to the
@@ -1538,13 +1538,13 @@ XXX This section is not complete yet!
 \section{XXX P.M.}
 
 \begin{itemize}
-\item The {\tt del} statement.
-\item The {\tt dir()} function.
-\item Tuples.
-\item Dictionaries.
-\item Objects and types in general.
-\item Backquotes.
-\item And/Or/Not.
+\item	The {\tt del} statement.
+\item	The {\tt dir()} function.
+\item	Tuples.
+\item	Dictionaries.
+\item	Objects and types in general.
+\item	Backquotes.
+\item	And/Or/Not.
 \end{itemize}
 
 \end{document}

@@ -11,7 +11,7 @@ import path
 # Get 'ls -l' status for an object into a string
 #
 def getstatus(file):
- return getoutput('ls -ld' + mkarg(file))
+	return getoutput('ls -ld' + mkarg(file))
 
 
 # Get the output from a shell command into a string.
@@ -20,44 +20,44 @@ def getstatus(file):
 # XXX This should use posix.popen() instead, should it exist.
 #
 def getoutput(cmd):
- return getstatusoutput(cmd)[1]
+	return getstatusoutput(cmd)[1]
 
 
 # Ditto but preserving the exit status.
 # Returns a pair (sts, output)
 #
 def getstatusoutput(cmd):
- tmp = '/usr/tmp/wdiff' + `rand.rand()`
- sts = -1
- try:
- sts = posix.system(cmd + ' >' + tmp + ' 2>&1')
- text = readfile(tmp)
- finally:
- altsts = posix.system('rm -f ' + tmp)
- if text[-1:] = '\n': text = text[:-1]
- return sts, text
+	tmp = '/usr/tmp/wdiff' + `rand.rand()`
+	sts = -1
+	try:
+		sts = posix.system(cmd + ' >' + tmp + ' 2>&1')
+		text = readfile(tmp)
+	finally:
+		altsts = posix.system('rm -f ' + tmp)
+	if text[-1:] = '\n': text = text[:-1]
+	return sts, text
 
 
 # Return a string containing a file's contents.
 #
 def readfile(fn):
- st = posix.stat(fn)
- size = st[stat.ST_SIZE]
- if not size: return ''
- try:
- fp = open(fn, 'r')
- except:
- raise posix.error, 'readfile(' + fn + '): open failed'
- try:
- return fp.read(size)
- except:
- raise posix.error, 'readfile(' + fn + '): read failed'
+	st = posix.stat(fn)
+	size = st[stat.ST_SIZE]
+	if not size: return ''
+	try:
+		fp = open(fn, 'r')
+	except:
+		raise posix.error, 'readfile(' + fn + '): open failed'
+	try:
+		return fp.read(size)
+	except:
+		raise posix.error, 'readfile(' + fn + '): read failed'
 
 
 # Make command argument from directory and pathname (prefix space, add quotes).
 #
 def mk2arg(head, x):
- return mkarg(path.cat(head, x))
+	return mkarg(path.cat(head, x))
 
 
 # Make a shell command argument from a string.
@@ -66,12 +66,12 @@ def mk2arg(head, x):
 # with backslash.
 #
 def mkarg(x):
- if '\'' not in x:
- return ' \'' + x + '\''
- s = ' "'
- for c in x:
- if c in '\\$"':
- s = s + '\\'
- s = s + c
- s = s + '"'
- return s
+	if '\'' not in x:
+		return ' \'' + x + '\''
+	s = ' "'
+	for c in x:
+		if c in '\\$"':
+			s = s + '\\'
+		s = s + c
+	s = s + '"'
+	return s

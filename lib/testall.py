@@ -1,20 +1,20 @@
 # Module 'testall'
 #
 # Python test set, should exercise:
-# - all lexical and grammatical constructs
-# - all opcodes from "opcode.h"
-# - all operations on all object types
-# - all builtin functions
+#	- all lexical and grammatical constructs
+#	- all opcodes from "opcode.h"
+#	- all operations on all object types
+#	- all builtin functions
 # Ideally also:
-# - all possible exception situations (Thank God we've got 'try')
-# - all boundary cases
+#	- all possible exception situations (Thank God we've got 'try')
+#	- all boundary cases
 
 
-TestFailed = 'testall -- test failed' # Exception
+TestFailed = 'testall -- test failed'		# Exception
 
 
 #########################################################
-# Part 1. Test all lexical and grammatical constructs.
+# Part 1.  Test all lexical and grammatical constructs.
 # This just tests whether the parser accepts them all.
 #########################################################
 
@@ -67,7 +67,7 @@ def f3(two, arguments): pass
 def f4(two, (compound, (arguments))): pass
 
 ### stmt: simple_stmt | compound_stmt
-### simple_stmt: expr_stmt | print_stmt | pass_stmt | del_stmt | flow_stmt | import_stmt
+### simple_stmt: expr_stmt | print_stmt  | pass_stmt | del_stmt | flow_stmt | import_stmt
 # Tested below
 
 print 'expr_stmt' # (exprlist '=')* exprlist NEWLINE
@@ -122,7 +122,7 @@ from time import sleep
 [4]
 from math import *
 [5]
-from sys import modules, path
+from sys import modules, ps1, ps2
 [6]
 
 ### compound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | funcdef | classdef
@@ -172,16 +172,16 @@ finally: pass
 print 'suite' # simple_stmt | NEWLINE INDENT NEWLINE* (stmt NEWLINE*)+ DEDENT
 if 1: pass
 if 1:
- pass
+	pass
 if 1:
- #
- #
- #
- pass
- pass
- #
- pass
- #
+	#
+	#
+	#
+	pass
+	pass
+	#
+	pass
+	#
 
 print 'test' # and_test ('or' and_test)*
 ### and_test: not_test ('and' not_test)*
@@ -213,7 +213,7 @@ print 'factor' # ('+'|'-') factor | atom trailer*
 x = +1
 x = -1
 x = 1
-c = sys.path[0]
+c = sys.ps1[0]
 x = time.time()
 x = sys.modules['time'].time()
 a = '01234'
@@ -253,13 +253,13 @@ class C1() = B(): pass
 class C2() = B(): pass
 class D() = C1(), C2(), B(): pass
 class C():
- def meth1(self): pass
- def meth2(self, arg): pass
- def meth3(self, (a1, a2)): pass
+	def meth1(self): pass
+	def meth2(self, arg): pass
+	def meth3(self, (a1, a2)): pass
 
 
 #########################################################
-# Part 2. Test all opcodes from "opcode.h"
+# Part 2.  Test all opcodes from "opcode.h"
 #########################################################
 
 print '2. Opcodes'
@@ -268,23 +268,23 @@ print 'XXX Not yet fully implemented'
 print '2.1 try inside for loop'
 n = 0
 for i in range(10):
- n = n+i
- try: 1/0
- except NameError: pass
- except RuntimeError: pass
- except TypeError: pass
- finally: pass
- try: pass
- except: pass
- try: pass
- finally: pass
- n = n+i
+	n = n+i
+	try: 1/0
+	except NameError: pass
+	except RuntimeError: pass
+	except TypeError: pass
+	finally: pass
+	try: pass
+	except: pass
+	try: pass
+	finally: pass
+	n = n+i
 if n <> 90:
- raise TestFailed, 'try inside for'
+	raise TestFailed, 'try inside for'
 
 
 #########################################################
-# Part 3. Test all operations on all object types
+# Part 3.  Test all operations on all object types
 #########################################################
 
 print '3. Object types'
@@ -292,7 +292,7 @@ print 'XXX Not yet implemented'
 
 
 #########################################################
-# Part 4. Test all built-in functions
+# Part 4.  Test all built-in functions
 #########################################################
 
 print '4. Built-in functions'
@@ -364,7 +364,7 @@ fp.close()
 del fp
 fp = open('@test', 'r')
 if fp.readline() <> 'The quick brown fox jumps over the lazy dog.\n':
- raise TestFailed, 'readline()'
+	raise TestFailed, 'readline()'
 if fp.readline(4) <> 'Dear': raise TestFailed, 'readline(4) # short'
 if fp.readline(100) <> ' John\n': raise TestFailed, 'readline(100)'
 if fp.read(300) <> 'XXX'*100: raise TestFailed, 'read(300)'
@@ -383,13 +383,13 @@ if range(5, -5, -3) <> [5, 2, -1, -4]: raise TestFailed, 'range(5, -5, -3)'
 print 'raw_input'
 savestdin = sys.stdin
 try:
- sys.stdin = open('@test', 'r')
- if raw_input() <> 'The quick brown fox jumps over the lazy dog.':
- raise TestFailed, 'raw_input()'
- if raw_input('testing\n') <> 'Dear John':
- raise TestFailed, 'raw_input(\'testing\\n\')'
+	sys.stdin = open('@test', 'r')
+	if raw_input() <> 'The quick brown fox jumps over the lazy dog.':
+		raise TestFailed, 'raw_input()'
+	if raw_input('testing\n') <> 'Dear John':
+		raise TestFailed, 'raw_input(\'testing\\n\')'
 finally:
- sys.stdin = savestdin
+	sys.stdin = savestdin
 
 print 'reload'
 import string
@@ -397,20 +397,20 @@ reload(string)
 
 print 'type'
 if type('') <> type('123') or type('') = type(()):
- raise TestFailed, 'type()'
+	raise TestFailed, 'type()'
 
 
 print 'Passed all tests.'
 
 try:
- import mac
- unlink = mac.unlink
+	import mac
+	unlink = mac.unlink
 except NameError:
- try:
- import posix
- unlink = posix.unlink
- except NameError:
- pass
+	try:
+		import posix
+		unlink = posix.unlink
+	except NameError:
+		pass
 
 unlink('@test')
 print 'Unlinked @test'
