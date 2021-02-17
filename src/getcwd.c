@@ -23,7 +23,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************/
 
 /* Two PD getcwd() implementations.
-   Author: Guido van Rossum, CWI Amsterdam, Jan 1991, <gu...@cwi.nl>. */
+   Author: Guido van Rossum, CWI Amsterdam, Jan 1991, <guido@cwi.nl>. */
 
 /* #define NO_GETWD /* Turn this on to popen pwd instead of calling getwd() */
 

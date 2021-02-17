@@ -1,3 +1,14 @@
+Path: funic!news.funet.fi!sunic!uupsi!rpi!zaphod.mps.ohio-state.edu!sdd.hp.com!spool.mu.edu!uunet!mcsun!hp4nl!charon!guido
+From: guido@cwi.nl (Guido van Rossum)
+Newsgroups: alt.sources
+Subject: Python 0.9.1 part 18/21
+Message-ID: <2980@charon.cwi.nl>
+Date: 19 Feb 91 17:42:44 GMT
+Sender: news@cwi.nl
+Organization: CWI, Amsterdam
+Lines: 2268
+Originator: guido@voorn.cwi.nl
+
 : This is a shell archive.
 : Extract with 'sh this_file'.
 :
@@ -159,7 +170,7 @@ sed 's/^X//' > 'demo/sgi/gl/mclock.doc' << 'EOF'
 XNewsgroups: cwi.sgi
 XSubject: Re: new clock
 XDistribution: cwi.sgi
-XReferences: <22...@charon.cwi.nl>
+XReferences: <2246@charon.cwi.nl>
 X
 XLast week I wrote:
 X
@@ -214,7 +225,7 @@ Xspeakers are going to be in demand!)
 X
 X--
 XGuido van Rossum, Centre for Mathematics and Computer Science (CWI), Amsterdam
-Xgu...@cwi.nl or ..!hp4nl!cwi.nl!guido or guido%cwi...@uunet.uu.net
+Xguido@cwi.nl or ..!hp4nl!cwi.nl!guido or guido%cwi.nl@uunet.uu.net
 X"A thing of beauty is a joy till sunrise"
 EOF
 fi
@@ -1575,7 +1586,7 @@ X
 X******************************************************************/
 X
 X/* Two PD getcwd() implementations.
-X   Author: Guido van Rossum, CWI Amsterdam, Jan 1991, <gu...@cwi.nl>. */
+X   Author: Guido van Rossum, CWI Amsterdam, Jan 1991, <guido@cwi.nl>. */
 X
 X/* #define NO_GETWD /* Turn this on to popen pwd instead of calling getwd() */
 X

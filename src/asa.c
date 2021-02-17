@@ -24,8 +24,8 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 /* Asynchronous audio module for Silicon Graphics 4D/20 under IRIX 3.3
    Copyright 1990 Stichting Mathematisch Centrum, Amsterdam
-   Author: Guido van Rossum, <gu...@cwi.nl>
-   Last modified: gu...@cwi.nl, Oct 14, 1990
+   Author: Guido van Rossum, <guido@cwi.nl>
+   Last modified: guido@cwi.nl, Oct 14, 1990
 
    Callers should #include "asa.h".
 

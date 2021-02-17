@@ -1250,8 +1250,7 @@ struct sc_ProcessBlock sc_pb;
 			break;
 
 		case TListSlt:
-		
-	ret = xTListSlt(operand, &sc_pb);
+			ret = xTListSlt(operand, &sc_pb);
 			break;
 
 		case LoopPut:
