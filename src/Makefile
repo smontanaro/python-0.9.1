@@ -1,17 +1,17 @@
 # /***********************************************************
 # Copyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
 # Netherlands.
-# 
+#
 #                         All Rights Reserved
-# 
-# Permission to use, copy, modify, and distribute this software and its 
-# documentation for any purpose and without fee is hereby granted, 
+#
+# Permission to use, copy, modify, and distribute this software and its
+# documentation for any purpose and without fee is hereby granted,
 # provided that the above copyright notice appear in all copies and that
-# both that copyright notice and this permission notice appear in 
+# both that copyright notice and this permission notice appear in
 # supporting documentation, and that the names of Stichting Mathematisch
 # Centrum or CWI not be used in advertising or publicity pertaining to
 # distribution of the software without specific, written prior permission.
-# 
+#
 # STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
 # THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
 # FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
@@ -19,7 +19,7 @@
 # WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 # OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-# 
+#
 # ******************************************************************/
 
 # Makefile for Python
@@ -84,8 +84,8 @@ PYTHONPATH=	.:/usr/local/lib/python:/ufs/guido/lib/python
 # is missing in most systems I have encountered, so it is turned on
 # in the Makefile.  Turn it off if your system doesn't have sys_errlist.)
 
-STRERROR_SRC=  strerror.c
-STRERROR_OBJ=  strerror.o
+# STRERROR_SRC=  strerror.c
+# STRERROR_OBJ=  strerror.o
 
 # If your BSD system does not have a fmod() function in the library,
 # uncomment the following two lines to use one I wrote.
@@ -256,7 +256,7 @@ STRERROR_OBJ=  strerror.o
 # Uncomment the following block to use the GL option.
 
 #GL_USE =	-DUSE_GL
-#GL_LIBDEPS=	
+#GL_LIBDEPS=
 #GL_LIBS=	-lgl_s
 #GL_SRC =	glmodule.c cgensupport.c
 #GL_OBJ =	glmodule.o cgensupport.o
@@ -493,4 +493,3 @@ glmodule.c:	cstubs cgen
 
 #graminit.c graminit.h:	Grammar python_gen
 #		python_gen Grammar
-

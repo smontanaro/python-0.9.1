@@ -4,10 +4,10 @@ Netherlands.
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the names of Stichting Mathematisch
 Centrum or CWI not be used in advertising or publicity pertaining to
 distribution of the software without specific, written prior permission.
@@ -25,6 +25,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 /* List object implementation */
 
 #include "allobjects.h"
+#include "modsupport.h"
 
 object *
 newlistobject(size)
@@ -319,24 +320,6 @@ list_concat(a, bb)
 }
 
 static int
-list_ass_item(a, i, v)
-	listobject *a;
-	int i;
-	object *v;
-{
-	if (i < 0 || i >= a->ob_size) {
-		err_setstr(IndexError, "list assignment index out of range");
-		return -1;
-	}
-	if (v == NULL)
-		return list_ass_slice(a, i, i+1, v);
-	INCREF(v);
-	DECREF(a->ob_item[i]);
-	a->ob_item[i] = v;
-	return 0;
-}
-
-static int
 list_ass_slice(a, ilow, ihigh, v)
 	listobject *a;
 	int ilow, ihigh;
@@ -398,6 +381,24 @@ list_ass_slice(a, ilow, ihigh, v)
 	}
 	return 0;
 #undef b
+}
+
+static int
+list_ass_item(a, i, v)
+	listobject *a;
+	int i;
+	object *v;
+{
+	if (i < 0 || i >= a->ob_size) {
+		err_setstr(IndexError, "list assignment index out of range");
+		return -1;
+	}
+	if (v == NULL)
+		return list_ass_slice(a, i, i+1, v);
+	INCREF(v);
+	DECREF(a->ob_item[i]);
+	a->ob_item[i] = v;
+	return 0;
 }
 
 static object *
