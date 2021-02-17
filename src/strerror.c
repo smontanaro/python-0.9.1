@@ -23,7 +23,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************/
 
 /* PD implementation of strerror() for systems that don't have it.
-   Author: Guido van Rossum, CWI Amsterdam, Oct. 1990, <gu...@cwi.nl>. */
+   Author: Guido van Rossum, CWI Amsterdam, Oct. 1990, <guido@cwi.nl>. */
 
 #include <stdio.h>
 

@@ -1,3 +1,14 @@
+Path: funic!news.funet.fi!sunic!uupsi!rpi!zaphod.mps.ohio-state.edu!swrinde!elroy.jpl.nasa.gov!jarthur!uunet!mcsun!hp4nl!charon!guido
+From: guido@cwi.nl (Guido van Rossum)
+Newsgroups: alt.sources
+Subject: Python 0.9.1 part 20/21
+Message-ID: <2982@charon.cwi.nl>
+Date: 19 Feb 91 17:42:54 GMT
+Sender: news@cwi.nl
+Organization: CWI, Amsterdam
+Lines: 1941
+Originator: guido@voorn.cwi.nl
+
 : This is a shell archive.
 : Extract with 'sh this_file'.
 :
@@ -1839,7 +1850,7 @@ X
 X******************************************************************/
 X
 X/* PD implementation of strerror() for systems that don't have it.
-X   Author: Guido van Rossum, CWI Amsterdam, Oct. 1990, <gu...@cwi.nl>. */
+X   Author: Guido van Rossum, CWI Amsterdam, Oct. 1990, <guido@cwi.nl>. */
 X
 X#include <stdio.h>
 X

@@ -1,3 +1,14 @@
+Path: funic!news.funet.fi!sunic!mcsun!hp4nl!charon!guido
+From: guido@cwi.nl (Guido van Rossum)
+Newsgroups: alt.sources
+Subject: Python 0.9.1 part 01/21
+Message-ID: <2963@charon.cwi.nl>
+Date: 19 Feb 91 17:35:26 GMT
+Sender: news@cwi.nl
+Organization: CWI, Amsterdam
+Lines: 1952
+Originator: guido@voorn.cwi.nl
+
 : This is a shell archive.
 : Extract with 'sh this_file'.
 : Extract this part first since it makes all directories
@@ -71,7 +82,7 @@ X	Kruislaan 413
 X	1098 SJ  Amsterdam
 X	The Netherlands
 X
-X	E-mail: gu...@cwi.nl
+X	E-mail: guido@cwi.nl
 X
 XThe Python source is copyrighted, but you can freely use and copy it
 Xas long as you don't change or remove the copyright:
@@ -82,10 +93,10 @@ XNetherlands.
 X
 X                        All Rights Reserved
 X
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -162,7 +173,7 @@ XKruislaan 413
 X1098 SJ  Amsterdam
 XThe Netherlands
 X.PP
-XE-mail: gu...@cwi.nl
+XE-mail: guido@cwi.nl
 X.fi
 X.SH COPYRIGHT
 XCopyright 1991 by Stichting Mathematisch Centrum, Amsterdam, The
@@ -170,10 +181,10 @@ XNetherlands.
 X.IP " "
 XAll Rights Reserved
 X.PP
-XPermission to use, copy, modify, and distribute this software and its
-Xdocumentation for any purpose and without fee is hereby granted,
+XPermission to use, copy, modify, and distribute this software and its 
+Xdocumentation for any purpose and without fee is hereby granted, 
 Xprovided that the above copyright notice appear in all copies and that
-Xboth that copyright notice and this permission notice appear in
+Xboth that copyright notice and this permission notice appear in 
 Xsupporting documentation, and that the names of Stichting Mathematisch
 XCentrum or CWI not be used in advertising or publicity pertaining to
 Xdistribution of the software without specific, written prior permission.
@@ -402,15 +413,15 @@ X%\documentstyle[garamond,11pt,myformat]{article}
 X\documentstyle[11pt,myformat]{article}
 X
 X\title{\bf
-X Python Tutorial \\
-X (DRAFT)
+X	Python Tutorial \\
+X	(DRAFT)
 X}
 X
 X\author{
 X	Guido van Rossum \\
 X	Dept. CST, CWI, Kruislaan 413 \\
 X	1098 SJ Amsterdam, The Netherlands \\
-X	E-mail: {\tt gu...@cwi.nl}
+X	E-mail: {\tt guido@cwi.nl}
 X}
 X
 X\begin{document}
@@ -759,13 +770,13 @@ X\bcode\begin{verbatim}
 X>>> # This is a comment
 X>>> 2+2
 X4
-X>>>
+X>>> 
 X>>> (50-5+5*6+25)/4
 X25
 X>>> # Division truncates towards zero:
 X>>> 7/3
 X2
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XAs in C, the equal sign ({\tt =}) is used to assign a value to a variable.
 XThe value of an assignment is not written:
@@ -774,14 +785,14 @@ X>>> width = 20
 X>>> height = 5*9
 X>>> width * height
 X900
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThere is some support for floating point, but you can't mix floating
 Xpoint and integral numbers in expression (yet):
 X\bcode\begin{verbatim}
 X>>> 10.0 / 3.3
 X3.0303030303
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XBesides numbers, \Python\ can also manipulate strings, enclosed in single
 Xquotes:
@@ -790,7 +801,7 @@ X>>> 'foo bar'
 X'foo bar'
 X>>> 'doesn\'t'
 X'doesn\'t'
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XStrings are written inside quotes and with quotes and other funny
 Xcharacters escaped by backslashes, to show the precise value.
@@ -804,7 +815,7 @@ X>>> word
 X'HelpA'
 X>>> '<' + word*5 + '>'
 X'<HelpAHelpAHelpAHelpAHelpA>'
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XStrings can be subscripted; as in C, the first character of a string has
 Xsubscript 0.
@@ -828,7 +839,7 @@ X'lpA'
 X>>> # A useful invariant: s[:i] + s[i:] = s
 X>>> word[:3] + word[3:]
 X'HelpA'
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XDegenerate cases are handled gracefully: an index that is too large is
 Xreplaced by the string size, an upper bound smaller than the lower bound
@@ -840,7 +851,7 @@ X>>> word[10:]
 X''
 X>>> word[2:1]
 X''
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XSlice indices (but not simple subscripts) may be negative numbers, to
 Xstart counting from the right.
@@ -853,7 +864,7 @@ X'Hel'
 X>>> # But -0 does not count from the right!
 X>>> word[-0:]    # (since -0 equals 0)
 X'HelpA'
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThe best way to remember how slices work is to think of the indices as
 Xpointing
@@ -865,10 +876,10 @@ Xcharacters has index
 X{\tt n},
 Xfor example:
 X\bcode\begin{verbatim}
-X +---+---+---+---+---+
+X +---+---+---+---+---+ 
 X | H | e | l | p | A |
-X +---+---+---+---+---+
-X 0   1   2   3   4   5
+X +---+---+---+---+---+ 
+X 0   1   2   3   4   5 
 X-5  -4  -3  -2  -1
 X\end{verbatim}\ecode
 XThe first row of numbers gives the position of the indices 0...5 in the
@@ -886,7 +897,7 @@ X\bcode\begin{verbatim}
 X>>> s = 'supercalifragilisticexpialidocious'
 X>>> len(s)
 X34
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X\Python\ knows a number of
 X{\em compound}
@@ -899,7 +910,7 @@ X\bcode\begin{verbatim}
 X>>> a = ['foo', 'bar', 100, 1234]
 X>>> a
 X['foo', 'bar', 100, 1234]
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XAs for strings, list subscripts start at 0:
 X\bcode\begin{verbatim}
@@ -907,7 +918,7 @@ X>>> a[0]
 X'foo'
 X>>> a[3]
 X1234
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XLists can be sliced and concatenated like strings:
 X\bcode\begin{verbatim}
@@ -915,7 +926,7 @@ X>>> a[1:3]
 X['bar', 100]
 X>>> a[:2] + ['bletch', 2*2]
 X['foo', 'bar', 'bletch', 4]
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XUnlike strings, which are
 X{\em immutable},
@@ -943,13 +954,13 @@ X>>> # Insert some:
 X>>> a[1:1] = ['bletch', 'xyzzy']
 X>>> a
 X[123, 'bletch', 'xyzzy', 1234]
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThe built-in function {\tt len()} also applies to lists:
 X\bcode\begin{verbatim}
 X>>> len(a)
 X4
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X
 X\subsection{Tuples and Sequences}
@@ -970,7 +981,7 @@ X>>> a, b = 0, 1
 X>>> while b < 100:
 X...       print b
 X...       a, b = b, a+b
-X...
+X... 
 X1
 X1
 X2
@@ -982,7 +993,7 @@ X21
 X34
 X55
 X89
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThis example introduces several new features.
 X\begin{itemize}
@@ -1043,7 +1054,7 @@ X\bcode\begin{verbatim}
 X>>> i = 256*256
 X>>> print 'The value of i is', i
 XThe value of i is 65536
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XA trailing comma avoids the newline after the output:
 X\bcode\begin{verbatim}
@@ -1051,9 +1062,9 @@ X>>> a, b = 0, 1
 X>>> while b < 1000:
 X...     print b,
 X...     a, b = b, a+b
-X...
+X... 
 X1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XNote that the interpreter inserts a newline before it prints the next
 Xprompt if the last line was not completed.
@@ -1079,7 +1090,7 @@ X... elif x = 1:
 X...      print 'Single'
 X... else:
 X...      print 'More'
-X...
+X... 
 X\end{verbatim}\ecode
 XThere can be zero or more {\tt elif} parts, and the {\tt else} part is
 Xoptional.
@@ -1102,11 +1113,11 @@ X>>> # Measure some strings:
 X>>> a = ['cat', 'window', 'defenestrate']
 X>>> for x in a:
 X...     print x, len(x)
-X...
+X... 
 Xcat 3
 Xwindow 6
 Xdefenestrate 12
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X
 X\subsubsection{The {\tt range()} Function}
@@ -1118,7 +1129,7 @@ Xe.g.:
 X\bcode\begin{verbatim}
 X>>> range(10)
 X[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThe given end point is never part of the generated list;
 X{\tt range(10)} generates a list of 10 values,
@@ -1132,7 +1143,7 @@ X>>> range(0, 10, 3)
 X[0, 3, 6, 9]
 X>>> range(-10, -100, -30)
 X[-10, -40, -70]
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XTo iterate over the indices of a sequence, combine {\tt range()}
 Xand {\tt len()} as follows:
@@ -1140,13 +1151,13 @@ X\bcode\begin{verbatim}
 X>>> a = ['Mary', 'had', 'a', 'little', 'boy']
 X>>> for i in range(len(a)):
 X...     print i, a[i]
-X...
+X... 
 X0 Mary
 X1 had
 X2 a
 X3 little
 X4 boy
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X
 X\subsubsection{Break Statements and Else Clauses on Loops}
@@ -1167,7 +1178,7 @@ X...            print n, 'equals', x, '*', n/x
 X...            break
 X...     else:
 X...          print n, 'is a prime number'
-X...
+X... 
 X2 is a prime number
 X3 is a prime number
 X4 equals 2 * 2
@@ -1176,7 +1187,7 @@ X6 equals 2 * 3
 X7 is a prime number
 X8 equals 2 * 4
 X9 equals 3 * 3
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X
 X\subsubsection{Pass Statements}
@@ -1188,7 +1199,7 @@ XFor example:
 X\bcode\begin{verbatim}
 X>>> while 1:
 X...       pass # Busy-wait for keyboard interrupt
-X...
+X... 
 X\end{verbatim}\ecode
 X
 X\subsubsection{Conditions Revisited}
@@ -1205,11 +1216,11 @@ X...     a, b = 0, 1
 X...     while b <= n:
 X...           print b,
 X...           a, b = b, a+b
-X...
+X... 
 X>>> # Now call the function we just defined:
 X>>> fib(2000)
 X1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThe keyword
 X{\tt def}
@@ -1256,7 +1267,7 @@ X<function object at 10042ed0>
 X>>> f = fib
 X>>> f(100)
 X1 1 2 3 5 8 13 21 34 55 89
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XYou might object that
 X{\tt fib}
@@ -1272,7 +1283,7 @@ XYou can see it if you really want to:
 X\bcode\begin{verbatim}
 X>>> print fib(0)
 XNone
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XIt is simple to write a function that returns a list of the numbers of
 Xthe Fibonacci series, instead of printing it:
@@ -1284,11 +1295,11 @@ X...     while b <= n:
 X...           result.append(b)    # see below
 X...           a, b = b, a+b
 X...     return result
-X...
+X... 
 X>>> f100 = fib2(100)    # call it
 X>>> f100                # write the result
 X[1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThis example, as usual, demonstrates some new \Python\ features:
 X\begin{itemize}
@@ -1354,7 +1365,7 @@ X>>> b = ['Mary', 'had', 'a', 'little', 'boy']
 X>>> b.sort()
 X>>> b
 X['Mary', 'a', 'boy', 'had', 'little']
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X
 X\subsection{Modules}
@@ -1409,7 +1420,7 @@ XNow enter the \Python\ interpreter and import this module with the
 Xfollowing command:
 X\bcode\begin{verbatim}
 X>>> import fibo
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThis does not enter the names of the functions defined in
 X{\tt fibo}
@@ -1422,14 +1433,14 @@ X>>> fibo.fib(1000)
 X1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987
 X>>> fibo.fib2(100)
 X[1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XIf you intend to use a function often you can assign it to a local name:
 X\bcode\begin{verbatim}
 X>>> fib = fibo.fib
 X>>> fib(500)
 X1 1 2 3 5 8 13 21 34 55 89 144 233 377
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X
 X\subsubsection{More on Modules}
@@ -1472,7 +1483,7 @@ X\bcode\begin{verbatim}
 X>>> from fibo import fib, fib2
 X>>> fib(500)
 X1 1 2 3 5 8 13 21 34 55 89 144 233 377
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThis does not introduce the module name from which the imports are taken
 Xin the local symbol table (so in the example, {\tt fibo} is not
@@ -1483,7 +1494,7 @@ X\bcode\begin{verbatim}
 X>>> from fibo import *
 X>>> fib(500)
 X1 1 2 3 5 8 13 21 34 55 89 144 233 377
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThis imports all names except those beginning with an underscore
 X({\tt \_}).
@@ -1517,7 +1528,7 @@ X'... '
 X>>> sys.ps1 = 'C> '
 XC> print 'Yuck!'
 XYuck!
-XC>
+XC> 
 X\end{verbatim}\ecode
 XThese two variables are only defined if the interpreter is in
 Xinteractive mode.
@@ -1535,7 +1546,7 @@ XYou can modify it using standard list operations, e.g.:
 X\bcode\begin{verbatim}
 X>>> import sys
 X>>> sys.path.append('/ufs/guido/lib/python')
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X
 X\subsection{Errors and Exceptions}
@@ -1557,7 +1568,7 @@ XParsing error: file <stdin>, line 1:
 Xwhile 1 print 'Hello world'
 X             ^
 XUnhandled exception: run-time error: syntax error
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThe parser repeats the offending line and displays a little `arrow'
 Xpointing at the earliest point in the line where the error was detected.
@@ -1585,7 +1596,7 @@ X>>> '2' + 2
 XUnhandled exception: type error: illegal argument type for built-in operation
 XStack backtrace (innermost last):
 X  File "<stdin>", line 1
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XErrors detected during execution are called
 X{\em exceptions}
@@ -1647,12 +1658,12 @@ X...     try:
 X...         print 1.0 / x
 X...     except RuntimeError:
 X...         print '*** has no inverse ***'
-X...
+X... 
 X0.3333 3.00030003
 X2.5 0.4
 X0 *** has no inverse ***
 X10 0.1
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThe {\tt try} statement works as follows.
 X\begin{itemize}
@@ -1704,9 +1715,9 @@ X>>> try:
 X...     foo()
 X... except NameError, x:
 X...     print 'name', x, 'undefined'
-X...
+X... 
 Xname foo undefined
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XIf an exception has an argument, it is printed as the third part
 X(`detail') of the message for unhandled exceptions.
@@ -1743,14 +1754,14 @@ XFor example:
 X\bcode\begin{verbatim}
 X>>> def this_fails():
 X...     x = 1/0
-X...
+X... 
 X>>> try:
 X...     this_fails()
 X... except RuntimeError, detail:
 X...     print 'Handling run-time error:', detail
-X...
+X... 
 XHandling run-time error: domain error or zero division
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 X
 X\subsubsection{Raising Exceptions}
@@ -1763,7 +1774,7 @@ X>>> raise NameError, 'Hi There!'
 XUnhandled exception: undefined name: Hi There!
 XStack backtrace (innermost last):
 X  File "<stdin>", line 1
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThe first argument to {\tt raise} names the exception to be raised.
 XThe optional second argument specifies the exception's argument.
@@ -1779,13 +1790,13 @@ X>>> try:
 X...     raise my_exc, 2*2
 X... except my_exc, val:
 X...     print 'My exception occured, value:', val
-X...
+X... 
 XMy exception occured, value: 4
 X>>> raise my_exc, 1
 XUnhandled exception: nobody likes me!: 1
 XStack backtrace (innermost last):
 X  File "<stdin>", line 7
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XMany standard modules use this to report errors that may occur in
 Xfunctions they define.
@@ -1800,12 +1811,12 @@ X>>> try:
 X...     raise KeyboardInterrupt
 X... finally:
 X...     print 'Goodbye, world!'
-X...
+X... 
 XGoodbye, world!
 XUnhandled exception: keyboard interrupt
 XStack backtrace (innermost last):
 X  File "<stdin>", line 2
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XThe
 X{\em finally\ clause}
@@ -1904,18 +1915,18 @@ X>>> a.add(3)
 X>>> a.add(1)
 X>>> a.add(1)
 X>>> if a.is_element(3): print '3 is in the set'
-X...
+X... 
 X3 is in the set
 X>>> if not a.is_element(4): print '4 is not in the set'
-X...
+X... 
 X4 is not in the set
 X>>> print 'a has', a.size(), 'elements'
 Xa has 3 elements
 X>>> a.remove(1)
 X>>> print 'now a has', a.size(), 'elements'
-X>>>
+X>>> 
 Xnow a has 2 elements
-X>>>
+X>>> 
 X\end{verbatim}\ecode
 XFrom the example we learn in the first place that the functions defined
 Xin the class (e.g.,

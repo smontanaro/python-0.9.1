@@ -396,8 +396,7 @@ static typeobject Captype = {
 	capprint,	/*tp_print*/
 	capgetattr,	/*tp_getattr*/
 	0,		/*tp_setattr*/
-	capcompare,	/*tp_comp
-are*/
+	capcompare,	/*tp_compare*/
 	caprepr,	/*tp_repr*/
 	0,		/*tp_as_number*/
 	0,		/*tp_as_sequence*/

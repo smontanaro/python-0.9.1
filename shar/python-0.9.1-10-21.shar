@@ -1,3 +1,14 @@
+Path: funic!news.funet.fi!sunic!uupsi!rpi!zaphod.mps.ohio-state.edu!wuarchive!uunet!mcsun!hp4nl!charon!guido
+From: guido@cwi.nl (Guido van Rossum)
+Newsgroups: alt.sources
+Subject: Python 0.9.1 part 10/21
+Message-ID: <2972@charon.cwi.nl>
+Date: 19 Feb 91 17:41:58 GMT
+Sender: news@cwi.nl
+Organization: CWI, Amsterdam
+Lines: 2508
+Originator: guido@voorn.cwi.nl
+
 : This is a shell archive.
 : Extract with 'sh this_file'.
 :
@@ -1003,8 +1014,8 @@ X******************************************************************/
 X
 X/* Asynchronous audio module for Silicon Graphics 4D/20 under IRIX 3.3
 X   Copyright 1990 Stichting Mathematisch Centrum, Amsterdam
-X   Author: Guido van Rossum, <gu...@cwi.nl>
-X   Last modified: gu...@cwi.nl, Oct 14, 1990
+X   Author: Guido van Rossum, <guido@cwi.nl>
+X   Last modified: guido@cwi.nl, Oct 14, 1990
 X
 X   Callers should #include "asa.h".
 X

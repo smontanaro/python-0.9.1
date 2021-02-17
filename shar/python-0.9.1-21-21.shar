@@ -1,3 +1,14 @@
+Path: funic!news.funet.fi!sunic!uupsi!rpi!zaphod.mps.ohio-state.edu!wuarchive!uunet!mcsun!hp4nl!charon!guido
+From: guido@cwi.nl (Guido van Rossum)
+Newsgroups: alt.sources
+Subject: Python 0.9.1 part 21/21
+Message-ID: <2983@charon.cwi.nl>
+Date: 19 Feb 91 17:42:58 GMT
+Sender: news@cwi.nl
+Organization: CWI, Amsterdam
+Lines: 1675
+Originator: guido@voorn.cwi.nl
+
 : This is a shell archive.
 : Extract with 'sh this_file'.
 :
@@ -549,7 +560,7 @@ X\item[#1 = {\tt '#2'}]
 X\itembreak
 X}
 X
-X	itle{\bf
+X\title{\bf
 X	Python Library Reference \\
 X	(DRAFT)
 X}
@@ -558,7 +569,7 @@ X\author{
 X	Guido van Rossum \\
 X	Dept. CST, CWI, Kruislaan 413 \\
 X	1098 SJ Amsterdam, The Netherlands \\
-X	E-mail: {\tt gu...@cwi.nl}
+X	E-mail: {\tt guido@cwi.nl}
 X}
 X
 X\begin{document}
@@ -581,7 +592,7 @@ X\end{abstract}
 X
 X\pagebreak
 X
-X	ableofcontents
+X\tableofcontents
 X
 X\pagebreak
 X
@@ -602,9 +613,9 @@ sed 's/^X//' > 'doc/myformat.sty' << 'EOF'
 X% Style parameters and macros used by all documents here
 X
 X% Page lay-out parameters
-X	extwidth =      160mm
-X	extheight =     240mm
-X	opmargin =      -11mm
+X\textwidth =      160mm
+X\textheight =     240mm
+X\topmargin =      -11mm
 X\oddsidemargin =    0mm
 X\evensidemargin =   0mm
 X%\parindent =        0mm
