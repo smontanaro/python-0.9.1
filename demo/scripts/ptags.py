@@ -1,8 +1,7 @@
 #! /ufs/guido/bin/sgi/python
 
 # ptags
-#
-Create a tags file for Python programs
+# Create a tags file for Python programs
 # Tagged are:
 # - functions (even inside other defs or classes)
 # - classes
