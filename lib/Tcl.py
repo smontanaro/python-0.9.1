@@ -27,7 +27,7 @@
 #   can return a string instead of a character.
 
 
-from TclUtil import *
+import TclUtils
 
 
 # Exceptions used to signify 'break' and 'continue'
